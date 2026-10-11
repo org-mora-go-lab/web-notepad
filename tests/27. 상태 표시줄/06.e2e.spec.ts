@@ -7,7 +7,7 @@ test("6. PC 하단 라벨은 14px·개수는 12px, 모바일은 각각 12px·10p
   await page.goto("/");
   await closeActiveTabWithContent(page, "closed note");
   await bookmarkActiveTab(page, "note");
-  const labels = page.locator(".status-meta .status-command > span:not(.status-separator):not(.status-count)");
+  const labels = page.locator(".status-meta .status-command > span:not(.status-separator):not(.status-icon)");
 
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);

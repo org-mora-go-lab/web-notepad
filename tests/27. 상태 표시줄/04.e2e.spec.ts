@@ -29,7 +29,7 @@ test("4. PC는 좌우 명령 묶음으로, 모바일은 네 메뉴를 균등 배
       expect(boxes[2]!.x - boxes[1]!.x - boxes[1]!.width).toBeGreaterThan(20);
       expect(boxes[3]!.x - boxes[2]!.x - boxes[2]!.width).toBeCloseTo(20, 1);
       expect(boxes[4]!.x - boxes[3]!.x - boxes[3]!.width).toBeCloseTo(20, 1);
-      expect(boxes[4]!.x + boxes[4]!.width).toBeCloseTo(viewport.width - 16, 1);
+      expect(boxes[4]!.x + boxes[4]!.width).toBeCloseTo(viewport.width - 26, 1);
     }
   }
 });

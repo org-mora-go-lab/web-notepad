@@ -15,12 +15,12 @@ test("2. SHORTCUT 오른쪽에 CLOSED 명령과 닫은 탭 개수를 PC와 모�
   expect(shortcutBox!.x + shortcutBox!.width).toBeLessThanOrEqual(commandBox!.x + 1);
   await expect(label).toHaveText("CLOSED");
   await expect(label).toBeVisible();
-  await expect(command.locator(".status-count")).toHaveText("(1)");
+  await expect(command.locator(".status-count")).toHaveText("1");
 
   await page.setViewportSize(MOBILE_VIEWPORT);
   await expect(label).toBeVisible();
   await expect(command.locator("svg")).toBeInViewport();
-  await expect(command.locator(".status-count")).toHaveText("(1)");
+  await expect(command.locator(".status-count")).toHaveText("1");
   await expect(command.locator(".status-count")).toBeInViewport();
   await expect(page.locator(".group-status-command .group-status-label")).toBeInViewport();
 });
