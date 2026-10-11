@@ -16,7 +16,7 @@ test("4. 첫 줄 선택 배경을 상단 여백까지 잇고 스크롤 시 잔�
   await expect(rail).toHaveCSS("background-image", /rgba\(143, 227, 176, 0\.2\)/);
   await expect(rail).toHaveCSS("background-size", "100% 10px");
   await expect(editor).toHaveCSS("background-position", /0px 0px/);
-  await expect(editor).toHaveCSS("background-size", "100% 43px");
+  await expect(editor).toHaveCSS("background-size", "100% 45px");
   await lines.first().click();
 
   await editor.fill(Array.from({ length: 80 }, (_, index) => `line ${index + 1}`).join("\n"));

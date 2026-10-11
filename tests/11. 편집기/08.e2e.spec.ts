@@ -28,15 +28,15 @@ test("8. PC와 모바일의 편집기 글자 크기와 줄 높이 및 내부 레
     });
 
   await expect(editor).toHaveCSS("font-size", "19px");
-  await expect(editor).toHaveCSS("line-height", "33px");
-  await expect(lines.first()).toHaveCSS("height", "33px");
-  await expect(lines.first()).toHaveCSS("line-height", "33px");
+  await expect(editor).toHaveCSS("line-height", "35px");
+  await expect(lines.first()).toHaveCSS("height", "35px");
+  await expect(lines.first()).toHaveCSS("line-height", "35px");
   const desktopFormat = await getEditorFormat();
-  expect(desktopFormat.lineHeight).toBe("33px");
+  expect(desktopFormat.lineHeight).toBe("35px");
   expect(desktopFormat.topPadding).toBe("10px");
   expect(desktopFormat.editorPadding).toBe("10px 22px");
   await lines.first().click();
-  await expect(editor).toHaveCSS("background-size", "100% 43px");
+  await expect(editor).toHaveCSS("background-size", "100% 45px");
 
   await page.setViewportSize(MOBILE_VIEWPORT);
   await expect(editor).toHaveCSS("font-size", "19px");

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../__constant__";
 
-test("9. 모바일 탭 높이는 44px, 최소 너비는 114.406px, 색상 아이콘은 13px이다", async ({ page }) => {
+test("9. PC 탭은 39px 높이에 제목을 중앙 정렬하고 모바일 탭 크기를 유지한다", async ({ page }) => {
   await page.goto("/");
 
   const tab = page.locator(".tab-item").first();
@@ -12,14 +12,33 @@ test("9. 모바일 탭 높이는 44px, 최소 너비는 114.406px, 색상 아이
     getComputedStyle(element, "::before").width,
   );
 
-  await expect(tab).toHaveCSS("height", "37px");
+  await expect(tab).toHaveCSS("height", "39px");
+  await expect(tab.getByRole("tab")).toHaveCSS("height", "39px");
+  await expect(tab.locator(".tab-close")).toHaveCSS("height", "39px");
+  await expect(page.locator(".header")).toHaveCSS("height", "39px");
+  await expect(page.locator(".add-tab")).toHaveCSS("height", "39px");
+  const tabBounds = await tab.boundingBox();
+  const titleBounds = await title.boundingBox();
+  expect(tabBounds).not.toBeNull();
+  expect(titleBounds).not.toBeNull();
+  const topGap = titleBounds!.y - tabBounds!.y;
+  const bottomGap = tabBounds!.y + tabBounds!.height - titleBounds!.y - titleBounds!.height;
+  expect(topGap).toBeCloseTo(bottomGap, 1);
+  await expect.poll(() => page.locator(".note-pane").evaluate((element) =>
+    getComputedStyle(element).gridTemplateRows.split(" ")[0],
+  )).toBe("39px");
   await expect(tab).toHaveCSS("min-width", "130.485px");
   await expect(tab).toHaveCSS("max-width", "300.655px");
-  await expect(title).toHaveCSS("font-size", "14px");
-  expect(await iconWidth()).toBe("10px");
+  await expect(title).toHaveCSS("font-size", "15px");
+  expect(await iconWidth()).toBe("11px");
 
   await page.setViewportSize(MOBILE_VIEWPORT);
   await expect(tab).toHaveCSS("height", "44px");
+  await expect(page.locator(".header")).toHaveCSS("height", "44px");
+  await expect(page.locator(".add-tab")).toHaveCSS("height", "44px");
+  await expect.poll(() => page.locator(".note-pane").evaluate((element) =>
+    getComputedStyle(element).gridTemplateRows.split(" ")[0],
+  )).toBe("44px");
   await expect(tab).toHaveCSS("min-width", "114.406px");
   await expect(tab).toHaveCSS("max-width", "247.65px");
   await expect(tab.getByRole("tab")).toHaveCSS("height", "44px");
