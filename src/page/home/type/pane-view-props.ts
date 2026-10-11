@@ -5,6 +5,7 @@ import type { TabStripState } from "@/src/entity/hook";
 import type { GroupEntry, NoteTab } from "@/src/entity/notepad";
 
 export type PaneViewProps = {
+  onOpenShortcuts?: () => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;

@@ -1,6 +1,7 @@
 @use "../../entity/style/variable" as v;
 @use "./style/tab-item";
 @use "./style/tab-context-menu";
+@use "./style/additional-tools";
 
 .header {
   position: relative;

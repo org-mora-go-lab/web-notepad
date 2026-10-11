@@ -1,4 +1,3 @@
-export { AdditionalTools } from "./additional-tools";
 export { Loading } from "./loading";
 export { PaneDivider } from "./pane-divider";
 export { PaneView } from "./pane-view";

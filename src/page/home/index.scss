@@ -17,7 +17,7 @@
 @use "./style/pane-divider";
 @use "./style/tab-delete-popup";
 @use "./style/pane-view";
-@use "./style/additional-tools";
+@use "../../feature/theme";
 
 .home {
   width: 100%;

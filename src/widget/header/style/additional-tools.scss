@@ -1,6 +1,6 @@
 @use "../../../entity/style/variable" as v;
 
-.home {
+.header {
   .additional-tools {
     position: absolute;
     top: 0;
@@ -65,12 +65,7 @@
     }
   }
 
-  .theme-options {
-    margin: 0 4px 4px 20px;
-    border-left: 1px solid v.$line;
-  }
-
-  .pane-slot:last-child .header { padding-right: 140px; }
+  &.has-menu { padding-right: 140px; }
 
   @media (min-width: 641px) {
     .additional-tools { width: 104px; }
@@ -115,8 +110,7 @@
       }
     }
 
-    .theme-options { margin: 2px 2px 6px 18px; }
-    .pane-slot:last-child .header { padding-right: 104px; }
+    &.has-menu { padding-right: 104px; }
   }
 
   @media (max-width: 640px) {
@@ -124,6 +118,6 @@
     .additional-tools-trigger { padding: 0; }
     .additional-tools-label,
     .additional-tools-menu .additional-tools-shortcut { display: none; }
-    .pane-slot:last-child .header { padding-right: 45px; }
+    &.has-menu { padding-right: 45px; }
   }
 }

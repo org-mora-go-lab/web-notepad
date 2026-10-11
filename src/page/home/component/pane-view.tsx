@@ -6,6 +6,7 @@ import type { PaneViewProps } from "../type";
 import { PaneDivider } from "./pane-divider";
 
 export function PaneView({
+  onOpenShortcuts,
   tabs,
   groups,
   activeGroupId,
@@ -45,6 +46,7 @@ export function PaneView({
           onPointerDownCapture={onActivate}
         >
           <Header
+            onOpenShortcuts={onOpenShortcuts}
             tabs={tabs}
             groups={groups}
             activeGroupId={activeGroupId}

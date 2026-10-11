@@ -2,8 +2,9 @@
 
 import { useSyncExternalStore } from "react";
 
+import { THEME_STORAGE_KEY } from "../constant";
+
 type Theme = "dark" | "light";
-const storageKey = "web-notepad-theme";
 const changeEvent = "notepad-theme-change";
 
 function currentTheme(): Theme {
@@ -12,7 +13,7 @@ function currentTheme(): Theme {
 
 function subscribe(onChange: () => void) {
   const onStorage = (event: StorageEvent) => {
-    if (event.key !== storageKey && event.key !== null) return;
+    if (event.key !== THEME_STORAGE_KEY && event.key !== null) return;
     document.documentElement.dataset.theme = event.newValue === "light" ? "light" : "dark";
     onChange();
   };
@@ -30,7 +31,7 @@ export function useTheme() {
     document.documentElement.dataset.theme = nextTheme;
     window.dispatchEvent(new Event(changeEvent));
     try {
-      localStorage.setItem(storageKey, nextTheme);
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
     } catch {
       return;
     }
