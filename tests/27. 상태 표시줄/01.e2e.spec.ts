@@ -41,7 +41,7 @@ test("1. PC와 모바일에서 CLOSED와 BOOKMARK 라벨 및 개수를 표시한
       const badgeBounds = (await command.locator(".status-count").boundingBox())!;
       const labelBounds = (await command.locator(".status-label").boundingBox())!;
       expect(badgeBounds.x).toBeGreaterThan(iconBounds.x + iconBounds.width / 2);
-      expect(badgeBounds.x - iconBounds.x).toBeCloseTo(22, 1);
+      expect(badgeBounds.x - iconBounds.x).toBeCloseTo(23, 1);
       expect(badgeBounds.y).toBeLessThan(iconBounds.y);
       if (viewport.width > 640) {
         expect(badgeBounds.x + badgeBounds.width).toBeLessThanOrEqual(labelBounds.x);

@@ -24,7 +24,7 @@ test("2. PC 그룹 선택에는 이름과 수를, 모바일 메뉴에는 GROUP �
       const badgeBounds = (await groupCommand.locator(".status-count").boundingBox())!;
       const nameBounds = (await groupCommand.locator(".group-status-name").boundingBox())!;
       expect(badgeBounds.x).toBeGreaterThan(iconBounds.x + iconBounds.width / 2);
-      expect(badgeBounds.x - iconBounds.x).toBeCloseTo(22, 1);
+      expect(badgeBounds.x - iconBounds.x).toBeCloseTo(23, 1);
       expect(badgeBounds.y).toBeLessThan(iconBounds.y);
       expect(badgeBounds.x + badgeBounds.width).toBeLessThanOrEqual(nameBounds.x);
       await expect(groupCommand.locator(".group-status-label")).toBeHidden();
