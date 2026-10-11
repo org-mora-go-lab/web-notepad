@@ -48,7 +48,8 @@ test("8. PC와 모바일의 편집기 글자 크기와 줄 높이 및 내부 레
   const mobileFormat = await getEditorFormat();
   expect(mobileFormat.lineHeight).toBe("39px");
   expect(mobileFormat.topPadding).toBe(desktopFormat.topPadding);
-  expect(mobileFormat.lineRailWidth).toBe(desktopFormat.lineRailWidth);
+  expect(desktopFormat.lineRailWidth).toBe(39);
+  expect(mobileFormat.lineRailWidth).toBe(41);
   expect(mobileFormat.lineNumberPadding).toBe(desktopFormat.lineNumberPadding);
   expect(mobileFormat.editorPadding).toBe(desktopFormat.editorPadding);
 });

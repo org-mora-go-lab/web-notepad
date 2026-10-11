@@ -4,7 +4,7 @@ import { DESKTOP_VIEWPORT } from "../__constant__";
 import { createGroupFixture, createTabFixture } from "../__fixture__";
 import { switchGroup, writeStoredState } from "../__util__";
 
-test("10. 모바일 최상부 그룹 표시줄은 그룹 전환과 새로고침에 동기화된다", async ({ page }) => {
+test("10. 모바일 하단 아이콘 위 그룹 표시줄은 그룹 전환과 새로고침에 동기화된다", async ({ page }) => {
   const longName = "Very long group name for mobile current group layout";
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
@@ -40,9 +40,9 @@ test("10. 모바일 최상부 그룹 표시줄은 그룹 전환과 새로고침�
     const footerBounds = (await page.locator(".status-bar").boundingBox())!;
     const editorBounds = (await page.locator(".pane-group").boundingBox())!;
     expect(panelBounds.height).toBe(44);
-    expect(panelBounds.y).toBe(0);
-    expect(panelBounds.y + panelBounds.height).toBe(editorBounds.y);
-    expect(editorBounds.y + editorBounds.height).toBe(footerBounds.y);
+    expect(editorBounds.y).toBe(0);
+    expect(editorBounds.y + editorBounds.height).toBe(panelBounds.y);
+    expect(panelBounds.y + panelBounds.height).toBe(footerBounds.y);
     expect(await panel.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
   }
 

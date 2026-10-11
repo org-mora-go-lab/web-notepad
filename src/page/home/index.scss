@@ -39,7 +39,7 @@
     background: v.$panel;
 
     @media (max-width: 640px) {
-      grid-template-rows: 44px minmax(0, 1fr) calc(64px + env(safe-area-inset-bottom));
+      grid-template-rows: minmax(0, 1fr) 44px calc(64px + env(safe-area-inset-bottom));
     }
   }
 
@@ -49,7 +49,7 @@
     align-items: center;
     gap: 8px;
     padding: 0 16px;
-    border-bottom: 1px solid v.$line;
+    border-top: 1px solid v.$line;
     background: v.$strip;
     color: v.$muted;
     font-size: 15px;

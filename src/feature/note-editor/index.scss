@@ -26,6 +26,10 @@
   grid-template-columns: 39px minmax(0, 1fr);
   overflow: hidden;
 
+  @media (max-width: 640px) {
+    grid-template-columns: 41px minmax(0, 1fr);
+  }
+
   .line-rail {
     padding: var(--editor-top-padding) 0;
     display: flex;
