@@ -8,7 +8,7 @@ import type {
 
 import type { NoteTab } from "@/src/entity/notepad";
 
-import { useVisualLines } from "../hook/use-visual-lines";
+import { useVisualLines } from "../hook";
 
 type Props = {
   tab: NoteTab;

@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 import { createClosedTabFixture, createGroupFixture, createTabFixture } from "../__fixture__";
-import { groupStatusName, seedStoredStateOnLoad, switchGroup } from "../__util__";
+import { groupStatusName, openClosedPanel, seedStoredStateOnLoad, switchGroup } from "../__util__";
 
-test("5. CLOSED 개수는 현재 선택된 그룹의 닫은 탭만 표시한다", async ({ page }) => {
+test("5. MENU의 CLOSED는 모든 그룹의 닫은 탭과 전체 개수를 표시한다", async ({ page }) => {
   const workGroup = createGroupFixture("work", "Work", [createTabFixture("work-tab", "Work note")]);
   const personalGroup = createGroupFixture("personal", "Personal", [
     createTabFixture("personal-tab", "Personal note"),
@@ -19,11 +19,21 @@ test("5. CLOSED 개수는 현재 선택된 그룹의 닫은 탭만 표시한다"
     ],
   });
 
-  const closedCount = page.locator(".closed-command .status-count");
+  const closedCount = page.locator(".closed-command .closed-count");
   await expect(groupStatusName(page)).toHaveText("Work");
-  await expect(closedCount).toHaveText("2");
+  await page.getByRole("button", { name: "MENU", exact: true }).click();
+  await expect(closedCount).toHaveText("3");
+  await page.keyboard.press("Escape");
+  await openClosedPanel(page);
+  await expect(page.locator(".closed-item")).toHaveCount(3);
+  await expect(page.locator(".closed-item")).toContainText(["Work archive 1", "Work archive 2", "Personal archive"]);
+  await page.keyboard.press("Escape");
 
   await switchGroup(page, "Personal");
   await expect(groupStatusName(page)).toHaveText("Personal");
-  await expect(closedCount).toHaveText("1");
+  await page.getByRole("button", { name: "MENU", exact: true }).click();
+  await expect(closedCount).toHaveText("3");
+  await page.keyboard.press("Escape");
+  await openClosedPanel(page);
+  await expect(page.locator(".closed-item")).toHaveCount(3);
 });

@@ -17,9 +17,13 @@ export {
   createGroups,
   groupsCommand,
   groupStatusName,
+  openClosedPanel,
+  openPanel,
+  openShortcutsPanel,
   shortcutsCommand,
   switchGroup,
 } from "./panel";
+export { expectPanelTimes } from "./panel-time";
 export { restoreStoredBookmark } from "./restore-stored-bookmark";
 export { moveGroupSourceTab, seedMoveGroupState } from "./seed-move-group-state";
 export { seedSortableGroups } from "./seed-sortable-groups";

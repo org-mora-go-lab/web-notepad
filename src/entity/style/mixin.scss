@@ -14,7 +14,7 @@
     place-content: center;
     justify-items: center;
     gap: 14px;
-    color: #555550;
+    color: var(--color-empty);
     text-align: center;
 
     p {
@@ -33,23 +33,34 @@
     margin-bottom: 10px;
     padding: 16px;
     border: 1px solid v.$line;
-    background: #151514;
+    background: var(--color-field);
   }
 
   .#{$name}-item-heading {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
 
     strong {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: v.$signal;
       font-size: 15px;
     }
 
     time {
-      color: #6f6f69;
+      width: 12ch;
+      flex: 0 0 12ch;
+      color: var(--color-secondary);
       font-size: 12px;
+      line-height: 16px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: pre;
     }
   }
 
@@ -66,7 +77,7 @@
       padding: 0 9px;
       border: 1px solid v.$line;
       background: transparent;
-      color: #a9a9a2;
+      color: var(--color-timestamp);
       font-size: 13px;
       cursor: pointer;
 

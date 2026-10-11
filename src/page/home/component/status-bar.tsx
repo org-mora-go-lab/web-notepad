@@ -1,54 +1,31 @@
 "use client";
 
-import { Bookmark, Ghost, Keyboard, Layers, Search } from "lucide-react";
+import { Bookmark, Layers, Search } from "lucide-react";
 
 type Props = {
-  closedOpen: boolean;
-  closedCount: number;
   bookmarkCount: number;
-  shortcutsOpen: boolean;
   bookmarksOpen: boolean;
-  groupCount: number;
   activeGroupName: string;
   groupsOpen: boolean;
   globalSearchOpen: boolean;
-  onToggleClosed: () => void;
   onToggleBookmarks: () => void;
-  onToggleShortcuts: () => void;
   onToggleGroups: () => void;
   onToggleGlobalSearch: () => void;
 };
 
 export function StatusBar({
-  closedOpen,
-  closedCount,
   bookmarkCount,
-  shortcutsOpen,
   bookmarksOpen,
-  groupCount,
   activeGroupName,
   groupsOpen,
   globalSearchOpen,
-  onToggleClosed,
   onToggleBookmarks,
-  onToggleShortcuts,
   onToggleGroups,
   onToggleGlobalSearch,
 }: Props) {
   return (
     <footer className="status-bar">
       <div className="status-meta">
-        <button
-          className={`status-command shortcut-command ${shortcutsOpen ? "is-active" : ""}`}
-          type="button"
-          onClick={onToggleShortcuts}
-          aria-expanded={shortcutsOpen}
-          aria-controls="shortcuts-panel"
-          aria-label="단축키 안내"
-        >
-          <Keyboard size={16} strokeWidth={1.8} />
-          <span className="status-label">SHORTCUT</span>
-        </button>
         <div className="status-controls">
           <button
             className={`status-command global-search-command ${globalSearchOpen ? "is-active" : ""}`}
@@ -66,25 +43,6 @@ export function StatusBar({
           </button>
           <div className="status-scroll-area">
             <div className="status-actions">
-              <button
-                className={`status-command closed-command ${closedOpen ? "is-active" : ""}`}
-                type="button"
-                onClick={onToggleClosed}
-                aria-expanded={closedOpen}
-                aria-controls="closed-panel"
-                aria-label="닫은 탭"
-              >
-                <span className="status-icon">
-                  <Ghost size={16} strokeWidth={1.8} />
-                  {closedCount > 0 && (
-                    <span className="status-count">{closedCount}</span>
-                  )}
-                </span>
-                <span className="status-label closed-status-label">CLOSED</span>
-                <span className="status-separator" aria-hidden="true">
-                  |
-                </span>
-              </button>
               <button
                 className={`status-command bookmark-command ${bookmarksOpen ? "is-active" : ""}`}
                 type="button"
@@ -111,12 +69,12 @@ export function StatusBar({
             onClick={onToggleGroups}
             aria-expanded={groupsOpen}
             aria-controls="groups-panel"
+            aria-label={`그룹 선택: ${activeGroupName}`}
+            title={activeGroupName}
           >
             <span className="status-icon">
               <Layers size={16} strokeWidth={1.8} />
-              <span className="status-count">{groupCount}</span>
             </span>
-            <span className="group-status-label">GROUP</span>
             <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>
           </button>
         </div>

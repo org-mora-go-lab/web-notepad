@@ -4,8 +4,8 @@ import {
   addTabButton,
   closeActiveTab,
   closeActiveTabWithContent,
-  closedCommand,
   closedContents,
+  openClosedPanel,
   readStoredState,
 } from "../__util__";
 
@@ -21,7 +21,7 @@ test("1. 내용이 있는 탭을 닫으면 닫은 탭 목록 맨 위에 보관�
   expect(closedTabs.every((entry) => entry.groupId === "ungrouped")).toBe(true);
 
   await page.reload();
-  await closedCommand(page).click();
+  await openClosedPanel(page);
   await expect(closedContents(page)).toHaveText([
     "second closed",
     "first closed",

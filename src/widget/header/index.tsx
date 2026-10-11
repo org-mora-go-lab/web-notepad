@@ -5,9 +5,12 @@ import { type RefObject, useState } from "react";
 
 import { compareGroups, type GroupEntry, type NoteTab } from "@/src/entity/notepad";
 
-import { TabContextMenu, TabItem } from "./component";
+import { AdditionalTools, TabContextMenu, TabItem } from "./component";
 
 type Props = {
+  closedCount?: number;
+  onOpenClosed?: () => void;
+  onOpenShortcuts?: () => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;
@@ -32,6 +35,9 @@ type Props = {
 type ContextMenuState = { tabId: string; left: number; top: number };
 
 export function Header({
+  closedCount = 0,
+  onOpenClosed,
+  onOpenShortcuts,
   tabs,
   groups,
   activeGroupId,
@@ -73,7 +79,7 @@ export function Header({
 
   return (
     <div
-      className={`header ${tabsCanScrollLeft ? "has-left-overflow" : ""} ${tabsCanScrollRight ? "has-right-overflow" : ""}`}
+      className={`header ${onOpenShortcuts ? "has-menu" : ""} ${tabsCanScrollLeft ? "has-left-overflow" : ""} ${tabsCanScrollRight ? "has-right-overflow" : ""}`}
       role="tablist"
       aria-label="메모 탭"
       onDragEnter={(event) => {
@@ -153,6 +159,11 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
+      {onOpenShortcuts && onOpenClosed && <AdditionalTools
+        closedCount={closedCount}
+        onOpenClosed={onOpenClosed}
+        onOpenShortcuts={onOpenShortcuts}
+      />}
     </div>
   );
 }

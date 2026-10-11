@@ -1,11 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-import { MOBILE_VIEWPORT } from "../__constant__";
+import { BOTH_VIEWPORTS } from "../__constant__";
 
-test("3. 모바일에서 SHORTCUT 버튼을 숨긴다", async ({ page }) => {
+test("3. PC와 모바일 하단에는 CLOSED와 SHORTCUT을 표시하지 않는다", async ({ page }) => {
   await page.goto("/");
-  const shortcut = page.locator(".shortcut-command");
-  await expect(shortcut).toBeVisible();
-  await page.setViewportSize(MOBILE_VIEWPORT);
-  await expect(shortcut).toBeHidden();
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    await expect(page.locator('.status-bar [aria-controls="shortcuts-panel"], .status-bar [aria-controls="closed-panel"]')).toHaveCount(0);
+    await page.getByRole("button", { name: "MENU", exact: true }).click();
+    await expect(page.getByRole("menuitem", { name: "닫은 탭" })).toBeVisible();
+    if (viewport.width <= 640) await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeHidden();
+    else await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeVisible();
+    await page.keyboard.press("Escape");
+  }
 });

@@ -2,8 +2,6 @@
 
 import "./index.scss";
 
-import { Layers } from "lucide-react";
-
 import { useHome } from "@/src/page/home/hook";
 import { Bookmark, Closed, GlobalSearch, Group, Shortcut } from "@/src/widget";
 
@@ -33,7 +31,6 @@ export function Home() {
     split,
     bookmarks,
     groups,
-    groupCount,
     activeGroupName,
     leftPaneProps,
     rightPaneProps,
@@ -51,35 +48,26 @@ export function Home() {
     <main className="home">
       <section className="workspace">
         <div className={`pane-group ${split ? "is-split" : ""}`}>
-          {leftPaneProps && <PaneView {...leftPaneProps} />}
-          {rightPaneProps && <PaneView {...rightPaneProps} />}
-        </div>
-
-        <div
-          className="current-group-panel"
-          role="status"
-          aria-label="현재 그룹"
-        >
-          <Layers size={16} strokeWidth={1.8} aria-hidden="true" />
-          <span className="current-group-name" title={activeGroupName}>
-            {activeGroupName}
-          </span>
+          {leftPaneProps && <PaneView {...leftPaneProps} closedCount={closedTabs.length}
+            onOpenClosed={rightPaneProps ? undefined : () => {
+              if (openPanel !== "closed") toggleSidePanel("closed");
+            }} onOpenShortcuts={rightPaneProps ? undefined : () => {
+            if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
+          }} />}
+          {rightPaneProps && <PaneView {...rightPaneProps} closedCount={closedTabs.length}
+            onOpenClosed={() => {
+              if (openPanel !== "closed") toggleSidePanel("closed");
+            }} onOpenShortcuts={() => {
+            if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
+          }} />}
         </div>
 
         <StatusBar
-          closedOpen={openPanel === "closed"}
-          closedCount={
-            closedTabs.filter((entry) => entry.groupId === activeGroupId).length
-          }
           bookmarkCount={bookmarks.length}
-          shortcutsOpen={openPanel === "shortcuts"}
           bookmarksOpen={openPanel === "bookmarks"}
-          groupCount={groupCount}
           activeGroupName={activeGroupName}
           groupsOpen={openPanel === "groups"}
           globalSearchOpen={openPanel === "global-search"}
-          onToggleClosed={() => toggleSidePanel("closed")}
-          onToggleShortcuts={() => toggleSidePanel("shortcuts")}
           onToggleBookmarks={() => toggleSidePanel("bookmarks")}
           onToggleGroups={() => toggleSidePanel("groups")}
           onToggleGlobalSearch={() => toggleSidePanel("global-search")}

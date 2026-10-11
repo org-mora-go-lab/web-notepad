@@ -9,7 +9,7 @@
   margin: 14px 14px 6px;
   padding: 0 10px;
   border: 1px solid v.$line;
-  background: #151514;
+  background: var(--color-field);
   color: v.$dim;
 
   &:focus-within {

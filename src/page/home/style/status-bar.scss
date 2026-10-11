@@ -39,7 +39,7 @@
     padding: 0;
     border: 0;
     background: transparent;
-    color: #bcbcb5;
+    color: var(--color-command);
     font-size: inherit;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -91,12 +91,11 @@
     }
   }
 
-  .status-separator,
-  .group-status-label {
+  .status-separator {
     display: none;
   }
 
-  .closed-command {
+  .bookmark-command {
     margin-left: auto;
   }
 
@@ -144,22 +143,18 @@
 
     .status-meta {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
     }
 
-    .closed-command {
+    .bookmark-command {
       margin-left: 0;
     }
 
-    .group-status-label {
-      display: block;
-    }
-
-    .shortcut-command,
-    .group-status-name,
-    .group-status-command .status-count {
-      display: none;
+    .group-status-name {
+      width: max-content;
+      max-width: calc(120% - 19.2px);
+      transform: translateX(min(0px, calc(100vw / 6 - 50% - 8px)));
     }
   }
 }

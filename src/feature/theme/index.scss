@@ -1,0 +1,13 @@
+@use "../../entity/style/variable" as v;
+@use "./style/palette";
+
+.theme {
+  .theme-options {
+    margin: 0 4px 4px 20px;
+    border-left: 1px solid v.$line;
+  }
+
+  @media (min-width: 641px) {
+    .theme-options { margin: 2px 2px 6px 18px; }
+  }
+}

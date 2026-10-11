@@ -3,8 +3,8 @@
 .search-highlight {
   border-radius: 2px;
   padding: 0 1px;
-  background: rgba(v.$signal, 0.22);
-  color: #effff4;
+  background: rgba(143, 227, 176, 0.22);
+  color: var(--color-highlight);
   font-weight: 700;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;

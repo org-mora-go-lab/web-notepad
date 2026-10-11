@@ -2,6 +2,7 @@
 
 .header {
   .tab-item {
+    position: relative;
     width: max-content;
     min-width: 130.485px;
     max-width: 300.655px;
@@ -10,6 +11,18 @@
     display: flex;
     align-items: center;
     color: v.$muted;
+
+    & + .tab-item::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: v.$line;
+      opacity: 0.6;
+      content: "";
+      pointer-events: none;
+    }
 
     &[data-tab-color="gray"] {
       --tab-accent: #{v.$saved};
@@ -74,8 +87,8 @@
     @media (max-width: 640px) {
       min-width: 114.406px;
       max-width: 247.65px;
-      height: 46px;
-      padding-bottom: 2px;
+      height: 45px;
+      padding-bottom: 1px;
     }
   }
 
@@ -187,7 +200,7 @@
     }
 
     .tab-title {
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .dirty-dot::before {

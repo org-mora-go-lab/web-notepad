@@ -2,15 +2,15 @@ import { expect, test } from "@playwright/test";
 
 import {
   closeActiveTabWithContent,
-  closedCommand,
   closedContents,
   closedDeletePopup,
+  openClosedPanel,
 } from "../__util__";
 
 test("5. 닫은 탭 삭제 팝업은 Cancel에 포커스를 두고 모든 취소 경로에서 항목과 패널을 유지한다", async ({ page }) => {
   await page.goto("/");
   await closeActiveTabWithContent(page, "keep me");
-  await closedCommand(page).click();
+  await openClosedPanel(page);
   const deleteButton = page.locator(".closed-item .remove-closed");
   const popup = closedDeletePopup(page);
   const cancelPaths = [

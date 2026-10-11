@@ -5,8 +5,8 @@ import {
   bookmarkActiveTab,
   bookmarksCommand,
   groupsCommand,
+  openShortcutsPanel,
   readStoredState,
-  shortcutsCommand,
 } from "../__util__";
 
 test("4. PC와 모바일에서 Escape로 우측 패널을 닫고 메모·그룹·북마크 데이터를 유지한다", async ({ page }) => {
@@ -40,7 +40,7 @@ test("4. PC와 모바일에서 Escape로 우측 패널을 닫고 메모·그룹�
     await expect(editor).toHaveValue(note);
 
     if (viewport === DESKTOP_VIEWPORT) {
-      await shortcutsCommand(page).click();
+      await openShortcutsPanel(page);
       await expect(shortcutsPanel).toHaveAttribute("aria-hidden", "false");
       await page.keyboard.press("Escape");
       await expect(shortcutsPanel).toHaveAttribute("aria-hidden", "true");

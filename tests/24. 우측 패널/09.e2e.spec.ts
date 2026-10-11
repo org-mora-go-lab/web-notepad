@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { createClosedTabFixture, createGroupFixture, createTabFixture } from "../__fixture__";
-import { closedCommand, seedStoredStateOnLoad } from "../__util__";
+import { openClosedPanel, seedStoredStateOnLoad } from "../__util__";
 
 test("9. 닫은 탭이 많을 때 목록을 끝까지 스크롤해 마지막 콘텐츠를 볼 수 있다", async ({ page }) => {
   const group = createGroupFixture("work", "Work", [createTabFixture("active-tab", "Current note")]);
@@ -17,7 +17,7 @@ test("9. 닫은 탭이 많을 때 목록을 끝까지 스크롤해 마지막 콘
     closedTabs,
   });
   await page.setViewportSize({ width: 390, height: 640 });
-  await closedCommand(page).click();
+  await openClosedPanel(page);
 
   const list = page.locator(".closed-list");
   await expect.poll(() => list.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
