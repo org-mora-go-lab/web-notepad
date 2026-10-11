@@ -39,7 +39,9 @@
     background: v.$panel;
 
     @media (max-width: 640px) {
-      grid-template-rows: minmax(0, 1fr) 44px calc(64px + env(safe-area-inset-bottom));
+      grid-template-rows: minmax(0, 1fr) 44px calc(
+          64px + env(safe-area-inset-bottom)
+        );
     }
   }
 

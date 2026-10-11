@@ -55,7 +55,11 @@ export function Home() {
           {rightPaneProps && <PaneView {...rightPaneProps} />}
         </div>
 
-        <div className="current-group-panel" role="status" aria-label="현재 그룹">
+        <div
+          className="current-group-panel"
+          role="status"
+          aria-label="현재 그룹"
+        >
           <Layers size={16} strokeWidth={1.8} aria-hidden="true" />
           <span className="current-group-name" title={activeGroupName}>
             {activeGroupName}
@@ -64,7 +68,9 @@ export function Home() {
 
         <StatusBar
           closedOpen={openPanel === "closed"}
-          closedCount={closedTabs.filter((entry) => entry.groupId === activeGroupId).length}
+          closedCount={
+            closedTabs.filter((entry) => entry.groupId === activeGroupId).length
+          }
           bookmarkCount={bookmarks.length}
           shortcutsOpen={openPanel === "shortcuts"}
           bookmarksOpen={openPanel === "bookmarks"}

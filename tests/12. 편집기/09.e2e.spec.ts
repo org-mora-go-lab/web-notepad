@@ -4,7 +4,9 @@ import { MOBILE_VIEWPORT } from "../__constant__";
 import { createGroupFixture, createTabFixture } from "../__fixture__";
 import { seedStoredStateOnLoad } from "../__util__";
 
-test("9. 터치 장치에서 편집기와 분할 패널을 터치해도 커서 위치를 다시 설정하지 않는다", async ({ browser }) => {
+test("9. 터치 장치에서 편집기와 분할 패널을 터치해도 커서 위치를 다시 설정하지 않는다", async ({
+  browser,
+}) => {
   const page = await browser.newPage({
     hasTouch: true,
     isMobile: true,
@@ -14,10 +16,21 @@ test("9. 터치 장치에서 편집기와 분할 패널을 터치해도 커서 �
     const content = "First line\nSecond line\nThird line";
     await seedStoredStateOnLoad(page, {
       activeGroupId: "ungrouped",
-      groups: [createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("left", content),
-        createTabFixture("right", content),
-      ], { rightTabIds: ["right"], activeRightTabId: "right", splitRatio: 0.5 })],
+      groups: [
+        createGroupFixture(
+          "ungrouped",
+          "Ungrouped",
+          [
+            createTabFixture("left", content),
+            createTabFixture("right", content),
+          ],
+          {
+            rightTabIds: ["right"],
+            activeRightTabId: "right",
+            splitRatio: 0.5,
+          },
+        ),
+      ],
     });
     const editors = page.locator("textarea");
     await expect(editors).toHaveCount(2);
@@ -25,13 +38,18 @@ test("9. 터치 장치에서 편집기와 분할 패널을 터치해도 커서 �
       const editor = editors.nth(paneIndex);
       await editor.tap({ position: { x: 25, y: 20 } });
       await expect(editor).toBeFocused();
-      await editor.evaluate(() => new Promise<void>((resolve) => {
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-      }));
-      const selection = await editor.evaluate((element: HTMLTextAreaElement) => ({
-        start: element.selectionStart,
-        end: element.selectionEnd,
-      }));
+      await editor.evaluate(
+        () =>
+          new Promise<void>((resolve) => {
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+          }),
+      );
+      const selection = await editor.evaluate(
+        (element: HTMLTextAreaElement) => ({
+          start: element.selectionStart,
+          end: element.selectionEnd,
+        }),
+      );
       expect(selection.start).toBe(selection.end);
       expect(selection.end).toBeLessThan(content.length);
       await expect(editor).toHaveValue(content);

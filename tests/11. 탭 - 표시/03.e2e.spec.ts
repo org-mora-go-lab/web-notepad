@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../__constant__";
 import { activeTabItem, addTabButton, chooseTabMenuItem } from "../__util__";
 
-test("8. 일반 탭과 고정 탭 및 추가 버튼의 좌우 테두리 없이 상단 강조선을 유지한다", async ({ page }) => {
+test("3. 일반 탭과 고정 탭 및 추가 버튼의 좌우 테두리 없이 상단 강조선을 유지한다", async ({ page }) => {
   await page.goto("/");
   await page.locator("textarea").fill("pinned note");
   const pinnedTab = page.locator(".tab-item").first();

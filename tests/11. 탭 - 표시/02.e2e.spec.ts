@@ -3,9 +3,7 @@ import { expect, type Locator, test } from "@playwright/test";
 import { MOBILE_VIEWPORT } from "../__constant__";
 import { addTabButton } from "../__util__";
 
-test("7. 모바일에서 탭과 탭 조작 버튼의 기본 파란 터치 강조 효과를 숨긴다", async ({
-  page,
-}) => {
+test("2. 모바일에서 탭과 탭 조작 버튼의 기본 파란 터치 강조 효과를 숨긴다", async ({ page }) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
 
