@@ -5,7 +5,6 @@ import { Bookmark, Layers, Search } from "lucide-react";
 type Props = {
   bookmarkCount: number;
   bookmarksOpen: boolean;
-  groupCount: number;
   activeGroupName: string;
   groupsOpen: boolean;
   globalSearchOpen: boolean;
@@ -17,7 +16,6 @@ type Props = {
 export function StatusBar({
   bookmarkCount,
   bookmarksOpen,
-  groupCount,
   activeGroupName,
   groupsOpen,
   globalSearchOpen,
@@ -74,7 +72,6 @@ export function StatusBar({
           >
             <span className="status-icon">
               <Layers size={16} strokeWidth={1.8} />
-              <span className="status-count">{groupCount}</span>
             </span>
             <span className="group-status-label">GROUP</span>
             <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>

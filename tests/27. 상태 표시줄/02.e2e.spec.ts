@@ -2,15 +2,15 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../__constant__";
 
-test("2. PC 그룹 선택에는 이름과 수를, 모바일 메뉴에는 GROUP 라벨을 표시한다", async ({ page }) => {
+test("2. 그룹 개수 배지 없이 PC는 현재 그룹명을, 모바일은 GROUP 라벨을 표시한다", async ({ page }) => {
   await page.goto("/");
   const groupCommand = page.locator(".group-status-command");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await expect(groupCommand.locator("svg")).toHaveCount(1);
+    await expect(groupCommand.locator(".status-count")).toHaveCount(0);
     if (viewport.width <= 640) {
       await expect(groupCommand.locator(".group-status-name")).toBeHidden();
-      await expect(groupCommand.locator(".status-count")).toBeHidden();
       await expect(groupCommand.locator(".group-status-label")).toHaveText("GROUP");
       await expect(groupCommand.locator(".group-status-label")).toBeInViewport();
       await expect(page.locator(".current-group-name")).toHaveText("Ungrouped");
@@ -18,15 +18,6 @@ test("2. PC 그룹 선택에는 이름과 수를, 모바일 메뉴에는 GROUP �
     } else {
       await expect(groupCommand.locator(".group-status-name")).toHaveText("Ungrouped");
       await expect(groupCommand.locator(".group-status-name")).toBeVisible();
-      await expect(groupCommand.locator(".status-count")).toHaveText("1");
-      await expect(groupCommand.locator(".status-count")).toBeVisible();
-      const iconBounds = (await groupCommand.locator("svg").boundingBox())!;
-      const badgeBounds = (await groupCommand.locator(".status-count").boundingBox())!;
-      const nameBounds = (await groupCommand.locator(".group-status-name").boundingBox())!;
-      expect(badgeBounds.x).toBeGreaterThan(iconBounds.x + iconBounds.width / 2);
-      expect(badgeBounds.x - iconBounds.x).toBeCloseTo(23, 1);
-      expect(badgeBounds.y).toBeLessThan(iconBounds.y);
-      expect(badgeBounds.x + badgeBounds.width).toBeLessThanOrEqual(nameBounds.x);
       await expect(groupCommand.locator(".group-status-label")).toBeHidden();
       await expect(page.locator(".current-group-panel")).toBeHidden();
     }

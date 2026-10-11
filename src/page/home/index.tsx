@@ -33,7 +33,6 @@ export function Home() {
     split,
     bookmarks,
     groups,
-    groupCount,
     activeGroupName,
     leftPaneProps,
     rightPaneProps,
@@ -79,7 +78,6 @@ export function Home() {
         <StatusBar
           bookmarkCount={bookmarks.length}
           bookmarksOpen={openPanel === "bookmarks"}
-          groupCount={groupCount}
           activeGroupName={activeGroupName}
           groupsOpen={openPanel === "groups"}
           globalSearchOpen={openPanel === "global-search"}
