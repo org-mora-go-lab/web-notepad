@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 export const groupsCommand = (page: Page) =>
   page.locator('button[aria-controls="groups-panel"]');
@@ -11,10 +11,17 @@ export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
 export async function openPanel(page: Page, panelId: string) {
+  const command = page.locator(`button[aria-controls="${panelId}"]`);
   if (panelId === "closed-panel" || panelId === "shortcuts-panel") {
-    await page.getByRole("button", { name: "MENU", exact: true }).press("Enter");
+    const menu = page.getByRole("button", { name: "MENU", exact: true });
+    await menu.click();
+    await expect(menu).toHaveAttribute("aria-expanded", "true");
+    await expect(command).toBeVisible();
+    await command.click();
+  } else {
+    await command.press("Enter");
   }
-  await page.locator(`button[aria-controls="${panelId}"]`).press("Enter");
+  await expect(page.locator(`#${panelId}`)).toHaveAttribute("aria-hidden", "false");
 }
 
 export const openClosedPanel = (page: Page) => openPanel(page, "closed-panel");
