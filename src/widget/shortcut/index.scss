@@ -46,7 +46,7 @@
     kbd {
       padding: 4px 6px;
       border: 1px solid v.$line;
-      background: #171716;
+      background: var(--color-key);
       color: v.$ink;
       font-family: v.$mono;
       font-size: 12px;

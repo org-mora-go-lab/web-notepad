@@ -35,7 +35,7 @@
       padding: 0 10px;
       border: 1px solid v.$line;
       outline: none;
-      background: #151514;
+      background: var(--color-field);
       color: v.$ink;
       font: inherit;
       font-size: 14px;
@@ -52,7 +52,7 @@
     button {
       width: 36px;
       height: 42px;
-      border-color: #505050;
+      border-color: var(--color-creation-border);
       color: v.$ink;
 
       &:disabled {
@@ -77,7 +77,7 @@
     margin-bottom: 14px;
     padding: 8px 12px;
     border: 1px solid v.$line;
-    background: #151514;
+    background: var(--color-field);
 
     &.is-active {
       border-color: v.$hover-line;
@@ -133,7 +133,7 @@
       padding: 0 8px;
       border: 1px solid v.$line;
       outline: none;
-      background: #151514;
+      background: var(--color-field);
       color: v.$ink;
       font: inherit;
       font-size: 15px;

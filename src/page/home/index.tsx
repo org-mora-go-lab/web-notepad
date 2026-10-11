@@ -7,7 +7,7 @@ import { Layers } from "lucide-react";
 import { useHome } from "@/src/page/home/hook";
 import { Bookmark, Closed, GlobalSearch, Group, Shortcut } from "@/src/widget";
 
-import { Loading, PaneView, StatusBar, TabDeletePopup } from "./component";
+import { AdditionalTools, Loading, PaneView, StatusBar, TabDeletePopup } from "./component";
 
 export function Home() {
   const {
@@ -50,6 +50,9 @@ export function Home() {
   return (
     <main className="home">
       <section className="workspace">
+        <AdditionalTools onOpenShortcuts={() => {
+          if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
+        }} />
         <div className={`pane-group ${split ? "is-split" : ""}`}>
           {leftPaneProps && <PaneView {...leftPaneProps} />}
           {rightPaneProps && <PaneView {...rightPaneProps} />}

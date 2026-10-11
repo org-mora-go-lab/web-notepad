@@ -1,0 +1,129 @@
+@use "../../../entity/style/variable" as v;
+
+.home {
+  .additional-tools {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    width: 140px;
+    height: 39px;
+    background: v.$strip;
+    border-bottom: 1px solid v.$line;
+
+    button {
+      border: 0;
+      background: transparent;
+      color: v.$muted;
+      cursor: pointer;
+
+      &:hover,
+      &:focus-visible {
+        background: v.$raised;
+        color: v.$ink;
+      }
+    }
+  }
+
+  .additional-tools-trigger {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+
+    svg { flex: 0 0 20px; }
+  }
+
+  .additional-tools-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 8px;
+    width: min(200px, calc(100vw - 16px));
+    padding: 4px;
+    border: 1px solid v.$line;
+    border-radius: 4px;
+    background: v.$strip;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+
+    button {
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      text-align: left;
+
+      > svg:last-child:not(:first-child) { margin-left: auto; }
+      .is-expanded { transform: rotate(90deg); }
+      &[aria-checked="true"] { color: v.$ink; background: v.$raised; }
+    }
+  }
+
+  .theme-options {
+    margin: 0 4px 4px 20px;
+    border-left: 1px solid v.$line;
+  }
+
+  .pane-slot:last-child .header { padding-right: 140px; }
+
+  @media (min-width: 641px) {
+    .additional-tools { width: 104px; }
+
+    .additional-tools-trigger {
+      font-family: v.$sans;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 0 16px;
+
+      > svg {
+        width: 16px;
+        height: 16px;
+        flex-basis: 16px;
+      }
+
+      &[aria-expanded="true"] {
+        background: v.$raised;
+        color: v.$ink;
+      }
+    }
+
+    .additional-tools-menu {
+      top: calc(100% + 8px);
+      right: 10px;
+      width: 208px;
+      padding: 6px;
+      border-radius: 6px;
+      font-family: v.$sans;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+
+      button {
+        min-height: 36px;
+        border-radius: 3px;
+        font-weight: 500;
+      }
+
+      .additional-tools-shortcut {
+        margin-top: 4px;
+        border-top: 1px solid v.$line;
+        border-radius: 0 0 3px 3px;
+      }
+    }
+
+    .theme-options { margin: 2px 2px 6px 18px; }
+    .pane-slot:last-child .header { padding-right: 104px; }
+  }
+
+  @media (max-width: 640px) {
+    .additional-tools { width: 45px; height: 45px; }
+    .additional-tools-trigger { padding: 0; }
+    .additional-tools-label,
+    .additional-tools-menu .additional-tools-shortcut { display: none; }
+    .pane-slot:last-child .header { padding-right: 45px; }
+  }
+}

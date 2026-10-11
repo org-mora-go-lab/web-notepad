@@ -24,6 +24,6 @@
   }
 
   .note-pane.is-unfocused .tab-item.is-active .tab-title {
-    color: rgba(222, 222, 216, 0.62);
+    color: var(--color-inactive-title);
   }
 }
