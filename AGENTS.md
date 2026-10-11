@@ -31,8 +31,15 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 - Each feature or widget module directly under `src/feature/` or `src/widget/` must implement its main module in its own `index.tsx`.
 - `src/feature/index.ts` and `src/widget/index.ts` must export the public modules for their respective directories.
 - Those top-level barrels may export only each module's main implementation from `./<module>` (resolved through that module's `index.tsx`); do not export subcomponents such as `PaneDivider` from them. Apply this restriction equally to feature and widget modules.
-- Export subcomponents from the submodule's `component/index.ts` or `component/index.tsx` barrel, and import and use those subcomponents from the submodule's `index.tsx`.
+- Export subcomponents from the submodule's `component/index.ts` barrel, and import and use those subcomponents from the submodule's `index.tsx`.
 - `page/home` and other consumers must import feature and widget modules through the public `feature/index.ts` and `widget/index.ts` barrels.
+
+## Internal Directory Barrels
+
+- Every directory named `hook`, `util`, `component`, or `constant` under `src/` must include a lowercase `index.ts` barrel. Do not use `Index.ts` or `index.tsx` for these barrels.
+- Export the directory's public APIs through its barrel. Keep JSX component implementations in separate `.tsx` files, not in the barrel.
+- Imports from outside these directories must resolve through the directory's `index.ts` barrel instead of importing individual files directly. Imports between files within the same directory may remain direct to avoid circular dependencies.
+- When adding, moving, or removing a public API, update its barrel and consumers in the same change. Keep feature and widget root implementations in `index.tsx` as specified above.
 
 ## Entity UI Components
 

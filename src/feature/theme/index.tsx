@@ -3,7 +3,7 @@
 import { ChevronRight, Moon, Sun } from "lucide-react";
 import { useId, useState } from "react";
 
-import { useTheme } from "./hook/use-theme";
+import { useTheme } from "./hook";
 
 type Props = { onSelect: () => void };
 
