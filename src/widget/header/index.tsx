@@ -8,6 +8,8 @@ import { compareGroups, type GroupEntry, type NoteTab } from "@/src/entity/notep
 import { AdditionalTools, TabContextMenu, TabItem } from "./component";
 
 type Props = {
+  closedCount?: number;
+  onOpenClosed?: () => void;
   onOpenShortcuts?: () => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
@@ -33,6 +35,8 @@ type Props = {
 type ContextMenuState = { tabId: string; left: number; top: number };
 
 export function Header({
+  closedCount = 0,
+  onOpenClosed,
   onOpenShortcuts,
   tabs,
   groups,
@@ -155,7 +159,11 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && <AdditionalTools onOpenShortcuts={onOpenShortcuts} />}
+      {onOpenShortcuts && onOpenClosed && <AdditionalTools
+        closedCount={closedCount}
+        onOpenClosed={onOpenClosed}
+        onOpenShortcuts={onOpenShortcuts}
+      />}
     </div>
   );
 }

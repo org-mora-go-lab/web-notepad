@@ -3,12 +3,12 @@ import { expect, test } from "@playwright/test";
 import {
   activeTabItem,
   closeActiveTabWithContent,
-  closedCommand,
   createGroups,
   cycleActiveTabColor,
   expectSelectedLines,
   groupStatusName,
   lineButtons,
+  openClosedPanel,
   restoreFirstClosedTab,
   switchGroup,
 } from "../__util__";
@@ -22,7 +22,7 @@ test("3. 복원하면 닫을 당시의 그룹에서 내용·색상·줄 선택�
   await closeActiveTabWithContent(page, "restore me\nsecond\nthird");
   await switchGroup(page, "Ungrouped");
 
-  await closedCommand(page).click();
+  await openClosedPanel(page);
   await restoreFirstClosedTab(page);
 
   await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "true");

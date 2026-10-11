@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { openPanel } from "../__util__";
 import { RIGHT_PANEL_IDS } from "./__constant__";
 
 test("2. 우측 패널은 한 번에 하나만 열린다", async ({ page }) => {
@@ -8,11 +9,11 @@ test("2. 우측 패널은 한 번에 하나만 열린다", async ({ page }) => {
   for (const openId of RIGHT_PANEL_IDS) {
     for (const nextId of RIGHT_PANEL_IDS) {
       if (nextId === openId) continue;
-      await page.locator(`button[aria-controls="${openId}"]`).click();
+      await openPanel(page, openId);
       await expect(page.locator(`#${openId}`)).toHaveAttribute("aria-hidden", "false");
       await page.keyboard.press("Escape");
       await expect(page.locator(`#${openId}`)).toHaveAttribute("aria-hidden", "true");
-      await page.locator(`button[aria-controls="${nextId}"]`).click();
+      await openPanel(page, nextId);
       for (const panelId of RIGHT_PANEL_IDS) {
         await expect(page.locator(`#${panelId}`)).toHaveAttribute(
           "aria-hidden",

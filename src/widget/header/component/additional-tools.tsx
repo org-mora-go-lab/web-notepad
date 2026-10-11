@@ -1,13 +1,17 @@
 "use client";
 
-import { Keyboard, Menu } from "lucide-react";
+import { Ghost, Keyboard, Menu } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Theme } from "@/src/feature";
 
-type Props = { onOpenShortcuts: () => void };
+type Props = {
+  closedCount: number;
+  onOpenClosed: () => void;
+  onOpenShortcuts: () => void;
+};
 
-export function AdditionalTools({ onOpenShortcuts }: Props) {
+export function AdditionalTools({ closedCount, onOpenClosed, onOpenShortcuts }: Props) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -54,6 +58,7 @@ export function AdditionalTools({ onOpenShortcuts }: Props) {
           role="menu"
           aria-label="MENU"
           onKeyDown={(event) => {
+            if (!open) return;
             if (event.key === "Escape") {
               event.preventDefault();
               event.stopPropagation();
@@ -73,8 +78,15 @@ export function AdditionalTools({ onOpenShortcuts }: Props) {
           }}
         >
           <Theme key={String(open)} onSelect={close} />
+          <button className="closed-command" type="button" role="menuitem"
+            aria-controls="closed-panel" aria-label="닫은 탭"
+            onClick={() => { close(); onOpenClosed(); }}>
+            <Ghost size={16} /><span>CLOSED</span>
+            {closedCount > 0 && <span className="closed-count">{closedCount}</span>}
+          </button>
           <button className="additional-tools-shortcut" type="button" role="menuitem"
-            onClick={() => { setOpen(false); onOpenShortcuts(); }}>
+            aria-controls="shortcuts-panel"
+            onClick={() => { close(); onOpenShortcuts(); }}>
             <Keyboard size={16} /><span>SHORTCUT</span>
           </button>
         </div>

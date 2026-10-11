@@ -51,10 +51,16 @@ export function Home() {
     <main className="home">
       <section className="workspace">
         <div className={`pane-group ${split ? "is-split" : ""}`}>
-          {leftPaneProps && <PaneView {...leftPaneProps} onOpenShortcuts={rightPaneProps ? undefined : () => {
+          {leftPaneProps && <PaneView {...leftPaneProps} closedCount={closedTabs.length}
+            onOpenClosed={rightPaneProps ? undefined : () => {
+              if (openPanel !== "closed") toggleSidePanel("closed");
+            }} onOpenShortcuts={rightPaneProps ? undefined : () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           }} />}
-          {rightPaneProps && <PaneView {...rightPaneProps} onOpenShortcuts={() => {
+          {rightPaneProps && <PaneView {...rightPaneProps} closedCount={closedTabs.length}
+            onOpenClosed={() => {
+              if (openPanel !== "closed") toggleSidePanel("closed");
+            }} onOpenShortcuts={() => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           }} />}
         </div>
@@ -71,19 +77,12 @@ export function Home() {
         </div>
 
         <StatusBar
-          closedOpen={openPanel === "closed"}
-          closedCount={
-            closedTabs.filter((entry) => entry.groupId === activeGroupId).length
-          }
           bookmarkCount={bookmarks.length}
-          shortcutsOpen={openPanel === "shortcuts"}
           bookmarksOpen={openPanel === "bookmarks"}
           groupCount={groupCount}
           activeGroupName={activeGroupName}
           groupsOpen={openPanel === "groups"}
           globalSearchOpen={openPanel === "global-search"}
-          onToggleClosed={() => toggleSidePanel("closed")}
-          onToggleShortcuts={() => toggleSidePanel("shortcuts")}
           onToggleBookmarks={() => toggleSidePanel("bookmarks")}
           onToggleGroups={() => toggleSidePanel("groups")}
           onToggleGlobalSearch={() => toggleSidePanel("global-search")}

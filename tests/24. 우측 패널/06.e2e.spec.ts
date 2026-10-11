@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { openPanel } from "../__util__";
 import { RIGHT_PANEL_VIEWPORTS } from "./__constant__";
 
 test("6. Escape로 우측 패널을 닫은 뒤에도 다시 열기와 브라우저 뒤로가기가 동작한다", async ({ page }) => {
@@ -10,12 +11,11 @@ test("6. Escape로 우측 패널을 닫은 뒤에도 다시 열기와 브라우�
 
     for (const panelId of panelIds) {
       const panel = page.locator(`#${panelId}`);
-      const toggle = page.locator(`button[aria-controls="${panelId}"]`);
-      await toggle.click();
+      await openPanel(page, panelId);
       await expect(panel).toHaveAttribute("aria-hidden", "false");
       await page.keyboard.press("Escape");
       await expect(panel).toHaveAttribute("aria-hidden", "true");
-      await toggle.click();
+      await openPanel(page, panelId);
       await expect(panel).toHaveAttribute("aria-hidden", "false");
       await page.goBack();
       await expect(panel).toHaveAttribute("aria-hidden", "true");

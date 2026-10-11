@@ -17,6 +17,9 @@ export {
   createGroups,
   groupsCommand,
   groupStatusName,
+  openClosedPanel,
+  openPanel,
+  openShortcutsPanel,
   shortcutsCommand,
   switchGroup,
 } from "./panel";

@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 import { createClosedTabFixture, createGroupFixture, createTabFixture } from "../__fixture__";
 import {
   bookmarksCommand,
-  closedCommand,
   groupsCommand,
+  openClosedPanel,
   seedStoredStateOnLoad,
 } from "../__util__";
 
@@ -50,7 +50,7 @@ test("6. 검색 결과에서 일치하는 키워드 부분을 음영으로 강�
   );
 
   await page.getByRole("button", { name: "북마크 닫기" }).click();
-  await closedCommand(page).click();
+  await openClosedPanel(page);
   await page.getByRole("searchbox", { name: "닫은 탭 검색" }).fill("WORK");
   await expect(page.locator(".closed-item-heading mark.search-highlight")).toHaveText("Work");
   await expect(page.locator(".closed-item .expandable-content-text mark.search-highlight")).toHaveText("Work");

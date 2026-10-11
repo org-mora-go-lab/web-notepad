@@ -10,6 +10,16 @@ export const groupStatusName = (page: Page) => page.locator(".group-status-name"
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
+export async function openPanel(page: Page, panelId: string) {
+  if (panelId === "closed-panel" || panelId === "shortcuts-panel") {
+    await page.getByRole("button", { name: "MENU", exact: true }).press("Enter");
+  }
+  await page.locator(`button[aria-controls="${panelId}"]`).press("Enter");
+}
+
+export const openClosedPanel = (page: Page) => openPanel(page, "closed-panel");
+export const openShortcutsPanel = (page: Page) => openPanel(page, "shortcuts-panel");
+
 // Creates a group from the open groups panel.
 export async function createGroup(page: Page, name: string) {
   await page.getByRole("textbox", { name: "새 그룹 이름" }).fill(name);

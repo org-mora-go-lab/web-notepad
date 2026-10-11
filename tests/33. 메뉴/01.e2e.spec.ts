@@ -23,6 +23,7 @@ test("1. MENU는 우측 상단에 배치하며 모바일은 아이콘만 표시�
     await expect(menu).toHaveCSS("width", viewport.width <= 640 ? "200px" : "208px");
     await expect(menu).toHaveCSS("border-radius", viewport.width <= 640 ? "4px" : "6px");
     await expect(page.getByRole("menuitem", { name: "THEME" })).toBeVisible();
+    await expect(page.getByRole("menuitem", { name: "닫은 탭" })).toBeVisible();
     if (viewport.width <= 640) await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeHidden();
     else await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeVisible();
     await page.keyboard.press("Escape");

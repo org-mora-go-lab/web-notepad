@@ -96,7 +96,7 @@
     display: none;
   }
 
-  .closed-command {
+  .bookmark-command {
     margin-left: auto;
   }
 
@@ -144,11 +144,11 @@
 
     .status-meta {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
     }
 
-    .closed-command {
+    .bookmark-command {
       margin-left: 0;
     }
 
@@ -156,7 +156,6 @@
       display: block;
     }
 
-    .shortcut-command,
     .group-status-name,
     .group-status-command .status-count {
       display: none;

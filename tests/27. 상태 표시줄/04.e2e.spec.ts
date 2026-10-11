@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../__constant__";
 
-test("4. PC는 좌우 명령 묶음으로, 모바일은 네 메뉴를 균등 배치한다", async ({
+test("4. PC는 SEARCH와 우측 명령 묶음으로, 모바일은 세 메뉴를 균등 배치한다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -11,8 +11,8 @@ test("4. PC는 좌우 명령 묶음으로, 모바일은 네 메뉴를 균등 배
     await page.setViewportSize(viewport);
     const commands = page.locator(".status-meta .status-command:visible");
     const labels = viewport.width <= 640
-      ? ["SEARCH", "CLOSED", "BOOKMARK", "GROUP"]
-      : ["SHORTCUT", "SEARCH", "CLOSED", "BOOKMARK", "Ungrouped"];
+      ? ["SEARCH", "BOOKMARK", "GROUP"]
+      : ["SEARCH", "BOOKMARK", "Ungrouped"];
     await expect(commands).toHaveCount(labels.length);
     for (const [index, command] of (await commands.all()).entries()) {
       await expect(command).toContainText(labels[index]);
@@ -25,11 +25,9 @@ test("4. PC는 좌우 명령 묶음으로, 모바일은 네 메뉴를 균등 배
     if (viewport.width > 640) {
       const boxes = await Promise.all((await commands.all()).map((command) => command.boundingBox()));
       expect(boxes[0]!.x).toBe(16);
-      expect(boxes[1]!.x - boxes[0]!.x - boxes[0]!.width).toBeCloseTo(20, 1);
-      expect(boxes[2]!.x - boxes[1]!.x - boxes[1]!.width).toBeGreaterThan(20);
-      expect(boxes[3]!.x - boxes[2]!.x - boxes[2]!.width).toBeCloseTo(20, 1);
-      expect(boxes[4]!.x - boxes[3]!.x - boxes[3]!.width).toBeCloseTo(20, 1);
-      expect(boxes[4]!.x + boxes[4]!.width).toBeCloseTo(viewport.width - 26, 1);
+      expect(boxes[1]!.x - boxes[0]!.x - boxes[0]!.width).toBeGreaterThan(20);
+      expect(boxes[2]!.x - boxes[1]!.x - boxes[1]!.width).toBeCloseTo(20, 1);
+      expect(boxes[2]!.x + boxes[2]!.width).toBeCloseTo(viewport.width - 26, 1);
     }
   }
 });

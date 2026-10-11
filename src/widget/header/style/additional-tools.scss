@@ -63,6 +63,16 @@
       .is-expanded { transform: rotate(90deg); }
       &[aria-checked="true"] { color: v.$ink; background: v.$raised; }
     }
+
+    .closed-count {
+      margin-left: auto;
+      padding: 0 5px;
+      border-radius: 3px;
+      background: v.$raised;
+      color: v.$ink;
+      font-size: 12px;
+      line-height: 18px;
+    }
   }
 
   &.has-menu { padding-right: 140px; }
