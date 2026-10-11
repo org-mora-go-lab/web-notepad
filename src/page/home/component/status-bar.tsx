@@ -69,11 +69,12 @@ export function StatusBar({
             onClick={onToggleGroups}
             aria-expanded={groupsOpen}
             aria-controls="groups-panel"
+            aria-label={`그룹 선택: ${activeGroupName}`}
+            title={activeGroupName}
           >
             <span className="status-icon">
               <Layers size={16} strokeWidth={1.8} />
             </span>
-            <span className="group-status-label">GROUP</span>
             <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>
           </button>
         </div>

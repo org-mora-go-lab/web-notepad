@@ -10,10 +10,11 @@ test("4. PC 그룹명은 최대 351px이며 모바일과 함께 말줄임과 툴
   await createGroup(page, name);
   for (const viewport of [DESKTOP_VIEWPORT, MOBILE_VIEWPORT]) {
     await page.setViewportSize(viewport);
-    const groupName = page.locator(viewport.width <= 640 ? ".current-group-name" : ".group-status-name");
+    const groupName = page.locator(".group-status-name");
     await expect(groupName).toBeVisible();
     await expect(groupName).toHaveText(name);
     await expect(groupName).toHaveAttribute("title", name);
+    await expect(groupsCommand(page)).toHaveAttribute("aria-label", `그룹 선택: ${name}`);
     await expect(groupName).toHaveCSS("text-overflow", "ellipsis");
     await expect(groupName).toHaveCSS("overflow", "hidden");
     await expect(groupName).toHaveCSS("white-space", "nowrap");

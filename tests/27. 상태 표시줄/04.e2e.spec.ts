@@ -11,7 +11,7 @@ test("4. PC는 SEARCH와 우측 명령 묶음으로, 모바일은 세 메뉴를 
     await page.setViewportSize(viewport);
     const commands = page.locator(".status-meta .status-command:visible");
     const labels = viewport.width <= 640
-      ? ["SEARCH", "BOOKMARK", "GROUP"]
+      ? ["SEARCH", "BOOKMARK", "Ungrouped"]
       : ["SEARCH", "BOOKMARK", "Ungrouped"];
     await expect(commands).toHaveCount(labels.length);
     for (const [index, command] of (await commands.all()).entries()) {

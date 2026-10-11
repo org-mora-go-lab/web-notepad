@@ -2,8 +2,6 @@
 
 import "./index.scss";
 
-import { Layers } from "lucide-react";
-
 import { useHome } from "@/src/page/home/hook";
 import { Bookmark, Closed, GlobalSearch, Group, Shortcut } from "@/src/widget";
 
@@ -62,17 +60,6 @@ export function Home() {
             }} onOpenShortcuts={() => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           }} />}
-        </div>
-
-        <div
-          className="current-group-panel"
-          role="status"
-          aria-label="현재 그룹"
-        >
-          <Layers size={16} strokeWidth={1.8} aria-hidden="true" />
-          <span className="current-group-name" title={activeGroupName}>
-            {activeGroupName}
-          </span>
         </div>
 
         <StatusBar
