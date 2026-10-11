@@ -74,11 +74,13 @@ export function StatusBar({
                 aria-controls="closed-panel"
                 aria-label="닫은 탭"
               >
-                <Ghost size={16} strokeWidth={1.8} />
+                <span className="status-icon">
+                  <Ghost size={16} strokeWidth={1.8} />
+                  {closedCount > 0 && (
+                    <span className="status-count">{closedCount}</span>
+                  )}
+                </span>
                 <span className="status-label closed-status-label">CLOSED</span>
-                {closedCount > 0 && (
-                  <span className="status-count">({closedCount})</span>
-                )}
                 <span className="status-separator" aria-hidden="true">
                   |
                 </span>
@@ -90,11 +92,13 @@ export function StatusBar({
                 aria-expanded={bookmarksOpen}
                 aria-controls="bookmarks-panel"
               >
-                <Bookmark size={16} strokeWidth={1.8} />
+                <span className="status-icon">
+                  <Bookmark size={16} strokeWidth={1.8} />
+                  {bookmarkCount > 0 && (
+                    <span className="status-count">{bookmarkCount}</span>
+                  )}
+                </span>
                 <span className="status-label">BOOKMARK</span>
-                {bookmarkCount > 0 && (
-                  <span className="status-count">({bookmarkCount})</span>
-                )}
                 <span className="status-separator" aria-hidden="true">
                   |
                 </span>
@@ -108,10 +112,12 @@ export function StatusBar({
             aria-expanded={groupsOpen}
             aria-controls="groups-panel"
           >
-            <Layers size={16} strokeWidth={1.8} />
+            <span className="status-icon">
+              <Layers size={16} strokeWidth={1.8} />
+              <span className="status-count">{groupCount}</span>
+            </span>
             <span className="group-status-label">GROUP</span>
             <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>
-            <span className="status-count">({groupCount})</span>
           </button>
         </div>
       </div>

@@ -5,7 +5,7 @@
   align-items: center;
   min-width: 0;
   min-height: 48px;
-  padding: 6px 16px;
+  padding: 6px 26px 6px 16px;
   border-top: 1px solid v.$line;
   background: v.$strip;
   color: v.$muted;
@@ -65,8 +65,23 @@
       stroke-width: 1.5px;
     }
 
-    > .status-count:not(.status-separator) {
-      position: static;
+    .status-icon {
+      position: relative;
+      height: 24px;
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 24px max-content;
+
+      svg {
+        grid-area: 1 / 1;
+      }
+    }
+
+    .status-count {
+      grid-area: 1 / 2;
+      align-self: start;
+      margin-top: -5px;
+      margin-left: -1px;
       padding: 0 3px;
       background: v.$strip;
       border-radius: 4px;
@@ -112,10 +127,16 @@
         line-height: 16px;
       }
 
-      > .status-count:not(.status-separator) {
+      .status-icon {
+        width: 24px;
+        display: block;
+      }
+
+      .status-count {
         position: absolute;
-        top: 0;
-        left: calc(50% + 8px);
+        top: -4px;
+        left: 23px;
+        margin: 0;
         font-size: 10px;
         line-height: 14px;
       }

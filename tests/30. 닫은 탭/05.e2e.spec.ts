@@ -21,9 +21,9 @@ test("5. CLOSED 개수는 현재 선택된 그룹의 닫은 탭만 표시한다"
 
   const closedCount = page.locator(".closed-command .status-count");
   await expect(groupStatusName(page)).toHaveText("Work");
-  await expect(closedCount).toHaveText("(2)");
+  await expect(closedCount).toHaveText("2");
 
   await switchGroup(page, "Personal");
   await expect(groupStatusName(page)).toHaveText("Personal");
-  await expect(closedCount).toHaveText("(1)");
+  await expect(closedCount).toHaveText("1");
 });

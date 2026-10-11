@@ -113,6 +113,7 @@ export function useHome() {
   useEffect(() => {
     if (!hydrated) return;
     const frame = window.requestAnimationFrame(() => {
+      if (window.matchMedia("(pointer: coarse)").matches) return;
       const target =
         activePane === "right" ? rightEditorRef.current : editorRef.current;
       target?.focus();

@@ -4,12 +4,17 @@
 
 .header {
   position: relative;
-  height: 37px;
-  min-height: 37px;
+  height: 39px;
+  min-height: 39px;
   min-width: 0;
   display: flex;
   border-bottom: 1px solid v.$line;
   background: v.$strip;
+
+  @media (max-width: 640px) {
+    height: 46px;
+    min-height: 46px;
+  }
 
   .tabs-scroll {
     min-width: 0;
@@ -79,6 +84,11 @@
   .add-tab {
     width: 33px;
     min-width: 33px;
-    height: 37px;
+    height: 39px;
+
+    @media (max-width: 640px) {
+      height: 46px;
+      padding-bottom: 2px;
+    }
   }
 }

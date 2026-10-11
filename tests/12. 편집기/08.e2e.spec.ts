@@ -28,15 +28,15 @@ test("8. PC와 모바일의 편집기 글자 크기와 줄 높이 및 내부 레
     });
 
   await expect(editor).toHaveCSS("font-size", "19px");
-  await expect(editor).toHaveCSS("line-height", "33px");
-  await expect(lines.first()).toHaveCSS("height", "33px");
-  await expect(lines.first()).toHaveCSS("line-height", "33px");
+  await expect(editor).toHaveCSS("line-height", "35px");
+  await expect(lines.first()).toHaveCSS("height", "35px");
+  await expect(lines.first()).toHaveCSS("line-height", "35px");
   const desktopFormat = await getEditorFormat();
-  expect(desktopFormat.lineHeight).toBe("33px");
+  expect(desktopFormat.lineHeight).toBe("35px");
   expect(desktopFormat.topPadding).toBe("10px");
   expect(desktopFormat.editorPadding).toBe("10px 22px");
   await lines.first().click();
-  await expect(editor).toHaveCSS("background-size", "100% 43px");
+  await expect(editor).toHaveCSS("background-size", "100% 45px");
 
   await page.setViewportSize(MOBILE_VIEWPORT);
   await expect(editor).toHaveCSS("font-size", "19px");
@@ -44,11 +44,15 @@ test("8. PC와 모바일의 편집기 글자 크기와 줄 높이 및 내부 레
   await expect(lines.first()).toHaveCSS("height", "39px");
   await expect(lines.first()).toHaveCSS("line-height", "39px");
   await expect(editor).toHaveCSS("background-size", "100% 49px");
-  await expect(lines.first()).toHaveCSS("background-color", "rgba(143, 227, 176, 0.2)");
+  await expect(lines.first()).toHaveCSS(
+    "background-color",
+    "rgba(143, 227, 176, 0.2)",
+  );
   const mobileFormat = await getEditorFormat();
   expect(mobileFormat.lineHeight).toBe("39px");
   expect(mobileFormat.topPadding).toBe(desktopFormat.topPadding);
-  expect(mobileFormat.lineRailWidth).toBe(desktopFormat.lineRailWidth);
+  expect(desktopFormat.lineRailWidth).toBe(39);
+  expect(mobileFormat.lineRailWidth).toBe(41);
   expect(mobileFormat.lineNumberPadding).toBe(desktopFormat.lineNumberPadding);
   expect(mobileFormat.editorPadding).toBe(desktopFormat.editorPadding);
 });

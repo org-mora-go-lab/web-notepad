@@ -2,7 +2,7 @@
 @use "./style/editor";
 
 .note-editor {
-  --editor-line-height: 33px;
+  --editor-line-height: 35px;
   --editor-top-padding: 10px;
   --selected-line-background: rgba(184, 184, 176, 0.2);
   --selected-line-color: #{v.$saved};
@@ -26,6 +26,10 @@
   grid-template-columns: 39px minmax(0, 1fr);
   overflow: hidden;
 
+  @media (max-width: 640px) {
+    grid-template-columns: 41px minmax(0, 1fr);
+  }
+
   .line-rail {
     padding: var(--editor-top-padding) 0;
     display: flex;
@@ -38,8 +42,10 @@
     user-select: none;
 
     &.has-first-line-selected {
-      background:
-        linear-gradient(var(--selected-line-background), var(--selected-line-background))
+      background: linear-gradient(
+          var(--selected-line-background),
+          var(--selected-line-background)
+        )
         0 0 / 100% var(--editor-top-padding) no-repeat;
       background-attachment: local;
     }
@@ -63,7 +69,6 @@
         outline: 1px solid rgba(255, 255, 255, 0.25);
         outline-offset: -1px;
       }
-
     }
   }
 
@@ -85,6 +90,5 @@
     &::placeholder {
       color: #464640;
     }
-
   }
 }
