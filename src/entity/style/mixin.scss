@@ -38,18 +38,29 @@
 
   .#{$name}-item-heading {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
 
     strong {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: v.$signal;
       font-size: 15px;
     }
 
     time {
+      width: 12ch;
+      flex: 0 0 12ch;
       color: var(--color-secondary);
       font-size: 12px;
+      line-height: 16px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: pre;
     }
   }
 
