@@ -99,7 +99,6 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
           <p className="setting-hint">
             <span className="setting-hint-text">{t.tabColorHint}</span>
             <span className="setting-color-guide">
-              (
               {settings.tabColorCycle.map((color, index) => (
                 <span key={color}>
                   {index > 0 && " → "}
@@ -108,12 +107,10 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
                   </span>
                 </span>
               ))}
-              )
             </span>
           </p>
           {settings.tabColorCycle.map((selected, index) => (
             <div className="setting-color-row" key={index}>
-              <span className="setting-color-order">{index + 1}</span>
               <div className="setting-swatches" role="radiogroup" aria-label={t.tabColorGroup(index + 1)}>
                 {TAB_COLORS.map((color) => (
                   <input

@@ -16,9 +16,9 @@ test("2. 탭 아이콘을 클릭하면 색상을 순환하고 색상별 글로�
   for (const [index, color] of tabColors.entries()) {
     await expect(tab).toHaveAttribute("data-tab-color", color.name);
     await expect.poll(() => readIconStyle("backgroundColor")).toContain(color.text);
-    await expect.poll(() => readIconStyle("boxShadow")).toContain(`rgba(${color.stripe}, 0.55)`);
+    await expect.poll(() => readIconStyle("boxShadow")).toContain(color.glow);
     if (index < tabColors.length - 1) await colorButton.click();
   }
   await colorButton.click();
-  await expect(tab).toHaveAttribute("data-tab-color", "green");
+  await expect(tab).toHaveAttribute("data-tab-color", "gray");
 });

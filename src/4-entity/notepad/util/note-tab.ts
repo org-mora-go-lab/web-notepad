@@ -1,6 +1,7 @@
+import { DEFAULT_SETTINGS } from "../constant";
 import type { NoteTab, TabColor } from "../type";
 
-export const createNoteTab = (number: number, tabColor: TabColor = "green"): NoteTab => ({
+export const createNoteTab = (number: number, tabColor: TabColor = DEFAULT_SETTINGS.tabColorCycle[0]): NoteTab => ({
   id: `tab-${number}`,
   title: "-",
   content: "",

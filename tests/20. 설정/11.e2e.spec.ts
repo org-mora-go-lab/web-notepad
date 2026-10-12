@@ -22,7 +22,7 @@ test("11. 색상 초기화 버튼 오른쪽의 셔플 버튼은 팝업 없이 �
   const readSettings = () =>
     page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY);
 
-  let previous: string[] = ["green", "gray", "red"];
+  let previous: string[] = ["gray", "green", "purple"];
   for (let round = 0; round < 5; round += 1) {
     await shuffle.click();
     await expect(page.getByRole("alertdialog")).toHaveCount(0);

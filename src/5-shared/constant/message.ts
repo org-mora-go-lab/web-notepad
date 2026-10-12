@@ -81,6 +81,11 @@ const en = {
   resetTabColors: "Reset tab colors",
   shuffleTabColors: "Shuffle tab colors",
   resetSettingsMessage: "All settings will return to their defaults. Do you want to reset them?",
+  guide: "GUIDE",
+  userGuideTitle: "User Guide",
+  previous: "Previous",
+  next: "Next",
+  userGuideStop: "Stop viewing",
 };
 
 export type Messages = typeof en;
@@ -165,6 +170,11 @@ const ko: Messages = {
   resetTabColors: "탭 색상 초기화",
   shuffleTabColors: "탭 색상 무작위 선택",
   resetSettingsMessage: "모든 설정이 기본값으로 돌아갑니다. 초기화하시겠습니까?",
+  guide: "사용 가이드",
+  userGuideTitle: "사용 가이드",
+  previous: "이전",
+  next: "다음",
+  userGuideStop: "그만 보기",
 };
 
 export const MESSAGES: Record<Language, Messages> = { en, ko };

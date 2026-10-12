@@ -46,3 +46,4 @@ export {
   cycleActiveTabColor,
   openTabMenu,
 } from "./tab";
+export { selectTabColorSetting } from "./tab-color-setting";

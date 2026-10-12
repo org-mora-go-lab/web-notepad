@@ -15,7 +15,7 @@ test("4. 첫 줄 선택 배경을 상단 여백까지 잇고 스크롤 시 잔�
   await expect(lines.first()).toHaveAttribute("aria-pressed", "true");
   await expect(rail).toHaveCSS(
     "background-image",
-    /rgba\(143, 227, 176, 0\.2\)/,
+    /rgba\(184, 184, 176, 0\.2\)/,
   );
   await expect(rail).toHaveCSS("background-size", "100% 10px");
   await expect(editor).toHaveCSS("background-position", /0px 0px/);

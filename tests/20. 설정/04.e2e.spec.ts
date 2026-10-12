@@ -6,7 +6,7 @@ import { closeSettingsPanel, tabColorRadio } from "./__util__";
 test("4. 탭 색상 아이콘은 설정한 순서로 순환하고 새 탭은 1번째 색상으로 시작한다", async ({ page }) => {
   await page.goto("/");
   const tab = activeTabItem(page);
-  await expect(tab).toHaveAttribute("data-tab-color", "green");
+  await expect(tab).toHaveAttribute("data-tab-color", "gray");
 
   await openSettingsPanel(page);
   await tabColorRadio(page, 1, "Pink").check();

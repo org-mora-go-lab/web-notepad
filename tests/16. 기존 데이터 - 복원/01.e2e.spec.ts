@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { expectSelectedLines, lineButtons, seedStoredStateOnLoad } from "../__util__";
 
-test("1. 누락되거나 잘못된 저장 필드를 그린·선택 없음 기본값으로 정규화한다", async ({
+test("1. 누락되거나 잘못된 저장 필드를 정규화하고 탭 색상은 그린·선택 줄은 선택 없음으로 복원한다", async ({
   page,
 }) => {
   await seedStoredStateOnLoad(page, {

@@ -104,6 +104,10 @@
     justify-content: flex-start;
   }
 
+  .status-command > span.group-status-name {
+    font-size: v.font(16px);
+  }
+
   .group-status-name {
     min-width: 0;
     max-width: 351px;

@@ -1,0 +1,145 @@
+@use "../../5-shared/style/variable" as v;
+
+// Step-by-step guide dialog opened from MENU.
+.user-guide {
+  position: fixed;
+  inset: 0;
+  width: min(420px, calc(100vw - 32px));
+  height: fit-content;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 20px;
+  overflow: auto;
+  border: 1px solid v.$line;
+  border-radius: 6px;
+  background: v.$raised;
+  color: v.$ink;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.72);
+  }
+
+  .user-guide-header,
+  .user-guide-heading,
+  .user-guide-actions,
+  .user-guide-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .user-guide-header,
+  .user-guide-actions {
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .user-guide-heading {
+    gap: 10px;
+
+    > svg {
+      flex: 0 0 auto;
+      color: v.$signal;
+    }
+  }
+
+  h3 {
+    margin: 0;
+    font-family: v.$sans;
+    font-size: v.font(16px);
+    font-weight: 500;
+  }
+
+  .user-guide-progress {
+    color: v.$muted;
+    font-size: v.font(13px);
+  }
+
+  h4 {
+    margin: 20px 0 0;
+    font-family: v.$sans;
+    font-size: v.font(15px);
+    font-weight: 500;
+  }
+
+  p {
+    min-height: 3.2em;
+    margin: 8px 0 22px;
+    overflow-wrap: anywhere;
+    font-size: v.font(14px);
+    line-height: 1.6;
+  }
+
+  .user-guide-nav {
+    gap: 8px;
+  }
+
+  button {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    border: 1px solid v.$line;
+    border-radius: 4px;
+    background: transparent;
+    color: v.$ink;
+    font-size: v.font(13px);
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: v.$hover-line;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    &:focus-visible {
+      outline: 2px solid v.$saved;
+      outline-offset: 2px;
+    }
+  }
+
+  .user-guide-stop {
+    color: v.$muted;
+  }
+
+  @media (max-width: 640px) {
+    width: min(420px * v.$mobile-scale, calc(100vw - 32px));
+
+    h3 {
+      font-size: v.font(16px * v.$mobile-scale);
+    }
+
+    .user-guide-heading > svg {
+      width: 18px * v.$mobile-scale;
+      height: 18px * v.$mobile-scale;
+    }
+
+    .user-guide-progress {
+      font-size: v.font(13px * v.$mobile-scale);
+    }
+
+    h4 {
+      font-size: v.font(15px * v.$mobile-scale);
+    }
+
+    p {
+      font-size: v.font(14px * v.$mobile-scale);
+    }
+
+    button {
+      min-height: 34px * v.$mobile-scale;
+      padding: 0 10px;
+      font-size: v.font(13px * v.$mobile-scale);
+
+      svg {
+        width: 14px * v.$mobile-scale;
+        height: 14px * v.$mobile-scale;
+      }
+    }
+  }
+}

@@ -23,6 +23,6 @@ test("10. 줄 번호와 선택 강조 영역을 같은 줄 높이에 맞춰 정�
   await expect(editor).toHaveCSS("background-size", "100% 49px");
   await expect(lines.first()).toHaveCSS(
     "background-color",
-    "rgba(143, 227, 176, 0.2)",
+    "rgba(184, 184, 176, 0.2)",
   );
 });

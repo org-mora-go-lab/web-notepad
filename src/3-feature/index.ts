@@ -6,3 +6,4 @@ export { NoteEditor } from "./note-editor";
 export { Setting } from "./setting";
 export { Shortcut } from "./shortcut";
 export { Theme } from "./theme";
+export { UserGuide } from "./user-guide";

@@ -37,8 +37,8 @@
   }
 
   .setting-section-reset {
-    width: 24px;
-    height: 24px;
+    width: 28.8px;
+    height: 28.8px;
     display: grid;
     place-items: center;
     padding: 0;
@@ -46,6 +46,11 @@
     background: transparent;
     color: v.$dim;
     cursor: pointer;
+
+    svg {
+      width: 15.6px;
+      height: 15.6px;
+    }
 
     &:hover {
       border-color: v.$hover-line;
@@ -109,7 +114,7 @@
 
   .setting-hint-text {
     display: block;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
   }
 
   .setting-color-row {
@@ -117,14 +122,6 @@
     align-items: center;
     gap: 12px;
     padding: 6px 0;
-  }
-
-  .setting-color-order {
-    width: 16px;
-    flex: 0 0 auto;
-    color: v.$muted;
-    font-size: v.font(14px);
-    text-align: center;
   }
 
   .setting-swatches {
@@ -163,7 +160,7 @@
 
   // Name chip in the color order guide, filled with the tab color it names.
   .setting-color-chip {
-    padding: 0 5px;
+    padding: 1px 5px;
     border-radius: 3px;
     background: var(--swatch-color);
     // Panel color reads on the pastel DARK accents and the deep LIGHT accents alike.
@@ -191,16 +188,6 @@
       font-size: v.font(16px * v.$mobile-scale);
     }
 
-    .setting-section-reset {
-      width: 24px * v.$mobile-scale;
-      height: 24px * v.$mobile-scale;
-
-      svg {
-        width: 13px * v.$mobile-scale;
-        height: 13px * v.$mobile-scale;
-      }
-    }
-
     .setting-option span {
       min-width: 58px * v.$mobile-scale;
       font-size: v.font(14px * v.$mobile-scale);
@@ -208,10 +195,6 @@
 
     .setting-hint {
       font-size: v.font(15px * v.$mobile-scale);
-    }
-
-    .setting-color-order {
-      font-size: v.font(14px * v.$mobile-scale);
     }
 
     .setting-swatch {

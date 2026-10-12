@@ -29,7 +29,7 @@ test("6. 원본 탭이 없으면 내용과 탭 색상 및 선택한 줄을 복�
   await page.getByRole("button", { name: "Open", exact: true }).click();
 
   await expect(page.locator("textarea")).toHaveValue("restored bookmark\nsecond\nthird");
-  await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "red");
+  await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "purple");
   await expectSelectedLines(page, [false, true, true]);
-  await expect(lines.nth(1)).toHaveCSS("background-color", "rgba(242, 139, 130, 0.2)");
+  await expect(lines.nth(1)).toHaveCSS("background-color", "color(srgb 0.764706 0.65098 0.960784 / 0.2)");
 });
