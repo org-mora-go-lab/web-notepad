@@ -16,6 +16,21 @@ $mono: var(--font-geist-mono), monospace;
 // Mobile enlarges icons and text outside the footer and editor by this factor.
 $mobile-scale: 1.2;
 
+// Scales a font size by the user's font size setting (`--font-scale`).
+@function font($size) {
+  @return calc(#{$size} * var(--font-scale, 1));
+}
+
+// Tab colors beyond gray, red and green as (dark, light) accents.
+$extra-tab-colors: (
+  "orange": (#f6ad6b, #b5641c),
+  "yellow": (#f1d570, #8f7412),
+  "teal": (#7fd8d0, #1f7f78),
+  "indigo": (#a5b4fc, #4f5bd5),
+  "purple": (#c3a6f5, #7044b8),
+  "pink": (#f5a3d0, #b03d7c),
+);
+
 // PC right panel width: dragged value kept between 320px and the viewport minus 400px.
 $side-panel-width: clamp(
   320px,

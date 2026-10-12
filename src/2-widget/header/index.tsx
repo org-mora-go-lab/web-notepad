@@ -10,6 +10,7 @@ import { AdditionalTools, TabContextMenu, TabItem } from "./component";
 type Props = {
   closedCount?: number;
   onOpenClosed?: () => void;
+  onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
@@ -37,6 +38,7 @@ type ContextMenuState = { tabId: string; left: number; top: number };
 export function Header({
   closedCount = 0,
   onOpenClosed,
+  onOpenSettings,
   onOpenShortcuts,
   tabs,
   groups,
@@ -159,9 +161,10 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenClosed && <AdditionalTools
+      {onOpenShortcuts && onOpenClosed && onOpenSettings && <AdditionalTools
         closedCount={closedCount}
         onOpenClosed={onOpenClosed}
+        onOpenSettings={onOpenSettings}
         onOpenShortcuts={onOpenShortcuts}
       />}
     </div>

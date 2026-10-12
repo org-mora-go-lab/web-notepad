@@ -1,6 +1,6 @@
 "use client";
 
-import { Ghost, Keyboard, Menu } from "lucide-react";
+import { Ghost, Keyboard, Menu, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Theme } from "@/src/3-feature";
@@ -8,10 +8,11 @@ import { Theme } from "@/src/3-feature";
 type Props = {
   closedCount: number;
   onOpenClosed: () => void;
+  onOpenSettings: () => void;
   onOpenShortcuts: () => void;
 };
 
-export function AdditionalTools({ closedCount, onOpenClosed, onOpenShortcuts }: Props) {
+export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onOpenShortcuts }: Props) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -83,6 +84,11 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenShortcuts }: 
             onClick={() => { close(); onOpenClosed(); }}>
             <Ghost size={16} /><span>CLOSED</span>
             {closedCount > 0 && <span className="closed-count">{closedCount}</span>}
+          </button>
+          <button className="additional-tools-settings" type="button" role="menuitem"
+            aria-controls="settings-panel" aria-label="설정"
+            onClick={() => { close(); onOpenSettings(); }}>
+            <Settings size={16} /><span>SETTINGS</span>
           </button>
           <button className="additional-tools-shortcut" type="button" role="menuitem"
             aria-controls="shortcuts-panel"

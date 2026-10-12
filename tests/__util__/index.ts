@@ -21,6 +21,7 @@ export {
   groupStatusName,
   openClosedPanel,
   openPanel,
+  openSettingsPanel,
   openShortcutsPanel,
   shortcutsCommand,
   switchGroup,

@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { openPanel } from "../__util__";
 import { RIGHT_PANEL_IDS } from "./__constant__";
 
-test("8. 그룹·북마크·단축키 안내·닫은 탭 패널 헤더의 위아래 패딩을 9px로 표시한다", async ({
+test("8. 그룹·북마크·단축키 안내·닫은 탭·설정 패널 헤더의 위아래 패딩을 9px로 표시한다", async ({
   page,
 }) => {
   await page.goto("/");

@@ -1,7 +1,20 @@
 import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../__constant__";
-import { moveGroupSourceTab, openTabMenu, readStoredState, seedMoveGroupState } from "../__util__";
+import {
+  moveGroupSourceTab,
+  openTabMenu,
+  readStoredState,
+  seedMoveGroupState,
+  type StoredState,
+} from "../__util__";
+
+// Seeded storage gains default settings once the app persists again.
+const withDefaults = (state: StoredState) => ({
+  ...state,
+  closedTabs: state.closedTabs ?? [],
+  settings: state.settings ?? { fontScale: 1, tabColorCycle: ["green", "gray", "red"] },
+});
 
 test("3. 뒤로 가기, Escape, 바깥 클릭으로 이동 없이 그룹 목록을 닫는다", async ({ page }) => {
   const moveGroup = page.getByRole("menuitem", { name: "Move Group", exact: true });
@@ -9,8 +22,7 @@ test("3. 뒤로 가기, Escape, 바깥 클릭으로 이동 없이 그룹 목록�
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await seedMoveGroupState(page);
-    const originalState = await readStoredState(page);
-    const original = { ...originalState, closedTabs: originalState.closedTabs ?? [] };
+    const original = withDefaults(await readStoredState(page));
     await openTabMenu(moveGroupSourceTab(page), viewport);
     await moveGroup.click();
     await menu.getByRole("menuitem", { name: "Back to tab actions" }).click();
@@ -27,7 +39,6 @@ test("3. 뒤로 가기, Escape, 바깥 클릭으로 이동 없이 그룹 목록�
     await expect(menu).toBeVisible();
     await page.mouse.click(2, 200);
     await expect(page.getByRole("menu")).toHaveCount(0);
-    const finalState = await readStoredState(page);
-    expect({ ...finalState, closedTabs: finalState.closedTabs ?? [] }).toEqual(original);
+    expect(withDefaults(await readStoredState(page))).toEqual(original);
   }
 });

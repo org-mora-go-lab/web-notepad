@@ -12,6 +12,7 @@ export function PaneView({
   pane,
   closedCount,
   onOpenClosed,
+  onOpenSettings,
   onOpenShortcuts,
   tabs,
   groups,
@@ -52,6 +53,7 @@ export function PaneView({
         <Header
           closedCount={closedCount}
           onOpenClosed={onOpenClosed}
+          onOpenSettings={onOpenSettings}
           onOpenShortcuts={onOpenShortcuts}
           tabs={tabs}
           groups={groups}

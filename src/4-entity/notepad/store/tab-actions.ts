@@ -1,6 +1,6 @@
 import type { StateCreator } from "zustand";
 
-import type { NotepadState, TabColor } from "../type";
+import type { NotepadState } from "../type";
 import {
   assignTabToPane,
   getPaneActiveTabId,
@@ -32,8 +32,6 @@ type TabActions = Pick<
   | "togglePin"
   | "closeTab"
 >;
-
-const TAB_COLORS: TabColor[] = ["green", "gray", "red"];
 
 export const createTabActions: StateCreator<
   NotepadState,
@@ -125,8 +123,9 @@ export const createTabActions: StateCreator<
       const group = getActiveGroup(state);
       const tab = group?.tabs.find((item) => item.id === tabId);
       if (!group || !tab) return state;
-      const colorIndex = TAB_COLORS.indexOf(tab.tabColor);
-      const nextColor = TAB_COLORS[(colorIndex + 1) % TAB_COLORS.length];
+      const cycle = state.settings.tabColorCycle;
+      // A color outside the cycle moves to the cycle's first color.
+      const nextColor = cycle[(cycle.indexOf(tab.tabColor) + 1) % cycle.length];
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(current, tabId, { tabColor: nextColor }, { tabColor: nextColor, updatedAt: Date.now() }),
       );

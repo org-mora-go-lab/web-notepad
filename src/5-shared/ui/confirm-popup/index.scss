@@ -43,14 +43,14 @@
   h3 {
     margin: 0;
     font-family: v.$sans;
-    font-size: 16px;
+    font-size: v.font(16px);
     font-weight: 500;
   }
 
   p {
     margin: 18px 0 22px;
     overflow-wrap: anywhere;
-    font-size: 14px;
+    font-size: v.font(14px);
     line-height: 1.6;
   }
 
@@ -65,7 +65,7 @@
     border-radius: 4px;
     background: transparent;
     color: v.$ink;
-    font-size: 13px;
+    font-size: v.font(13px);
     cursor: pointer;
 
     &:hover {
@@ -105,16 +105,16 @@
     width: min(380px * v.$mobile-scale, calc(100vw - 32px));
 
     h3 {
-      font-size: 16px * v.$mobile-scale;
+      font-size: v.font(16px * v.$mobile-scale);
     }
 
     p {
-      font-size: 14px * v.$mobile-scale;
+      font-size: v.font(14px * v.$mobile-scale);
     }
 
     button {
       min-height: 34px * v.$mobile-scale;
-      font-size: 13px * v.$mobile-scale;
+      font-size: v.font(13px * v.$mobile-scale);
 
       svg {
         width: 14px * v.$mobile-scale;

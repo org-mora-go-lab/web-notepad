@@ -12,7 +12,7 @@ export const shortcutsCommand = (page: Page) =>
 
 export async function openPanel(page: Page, panelId: string) {
   const command = page.locator(`button[aria-controls="${panelId}"]`).first();
-  if (panelId === "closed-panel" || panelId === "shortcuts-panel") {
+  if (panelId === "closed-panel" || panelId === "shortcuts-panel" || panelId === "settings-panel") {
     const menu = page.getByRole("button", { name: "MENU", exact: true });
     await menu.click();
     await expect(menu).toHaveAttribute("aria-expanded", "true");
@@ -26,6 +26,7 @@ export async function openPanel(page: Page, panelId: string) {
 
 export const openClosedPanel = (page: Page) => openPanel(page, "closed-panel");
 export const openShortcutsPanel = (page: Page) => openPanel(page, "shortcuts-panel");
+export const openSettingsPanel = (page: Page) => openPanel(page, "settings-panel");
 
 // Creates a group from the open groups panel.
 export async function createGroup(page: Page, name: string) {

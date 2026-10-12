@@ -9,6 +9,7 @@ export type PaneViewProps = {
   hasMenu: boolean;
   closedCount?: number;
   onOpenClosed?: () => void;
+  onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;
   tabs: NoteTab[];
   groups: GroupEntry[];

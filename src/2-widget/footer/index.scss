@@ -9,7 +9,7 @@
   border-top: 1px solid v.$line;
   background: v.$strip;
   color: v.$muted;
-  font-size: 14px;
+  font-size: v.font(14px);
 
   .status-meta {
     width: 100%;
@@ -114,7 +114,7 @@
   @media (max-width: 640px) {
     min-height: 64px;
     padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
-    font-size: 12px;
+    font-size: v.font(12px);
 
     .status-command {
       width: 100%;
@@ -150,7 +150,7 @@
 
     // Long names wrap to two lines before the ellipsis.
     .status-command > span.group-status-name {
-      font-size: 15px;
+      font-size: v.font(15px);
       line-height: 18px;
     }
 

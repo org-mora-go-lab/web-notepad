@@ -1,4 +1,20 @@
-export type TabColor = "gray" | "red" | "green";
+export type TabColor =
+  | "gray"
+  | "red"
+  | "orange"
+  | "yellow"
+  | "green"
+  | "teal"
+  | "indigo"
+  | "purple"
+  | "pink";
+
+export type NotepadSettings = {
+  // Multiplier applied to every font size in the app.
+  fontScale: number;
+  // Colors the tab color icon cycles through; the first one is the new-tab color.
+  tabColorCycle: TabColor[];
+};
 
 export type NoteTab = {
   id: string;
@@ -61,6 +77,9 @@ export type NotepadState = {
   groups: GroupEntry[];
   activeGroupId: string;
   closedTabs: ClosedTabEntry[];
+  settings: NotepadSettings;
+  setFontScale: (fontScale: number) => void;
+  setTabColorCycleColor: (index: number, color: TabColor) => void;
   addTab: (pane?: PaneId) => void;
   selectTab: (tabId: string) => void;
   updateTab: (tabId: string, content: string) => void;

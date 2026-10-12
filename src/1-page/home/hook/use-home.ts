@@ -51,6 +51,7 @@ export function useHome() {
     createGroup,
     renameGroup,
     removeGroup,
+    settings,
   } = store;
 
   const activeGroup = getActiveGroup(store);
@@ -196,5 +197,6 @@ export function useHome() {
     createGroup,
     renameGroup,
     removeGroup,
+    fontScale: settings.fontScale,
   };
 }

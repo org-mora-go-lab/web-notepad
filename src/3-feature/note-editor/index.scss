@@ -21,6 +21,13 @@
     --selected-line-color: #{v.$signal};
   }
 
+  @each $name, $_ in v.$extra-tab-colors {
+    &[data-tab-color="#{$name}"] {
+      --selected-line-background: color-mix(in srgb, var(--color-tab-#{$name}) 20%, transparent);
+      --selected-line-color: var(--color-tab-#{$name});
+    }
+  }
+
   min-height: 0;
   display: grid;
   grid-template-columns: 39px minmax(0, 1fr);
@@ -38,7 +45,7 @@
     overflow: hidden;
     border-right: 1px solid var(--color-rail-border);
     color: var(--color-rail-text);
-    font-size: 12px;
+    font-size: v.font(12px);
     user-select: none;
 
     &.has-first-line-selected {
@@ -83,7 +90,7 @@
     outline: none;
     background: transparent;
     color: v.$ink;
-    font-size: 19px;
+    font-size: v.font(19px);
     line-height: var(--editor-line-height);
     tab-size: 4;
 

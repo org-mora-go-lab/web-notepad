@@ -1,3 +1,4 @@
+export { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS } from "./setting-constant";
 export {
   MAX_SPLIT_RATIO,
   MIN_SPLIT_RATIO,

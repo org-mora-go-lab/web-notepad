@@ -31,7 +31,7 @@
     background: transparent;
     color: v.$ink;
     font: inherit;
-    font-size: 14px;
+    font-size: v.font(14px);
 
     &::placeholder {
       color: v.$dim;
@@ -52,7 +52,7 @@
     }
 
     input {
-      font-size: 14px * v.$mobile-scale;
+      font-size: v.font(14px * v.$mobile-scale);
     }
   }
 }

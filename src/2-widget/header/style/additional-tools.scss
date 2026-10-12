@@ -33,7 +33,7 @@
     justify-content: center;
     gap: 8px;
     padding: 0 12px;
-    font-size: 14px;
+    font-size: v.font(14px);
 
     svg {
       width: 22px;
@@ -60,7 +60,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 15px;
+      font-size: v.font(15px);
       text-align: left;
 
       > svg:first-child {
@@ -80,7 +80,7 @@
       border-radius: 3px;
       background: v.$raised;
       color: v.$ink;
-      font-size: 12px;
+      font-size: v.font(12px);
       line-height: 18px;
     }
   }
@@ -92,7 +92,7 @@
 
     .additional-tools-trigger {
       font-family: v.$sans;
-      font-size: 15px;
+      font-size: v.font(15px);
       font-weight: 500;
       padding: 0 16px;
 
@@ -150,7 +150,7 @@
 
       button {
         min-height: 38px * v.$mobile-scale;
-        font-size: 15px * v.$mobile-scale;
+        font-size: v.font(15px * v.$mobile-scale);
 
         > svg:first-child {
           width: 18px * v.$mobile-scale;
@@ -165,7 +165,7 @@
       }
 
       .closed-count {
-        font-size: 12px * v.$mobile-scale;
+        font-size: v.font(12px * v.$mobile-scale);
         line-height: 18px * v.$mobile-scale;
       }
     }

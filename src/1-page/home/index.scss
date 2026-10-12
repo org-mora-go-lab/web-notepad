@@ -9,6 +9,7 @@
 @use "../../3-feature/bookmark";
 @use "../../3-feature/group";
 @use "../../3-feature/shortcut";
+@use "../../3-feature/setting";
 @use "../../3-feature/closed";
 @use "../../3-feature/global-search";
 @use "../../5-shared/ui/search-field";
@@ -26,6 +27,7 @@
   height: 100dvh;
   min-height: 0;
   overflow: hidden;
+  font-size: v.font(16px);
   background-color: v.$pit;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),

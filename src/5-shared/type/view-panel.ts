@@ -1,1 +1,7 @@
-export type ViewPanel = "closed" | "bookmarks" | "groups" | "shortcuts" | "global-search";
+export type ViewPanel =
+  | "closed"
+  | "bookmarks"
+  | "groups"
+  | "shortcuts"
+  | "global-search"
+  | "settings";

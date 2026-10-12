@@ -36,12 +36,12 @@
       padding: 6px 12px;
       background: v.$raised;
       color: v.$signal;
-      font-size: 11px;
+      font-size: v.font(11px);
       letter-spacing: 0.08em;
       text-transform: uppercase;
 
       @media (max-width: 640px) {
-        font-size: 11px * v.$mobile-scale;
+        font-size: v.font(11px * v.$mobile-scale);
       }
     }
   }

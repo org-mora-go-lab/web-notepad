@@ -1,0 +1,159 @@
+@use "../../5-shared/style/variable" as v;
+
+.setting {
+  .side-panel-drawer {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .setting-content {
+    min-height: 0;
+    padding: 8px 22px 22px;
+    overflow-y: auto;
+  }
+
+  .setting-section {
+    padding: 16px 0;
+    border-bottom: 1px solid v.$line;
+
+    h3 {
+      margin: 0 0 12px;
+      color: v.$ink;
+      font-family: v.$sans;
+      font-size: v.font(16px);
+      font-weight: 500;
+    }
+  }
+
+  .setting-font-scales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .setting-font-scale {
+    position: relative;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    span {
+      display: block;
+      min-width: 58px;
+      padding: 6px 10px;
+      border: 1px solid v.$line;
+      color: v.$muted;
+      font-size: v.font(14px);
+      text-align: center;
+    }
+
+    &:hover span {
+      color: v.$ink;
+    }
+
+    input:checked + span {
+      border-color: v.$hover-line;
+      background: v.$raised;
+      color: v.$ink;
+    }
+
+    input:focus-visible + span {
+      outline: 1px solid var(--color-focus);
+      outline-offset: 1px;
+    }
+  }
+
+  .setting-hint {
+    margin: 0 0 12px;
+    color: v.$muted;
+    font-size: v.font(15px);
+    line-height: 1.5;
+  }
+
+  .setting-color-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  .setting-color-order {
+    width: 16px;
+    flex: 0 0 auto;
+    color: v.$muted;
+    font-size: v.font(14px);
+    text-align: center;
+  }
+
+  .setting-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .setting-swatch {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    appearance: none;
+    background: var(--swatch-color);
+    background-clip: content-box;
+    padding: 2px;
+    cursor: pointer;
+
+    &:checked {
+      border-color: v.$ink;
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+
+    @each $name in ("gray", "red", "green") {
+      &[data-tab-color="#{$name}"] {
+        --swatch-color: var(--color-tab-#{$name});
+      }
+    }
+
+    @each $name, $_ in v.$extra-tab-colors {
+      &[data-tab-color="#{$name}"] {
+        --swatch-color: var(--color-tab-#{$name});
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .setting-section h3 {
+      font-size: v.font(16px * v.$mobile-scale);
+    }
+
+    .setting-font-scale span {
+      min-width: 58px * v.$mobile-scale;
+      font-size: v.font(14px * v.$mobile-scale);
+    }
+
+    .setting-hint {
+      font-size: v.font(15px * v.$mobile-scale);
+    }
+
+    .setting-color-order {
+      font-size: v.font(14px * v.$mobile-scale);
+    }
+
+    .setting-swatch {
+      width: 22px * v.$mobile-scale;
+      height: 22px * v.$mobile-scale;
+    }
+  }
+}

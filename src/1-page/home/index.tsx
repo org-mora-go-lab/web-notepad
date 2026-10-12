@@ -2,6 +2,8 @@
 
 import "./index.scss";
 
+import type { CSSProperties } from "react";
+
 import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
 
@@ -41,9 +43,10 @@ export function Home() {
     createGroup,
     renameGroup,
     removeGroup,
+    fontScale,
   } = useHome();
 
-  // The MENU's CLOSED and SHORTCUT commands open their side panels.
+  // The MENU's CLOSED, SETTINGS and SHORTCUT commands open their side panels.
   const withMenu = (pane: PaneViewProps): PaneViewProps =>
     pane.hasMenu
       ? {
@@ -51,6 +54,9 @@ export function Home() {
           closedCount: closedTabs.length,
           onOpenClosed: () => {
             if (openPanel !== "closed") toggleSidePanel("closed");
+          },
+          onOpenSettings: () => {
+            if (openPanel !== "settings") toggleSidePanel("settings");
           },
           onOpenShortcuts: () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
@@ -63,7 +69,10 @@ export function Home() {
   }
 
   return (
-    <main className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}>
+    <main
+      className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
+      style={{ "--font-scale": fontScale } as CSSProperties}
+    >
       <section className="workspace">
         <div className={`pane-group ${split ? "is-split" : ""}`}>
           {columns.map((column) => (
