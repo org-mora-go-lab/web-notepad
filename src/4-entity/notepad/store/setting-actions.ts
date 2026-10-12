@@ -1,9 +1,14 @@
 import type { StateCreator } from "zustand";
 
+import { LANGUAGES } from "@/src/5-shared/constant";
+
 import { FONT_SCALES } from "../constant";
 import type { NotepadState } from "../type";
 
-type SettingActions = Pick<NotepadState, "setFontScale" | "setTabColorCycleColor">;
+type SettingActions = Pick<
+  NotepadState,
+  "setFontScale" | "setTabColorCycleColor" | "setLanguage"
+>;
 
 export const createSettingActions: StateCreator<
   NotepadState,
@@ -27,4 +32,10 @@ export const createSettingActions: StateCreator<
       cycle[index] = color;
       return { settings: { ...state.settings, tabColorCycle: cycle } };
     }),
+  setLanguage: (language) =>
+    set((state) =>
+      LANGUAGES.includes(language)
+        ? { settings: { ...state.settings, language } }
+        : state,
+    ),
 });

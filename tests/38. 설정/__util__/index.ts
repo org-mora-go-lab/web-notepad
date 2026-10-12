@@ -1,1 +1,1 @@
-export { closeSettingsPanel, fontScaleRadio, settingsPanel, tabColorRadio } from "./setting";
+export { closeSettingsPanel, fontScaleRadio, languageRadio, settingsPanel, tabColorRadio } from "./setting";

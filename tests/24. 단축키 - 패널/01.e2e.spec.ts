@@ -11,14 +11,14 @@ test("1. SHORTCUT 패널에 실제 키보드 단축키와 Shift+클릭 줄 범�
   const shortcutsPanel = page.locator("#shortcuts-panel");
   await expect(shortcutsPanel).toHaveAttribute("aria-hidden", "false");
   await expect(shortcutsPanel.locator(".shortcut-row dt")).toHaveText([
-    "새 탭 추가",
-    "활성 탭 닫기",
-    "탭 간 이동",
-    "내용 전체 선택",
-    "오른쪽 패널로 이동",
-    "왼쪽 패널로 이동",
-    "탭 문자 삽입",
-    "라인 범위 선택 및 해제",
+    "Add a new tab",
+    "Close the active tab",
+    "Move between tabs",
+    "Select all content",
+    "Move to the right pane",
+    "Move to the left pane",
+    "Insert a tab character",
+    "Select or clear a line range",
   ]);
   await expect(shortcutsPanel.locator(".shortcut-row kbd")).toHaveText([
     "Option + Tab",
@@ -30,9 +30,9 @@ test("1. SHORTCUT 패널에 실제 키보드 단축키와 Shift+클릭 줄 범�
     "Option + F12",
     "Option + F11",
     "Tab",
-    "Shift + 클릭",
+    "Shift + Click",
   ]);
   await expect(
-    shortcutsPanel.locator(".shortcut-row").filter({ hasText: "라인 범위 선택 및 해제" }),
-  ).toContainText("Shift + 클릭");
+    shortcutsPanel.locator(".shortcut-row").filter({ hasText: "Select or clear a line range" }),
+  ).toContainText("Shift + Click");
 });

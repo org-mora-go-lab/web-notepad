@@ -2,6 +2,7 @@ import { Bookmark, Pin, X } from "lucide-react";
 import type { DragEvent } from "react";
 
 import type { NoteTab } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 
 // Mobile opens the tab menu with a double tap instead of a right click.
 const isTouchLayout = () =>
@@ -38,6 +39,7 @@ export function TabItem({
   onDrop,
   onDragEnd,
 }: Props) {
+  const { t } = useI18n();
   const dirty = tab.content.trim() !== "" && tab.content !== tab.savedContent;
   const markDropTarget = (event: DragEvent<HTMLDivElement>) => {
     if (!dragActive || draggingTabId === tab.id) return;
@@ -84,7 +86,7 @@ export function TabItem({
         type="button"
         onClick={() => onCycleTabColor(tab.id)}
         aria-label={`${tab.title} 탭 색상 변경`}
-        title="탭 색상 변경"
+        title={t.changeTabColor}
       />
       <button
         className="tab-select"
@@ -100,7 +102,7 @@ export function TabItem({
         }}
       >
         {tab.pinned && (
-          <span className="tab-pin-indicator" aria-label="고정됨" title="고정됨">
+          <span className="tab-pin-indicator" aria-label="고정됨" title={t.pinned}>
             <Pin className="tab-indicator is-pin" size={13} aria-hidden="true" />
           </span>
         )}
@@ -121,7 +123,7 @@ export function TabItem({
           type="button"
           onClick={() => onClose(tab.id)}
           aria-label={`${tab.title} 닫기`}
-          title="탭 닫기"
+          title={t.closeTab}
         >
           <X size={11} />
         </button>

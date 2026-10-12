@@ -1,3 +1,5 @@
+import type { Language } from "@/src/5-shared/type";
+
 export type TabColor =
   | "gray"
   | "red"
@@ -14,6 +16,7 @@ export type NotepadSettings = {
   fontScale: number;
   // Colors the tab color icon cycles through; the first one is the new-tab color.
   tabColorCycle: TabColor[];
+  language: Language;
 };
 
 export type NoteTab = {
@@ -80,6 +83,7 @@ export type NotepadState = {
   settings: NotepadSettings;
   setFontScale: (fontScale: number) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;
+  setLanguage: (language: Language) => void;
   addTab: (pane?: PaneId) => void;
   selectTab: (tabId: string) => void;
   updateTab: (tabId: string, content: string) => void;

@@ -198,5 +198,6 @@ export function useHome() {
     renameGroup,
     removeGroup,
     fontScale: settings.fontScale,
+    language: settings.language,
   };
 }

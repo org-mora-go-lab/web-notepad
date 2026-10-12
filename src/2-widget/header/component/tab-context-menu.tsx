@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Bookmark, FolderInput, Pin } from "lucide-react"
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 
 type Props = {
   left: number;
@@ -30,6 +31,7 @@ export function TabContextMenu({
 }: Props) {
   const menuRef = useRef<HTMLDivElement>(null);
   const [choosingGroup, setChoosingGroup] = useState(false);
+  const { t } = useI18n();
 
   useLayoutEffect(() => {
     const positionMenu = () => {
@@ -75,7 +77,7 @@ export function TabContextMenu({
         <>
           <button type="button" role="menuitem" aria-label="Back to tab actions" onClick={() => setChoosingGroup(false)}>
             <ArrowLeft size={14} />
-            <span>Move Group</span>
+            <span>{t.moveGroup}</span>
           </button>
           <div className="move-group-options">
             {targetGroups.map((group) => (
@@ -89,15 +91,15 @@ export function TabContextMenu({
         <>
           <button type="button" role="menuitem" onClick={onTogglePin}>
             <Pin size={14} />
-            <span>{pinned ? "Unpin" : "Pin"}</span>
+            <span>{pinned ? t.unpin : t.pin}</span>
           </button>
           <button type="button" role="menuitem" onClick={onToggleBookmark}>
             <Bookmark size={14} />
-            <span>{bookmarked ? "Remove bookmark" : "Bookmark"}</span>
+            <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
           </button>
           <button type="button" role="menuitem" disabled={targetGroups.length === 0} onClick={() => setChoosingGroup(true)}>
             <FolderInput size={14} />
-            <span>Move Group</span>
+            <span>{t.moveGroup}</span>
             <ArrowRight size={14} className="move-group-arrow" />
           </button>
         </>

@@ -27,5 +27,5 @@ export async function restoreStoredBookmark(page: Page, { tabColor, selectedLine
     }],
   });
   await bookmarksCommand(page).click();
-  await page.getByRole("button", { name: "열기" }).click();
+  await page.getByRole("button", { name: "Open", exact: true }).click();
 }

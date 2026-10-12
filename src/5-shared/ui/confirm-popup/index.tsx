@@ -3,7 +3,7 @@
 import { AlertTriangle, Trash2, X } from "lucide-react";
 import type { KeyboardEvent } from "react";
 
-import { useConfirmDialog } from "../../hook";
+import { useConfirmDialog, useI18n } from "../../hook";
 
 type Props = {
   title: string;
@@ -26,6 +26,7 @@ export function ConfirmPopup({
   onKeyDown,
 }: Props) {
   const { dialogProps, cancelButtonRef, popupId, close } = useConfirmDialog({ onCancel, onKeyDown });
+  const { t } = useI18n();
 
   return (
     <dialog className="confirm-popup" {...dialogProps}>
@@ -49,11 +50,11 @@ export function ConfirmPopup({
         <div className="confirm-popup-actions">
           <button ref={cancelButtonRef} type="button" onClick={() => close(onCancel)}>
             <X size={14} aria-hidden="true" />
-            Cancel
+            {t.cancel}
           </button>
           <button className="confirm-popup-confirm" type="button" onClick={() => close(onConfirm)}>
             <Trash2 size={14} aria-hidden="true" />
-            Delete
+            {t.delete}
           </button>
         </div>
       </div>

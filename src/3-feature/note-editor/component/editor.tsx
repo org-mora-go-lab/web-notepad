@@ -7,6 +7,7 @@ import type {
 } from "react";
 
 import type { NoteTab } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 
 import { useVisualLines } from "../hook";
 
@@ -37,6 +38,7 @@ export function Editor({
   onCompositionEnd,
   onScroll,
 }: Props) {
+  const { t } = useI18n();
   const visualLines = useVisualLines(tab.content, editorRef, lineRailRef);
   const selectedLineRanges: { start: number; end: number }[] = [];
   for (const [line, logicalLine] of visualLines.entries()) {
@@ -89,7 +91,7 @@ export function Editor({
         onCompositionStart={onCompositionStart}
         onCompositionEnd={onCompositionEnd}
         onScroll={onScroll}
-        placeholder="Take a note.."
+        placeholder={t.notePlaceholder}
         autoFocus={autoFocus}
         spellCheck={false}
         aria-label={`${tab.title} 메모 내용`}

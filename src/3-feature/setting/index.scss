@@ -24,13 +24,13 @@
     }
   }
 
-  .setting-font-scales {
+  .setting-options {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
   }
 
-  .setting-font-scale {
+  .setting-option {
     position: relative;
     cursor: pointer;
 
@@ -138,7 +138,7 @@
       font-size: v.font(16px * v.$mobile-scale);
     }
 
-    .setting-font-scale span {
+    .setting-option span {
       min-width: 58px * v.$mobile-scale;
       font-size: v.font(14px * v.$mobile-scale);
     }

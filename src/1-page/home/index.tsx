@@ -2,10 +2,11 @@
 
 import "./index.scss";
 
-import type { CSSProperties } from "react";
+import { type CSSProperties, useEffect } from "react";
 
 import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
+import { I18nContext } from "@/src/5-shared/hook";
 
 import { Loading, PaneColumn, TabDeletePopup } from "./component";
 import type { PaneViewProps } from "./type";
@@ -44,7 +45,12 @@ export function Home() {
     renameGroup,
     removeGroup,
     fontScale,
+    language,
   } = useHome();
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   // The MENU's CLOSED, SETTINGS and SHORTCUT commands open their side panels.
   const withMenu = (pane: PaneViewProps): PaneViewProps =>
@@ -69,6 +75,7 @@ export function Home() {
   }
 
   return (
+    <I18nContext value={language}>
     <main
       className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
       style={{ "--font-scale": fontScale } as CSSProperties}
@@ -123,5 +130,6 @@ export function Home() {
         <TabDeletePopup onConfirm={confirmCloseTab} onCancel={cancelCloseTab} />
       )}
     </main>
+    </I18nContext>
   );
 }

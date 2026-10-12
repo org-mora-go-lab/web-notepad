@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { type RefObject, useState } from "react";
 
 import { compareGroups, type GroupEntry, type NoteTab } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 
 import { AdditionalTools, TabContextMenu, TabItem } from "./component";
 
@@ -61,6 +62,7 @@ export function Header({
   onAdd,
 }: Props) {
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
+  const { t } = useI18n();
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const dragActive = draggingTabId !== null;
   const contextTab = tabs.find((tab) => tab.id === contextMenu?.tabId);
@@ -135,7 +137,7 @@ export function Header({
         type="button"
         onClick={onAdd}
         aria-label="새 탭 추가"
-        title="새 탭"
+        title={t.newTab}
       >
         <Plus size={14} />
       </button>

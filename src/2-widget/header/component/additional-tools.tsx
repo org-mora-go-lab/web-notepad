@@ -4,6 +4,7 @@ import { Ghost, Keyboard, Menu, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Theme } from "@/src/3-feature";
+import { useI18n } from "@/src/5-shared/hook";
 
 type Props = {
   closedCount: number;
@@ -14,6 +15,7 @@ type Props = {
 
 export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onOpenShortcuts }: Props) {
   const [open, setOpen] = useState(false);
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -40,7 +42,7 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onO
         className="additional-tools-trigger"
         ref={triggerRef}
         type="button"
-        title="MENU"
+        title={t.menu}
         aria-label="MENU"
         aria-haspopup="menu"
         aria-expanded={open}
@@ -50,7 +52,7 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onO
         }}
       >
         <Menu size={20} strokeWidth={1.8} />
-        <span className="additional-tools-label">MENU</span>
+        <span className="additional-tools-label">{t.menu}</span>
       </button>
         <div
           hidden={!open}
@@ -82,17 +84,17 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onO
           <button className="additional-tools-shortcut" type="button" role="menuitem"
             aria-controls="shortcuts-panel"
             onClick={() => { close(); onOpenShortcuts(); }}>
-            <Keyboard size={16} /><span>SHORTCUT</span>
+            <Keyboard size={16} /><span>{t.shortcut}</span>
           </button>
           <button className="additional-tools-settings" type="button" role="menuitem"
             aria-controls="settings-panel" aria-label="설정"
             onClick={() => { close(); onOpenSettings(); }}>
-            <Settings size={16} /><span>SETTINGS</span>
+            <Settings size={16} /><span>{t.settings}</span>
           </button>
           <button className="closed-command" type="button" role="menuitem"
             aria-controls="closed-panel" aria-label="닫은 탭"
             onClick={() => { close(); onOpenClosed(); }}>
-            <Ghost size={16} /><span>CLOSED</span>
+            <Ghost size={16} /><span>{t.closed}</span>
             {closedCount > 0 && <span className="closed-count">{closedCount}</span>}
           </button>
         </div>

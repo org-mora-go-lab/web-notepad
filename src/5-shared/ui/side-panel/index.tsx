@@ -3,6 +3,7 @@
 import { Pin, X } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { useI18n } from "../../hook";
 import { useSidePanelResize } from "./hook";
 
 type Props = {
@@ -34,6 +35,7 @@ export function SidePanel({
   children,
 }: Props) {
   const handleResizeStart = useSidePanelResize();
+  const { t } = useI18n();
 
   return (
     <div className={`side-panel ${className} ${pinned ? "is-pinned" : ""}`}>
@@ -65,7 +67,7 @@ export function SidePanel({
                 onClick={onTogglePin}
                 aria-pressed={pinned}
                 aria-label={pinned ? "패널 고정 해제" : "패널 고정"}
-                title={pinned ? "패널 고정 해제" : "패널 고정"}
+                title={pinned ? t.unpinPanel : t.pinPanel}
               >
                 <Pin size={14} />
               </button>

@@ -13,7 +13,7 @@ test("5. 기본 그룹을 제외한 그룹은 삭제 버튼 왼쪽 수정 버튼
   await expect(page.getByRole("button", { name: "Ungrouped 그룹 삭제" })).toHaveCount(0);
   const editButton = page.getByRole("button", { name: "Work 그룹 수정" });
   const buttonBounds = await editButton.evaluate((button) => {
-    const deleteButton = button.closest(".group-item")!.querySelector('button[title="그룹 삭제"]')!;
+    const deleteButton = button.closest(".group-item")!.querySelector('button[aria-label$="그룹 삭제"]')!;
     return {
       editRight: button.getBoundingClientRect().right,
       deleteLeft: deleteButton.getBoundingClientRect().left,

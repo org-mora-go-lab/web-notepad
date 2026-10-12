@@ -1,3 +1,6 @@
+import { LANGUAGES } from "@/src/5-shared/constant";
+import type { Language } from "@/src/5-shared/type";
+
 import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS, UNGROUPED_GROUP_ID } from "../constant";
 import type {
   BookmarkEntry,
@@ -39,6 +42,9 @@ const normalizeSettings = (value: unknown): NotepadSettings => {
       ? (settings.fontScale as number)
       : DEFAULT_SETTINGS.fontScale,
     tabColorCycle: validCycle ? [...cycle] : [...DEFAULT_SETTINGS.tabColorCycle],
+    language: LANGUAGES.includes(settings.language as Language)
+      ? (settings.language as Language)
+      : DEFAULT_SETTINGS.language,
   };
 };
 

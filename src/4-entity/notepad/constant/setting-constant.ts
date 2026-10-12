@@ -17,4 +17,5 @@ export const FONT_SCALES: readonly number[] = [0.8, 0.9, 1, 1.1, 1.2];
 export const DEFAULT_SETTINGS: NotepadSettings = {
   fontScale: 1,
   tabColorCycle: ["green", "gray", "red"],
+  language: "en",
 };

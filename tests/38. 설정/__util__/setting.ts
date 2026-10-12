@@ -14,3 +14,7 @@ export const tabColorRadio = (page: Page, order: number, color: string) =>
 
 export const closeSettingsPanel = (page: Page) =>
   page.getByRole("button", { name: "설정 닫기" }).click();
+
+// Radio for a language, listed by its own name such as "English" or "한국어".
+export const languageRadio = (page: Page, label: string) =>
+  settingsPanel(page).getByRole("radio", { name: label, exact: true });
