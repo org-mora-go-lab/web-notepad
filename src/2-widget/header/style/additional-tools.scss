@@ -35,7 +35,11 @@
     padding: 0 12px;
     font-size: 14px;
 
-    svg { flex: 0 0 20px; }
+    svg {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+    }
   }
 
   .additional-tools-menu {
@@ -56,8 +60,14 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 13px;
+      font-size: 15px;
       text-align: left;
+
+      > svg:first-child {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+      }
 
       > svg:last-child:not(:first-child) { margin-left: auto; }
       .is-expanded { transform: rotate(90deg); }
@@ -78,18 +88,18 @@
   &.has-menu { padding-right: 140px; }
 
   @media (min-width: 641px) {
-    .additional-tools { width: 104px; }
+    .additional-tools { width: 112px; }
 
     .additional-tools-trigger {
       font-family: v.$sans;
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 500;
       padding: 0 16px;
 
       > svg {
-        width: 16px;
-        height: 16px;
-        flex-basis: 16px;
+        width: 18px;
+        height: 18px;
+        flex-basis: 18px;
       }
 
       &[aria-expanded="true"] {
@@ -120,7 +130,7 @@
       }
     }
 
-    &.has-menu { padding-right: 104px; }
+    &.has-menu { padding-right: 112px; }
   }
 
   @media (max-width: 640px) {
