@@ -39,11 +39,20 @@ export type GroupEntry = {
   activeTabId: string;
   rightTabIds: string[];
   activeRightTabId: string | null;
+  leftBottomTabIds: string[];
+  activeLeftBottomTabId: string | null;
+  rightBottomTabIds: string[];
+  activeRightBottomTabId: string | null;
   activePane: PaneId;
   splitRatio: number;
+  leftRowRatio: number;
+  rightRowRatio: number;
 };
 
-export type PaneId = "left" | "right";
+// "left" and "right" are the top panes; each column can add a bottom pane.
+export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
+
+export type PaneColumn = "left" | "right";
 
 export type NotepadState = {
   nextTabNumber: number;
@@ -59,6 +68,7 @@ export type NotepadState = {
   moveTabToGroup: (tabId: string, groupId: string) => void;
   setActivePane: (pane: PaneId) => void;
   setSplitRatio: (ratio: number) => void;
+  setRowRatio: (column: PaneColumn, ratio: number) => void;
   cycleTabColor: (tabId: string) => void;
   togglePin: (tabId: string) => void;
   toggleBookmark: (tabId: string) => void;

@@ -1,1 +1,1 @@
-export type { PaneViewProps } from "./pane-view-props";
+export type { PaneColumnProps, PaneViewProps } from "./pane-view-props";

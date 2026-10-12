@@ -1,10 +1,13 @@
 "use client";
 
-import { type RefObject, useEffect } from "react";
+import { useEffect } from "react";
+
+import { PANE_IDS } from "@/src/4-entity/notepad";
+
+import type { PaneRefs } from "./use-pane-refs";
 
 type Options = {
-  editorRef: RefObject<HTMLTextAreaElement | null>;
-  rightEditorRef: RefObject<HTMLTextAreaElement | null>;
+  editorRefs: PaneRefs<HTMLTextAreaElement | null>;
 };
 
 // Browsers may reset the selection after keydown, so select again on the next frame and shortly after.
@@ -18,7 +21,7 @@ const selectAllPersistently = (target: HTMLInputElement | HTMLTextAreaElement) =
   window.setTimeout(selectAll, 50);
 };
 
-export function useSelectAllShortcut({ editorRef, rightEditorRef }: Options) {
+export function useSelectAllShortcut({ editorRefs }: Options) {
   useEffect(() => {
     const handleSelectAll = (event: KeyboardEvent) => {
       if (
@@ -30,8 +33,7 @@ export function useSelectAllShortcut({ editorRef, rightEditorRef }: Options) {
       }
 
       const active = document.activeElement;
-      const isEditorTarget =
-        active === editorRef.current || active === rightEditorRef.current;
+      const isEditorTarget = PANE_IDS.some((pane) => active === editorRefs[pane].current);
       const isEditableTarget =
         active instanceof HTMLInputElement ||
         active instanceof HTMLTextAreaElement ||
@@ -53,7 +55,7 @@ export function useSelectAllShortcut({ editorRef, rightEditorRef }: Options) {
 
       const target = isEditorTarget
         ? (active as HTMLTextAreaElement)
-        : editorRef.current;
+        : editorRefs.left.current;
       if (!target) return;
 
       event.preventDefault();
@@ -63,5 +65,5 @@ export function useSelectAllShortcut({ editorRef, rightEditorRef }: Options) {
 
     window.addEventListener("keydown", handleSelectAll);
     return () => window.removeEventListener("keydown", handleSelectAll);
-  }, [editorRef, rightEditorRef]);
+  }, [editorRefs]);
 }

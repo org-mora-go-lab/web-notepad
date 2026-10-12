@@ -33,8 +33,14 @@ export const createGroupFixture = (
   activeTabId: tabs[0].id,
   rightTabIds: [],
   activeRightTabId: null,
+  leftBottomTabIds: [],
+  activeLeftBottomTabId: null,
+  rightBottomTabIds: [],
+  activeRightBottomTabId: null,
   activePane: "left",
   splitRatio: 0.5,
+  leftRowRatio: 0.5,
+  rightRowRatio: 0.5,
   ...overrides,
 });
 

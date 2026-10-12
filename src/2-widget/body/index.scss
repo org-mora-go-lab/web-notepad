@@ -14,8 +14,22 @@
     border: 1px dashed v.$signal;
     background: rgba(143, 227, 176, 0.08);
 
-    &.is-half {
+    // Split zones cover the half of the pane where the new pane will open.
+    &.is-right {
       left: 50%;
+    }
+
+    &.is-bottom {
+      top: 50%;
+    }
+
+    &.is-right.is-upper,
+    &.is-full.has-bottom-split {
+      bottom: 50%;
+    }
+
+    &.is-full.has-right-split {
+      right: 50%;
     }
 
     span {

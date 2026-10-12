@@ -2,12 +2,23 @@ import type { StateCreator } from "zustand";
 
 import { MAX_SPLIT_RATIO, MIN_SPLIT_RATIO } from "../constant";
 import type { NotepadState, PaneId } from "../type";
+import {
+  assignTabToPane,
+  getPaneActiveTabId,
+  getPaneOfTab,
+  getPaneTabs,
+  normalizeLayout,
+  setPaneActiveTabId,
+} from "../util";
 import { getActiveGroup, updateGroup } from "./workspace";
 
 type PaneActions = Pick<
   NotepadState,
-  "moveTabToPane" | "setActivePane" | "setSplitRatio"
+  "moveTabToPane" | "setActivePane" | "setSplitRatio" | "setRowRatio"
 >;
+
+const clampRatio = (ratio: number) =>
+  Math.min(MAX_SPLIT_RATIO, Math.max(MIN_SPLIT_RATIO, ratio));
 
 export const createPaneActions: StateCreator<
   NotepadState,
@@ -19,51 +30,18 @@ export const createPaneActions: StateCreator<
     set((state) => {
       const group = getActiveGroup(state);
       if (!group || !group.tabs.some((tab) => tab.id === tabId)) return state;
-      const inRight = group.rightTabIds.includes(tabId);
+      const fromPane = getPaneOfTab(group, tabId);
+      if (fromPane === pane) return state;
 
-      if (pane === "right") {
-        if (inRight) return state;
-
-        const rightTabIds = [...group.rightTabIds, tabId];
-        const leftTabs = group.tabs.filter(
-          (tab) => !rightTabIds.includes(tab.id),
-        );
-        if (leftTabs.length === 0) {
-          return updateGroup(state, group.id, (current) => ({
-            ...current,
-            rightTabIds: [],
-            activeRightTabId: null,
-            activeTabId: tabId,
-            activePane: "left",
-          }));
+      return updateGroup(state, group.id, (current) => {
+        let next = assignTabToPane(current, tabId, pane);
+        if (getPaneActiveTabId(current, fromPane) === tabId) {
+          const remaining = getPaneTabs(next, fromPane);
+          next = setPaneActiveTabId(next, fromPane, remaining[remaining.length - 1]?.id ?? null);
         }
-
-        return updateGroup(state, group.id, (current) => ({
-          ...current,
-          rightTabIds,
-          activeRightTabId: tabId,
-          activePane: "right",
-          activeTabId:
-            current.activeTabId === tabId
-              ? (leftTabs[leftTabs.length - 1]?.id ?? "")
-              : current.activeTabId,
-        }));
-      }
-
-      if (!inRight) return state;
-      const rightTabIds = group.rightTabIds.filter((id) => id !== tabId);
-      return updateGroup(state, group.id, (current) => ({
-        ...current,
-        rightTabIds,
-        activeTabId: tabId,
-        activePane: "left",
-        activeRightTabId:
-          rightTabIds.length === 0
-            ? null
-            : current.activeRightTabId === tabId
-              ? rightTabIds[rightTabIds.length - 1]
-              : current.activeRightTabId,
-      }));
+        next = setPaneActiveTabId(next, pane, tabId);
+        return normalizeLayout({ ...next, activePane: pane });
+      });
     }),
   setActivePane: (pane: PaneId) =>
     set((state) => {
@@ -71,8 +49,7 @@ export const createPaneActions: StateCreator<
       if (!group) return state;
       return updateGroup(state, group.id, (current) => ({
         ...current,
-        activePane:
-          pane === "right" && current.rightTabIds.length === 0 ? "left" : pane,
+        activePane: getPaneTabs(current, pane).length > 0 ? pane : "left",
       }));
     }),
   setSplitRatio: (ratio) =>
@@ -81,7 +58,16 @@ export const createPaneActions: StateCreator<
       if (!group) return state;
       return updateGroup(state, group.id, (current) => ({
         ...current,
-        splitRatio: Math.min(MAX_SPLIT_RATIO, Math.max(MIN_SPLIT_RATIO, ratio)),
+        splitRatio: clampRatio(ratio),
+      }));
+    }),
+  setRowRatio: (column, ratio) =>
+    set((state) => {
+      const group = getActiveGroup(state);
+      if (!group) return state;
+      return updateGroup(state, group.id, (current) => ({
+        ...current,
+        [column === "right" ? "rightRowRatio" : "leftRowRatio"]: clampRatio(ratio),
       }));
     }),
 });

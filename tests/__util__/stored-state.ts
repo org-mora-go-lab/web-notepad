@@ -23,7 +23,7 @@ export async function writeStoredState(page: Page, state: unknown) {
     ({ key, value }) => {
       localStorage.setItem(key, JSON.stringify({ state: value, version: 0 }));
       const url = new URL(window.location.href);
-      for (const key of ["group", "leftTab", "rightTab", "pane", "panel"]) {
+      for (const key of ["group", "leftTab", "rightTab", "leftBottomTab", "rightBottomTab", "pane", "panel"]) {
         url.searchParams.delete(key);
       }
       const historyState =

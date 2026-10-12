@@ -6,3 +6,14 @@ export {
   getTitleFromContent,
   sanitizeSelectedLines,
 } from "./note-tab";
+export {
+  assignTabToPane,
+  getBottomPane,
+  getPaneActiveTabId,
+  getPaneColumn,
+  getPaneOfTab,
+  getPaneTabs,
+  normalizeLayout,
+  PANE_IDS,
+  setPaneActiveTabId,
+} from "./pane-layout";

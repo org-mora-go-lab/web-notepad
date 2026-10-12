@@ -23,4 +23,22 @@
   &:hover::before {
     background: v.$hover-line;
   }
+
+  // Splits a column into top and bottom panes.
+  &.is-horizontal {
+    width: auto;
+    height: 10px;
+    flex: 0 0 10px;
+    cursor: row-resize;
+
+    &::before {
+      top: 50%;
+      right: 0;
+      bottom: auto;
+      left: 0;
+      width: auto;
+      height: 2px;
+      transform: translateY(-50%);
+    }
+  }
 }

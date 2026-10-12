@@ -1,10 +1,21 @@
 import type { StateCreator } from "zustand";
 
 import type { NotepadState, TabColor } from "../type";
-import { getTitleFromContent, sanitizeSelectedLines } from "../util";
+import {
+  assignTabToPane,
+  getPaneActiveTabId,
+  getPaneColumn,
+  getPaneOfTab,
+  getPaneTabs,
+  getTitleFromContent,
+  normalizeLayout,
+  sanitizeSelectedLines,
+  setPaneActiveTabId,
+} from "../util";
 import {
   activateTab,
   allocateTab,
+  EMPTY_SPLIT_LAYOUT,
   getActiveGroup,
   patchTabAndBookmark,
   updateGroup,
@@ -35,20 +46,21 @@ export const createTabActions: StateCreator<
     const group = getActiveGroup(state);
     if (!group) return;
     const { tab, nextTabNumber } = allocateTab(state);
-    const toRight = pane === "right" && group.rightTabIds.length > 0;
+    // A pane that is not open falls back to the left pane.
+    const target = getPaneTabs(group, pane).length > 0 ? pane : "left";
+    const bottom = target === "left-bottom" || target === "right-bottom";
+    const rowRatioKey = getPaneColumn(target) === "right" ? "rightRowRatio" : "leftRowRatio";
 
     set({
-      ...updateGroup(state, group.id, (current) => ({
-        ...current,
-        tabs: [...current.tabs, tab],
-        rightTabIds: toRight
-          ? [...current.rightTabIds, tab.id]
-          : current.rightTabIds,
-        splitRatio: toRight ? 0.5 : current.splitRatio,
-        activeRightTabId: toRight ? tab.id : current.activeRightTabId,
-        activeTabId: toRight ? current.activeTabId : tab.id,
-        activePane: toRight ? "right" : "left",
-      })),
+      ...updateGroup(state, group.id, (current) => {
+        const next = assignTabToPane({ ...current, tabs: [...current.tabs, tab] }, tab.id, target);
+        return {
+          ...setPaneActiveTabId(next, target, tab.id),
+          activePane: target,
+          splitRatio: target === "right" ? 0.5 : current.splitRatio,
+          [rowRatioKey]: bottom ? 0.5 : current[rowRatioKey],
+        };
+      }),
       nextTabNumber,
     });
   },
@@ -149,67 +161,32 @@ export const createTabActions: StateCreator<
       set({
         ...updateGroup(state, group.id, (current) => ({
           ...current,
+          ...EMPTY_SPLIT_LAYOUT,
+          splitRatio: current.splitRatio,
           tabs: [replacement],
           activeTabId: replacement.id,
-          rightTabIds: [],
-          activeRightTabId: null,
-          activePane: "left",
         })),
         nextTabNumber,
       });
       return;
     }
 
-    const wasRight = group.rightTabIds.includes(tabId);
-    const rightTabIds = group.rightTabIds.filter((id) => id !== tabId);
-    const paneIds = group.tabs
-      .filter((item) => group.rightTabIds.includes(item.id) === wasRight)
-      .map((item) => item.id);
+    const pane = getPaneOfTab(group, tabId);
+    const paneIds = getPaneTabs(group, pane).map((item) => item.id);
     const closedIndex = paneIds.indexOf(tabId);
     const nextPaneIds = paneIds.filter((id) => id !== tabId);
-    const fallbackId =
-      nextPaneIds[Math.min(closedIndex, nextPaneIds.length - 1)];
-
-    if (wasRight) {
-      set({
-        ...updateGroup(state, group.id, (current) => ({
-          ...current,
-          tabs: remainingTabs,
-          rightTabIds,
-          activePane: rightTabIds.length === 0 ? "left" : "right",
-          activeRightTabId:
-            rightTabIds.length === 0
-              ? null
-              : current.activeRightTabId === tabId
-                ? fallbackId
-                : current.activeRightTabId,
-        })),
-      });
-      return;
-    }
-
-    if (nextPaneIds.length === 0) {
-      set({
-        ...updateGroup(state, group.id, (current) => ({
-          ...current,
-          tabs: remainingTabs,
-          rightTabIds: [],
-          activeRightTabId: null,
-          activePane: "left",
-          activeTabId: current.activeRightTabId ?? remainingTabs[0].id,
-        })),
-      });
-      return;
-    }
+    const fallbackId = nextPaneIds[Math.min(closedIndex, nextPaneIds.length - 1)] ?? null;
 
     set({
-      ...updateGroup(state, group.id, (current) => ({
-        ...current,
-        tabs: remainingTabs,
-        rightTabIds,
-        activeTabId:
-          current.activeTabId === tabId ? fallbackId : current.activeTabId,
-      })),
+      ...updateGroup(state, group.id, (current) => {
+        let next = assignTabToPane({ ...current, tabs: remainingTabs }, tabId, null);
+        if (getPaneActiveTabId(current, pane) === tabId) {
+          next = setPaneActiveTabId(next, pane, fallbackId);
+        }
+        // Closing a tab in a split pane keeps that pane active while it still has tabs.
+        if (pane !== "left" && nextPaneIds.length > 0) next = { ...next, activePane: pane };
+        return normalizeLayout(next);
+      }),
     });
   },
 });

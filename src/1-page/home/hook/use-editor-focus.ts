@@ -1,25 +1,28 @@
 "use client";
 
-import { type RefObject, useEffect } from "react";
+import { useEffect } from "react";
 
-import { useNotepadStore } from "@/src/4-entity/notepad";
+import { type PaneId, useNotepadStore } from "@/src/4-entity/notepad";
 
+import type { PaneRefs } from "./use-pane-refs";
+
+// Focuses the active pane's editor with the caret at the end whenever the active tab or pane changes.
 export function useEditorFocus(
-  editorRef: RefObject<HTMLTextAreaElement | null>,
+  editorRefs: PaneRefs<HTMLTextAreaElement | null>,
   activeGroupId: string,
+  activePane: PaneId,
   activeTabId: string,
   hydrated: boolean,
-  active: boolean,
 ) {
   useEffect(() => {
-    if (!hydrated || !active) return;
+    if (!hydrated) return;
 
     const frame = window.requestAnimationFrame(() => {
       const currentTab = useNotepadStore
         .getState()
         .groups.find((group) => group.id === activeGroupId)
         ?.tabs.find((tab) => tab.id === activeTabId);
-      const editor = editorRef.current;
+      const editor = editorRefs[activePane].current;
       if (!currentTab || !editor) return;
       if (window.matchMedia("(pointer: coarse)").matches) {
         return;
@@ -33,5 +36,5 @@ export function useEditorFocus(
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [active, activeGroupId, activeTabId, editorRef, hydrated]);
+  }, [activeGroupId, activePane, activeTabId, editorRefs, hydrated]);
 }

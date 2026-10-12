@@ -2,6 +2,7 @@ import type { StateCreator } from "zustand";
 
 import { UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState } from "../type";
+import { assignTabToPane, normalizeLayout } from "../util";
 import { allocateTab, createGroupEntry } from "./workspace";
 
 type GroupActions = Pick<
@@ -30,30 +31,17 @@ export const createGroupActions: StateCreator<
         nextTabNumber = allocated.nextTabNumber;
       }
 
-      let rightTabIds = source.rightTabIds.filter((id) => id !== tabId);
-      let leftTabs = remainingTabs.filter((item) => !rightTabIds.includes(item.id));
-      if (leftTabs.length === 0) {
-        rightTabIds = [];
-        leftTabs = remainingTabs;
-      }
-      const rightTabs = remainingTabs.filter((item) => rightTabIds.includes(item.id));
       const linkedBookmarks = source.bookmarks.filter((bookmark) => bookmark.sourceTabId === tabId);
 
       return {
         nextTabNumber,
         groups: state.groups.map((group) => {
           if (group.id === source.id) {
-            return {
+            return normalizeLayout(assignTabToPane({
               ...group,
               tabs: remainingTabs,
               bookmarks: group.bookmarks.filter((bookmark) => bookmark.sourceTabId !== tabId),
-              rightTabIds,
-              activeTabId: leftTabs.some((item) => item.id === group.activeTabId)
-                ? group.activeTabId : leftTabs[0].id,
-              activeRightTabId: rightTabs.some((item) => item.id === group.activeRightTabId)
-                ? group.activeRightTabId : (rightTabs[0]?.id ?? null),
-              activePane: rightTabs.length === 0 ? "left" : group.activePane,
-            };
+            }, tabId, null));
           }
           if (group.id === target.id) {
             return {

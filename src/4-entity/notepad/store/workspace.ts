@@ -4,7 +4,12 @@ import type {
   NotepadState,
   NoteTab,
 } from "../type";
-import { createNoteTab, getNextTabNumber } from "../util";
+import {
+  createNoteTab,
+  getNextTabNumber,
+  getPaneOfTab,
+  setPaneActiveTabId,
+} from "../util";
 
 export const getActiveGroup = (state: NotepadState) =>
   state.groups.find((group) => group.id === state.activeGroupId) ?? state.groups[0];
@@ -36,6 +41,20 @@ export const allocateTab = (state: NotepadState) => {
   return { tab: createNoteTab(number), number, nextTabNumber: number + 1 };
 };
 
+// Pane fields of a workspace with every tab in the left pane.
+export const EMPTY_SPLIT_LAYOUT = {
+  rightTabIds: [],
+  activeRightTabId: null,
+  leftBottomTabIds: [],
+  activeLeftBottomTabId: null,
+  rightBottomTabIds: [],
+  activeRightBottomTabId: null,
+  activePane: "left",
+  splitRatio: 0.5,
+  leftRowRatio: 0.5,
+  rightRowRatio: 0.5,
+} satisfies Partial<GroupEntry>;
+
 export const createGroupEntry = (
   id: string,
   name: string,
@@ -47,17 +66,14 @@ export const createGroupEntry = (
   createdAt,
   tabs: [tab],
   bookmarks: [],
+  ...EMPTY_SPLIT_LAYOUT,
   activeTabId: tab.id,
-  rightTabIds: [],
-  activeRightTabId: null,
-  activePane: "left",
-  splitRatio: 0.5,
 });
 
-export const activateTab = (group: GroupEntry, tabId: string): GroupEntry =>
-  group.rightTabIds.includes(tabId)
-    ? { ...group, activeRightTabId: tabId, activePane: "right" }
-    : { ...group, activeTabId: tabId, activePane: "left" };
+export const activateTab = (group: GroupEntry, tabId: string): GroupEntry => {
+  const pane = getPaneOfTab(group, tabId);
+  return { ...setPaneActiveTabId(group, pane, tabId), activePane: pane };
+};
 
 // Applies the same change to a tab and the bookmark linked to it.
 export const patchTabAndBookmark = (

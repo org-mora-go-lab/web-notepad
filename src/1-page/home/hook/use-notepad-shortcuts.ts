@@ -1,67 +1,66 @@
 "use client";
 
-import { type RefObject, useEffect } from "react";
+import { useEffect } from "react";
 
-import { getActiveGroup, useNotepadStore } from "@/src/4-entity/notepad";
+import {
+  getActiveGroup,
+  getPaneActiveTabId,
+  getPaneColumn,
+  getPaneTabs,
+  PANE_IDS,
+  type PaneId,
+  useNotepadStore,
+} from "@/src/4-entity/notepad";
 import { isAltBackspace } from "@/src/5-shared";
 
+import type { PaneRefs } from "./use-pane-refs";
 import { useSelectAllShortcut } from "./use-select-all-shortcut";
 
 type Options = {
-  editorRef: RefObject<HTMLTextAreaElement | null>;
-  rightEditorRef: RefObject<HTMLTextAreaElement | null>;
-  composingRef: RefObject<boolean>;
+  editorRefs: PaneRefs<HTMLTextAreaElement | null>;
+  composingRefs: PaneRefs<boolean>;
   requestCloseTab: (tabId: string) => void;
   onSelectTab: (tabId: string) => void;
-  onAddTab: (pane: "left" | "right") => void;
-  onMoveTabToPane: (tabId: string, pane: "left" | "right") => void;
+  onAddTab: (pane: PaneId) => void;
+  onMoveTabToPane: (tabId: string, pane: PaneId) => void;
 };
 
 const matchesKey = (event: KeyboardEvent, ...names: string[]) =>
   names.includes(event.key) || names.includes(event.code);
 
 export function useNotepadShortcuts({
-  editorRef,
-  rightEditorRef,
-  composingRef,
+  editorRefs,
+  composingRefs,
   requestCloseTab,
   onSelectTab,
   onAddTab,
   onMoveTabToPane,
 }: Options) {
-  useSelectAllShortcut({ editorRef, rightEditorRef });
+  useSelectAllShortcut({ editorRefs });
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
       const state = useNotepadStore.getState();
       const activeGroup = getActiveGroup(state);
       if (!activeGroup) return;
-      const { tabs, rightTabIds } = activeGroup;
-      const pane = rightTabIds.length === 0 ? "left" : activeGroup.activePane;
-      const paneActiveId =
-        pane === "right"
-          ? (activeGroup.activeRightTabId ?? "")
-          : activeGroup.activeTabId;
-      const editorOf = (target: "left" | "right") =>
-        target === "right" ? rightEditorRef.current : editorRef.current;
+      const pane = activeGroup.activePane;
+      const paneActiveId = getPaneActiveTabId(activeGroup, pane) ?? "";
       const flushActiveEditor = () => {
-        const activeEditor = editorOf(pane);
+        const activeEditor = editorRefs[pane].current;
         if (activeEditor && paneActiveId) {
           state.updateTab(paneActiveId, activeEditor.value);
         }
       };
-      const editor = editorRef.current;
 
       // The Korean IME swallows the first shortcut key while composing, so commit as soon as a modifier is held.
-      if (
-        composingRef.current &&
-        (event.metaKey || event.altKey) &&
-        editor &&
-        document.activeElement === editor
-      ) {
-        composingRef.current = false;
-        editor.blur();
-        editor.focus();
+      const composingPane = PANE_IDS.find(
+        (id) => composingRefs[id].current && document.activeElement === editorRefs[id].current,
+      );
+      if (composingPane && (event.metaKey || event.altKey)) {
+        const editor = editorRefs[composingPane].current;
+        composingRefs[composingPane].current = false;
+        editor?.blur();
+        editor?.focus();
       }
 
       if (isAltBackspace(event)) {
@@ -84,24 +83,24 @@ export function useNotepadShortcuts({
       const isF12 = matchesKey(event, "F12");
       if (isF12 || matchesKey(event, "F11")) {
         event.preventDefault();
+        // F11/F12 move the tab between columns, into the top pane of the other column.
         const targetPane = isF12 ? "right" : "left";
-        if (pane === targetPane || !paneActiveId) return;
+        if (getPaneColumn(pane) === targetPane || !paneActiveId) return;
 
         flushActiveEditor();
         onMoveTabToPane(paneActiveId, targetPane);
-        const targetEditor = editorOf(targetPane);
-        window.requestAnimationFrame(() => targetEditor?.focus());
+        window.requestAnimationFrame(() => {
+          const movedPane = getActiveGroup(useNotepadStore.getState())?.activePane ?? "left";
+          editorRefs[movedPane].current?.focus();
+        });
         return;
       }
 
       const isArrowUp = matchesKey(event, "ArrowUp", "Up");
       if (isArrowUp || matchesKey(event, "ArrowDown", "Down")) {
         event.preventDefault();
-        // Navigation runs through the left pane and then continues into the right pane.
-        const orderedTabs = [
-          ...tabs.filter((tab) => !rightTabIds.includes(tab.id)),
-          ...tabs.filter((tab) => rightTabIds.includes(tab.id)),
-        ];
+        // Navigation runs down the left column and then continues down the right column.
+        const orderedTabs = PANE_IDS.flatMap((id) => getPaneTabs(activeGroup, id));
         const currentIndex = orderedTabs.findIndex((tab) => tab.id === paneActiveId);
         const nextTab = orderedTabs[currentIndex + (isArrowUp ? -1 : 1)];
         if (currentIndex >= 0 && nextTab) onSelectTab(nextTab.id);
@@ -111,12 +110,11 @@ export function useNotepadShortcuts({
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
   }, [
-    composingRef,
-    editorRef,
+    composingRefs,
+    editorRefs,
     onAddTab,
     onMoveTabToPane,
     onSelectTab,
     requestCloseTab,
-    rightEditorRef,
   ]);
 }

@@ -2,14 +2,21 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { getActiveGroup, useNotepadStore } from "@/src/4-entity/notepad";
+import {
+  getActiveGroup,
+  getPaneActiveTabId,
+  getPaneTabs,
+  PANE_IDS,
+  type PaneId,
+  useNotepadStore,
+} from "@/src/4-entity/notepad";
 import type { ViewPanel } from "@/src/5-shared";
 
 import { useViewHistory, type ViewSnapshot } from "./use-view-history";
 
 type Options = {
   hydrated: boolean;
-  addTabToPane: (pane: "left" | "right") => void;
+  addTabToPane: (pane: PaneId) => void;
 };
 
 export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
@@ -20,8 +27,10 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
     return {
       groupId: group?.id ?? "",
       leftTabId: group?.activeTabId ?? "",
-      rightTabId: group?.activeRightTabId ?? null,
-      pane: group?.activePane === "right" && group.activeRightTabId ? "right" : "left",
+      rightTabId: group ? getPaneActiveTabId(group, "right") : null,
+      leftBottomTabId: group ? getPaneActiveTabId(group, "left-bottom") : null,
+      rightBottomTabId: group ? getPaneActiveTabId(group, "right-bottom") : null,
+      pane: group?.activePane ?? "left",
       panel,
     };
   }, [openPanel]);
@@ -33,19 +42,18 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
     if (!targetGroup) return;
 
     state.selectGroup(targetGroup.id);
-    const leftTab = targetGroup.tabs.find(
-      (tab) => tab.id === snapshot.leftTabId && !targetGroup.rightTabIds.includes(tab.id),
-    ) ?? targetGroup.tabs.find((tab) => !targetGroup.rightTabIds.includes(tab.id));
-    if (leftTab) state.selectTab(leftTab.id);
-
-    const currentGroup = useNotepadStore.getState().groups.find(
-      (group) => group.id === targetGroup.id,
-    );
-    const rightTab = currentGroup?.tabs.find(
-      (tab) => tab.id === snapshot.rightTabId && currentGroup.rightTabIds.includes(tab.id),
-    ) ?? currentGroup?.tabs.find((tab) => currentGroup.rightTabIds.includes(tab.id));
-    if (rightTab) state.selectTab(rightTab.id);
-    state.setActivePane(snapshot.pane === "right" && rightTab ? "right" : "left");
+    const snapshotTabIds: Record<PaneId, string | null> = {
+      left: snapshot.leftTabId,
+      right: snapshot.rightTabId,
+      "left-bottom": snapshot.leftBottomTabId,
+      "right-bottom": snapshot.rightBottomTabId,
+    };
+    for (const pane of PANE_IDS) {
+      const paneTabs = getPaneTabs(targetGroup, pane);
+      const tab = paneTabs.find((item) => item.id === snapshotTabIds[pane]) ?? paneTabs[0];
+      if (tab) state.selectTab(tab.id);
+    }
+    state.setActivePane(snapshot.pane);
     setOpenPanel(snapshot.panel);
   }, []);
 
@@ -75,7 +83,7 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
     pushView(getCurrentView());
   }, [getCurrentView, pushView]);
 
-  const activatePaneWithHistory = useCallback((pane: "left" | "right") => {
+  const activatePaneWithHistory = useCallback((pane: PaneId) => {
     const state = useNotepadStore.getState();
     const group = getActiveGroup(state);
     if (!group || group.activePane === pane) return;
@@ -108,12 +116,12 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
     pushView(getCurrentView(null));
   }, [getCurrentView, pushView]);
 
-  const addTabAndRecord = useCallback((pane: "left" | "right") => {
+  const addTabAndRecord = useCallback((pane: PaneId) => {
     addTabToPane(pane);
     pushView(getCurrentView());
   }, [addTabToPane, getCurrentView, pushView]);
 
-  const moveTabToPaneAndRecord = useCallback((tabId: string, pane: "left" | "right") => {
+  const moveTabToPaneAndRecord = useCallback((tabId: string, pane: PaneId) => {
     useNotepadStore.getState().moveTabToPane(tabId, pane);
     pushView(getCurrentView());
   }, [getCurrentView, pushView]);

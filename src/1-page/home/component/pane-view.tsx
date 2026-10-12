@@ -3,9 +3,13 @@
 import { Body, Header } from "@/src/2-widget";
 
 import type { PaneViewProps } from "../type";
-import { PaneDivider } from "./pane-divider";
+
+type Props = PaneViewProps & {
+  heightRatio?: number;
+};
 
 export function PaneView({
+  pane,
   closedCount,
   onOpenClosed,
   onOpenShortcuts,
@@ -20,8 +24,7 @@ export function PaneView({
   isFocused,
   draggingTabId,
   dropZones,
-  widthRatio,
-  onResize,
+  heightRatio,
   onActivate,
   onSelect,
   onClose,
@@ -34,54 +37,52 @@ export function PaneView({
   onToggleBookmark,
   onAdd,
   onChange,
-}: PaneViewProps) {
+}: Props) {
   return (
-    <>
-      {onResize && <PaneDivider onResize={onResize} />}
+    <div
+      className="pane-slot"
+      data-pane={pane}
+      style={heightRatio ? { flex: `0 0 ${heightRatio * 100}%` } : undefined}
+    >
       <div
-        className="pane-slot"
-        style={widthRatio ? { flex: `0 0 ${widthRatio * 100}%` } : undefined}
+        className={`note-pane ${isFocused ? "" : "is-unfocused"}`}
+        onFocusCapture={onActivate}
+        onPointerDownCapture={onActivate}
       >
-        <div
-          className={`note-pane ${isFocused ? "" : "is-unfocused"}`}
-          onFocusCapture={onActivate}
-          onPointerDownCapture={onActivate}
-        >
-          <Header
-            closedCount={closedCount}
-            onOpenClosed={onOpenClosed}
-            onOpenShortcuts={onOpenShortcuts}
-            tabs={tabs}
-            groups={groups}
-            activeGroupId={activeGroupId}
-            activeTabId={activeTab.id}
-            tabsScrollRef={tabStrip.tabsScrollRef}
-            tabsOverflowing={tabStrip.tabsOverflowing}
-            tabsCanScrollLeft={tabStrip.tabsCanScrollLeft}
-            tabsCanScrollRight={tabStrip.tabsCanScrollRight}
-            draggingTabId={draggingTabId}
-            onSelect={onSelect}
-            onClose={onClose}
-            onMove={onMove}
-            onMoveToGroup={onMoveToGroup}
-            onAdopt={onAdopt}
-            onDragStateChange={onDragStateChange}
-            onCycleTabColor={onCycleTabColor}
-            onTogglePin={onTogglePin}
-            onToggleBookmark={onToggleBookmark}
-            onAdd={onAdd}
-          />
-          <Body
-            activeTab={activeTab}
-            editorRef={editorRef}
-            composingRef={composingRef}
-            autoFocus={autoFocus}
-            draggingTabId={draggingTabId}
-            dropZones={dropZones}
-            onChange={onChange}
-          />
-        </div>
+        <Header
+          closedCount={closedCount}
+          onOpenClosed={onOpenClosed}
+          onOpenShortcuts={onOpenShortcuts}
+          tabs={tabs}
+          groups={groups}
+          activeGroupId={activeGroupId}
+          activeTabId={activeTab.id}
+          tabsScrollRef={tabStrip.tabsScrollRef}
+          tabsOverflowing={tabStrip.tabsOverflowing}
+          tabsCanScrollLeft={tabStrip.tabsCanScrollLeft}
+          tabsCanScrollRight={tabStrip.tabsCanScrollRight}
+          draggingTabId={draggingTabId}
+          onSelect={onSelect}
+          onClose={onClose}
+          onMove={onMove}
+          onMoveToGroup={onMoveToGroup}
+          onAdopt={onAdopt}
+          onDragStateChange={onDragStateChange}
+          onCycleTabColor={onCycleTabColor}
+          onTogglePin={onTogglePin}
+          onToggleBookmark={onToggleBookmark}
+          onAdd={onAdd}
+        />
+        <Body
+          activeTab={activeTab}
+          editorRef={editorRef}
+          composingRef={composingRef}
+          autoFocus={autoFocus}
+          draggingTabId={draggingTabId}
+          dropZones={dropZones}
+          onChange={onChange}
+        />
       </div>
-    </>
+    </div>
   );
 }

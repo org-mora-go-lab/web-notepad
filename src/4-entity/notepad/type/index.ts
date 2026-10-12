@@ -4,6 +4,7 @@ export type {
   GroupEntry,
   NotepadState,
   NoteTab,
+  PaneColumn,
   PaneId,
   TabColor,
 } from "./notepad";

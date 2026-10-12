@@ -1,3 +1,11 @@
 export * from "./store";
 export * from "./type";
-export { compareGroups } from "./util";
+export {
+  compareGroups,
+  getBottomPane,
+  getPaneActiveTabId,
+  getPaneColumn,
+  getPaneOfTab,
+  getPaneTabs,
+  PANE_IDS,
+} from "./util";

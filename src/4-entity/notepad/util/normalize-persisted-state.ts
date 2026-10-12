@@ -5,9 +5,11 @@ import type {
   GroupEntry,
   NotepadState,
   NoteTab,
+  PaneId,
   TabColor,
 } from "../type";
 import { createNoteTab, sanitizeSelectedLines } from "./note-tab";
+import { normalizeLayout, PANE_IDS } from "./pane-layout";
 
 const normalizeTabColor = (value: unknown, urgent?: unknown): TabColor =>
   value === "gray" || value === "red" || value === "green"
@@ -145,21 +147,23 @@ export function normalizePersistedState(
           ? legacyBookmarks
           : [];
       const tabIds = new Set(tabs.map((tab) => tab.id));
-      const sourceRightTabIds = fromSource("rightTabIds", []);
-      const rightTabIds = Array.isArray(sourceRightTabIds)
-        ? sourceRightTabIds.filter(
-            (tabId): tabId is string =>
-              typeof tabId === "string" && tabIds.has(tabId),
-          )
-        : [];
+      const readTabIds = (value: unknown) =>
+        Array.isArray(value)
+          ? value.filter(
+              (tabId): tabId is string =>
+                typeof tabId === "string" && tabIds.has(tabId),
+            )
+          : [];
+      const readActiveId = (value: unknown) =>
+        typeof value === "string" && tabIds.has(value) ? value : null;
+      const rightTabIds = readTabIds(fromSource("rightTabIds", []));
       const sourceActiveTabId = fromSource("activeTabId", null);
       const activeTabId =
         typeof sourceActiveTabId === "string" && tabIds.has(sourceActiveTabId)
           ? sourceActiveTabId
           : (tabs[0]?.id ?? "");
-      const sourceActiveRightTabId = fromSource("activeRightTabId", null);
       const sourceActivePane = fromSource("activePane", "left");
-      return {
+      return normalizeLayout({
         id,
         name: typeof group.name === "string" ? group.name : "Untitled Group",
         createdAt: finiteNumberOr(group.createdAt, Date.now()),
@@ -167,17 +171,19 @@ export function normalizePersistedState(
         bookmarks,
         activeTabId,
         rightTabIds,
-        activeRightTabId:
-          typeof sourceActiveRightTabId === "string" &&
-          rightTabIds.includes(sourceActiveRightTabId)
-            ? sourceActiveRightTabId
-            : (rightTabIds[0] ?? null),
-        activePane:
-          sourceActivePane === "right" && rightTabIds.length > 0
-            ? "right"
-            : "left",
+        activeRightTabId: readActiveId(fromSource("activeRightTabId", null)),
+        leftBottomTabIds: hasWorkspace ? readTabIds(group.leftBottomTabIds) : [],
+        activeLeftBottomTabId: hasWorkspace ? readActiveId(group.activeLeftBottomTabId) : null,
+        rightBottomTabIds: hasWorkspace ? readTabIds(group.rightBottomTabIds) : [],
+        activeRightBottomTabId: hasWorkspace ? readActiveId(group.activeRightBottomTabId) : null,
+        activePane: PANE_IDS.includes(sourceActivePane as PaneId)
+          ? (sourceActivePane as PaneId)
+          : "left",
+        // Split ratios reset to the center on every visit.
         splitRatio: 0.5,
-      };
+        leftRowRatio: 0.5,
+        rightRowRatio: 0.5,
+      });
     });
 
   const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
