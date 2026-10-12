@@ -1,6 +1,6 @@
 import { expect, type Locator } from "@playwright/test";
 
-type PxProperty = "width" | "height" | "minWidth" | "fontSize";
+type PxProperty = "width" | "height" | "minWidth" | "fontSize" | "lineHeight";
 
 // Fractional sizes snap to layout units (16.8px reads as 16.7969px), so compare within 0.05px.
 export async function expectCssPx(

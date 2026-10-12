@@ -22,11 +22,11 @@ test("10. Tab Colors 제목 오른쪽의 색상 초기화 버튼은 팝업 없�
 
   await reset.click();
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
-  await expect(tabColorRadio(page, 1, "Green")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Red")).toBeChecked();
+  await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Purple")).toBeChecked();
   await expect(fontScaleRadio(page, "110%")).toBeChecked();
   await expect
     .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toEqual({ fontScale: 1.1, tabColorCycle: ["green", "gray", "red"], language: "en", panelSlide: false });
+    .toEqual({ fontScale: 1.1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false });
 });

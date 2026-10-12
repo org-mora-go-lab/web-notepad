@@ -28,6 +28,6 @@ test("4. 복원하면 닫을 당시의 그룹에서 내용·색상·줄 선택�
   await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "true");
   await expect(groupStatusName(page)).toHaveText("Work");
   await expect(page.locator("textarea")).toHaveValue("restore me\nsecond\nthird");
-  await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "red");
+  await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "purple");
   await expectSelectedLines(page, [false, true, false]);
 });

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { addTabButton, deleteTabPopup } from "../__util__";
 
-test("3. 내용이 있는 탭은 확인 팝업에서 Delete를 선택해야 삭제한다", async ({ page }) => {
+test("3. 내용이 11자 이상인 탭은 확인 팝업에서 Delete를 선택해야 삭제한다", async ({ page }) => {
   await page.goto("/");
   const tabs = page.locator(".tab-item");
   const editor = page.locator("textarea");
@@ -10,7 +10,7 @@ test("3. 내용이 있는 탭은 확인 팝업에서 Delete를 선택해야 삭�
   const deleteButton = popup.getByRole("button", { name: "Delete", exact: true });
 
   for (const action of ["close", "middle"]) {
-    await editor.fill("Keep this note until confirmed");
+    await editor.fill("12345678901");
     await addTabButton(page).click();
     const target = tabs.first();
     if (action === "close") {

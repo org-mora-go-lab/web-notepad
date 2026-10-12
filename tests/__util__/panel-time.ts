@@ -8,7 +8,7 @@ export async function expectPanelTimes(headings: Locator) {
   const bounds = [];
   for (const heading of await headings.all()) {
     const time = heading.locator("time");
-    await expect(time).toHaveText("26. 10. 11\n11:30:00 AM", { useInnerText: true });
+    await expect(time).toHaveText("26. 10. 11.\n11:30 AM", { useInnerText: true });
     await expect(time).toHaveAttribute("datetime", "2026-10-11T11:30:00.000Z");
     await expect(time).toHaveCSS("white-space", "pre");
     await expect(time).toHaveCSS("flex-shrink", "0");

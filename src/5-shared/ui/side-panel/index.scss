@@ -96,8 +96,8 @@
   .side-panel-pin,
   .side-panel-action,
   .side-panel-close {
-    width: 28px;
-    height: 28px;
+    width: 33.6px;
+    height: 33.6px;
     display: grid;
     place-items: center;
     border: 1px solid v.$line;
@@ -106,8 +106,8 @@
     cursor: pointer;
 
     svg {
-      width: 12px;
-      height: 12px;
+      width: 14.4px;
+      height: 14.4px;
     }
 
     &:hover {
@@ -117,8 +117,8 @@
 
   .side-panel-pin {
     svg {
-      width: 14px;
-      height: 14px;
+      width: 16.8px;
+      height: 16.8px;
     }
 
     &[aria-pressed="true"] {
@@ -165,17 +165,6 @@
 
     .side-panel-pin {
       display: none;
-    }
-
-    .side-panel-action,
-    .side-panel-close {
-      width: 28px * v.$mobile-scale;
-      height: 28px * v.$mobile-scale;
-
-      svg {
-        width: 12px * v.$mobile-scale;
-        height: 12px * v.$mobile-scale;
-      }
     }
   }
 }

@@ -12,7 +12,7 @@ test("5. PC와 모바일의 모든 텍스트 입력 커서는 탭 색상과 무�
 
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    for (const color of ["green", "gray", "red"]) {
+    for (const color of ["gray", "green", "purple"]) {
       await expect(activeTab).toHaveAttribute("data-tab-color", color);
       await editor.focus();
       await expect(editor).toHaveCSS("caret-color", gray);

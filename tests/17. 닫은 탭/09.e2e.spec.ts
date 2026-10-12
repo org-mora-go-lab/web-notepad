@@ -9,7 +9,7 @@ import {
 
 test("9. 닫은 탭 삭제 시 영구 삭제 확인 팝업을 표시하고 Delete를 선택한 경우에만 삭제한다", async ({ page }) => {
   await page.goto("/");
-  await closeActiveTabWithContent(page, "remove me");
+  await closeActiveTabWithContent(page, "remove this note");
   await openClosedPanel(page);
 
   let nativeDialogOpened = false;

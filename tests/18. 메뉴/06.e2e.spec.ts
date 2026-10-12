@@ -8,12 +8,15 @@ test("6. MENU는 키보드로 탐색하며 Escape·Tab·바깥 클릭으로 닫�
   const closed = page.getByRole("menuitem", { name: "닫은 탭" });
   const search = page.getByRole("menuitem", { name: "전체 검색" });
   const settings = page.getByRole("menuitem", { name: "설정" });
+  const guide = page.getByRole("menuitem", { name: "GUIDE" });
   await trigger.press("Enter");
   await expect(theme).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await expect(shortcut).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await expect(settings).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await expect(guide).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await expect(closed).toBeFocused();
   await page.keyboard.press("Home");
@@ -22,6 +25,8 @@ test("6. MENU는 키보드로 탐색하며 Escape·Tab·바깥 클릭으로 닫�
   await expect(search).toBeFocused();
   await page.keyboard.press("ArrowUp");
   await expect(closed).toBeFocused();
+  await page.keyboard.press("ArrowUp");
+  await expect(guide).toBeFocused();
   await page.keyboard.press("ArrowUp");
   await expect(settings).toBeFocused();
   await page.keyboard.press("ArrowUp");

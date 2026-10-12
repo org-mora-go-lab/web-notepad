@@ -3,13 +3,14 @@
 @use "./style/editor";
 
 .note-editor {
-  --editor-line-height: 35px;
+  // Scales with the Font Size setting like the editor text.
+  --editor-line-height: #{v.font(35px)};
   --editor-top-padding: 10px;
   --selected-line-background: rgba(184, 184, 176, 0.2);
   --selected-line-color: #{v.$saved};
 
   @media (max-width: 640px) {
-    --editor-line-height: 39px;
+    --editor-line-height: #{v.font(39px)};
   }
 
   &[data-tab-color="red"] {

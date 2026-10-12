@@ -8,5 +8,6 @@ export {
   getPaneColumn,
   getPaneOfTab,
   getPaneTabs,
+  isSubstantialContent,
   PANE_IDS,
 } from "./util";

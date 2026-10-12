@@ -7,7 +7,7 @@ import { allocateTab, createGroupEntry } from "./workspace";
 
 type GroupActions = Pick<
   NotepadState,
-  "createGroup" | "renameGroup" | "removeGroup" | "selectGroup" | "moveTabToGroup"
+  "createGroup" | "renameGroup" | "toggleGroupPin" | "removeGroup" | "selectGroup" | "moveTabToGroup"
 >;
 
 export const createGroupActions: StateCreator<
@@ -76,6 +76,15 @@ export const createGroupActions: StateCreator<
       return {
         groups: state.groups.map((group) =>
           group.id === groupId ? { ...group, name: trimmedName } : group,
+        ),
+      };
+    }),
+  toggleGroupPin: (groupId) =>
+    set((state) => {
+      if (groupId === UNGROUPED_GROUP_ID) return state;
+      return {
+        groups: state.groups.map((group) =>
+          group.id === groupId ? { ...group, pinned: !group.pinned } : group,
         ),
       };
     }),

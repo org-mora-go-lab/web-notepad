@@ -12,6 +12,11 @@
   .side-panel-close svg {
     width: 16px;
     height: 16px;
+
+    @media (min-width: 641px) {
+      width: 19.2px;
+      height: 19.2px;
+    }
   }
 
   .shortcut-list {

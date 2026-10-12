@@ -16,7 +16,7 @@ test("7. Escape로 패널 진입 버튼의 포커스를 해제하고 하단·MEN
       await expect(panel).toHaveAttribute("aria-hidden", "false");
       const menuKeys: Record<string, string[]> = {
         "closed-panel": ["End", "ArrowUp"],
-        "settings-panel": ["End", "ArrowUp", "ArrowUp"],
+        "settings-panel": ["End", "ArrowUp", "ArrowUp", "ArrowUp"],
         "shortcuts-panel": ["ArrowDown"],
         "global-search-panel": ["End"],
       };

@@ -198,6 +198,7 @@ export function normalizePersistedState(
       return normalizeLayout({
         id,
         name: typeof group.name === "string" ? group.name : "Untitled Group",
+        pinned: id !== UNGROUPED_GROUP_ID && group.pinned === true,
         createdAt: finiteNumberOr(group.createdAt, Date.now()),
         tabs,
         bookmarks,

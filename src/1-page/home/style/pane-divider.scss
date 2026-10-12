@@ -24,21 +24,23 @@
     background: v.$hover-line;
   }
 
-  // Splits a column into top and bottom panes.
+  // Splits a column into top and bottom panes. The 2px line sits flush on the bottom pane's tabs,
+  // and the rest of the 10px drag area overlaps the bottom of the top pane.
   &.is-horizontal {
     width: auto;
     height: 10px;
     flex: 0 0 10px;
+    margin-top: -8px;
     cursor: row-resize;
 
     &::before {
-      top: 50%;
+      top: auto;
       right: 0;
-      bottom: auto;
+      bottom: 0;
       left: 0;
       width: auto;
       height: 2px;
-      transform: translateY(-50%);
+      transform: none;
     }
   }
 }

@@ -24,10 +24,10 @@ test("1. MENU는 탭 줄 우측 상단에 탭 목록과 겹치지 않게 배치�
     if (viewport.width <= 640) await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeHidden();
     else await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeVisible();
     const labels = await menu.locator('[role="menuitem"]:visible').evaluateAll(items =>
-      items.map(item => item.textContent?.match(/THEME|CLOSED|SETTINGS|SHORTCUT|SEARCH/)?.[0]));
+      items.map(item => item.textContent?.match(/THEME|CLOSED|SETTINGS|SHORTCUT|SEARCH|GUIDE/)?.[0]));
     expect(labels).toEqual(viewport.width <= 640
-      ? ["THEME", "SETTINGS", "CLOSED", "SEARCH"]
-      : ["THEME", "SHORTCUT", "SETTINGS", "CLOSED", "SEARCH"]);
+      ? ["THEME", "SETTINGS", "GUIDE", "CLOSED", "SEARCH"]
+      : ["THEME", "SHORTCUT", "SETTINGS", "GUIDE", "CLOSED", "SEARCH"]);
     await page.keyboard.press("Escape");
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
   }

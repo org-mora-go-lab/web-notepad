@@ -1,9 +1,9 @@
 "use client";
 
-import { Ghost, Keyboard, Menu, Search, Settings } from "lucide-react";
+import { BookOpen, Ghost, Keyboard, Menu, Search, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { Theme } from "@/src/3-feature";
+import { Theme, UserGuide } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
 
 export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onOpenShortcuts, onOpenSearch }: Props) {
   const [open, setOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -92,6 +93,11 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onO
             onClick={() => { close(); onOpenSettings(); }}>
             <Settings size={16} /><span>{t.settings}</span>
           </button>
+          <button className="additional-tools-guide" type="button" role="menuitem"
+            aria-haspopup="dialog"
+            onClick={() => { close(); setGuideOpen(true); }}>
+            <BookOpen size={16} /><span>{t.guide}</span>
+          </button>
           <button className="closed-command" type="button" role="menuitem"
             aria-controls="closed-panel" aria-label="닫은 탭"
             onClick={() => { close(); onOpenClosed(); }}>
@@ -104,6 +110,7 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onO
             <Search size={16} /><span className="global-search-label">{t.search}</span>
           </button>
         </div>
+      {guideOpen && <UserGuide onClose={() => setGuideOpen(false)} />}
     </div>
   );
 }

@@ -48,12 +48,12 @@ test("9. 고정 버튼 왼쪽의 설정 초기화 버튼은 확인 팝업에서 
   await expect(panel).toHaveAttribute("aria-hidden", "false");
   await expect(panel.locator("h2")).toHaveText("Settings");
   await expect(fontScaleRadio(page, "100%")).toBeChecked();
-  await expect(tabColorRadio(page, 1, "Green")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Red")).toBeChecked();
+  await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Purple")).toBeChecked();
   await expect(languageRadio(page, "English")).toBeChecked();
   await expect(panel.getByRole("radio", { name: "Off", exact: true })).toBeChecked();
   await expect
     .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toEqual({ fontScale: 1, tabColorCycle: ["green", "gray", "red"], language: "en", panelSlide: false });
+    .toEqual({ fontScale: 1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false });
 });

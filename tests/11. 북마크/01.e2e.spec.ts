@@ -23,7 +23,7 @@ test("1. 북마크에 제목과 내용과 생성 시각 및 탭 색상과 선택
     title: "bookmark content",
     content,
     createdAt: expect.any(Number),
-    tabColor: "red",
+    tabColor: "purple",
     selectedLines: [1, 2],
   });
   await bookmarksCommand(page).click();

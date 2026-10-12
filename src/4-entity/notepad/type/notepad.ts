@@ -56,6 +56,8 @@ export type ClosedTabEntry = {
 export type GroupEntry = {
   id: string;
   name: string;
+  // Pinned groups sort first in the group lists.
+  pinned: boolean;
   createdAt: number;
   tabs: NoteTab[];
   bookmarks: BookmarkEntry[];
@@ -108,6 +110,7 @@ export type NotepadState = {
   removeBookmark: (bookmarkId: string) => void;
   createGroup: (name: string) => void;
   renameGroup: (groupId: string, name: string) => void;
+  toggleGroupPin: (groupId: string) => void;
   removeGroup: (groupId: string) => void;
   selectGroup: (groupId: string) => void;
   restoreClosedTab: (entryId: string) => void;

@@ -50,6 +50,7 @@ export function useHome() {
     removeBookmark,
     createGroup,
     renameGroup,
+    toggleGroupPin,
     removeGroup,
     settings,
   } = store;
@@ -196,6 +197,7 @@ export function useHome() {
     removeBookmark,
     createGroup,
     renameGroup,
+    toggleGroupPin,
     removeGroup,
     fontScale: settings.fontScale,
     language: settings.language,

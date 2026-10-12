@@ -30,7 +30,7 @@ test("2. 원본 탭의 내용과 색상 및 줄 선택 변경을 북마크에 �
   }).toEqual({
     title: "prefix",
     content: "prefix\nupdated\nsecond\nthird",
-    tabColor: "gray",
+    tabColor: "green",
     selectedLines: [3],
   });
   await bookmarksCommand(page).click();
