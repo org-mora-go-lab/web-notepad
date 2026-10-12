@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { groupsCommand, seedStoredStateOnLoad } from "../__util__";
 
-test("3. 그룹 검색 결과에 Ungrouped가 포함되면 최상단에 둔다", async ({ page }) => {
+test("3. 그룹 검색 결과에 Ungrouped가 포함되면 맨 아래에 둔다", async ({ page }) => {
   const groups = [
     { id: "ungrouped", name: "Ungrouped", createdAt: 0 },
     { id: "zulu", name: "Zulu", createdAt: 1 },
@@ -23,9 +23,9 @@ test("3. 그룹 검색 결과에 Ungrouped가 포함되면 최상단에 둔다",
   const search = page.getByRole("searchbox", { name: "그룹 검색" });
 
   await search.fill("r");
-  await expect(names).toHaveText(["Ungrouped", "Aardvark", "Burger"]);
+  await expect(names).toHaveText(["Aardvark", "Burger", "Ungrouped"]);
   await search.fill("U");
-  await expect(names).toHaveText(["Ungrouped", "Burger", "Zulu"]);
+  await expect(names).toHaveText(["Burger", "Zulu", "Ungrouped"]);
   await search.fill("a");
   await expect(names).toHaveText(["Aardvark"]);
 });
