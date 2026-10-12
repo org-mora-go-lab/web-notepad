@@ -7,6 +7,10 @@ export async function dragTabToZone(page: Page, tab: Locator, pane: Locator, zon
   await page.mouse.move(tabBox.x + tabBox.width / 2, tabBox.y + tabBox.height / 2);
   await page.mouse.down();
   await page.mouse.move(bodyBox.x + bodyBox.width / 4, bodyBox.y + bodyBox.height / 4, { steps: 5 });
+  // The bottom split zone only appears below the middle of the editor.
+  if (zoneLabel === "Split down") {
+    await page.mouse.move(bodyBox.x + bodyBox.width / 4, bodyBox.y + bodyBox.height * 0.75, { steps: 5 });
+  }
   const zone = pane.locator(".note-pane-drop", { hasText: zoneLabel });
   await expect(zone).toBeVisible();
   const zoneBox = (await zone.boundingBox())!;

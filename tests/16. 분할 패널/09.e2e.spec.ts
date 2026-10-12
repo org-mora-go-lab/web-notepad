@@ -12,6 +12,22 @@ test("9. 좌우 열의 상단 패널을 Split down으로 상하 분할해 최대
   }
   const tab = (text: string) => page.locator(".tab-item").filter({ hasText: new RegExp(`^${text}$`) });
 
+  // Split down stays hidden until the tab passes the middle of the editor.
+  const tabBox = (await tab("d").boundingBox())!;
+  const bodyBox = (await paneSlot(page, "left").locator(".body").boundingBox())!;
+  const splitDown = paneSlot(page, "left").locator(".note-pane-drop", { hasText: "Split down" });
+  await page.mouse.move(tabBox.x + tabBox.width / 2, tabBox.y + tabBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(bodyBox.x + bodyBox.width / 4, bodyBox.y + bodyBox.height * 0.4, { steps: 5 });
+  await expect(paneSlot(page, "left").locator(".note-pane-drop", { hasText: "Split right" })).toBeVisible();
+  await expect(splitDown).toHaveCount(0);
+  await page.mouse.move(bodyBox.x + bodyBox.width / 4, bodyBox.y + bodyBox.height * 0.6, { steps: 5 });
+  await expect(splitDown).toBeVisible();
+  await page.mouse.move(bodyBox.x + bodyBox.width / 4, bodyBox.y + bodyBox.height * 0.4, { steps: 5 });
+  await expect(splitDown).toHaveCount(0);
+  await page.mouse.move(tabBox.x + tabBox.width / 2, tabBox.y + tabBox.height / 2, { steps: 5 });
+  await page.mouse.up();
+
   await dragTabToZone(page, tab("d"), paneSlot(page, "left"), "Split down");
   await expect(page.locator(".pane-slot")).toHaveCount(2);
   await expect(paneSlot(page, "left-bottom").locator("textarea")).toHaveValue("d");
@@ -36,13 +52,13 @@ test("9. 좌우 열의 상단 패널을 Split down으로 상하 분할해 최대
   expect(rightBottom.x).toBeCloseTo(rightTop.x, 0);
 
   // With four panes open there is nowhere left to split.
-  const tabBox = (await tab("a").boundingBox())!;
+  const firstTabBox = (await tab("a").boundingBox())!;
   const targetBox = (await paneSlot(page, "right-bottom").locator(".body").boundingBox())!;
-  await page.mouse.move(tabBox.x + tabBox.width / 2, tabBox.y + tabBox.height / 2);
+  await page.mouse.move(firstTabBox.x + firstTabBox.width / 2, firstTabBox.y + firstTabBox.height / 2);
   await page.mouse.down();
-  await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2, { steps: 5 });
+  await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height * 0.75, { steps: 5 });
   await expect(paneSlot(page, "right-bottom").locator(".note-pane-drop")).toHaveText(["Move here"]);
-  await page.mouse.move(tabBox.x + tabBox.width / 2, tabBox.y + tabBox.height / 2, { steps: 5 });
+  await page.mouse.move(firstTabBox.x + firstTabBox.width / 2, firstTabBox.y + firstTabBox.height / 2, { steps: 5 });
   await page.mouse.up();
   await expect(page.locator(".pane-slot")).toHaveCount(4);
 });

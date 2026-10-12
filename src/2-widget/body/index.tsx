@@ -29,8 +29,13 @@ export function Body({
 }: Props) {
   const dragActive = draggingTabId !== null;
   const adoptZone = dropZones.find((zone) => zone.key === "adopt");
-  const hasRightZone = dropZones.some((zone) => zone.area === "right");
-  const hasBottomZone = dropZones.some((zone) => zone.area === "bottom");
+  const dropArea = usePaneDropArea(dragActive, () => adoptZone?.onDrop());
+  // The bottom split zone only appears once the dragged tab passes the middle of the editor.
+  const visibleZones = dropZones.filter(
+    (zone) => zone.area !== "bottom" || dropArea.pointerInLowerHalf,
+  );
+  const hasRightZone = visibleZones.some((zone) => zone.area === "right");
+  const hasBottomZone = visibleZones.some((zone) => zone.area === "bottom");
   // Each zone takes its own part of the pane so no label is covered by another zone.
   const zoneClassName = (zone: PaneDropZone) => {
     const area = zone.area ?? "full";
@@ -38,7 +43,6 @@ export function Body({
     if (area === "bottom") return "is-bottom";
     return `is-full ${hasRightZone ? "has-right-split" : ""} ${hasBottomZone ? "has-bottom-split" : ""}`;
   };
-  const dropArea = usePaneDropArea(dragActive, () => adoptZone?.onDrop());
 
   return (
     <div
@@ -56,7 +60,7 @@ export function Body({
         onChange={onChange}
       />
       {dragActive && dropArea.dropAreaHovered &&
-        dropZones.map((zone) => (
+        visibleZones.map((zone) => (
           <div
             key={zone.key}
             className={`note-pane-drop ${zoneClassName(zone)}`}
