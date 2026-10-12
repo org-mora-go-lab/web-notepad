@@ -24,6 +24,35 @@
     }
   }
 
+  // Heading with a reset button right after the title.
+  .setting-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .setting-section-reset {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid v.$line;
+    background: transparent;
+    color: v.$dim;
+    cursor: pointer;
+
+    &:hover {
+      border-color: v.$hover-line;
+      color: v.$ink;
+    }
+  }
+
   .setting-options {
     display: flex;
     flex-wrap: wrap;
@@ -120,6 +149,20 @@
       outline-offset: 2px;
     }
 
+  }
+
+  // Name chip in the color order guide, filled with the tab color it names.
+  .setting-color-chip {
+    padding: 0 5px;
+    border-radius: 3px;
+    background: var(--swatch-color);
+    // Panel color reads on the pastel DARK accents and the deep LIGHT accents alike.
+    color: v.$panel;
+    font-weight: 500;
+  }
+
+  .setting-swatch,
+  .setting-color-chip {
     @each $name in ("gray", "red", "green") {
       &[data-tab-color="#{$name}"] {
         --swatch-color: var(--color-tab-#{$name});
@@ -136,6 +179,16 @@
   @media (max-width: 640px) {
     .setting-section h3 {
       font-size: v.font(16px * v.$mobile-scale);
+    }
+
+    .setting-section-reset {
+      width: 24px * v.$mobile-scale;
+      height: 24px * v.$mobile-scale;
+
+      svg {
+        width: 13px * v.$mobile-scale;
+        height: 13px * v.$mobile-scale;
+      }
     }
 
     .setting-option span {

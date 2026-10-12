@@ -7,7 +7,7 @@ import type { NotepadState } from "../type";
 
 type SettingActions = Pick<
   NotepadState,
-  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "resetSettings"
+  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "resetSettings" | "resetTabColorCycle"
 >;
 
 export const createSettingActions: StateCreator<
@@ -38,6 +38,10 @@ export const createSettingActions: StateCreator<
         ? { settings: { ...state.settings, language } }
         : state,
     ),
+  resetTabColorCycle: () =>
+    set((state) => ({
+      settings: { ...state.settings, tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle] },
+    })),
   resetSettings: () =>
     set({
       settings: { ...DEFAULT_SETTINGS, tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle] },

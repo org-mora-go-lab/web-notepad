@@ -6,7 +6,7 @@ import { settingsPanel, tabColorRadio } from "./__util__";
 
 const COLOR_LABELS = ["Gray", "Red", "Orange", "Yellow", "Green", "Teal", "Indigo", "Purple", "Pink"];
 
-test("3. 탭 색상 순서의 1·2·3번째 색상을 기본 9가지 색상 중에서 영문으로 선택하며 기본값은 Green·Gray·Red다", async ({ page }) => {
+test("3. 탭 색상 순서의 1·2·3번째 색상을 기본 9가지 색상 중에서 영문으로 선택하며 기본값은 Green·Gray·Red다, 순서 안내의 색상 이름은 해당 색상 배경으로 표시한다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
 
@@ -26,6 +26,12 @@ test("3. 탭 색상 순서의 1·2·3번째 색상을 기본 9가지 색상 중�
   expect(await hint.innerText()).toBe(
     "New tabs start with the first color.\n(Green → Gray → Red)",
   );
+  const chips = hint.locator(".setting-color-chip");
+  await expect(chips).toHaveText(["Green", "Gray", "Red"]);
+  for (const [index, color] of ["rgb(143, 227, 176)", "rgb(184, 184, 176)", "rgb(242, 139, 130)"].entries()) {
+    await expect(chips.nth(index)).toHaveCSS("background-color", color);
+    await expect(chips.nth(index)).toHaveCSS("color", "rgb(17, 17, 16)");
+  }
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await expectCssPx(hint, "fontSize", viewport.width <= 640 ? 18 : 15);

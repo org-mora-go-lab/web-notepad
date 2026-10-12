@@ -28,6 +28,7 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
   const setTabColorCycleColor = useNotepadStore((state) => state.setTabColorCycleColor);
   const setLanguage = useNotepadStore((state) => state.setLanguage);
   const resetSettings = useNotepadStore((state) => state.resetSettings);
+  const resetTabColorCycle = useNotepadStore((state) => state.resetTabColorCycle);
   const [confirmingReset, setConfirmingReset] = useState(false);
 
   return (
@@ -71,11 +72,33 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
           </div>
         </section>
         <section className="setting-section" aria-labelledby={colorTitleId}>
-          <h3 id={colorTitleId}>{t.tabColors}</h3>
+          <div className="setting-section-heading">
+            <h3 id={colorTitleId}>{t.tabColors}</h3>
+            <button
+              className="setting-section-reset"
+              type="button"
+              onClick={resetTabColorCycle}
+              aria-label="탭 색상 초기화"
+              title={t.resetTabColors}
+            >
+              <RotateCcw size={13} />
+            </button>
+          </div>
           <p className="setting-hint">
             {t.tabColorHint}
             <br />
-            ({settings.tabColorCycle.map((color) => colorLabels[color]).join(" → ")})
+            <span className="setting-color-guide">
+              (
+              {settings.tabColorCycle.map((color, index) => (
+                <span key={color}>
+                  {index > 0 && " → "}
+                  <span className="setting-color-chip" data-tab-color={color}>
+                    {colorLabels[color]}
+                  </span>
+                </span>
+              ))}
+              )
+            </span>
           </p>
           {settings.tabColorCycle.map((selected, index) => (
             <div className="setting-color-row" key={index}>
