@@ -2,8 +2,8 @@
 
 import { type RefObject, useEffect } from "react";
 
-import { isAltBackspace } from "@/src/entity";
 import { getActiveGroup, useNotepadStore } from "@/src/entity/notepad";
+import { isAltBackspace } from "@/src/shared";
 
 import { useSelectAllShortcut } from "./use-select-all-shortcut";
 

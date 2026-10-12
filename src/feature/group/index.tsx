@@ -5,9 +5,9 @@ import { type FormEvent, useState } from "react";
 
 import type { GroupEntry } from "@/src/entity/notepad";
 import { compareGroups, UNGROUPED_GROUP_ID } from "@/src/entity/notepad";
-import { ConfirmPopup, SearchField, SidePanel } from "@/src/entity/ui";
-import { SearchHighlight } from "@/src/entity/ui/search-field/component";
-import { matchesSearchQuery } from "@/src/entity/ui/search-field/util";
+import { ConfirmPopup, SearchField, SidePanel } from "@/src/shared/ui";
+import { SearchHighlight } from "@/src/shared/ui/search-field/component";
+import { matchesSearchQuery } from "@/src/shared/ui/search-field/util";
 
 type Props = {
   groups: GroupEntry[];

@@ -2,9 +2,9 @@
 
 import type { ComponentProps } from "react";
 
-import type { ViewPanel } from "@/src/entity";
 import type { BookmarkEntry, ClosedTabEntry, GroupEntry } from "@/src/entity/notepad";
 import { Bookmark, Closed, GlobalSearch, Group, Shortcut } from "@/src/feature";
+import type { ViewPanel } from "@/src/shared";
 
 type Props = {
   openPanel: ViewPanel | null;

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 
-import type { ViewPanel } from "@/src/entity";
+import type { ViewPanel } from "@/src/shared";
 export type ViewPane = "left" | "right";
 
 export type ViewSnapshot = {

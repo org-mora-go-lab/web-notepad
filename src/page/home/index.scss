@@ -1,7 +1,7 @@
-@use "../../entity/style/variable" as v;
-@use "../../entity/ui/confirm-popup";
-@use "../../entity/ui/expandable-content";
-@use "../../entity/ui/side-panel";
+@use "../../shared/style/variable" as v;
+@use "../../shared/ui/confirm-popup";
+@use "../../shared/ui/expandable-content";
+@use "../../shared/ui/side-panel";
 @use "../../widget/header";
 @use "../../widget/body";
 @use "../../widget/footer";
@@ -12,7 +12,7 @@
 @use "../../feature/shortcut";
 @use "../../feature/closed";
 @use "../../feature/global-search";
-@use "../../entity/ui/search-field";
+@use "../../shared/ui/search-field";
 @use "./style/loading";
 @use "./style/search-empty-state";
 @use "./style/pane-divider";

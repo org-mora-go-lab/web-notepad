@@ -1,8 +1,8 @@
 import type { RefObject } from "react";
 
-import type { PaneDropZone } from "@/src/entity";
-import type { TabStripState } from "@/src/entity/hook";
 import type { GroupEntry, NoteTab } from "@/src/entity/notepad";
+import type { PaneDropZone } from "@/src/shared";
+import type { TabStripState } from "@/src/shared/hook";
 
 export type PaneViewProps = {
   closedCount?: number;

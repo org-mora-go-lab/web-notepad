@@ -41,12 +41,21 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 - Imports from outside these directories must resolve through the directory's `index.ts` barrel instead of importing individual files directly. Imports between files within the same directory may remain direct to avoid circular dependencies.
 - When adding, moving, or removing a public API, update its barrel and consumers in the same change. Keep feature and widget root implementations in `index.tsx` as specified above.
 
-## Entity UI Components
+## Entity Layer
 
-- Put common UI components shared by feature, widget, or page modules under `src/entity/ui/`, not under a `component/` directory.
-- Structure each one exactly like a feature, widget, or page module: a `src/entity/ui/<component>/` directory with its main implementation in `index.tsx` and its main stylesheet in `index.scss`. Apply the subcomponent `component/` and `style/` rules below to these modules as well.
-- The top-level class selector in a UI component's `index.scss` must match its directory name (for example, `.side-panel` in `side-panel/index.scss`). Keep shared component styles in that stylesheet instead of SCSS mixins, and load it from the page stylesheet with `@use "../../entity/ui/<component>"`.
-- `src/entity/ui/index.ts` may export only each UI component's main implementation. Consumers import these components through `@/src/entity/ui` (or `@/src/entity`) and put module-specific overrides in their own stylesheet, scoped under their own top-level class.
+- `src/entity/` exists only to gather the functionality of a specific domain. Group each domain under its own `src/entity/<domain>/` directory (for example, `src/entity/notepad/` with its store, types, constants, and utilities) and export it through `src/entity/index.ts`.
+- Do not put domain-independent code in `src/entity/`. If code is not tied to a specific domain, put it in `src/shared/` instead.
+
+## Shared Layer
+
+- Put domain-independent code shared across layers (`hook`, `type`, `ui`, `util`, `style`) under `src/shared/`, exported through `src/shared/index.ts`.
+
+## Shared UI Components
+
+- Put common UI components shared by feature, widget, or page modules under `src/shared/ui/`, not under a `component/` directory.
+- Structure each one exactly like a feature, widget, or page module: a `src/shared/ui/<component>/` directory with its main implementation in `index.tsx` and its main stylesheet in `index.scss`. Apply the subcomponent `component/` and `style/` rules below to these modules as well.
+- The top-level class selector in a UI component's `index.scss` must match its directory name (for example, `.side-panel` in `side-panel/index.scss`). Keep shared component styles in that stylesheet instead of SCSS mixins, and load it from the page stylesheet with `@use "../../shared/ui/<component>"`.
+- `src/shared/ui/index.ts` may export only each UI component's main implementation. Consumers import these components through `@/src/shared/ui` (or `@/src/shared`) and put module-specific overrides in their own stylesheet, scoped under their own top-level class.
 
 ## Feature, Widget, and Page Stylesheets
 

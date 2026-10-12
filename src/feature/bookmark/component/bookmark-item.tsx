@@ -3,8 +3,8 @@
 import { Bookmark as BookmarkIcon, Trash2 } from "lucide-react";
 
 import type { BookmarkEntry } from "@/src/entity/notepad";
-import { SearchHighlight } from "@/src/entity/ui/search-field/component";
-import { formatDate } from "@/src/entity/util";
+import { SearchHighlight } from "@/src/shared/ui/search-field/component";
+import { formatDate } from "@/src/shared/util";
 
 type Props = {
   bookmark: BookmarkEntry;

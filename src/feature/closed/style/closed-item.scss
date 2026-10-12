@@ -1,4 +1,4 @@
-@use "../../../entity/style/mixin";
+@use "../../../shared/style/mixin";
 
 .closed {
   @include mixin.note-card("closed");

@@ -2,9 +2,9 @@
 
 import type { RefObject } from "react";
 
-import type { PaneDropZone } from "@/src/entity";
 import type { NoteTab } from "@/src/entity/notepad";
 import { NoteEditor } from "@/src/feature";
+import type { PaneDropZone } from "@/src/shared";
 
 import { usePaneDropArea } from "./hook";
 

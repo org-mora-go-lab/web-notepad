@@ -1,4 +1,4 @@
-import { SearchHighlight } from "@/src/entity/ui/search-field/component";
+import { SearchHighlight } from "@/src/shared/ui/search-field/component";
 
 type Props = {
   category: string;

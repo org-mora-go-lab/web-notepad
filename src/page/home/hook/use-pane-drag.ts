@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { PaneDropZone } from "@/src/entity";
+import type { PaneDropZone } from "@/src/shared";
 
 type Options = {
   rightIds: Set<string>;

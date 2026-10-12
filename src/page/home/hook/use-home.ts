@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { useTabStrip } from "@/src/entity/hook";
 import { getActiveGroup, useNotepadStore } from "@/src/entity/notepad";
+import { useTabStrip } from "@/src/shared/hook";
 
 import { useEditorFocus } from "./use-editor-focus";
 import { useHomeNavigation } from "./use-home-navigation";

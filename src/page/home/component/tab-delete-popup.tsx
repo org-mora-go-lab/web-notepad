@@ -1,4 +1,4 @@
-import { ConfirmPopup, isAltBackspace } from "@/src/entity";
+import { ConfirmPopup, isAltBackspace } from "@/src/shared";
 
 type Props = {
   onConfirm: () => void;

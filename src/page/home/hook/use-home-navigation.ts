@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import type { ViewPanel } from "@/src/entity";
 import { getActiveGroup, useNotepadStore } from "@/src/entity/notepad";
+import type { ViewPanel } from "@/src/shared";
 
 import { useViewHistory, type ViewSnapshot } from "./use-view-history";
 

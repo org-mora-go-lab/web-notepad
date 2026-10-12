@@ -4,8 +4,8 @@ import { Bookmark as BookmarkIcon } from "lucide-react";
 import { useState } from "react";
 
 import type { BookmarkEntry } from "@/src/entity/notepad";
-import { SearchField, SidePanel } from "@/src/entity/ui";
-import { matchesSearchQuery } from "@/src/entity/ui/search-field/util";
+import { SearchField, SidePanel } from "@/src/shared/ui";
+import { matchesSearchQuery } from "@/src/shared/ui/search-field/util";
 
 import { BookmarkItem } from "./component";
 

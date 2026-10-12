@@ -1,6 +1,6 @@
 "use client";
 
-import { SidePanel } from "@/src/entity/ui";
+import { SidePanel } from "@/src/shared/ui";
 
 type Props = {
   open: boolean;
