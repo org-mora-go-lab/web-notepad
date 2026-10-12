@@ -17,6 +17,8 @@ export type NotepadSettings = {
   // Colors the tab color icon cycles through; the first one is the new-tab color.
   tabColorCycle: TabColor[];
   language: Language;
+  // Right panels slide in and out; off shows and hides them in place.
+  panelSlide: boolean;
 };
 
 export type NoteTab = {
@@ -84,6 +86,7 @@ export type NotepadState = {
   setFontScale: (fontScale: number) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;
   setLanguage: (language: Language) => void;
+  setPanelSlide: (panelSlide: boolean) => void;
   resetSettings: () => void;
   resetTabColorCycle: () => void;
   shuffleTabColorCycle: () => void;

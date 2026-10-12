@@ -20,6 +20,7 @@ export {
   groupSelectCommand,
   groupStatusName,
   openClosedPanel,
+  openGlobalSearchPanel,
   openPanel,
   openSettingsPanel,
   openShortcutsPanel,

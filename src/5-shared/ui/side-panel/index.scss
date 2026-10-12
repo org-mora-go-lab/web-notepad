@@ -2,17 +2,15 @@
 
 // Right drawer shell; each panel sets its own `.side-panel-drawer` grid rows.
 .side-panel {
+  // Transparent click catcher: closes the open panel without darkening the page.
   .side-panel-backdrop {
     position: fixed;
     inset: 0;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.58);
-    opacity: 0;
+    background: transparent;
     pointer-events: none;
-    transition: opacity 180ms ease;
 
     &.is-visible {
-      opacity: 1;
       pointer-events: auto;
     }
   }
@@ -33,7 +31,7 @@
     transition: transform 220ms ease;
 
     &.is-open {
-      box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+      box-shadow: -20px 0 60px rgba(0, 0, 0, 0.18);
       transform: translateX(0);
     }
   }
@@ -131,6 +129,11 @@
         fill: currentColor;
       }
     }
+  }
+
+  // The Panel Slide setting can turn the slide off everywhere.
+  [data-panel-slide="off"] & .side-panel-drawer {
+    transition: none;
   }
 
   // A pinned drawer docks beside the workspace instead of covering it.

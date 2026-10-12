@@ -7,7 +7,7 @@ import type { NotepadState } from "../type";
 
 type SettingActions = Pick<
   NotepadState,
-  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "resetSettings" | "resetTabColorCycle" | "shuffleTabColorCycle"
+  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "setPanelSlide" | "resetSettings" | "resetTabColorCycle" | "shuffleTabColorCycle"
 >;
 
 export const createSettingActions: StateCreator<
@@ -39,6 +39,8 @@ export const createSettingActions: StateCreator<
         ? { settings: { ...state.settings, language } }
         : state,
     ),
+  setPanelSlide: (panelSlide) =>
+    set((state) => ({ settings: { ...state.settings, panelSlide: Boolean(panelSlide) } })),
   resetTabColorCycle: () =>
     set((state) => ({
       settings: { ...state.settings, tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle] },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Ghost, Keyboard, Menu, Settings } from "lucide-react";
+import { Ghost, Keyboard, Menu, Search, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Theme } from "@/src/3-feature";
@@ -11,9 +11,10 @@ type Props = {
   onOpenClosed: () => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
+  onOpenSearch: () => void;
 };
 
-export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onOpenShortcuts }: Props) {
+export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onOpenShortcuts, onOpenSearch }: Props) {
   const [open, setOpen] = useState(false);
   const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -96,6 +97,11 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onO
             onClick={() => { close(); onOpenClosed(); }}>
             <Ghost size={16} /><span>{t.closed}</span>
             {closedCount > 0 && <span className="closed-count">{closedCount}</span>}
+          </button>
+          <button className="additional-tools-search global-search-command" type="button" role="menuitem"
+            aria-controls="global-search-panel" aria-label="전체 검색"
+            onClick={() => { close(); onOpenSearch(); }}>
+            <Search size={16} /><span className="global-search-label">{t.search}</span>
           </button>
         </div>
     </div>

@@ -13,6 +13,7 @@ type Props = {
   onOpenClosed?: () => void;
   onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;
+  onOpenSearch?: () => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;
@@ -41,6 +42,7 @@ export function Header({
   onOpenClosed,
   onOpenSettings,
   onOpenShortcuts,
+  onOpenSearch,
   tabs,
   groups,
   activeGroupId,
@@ -163,11 +165,12 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenClosed && onOpenSettings && <AdditionalTools
+      {onOpenShortcuts && onOpenClosed && onOpenSettings && onOpenSearch && <AdditionalTools
         closedCount={closedCount}
         onOpenClosed={onOpenClosed}
         onOpenSettings={onOpenSettings}
         onOpenShortcuts={onOpenShortcuts}
+        onOpenSearch={onOpenSearch}
       />}
     </div>
   );

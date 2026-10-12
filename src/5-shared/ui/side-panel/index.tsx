@@ -17,7 +17,7 @@ type Props = {
   // PC only: docks the drawer to the right edge beside the workspace.
   pinned?: boolean;
   onTogglePin?: () => void;
-  // Extra header buttons shown just left of the close button.
+  // Extra header buttons shown before the pin and close buttons.
   headerActions?: ReactNode;
   onClose: () => void;
   children: ReactNode;
@@ -63,6 +63,7 @@ export function SidePanel({
         <div className="side-panel-header">
           <h2>{title}</h2>
           <div className="side-panel-header-actions">
+            {headerActions}
             {onTogglePin && (
               <button
                 className="side-panel-pin"
@@ -75,7 +76,6 @@ export function SidePanel({
                 <Pin size={14} />
               </button>
             )}
-            {headerActions}
             <button
               className="side-panel-close"
               type="button"
