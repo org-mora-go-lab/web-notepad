@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // The bottom-left dev indicator overlaps the footer's group command.
+  devIndicators: false,
 };
 
 export default nextConfig;

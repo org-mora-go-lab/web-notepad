@@ -1,0 +1,232 @@
+import { UNGROUPED_GROUP_ID } from "../constant";
+import type {
+  BookmarkEntry,
+  ClosedTabEntry,
+  GroupEntry,
+  NotepadState,
+  NoteTab,
+  PaneId,
+  TabColor,
+} from "../type";
+import { createNoteTab, sanitizeSelectedLines } from "./note-tab";
+import { normalizeLayout, PANE_IDS } from "./pane-layout";
+
+const normalizeTabColor = (value: unknown, urgent?: unknown): TabColor =>
+  value === "gray" || value === "red" || value === "green"
+    ? value
+    : value === "blue"
+      ? "red"
+      : urgent === false
+        ? "gray"
+        : "green";
+
+const finiteNumberOr = (value: unknown, fallback: number) =>
+  typeof value === "number" && Number.isFinite(value) ? value : fallback;
+
+const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
+  (Array.isArray(value) ? value : fallback)
+    .filter((tab) => tab && typeof tab.id === "string")
+    .map((tab) => {
+      const { urgent, ...tabData } = tab;
+      const content = typeof tab.content === "string" ? tab.content : "";
+      const selectedLines = sanitizeSelectedLines(tab.selectedLines, content);
+      const tabColor = normalizeTabColor(tab.tabColor, urgent);
+
+      return {
+        ...tabData,
+        title: typeof tab.title === "string" ? tab.title : "Untitled",
+        content,
+        selectedLines,
+        savedContent:
+          typeof tab.savedContent === "string" ? tab.savedContent : "",
+        tabColor,
+        pinned: Boolean(tab.pinned),
+        bookmarked: Boolean(tab.bookmarked),
+      };
+    });
+
+const normalizeBookmarks = (value: unknown, fallback: BookmarkEntry[]) =>
+  (Array.isArray(value) ? value : fallback)
+    .filter((bookmark) => bookmark && typeof bookmark.id === "string")
+    .map((bookmark) => {
+      const content = typeof bookmark.content === "string" ? bookmark.content : "";
+      return {
+        ...bookmark,
+        sourceTabId:
+          typeof bookmark.sourceTabId === "string" ? bookmark.sourceTabId : "",
+        title: typeof bookmark.title === "string" ? bookmark.title : "Untitled",
+        content,
+        tabColor: normalizeTabColor(bookmark.tabColor),
+        selectedLines: sanitizeSelectedLines(bookmark.selectedLines, content),
+        createdAt: finiteNumberOr(bookmark.createdAt, Date.now()),
+        updatedAt: finiteNumberOr(bookmark.updatedAt, finiteNumberOr(bookmark.createdAt, Date.now())),
+      };
+    });
+
+const normalizeClosedTabs = (value: unknown): ClosedTabEntry[] =>
+  (Array.isArray(value) ? value : []).flatMap((entry) => {
+    if (!entry || typeof entry.id !== "string" || typeof entry.groupId !== "string") return [];
+    const [tab] = normalizeTabs([entry.tab], []);
+    if (!tab) return [];
+    return [{
+      id: entry.id,
+      groupId: entry.groupId,
+      tab: { ...tab, pinned: false },
+      closedAt: finiteNumberOr(entry.closedAt, Date.now()),
+    }];
+  });
+
+export function normalizePersistedState(
+  persistedState: unknown,
+  currentState: NotepadState,
+): NotepadState {
+  const persisted = {
+    ...(persistedState as Partial<NotepadState> & {
+      tabs?: unknown;
+      bookmarks?: unknown;
+      activeTabId?: unknown;
+      rightTabIds?: unknown;
+      activeRightTabId?: unknown;
+      activePane?: unknown;
+      splitRatio?: unknown;
+      unsavedSnapshots?: unknown;
+      nextUnsavedNumber?: unknown;
+    }),
+  };
+  delete persisted.unsavedSnapshots;
+  delete persisted.nextUnsavedNumber;
+  const hasLegacyTabs = Array.isArray(persisted.tabs);
+  const legacyTabs = normalizeTabs(persisted.tabs, currentState.groups[0].tabs);
+  const legacyBookmarks = normalizeBookmarks(
+    persisted.bookmarks,
+    currentState.groups[0].bookmarks,
+  );
+  const sourceGroups = Array.isArray(persisted.groups)
+    ? persisted.groups
+    : currentState.groups;
+  let nextTabNumber = finiteNumberOr(
+    persisted.nextTabNumber,
+    currentState.nextTabNumber,
+  );
+  const reservedTabIds = new Set([
+    ...legacyTabs.map((tab) => tab.id),
+    ...legacyBookmarks.map((bookmark) => bookmark.sourceTabId),
+    ...sourceGroups.flatMap((group) =>
+      Array.isArray(group.tabs)
+        ? group.tabs
+            .filter((tab) => tab && typeof tab.id === "string")
+            .map((tab) => tab.id)
+        : [],
+    ),
+  ]);
+  while (reservedTabIds.has(`tab-${nextTabNumber}`)) nextTabNumber += 1;
+
+  const groups: GroupEntry[] = sourceGroups
+    .filter((group) => group && typeof group.id === "string")
+    .map((group) => {
+      const id = group.id;
+      const hasWorkspace = Array.isArray(group.tabs);
+      // Groups saved before workspaces existed take their pane state from the legacy top-level fields.
+      const fromSource = (
+        key: "rightTabIds" | "activeTabId" | "activeRightTabId" | "activePane",
+        fallback: unknown,
+      ): unknown =>
+        hasWorkspace
+          ? group[key]
+          : id === UNGROUPED_GROUP_ID
+            ? persisted[key]
+            : fallback;
+      let tabs = hasWorkspace
+        ? normalizeTabs(group.tabs, [])
+        : id === UNGROUPED_GROUP_ID
+          ? legacyTabs
+          : [createLegacyGroupTab()];
+      if (tabs.length === 0) tabs = [createLegacyGroupTab()];
+      const bookmarks = hasWorkspace
+        ? normalizeBookmarks(group.bookmarks, [])
+        : id === UNGROUPED_GROUP_ID
+          ? legacyBookmarks
+          : [];
+      const tabIds = new Set(tabs.map((tab) => tab.id));
+      const readTabIds = (value: unknown) =>
+        Array.isArray(value)
+          ? value.filter(
+              (tabId): tabId is string =>
+                typeof tabId === "string" && tabIds.has(tabId),
+            )
+          : [];
+      const readActiveId = (value: unknown) =>
+        typeof value === "string" && tabIds.has(value) ? value : null;
+      const rightTabIds = readTabIds(fromSource("rightTabIds", []));
+      const sourceActiveTabId = fromSource("activeTabId", null);
+      const activeTabId =
+        typeof sourceActiveTabId === "string" && tabIds.has(sourceActiveTabId)
+          ? sourceActiveTabId
+          : (tabs[0]?.id ?? "");
+      const sourceActivePane = fromSource("activePane", "left");
+      return normalizeLayout({
+        id,
+        name: typeof group.name === "string" ? group.name : "Untitled Group",
+        createdAt: finiteNumberOr(group.createdAt, Date.now()),
+        tabs,
+        bookmarks,
+        activeTabId,
+        rightTabIds,
+        activeRightTabId: readActiveId(fromSource("activeRightTabId", null)),
+        leftBottomTabIds: hasWorkspace ? readTabIds(group.leftBottomTabIds) : [],
+        activeLeftBottomTabId: hasWorkspace ? readActiveId(group.activeLeftBottomTabId) : null,
+        rightBottomTabIds: hasWorkspace ? readTabIds(group.rightBottomTabIds) : [],
+        activeRightBottomTabId: hasWorkspace ? readActiveId(group.activeRightBottomTabId) : null,
+        activePane: PANE_IDS.includes(sourceActivePane as PaneId)
+          ? (sourceActivePane as PaneId)
+          : "left",
+        // Split ratios reset to the center on every visit.
+        splitRatio: 0.5,
+        leftRowRatio: 0.5,
+        rightRowRatio: 0.5,
+      });
+    });
+
+  const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
+  if (!ungrouped) {
+    groups.unshift({
+      ...currentState.groups[0],
+      tabs:
+        hasLegacyTabs && legacyTabs.length > 0
+          ? legacyTabs
+          : [createLegacyGroupTab()],
+      bookmarks: legacyBookmarks,
+    });
+  }
+
+  const requestedActiveGroupId = persisted.activeGroupId;
+  const activeGroupId =
+    typeof requestedActiveGroupId === "string" &&
+    groups.some((group) => group.id === requestedActiveGroupId)
+      ? requestedActiveGroupId
+      : UNGROUPED_GROUP_ID;
+  delete persisted.tabs;
+  delete persisted.bookmarks;
+  delete persisted.activeTabId;
+  delete persisted.rightTabIds;
+  delete persisted.activeRightTabId;
+  delete persisted.activePane;
+  delete persisted.splitRatio;
+
+  return {
+    ...currentState,
+    ...persisted,
+    groups,
+    activeGroupId,
+    nextTabNumber,
+    closedTabs: normalizeClosedTabs(persisted.closedTabs),
+  };
+
+  function createLegacyGroupTab(): NoteTab {
+    while (reservedTabIds.has(`tab-${nextTabNumber}`)) nextTabNumber += 1;
+    const tab = createNoteTab(nextTabNumber);
+    reservedTabIds.add(tab.id);
+    nextTabNumber += 1;
+    return tab;
+  }
+}

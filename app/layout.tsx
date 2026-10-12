@@ -1,1 +1,1 @@
-export { HomeLayout as default, HomeLayoutMetadata as metadata } from "@/src/page";
+export { HomeLayout as default, HomeLayoutMetadata as metadata } from "@/src/1-page";

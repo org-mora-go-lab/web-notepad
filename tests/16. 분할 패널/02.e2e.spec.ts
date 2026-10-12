@@ -19,7 +19,7 @@ test("2. 왼쪽 탭을 오른쪽 분할 영역에 드롭하면 분할 화면을 
   await page.mouse.move(bodyBox.x + bodyBox.width / 2, bodyBox.y + bodyBox.height / 2, {
     steps: 5,
   });
-  const splitZone = page.locator(".note-pane-drop.is-half");
+  const splitZone = page.locator(".note-pane-drop.is-right");
   await expect(splitZone).toHaveText("Split right");
   const zoneBox = (await splitZone.boundingBox())!;
   await page.mouse.move(zoneBox.x + zoneBox.width / 2, zoneBox.y + zoneBox.height / 2, {

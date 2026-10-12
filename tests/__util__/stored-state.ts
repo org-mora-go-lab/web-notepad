@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 
-import type { GroupEntry, NotepadState } from "@/src/entity/notepad";
+import type { GroupEntry, NotepadState } from "@/src/4-entity/notepad";
 
 import { STORAGE_KEY } from "../__constant__";
 
@@ -23,7 +23,7 @@ export async function writeStoredState(page: Page, state: unknown) {
     ({ key, value }) => {
       localStorage.setItem(key, JSON.stringify({ state: value, version: 0 }));
       const url = new URL(window.location.href);
-      for (const key of ["group", "leftTab", "rightTab", "pane", "panel"]) {
+      for (const key of ["group", "leftTab", "rightTab", "leftBottomTab", "rightBottomTab", "pane", "panel"]) {
         url.searchParams.delete(key);
       }
       const historyState =

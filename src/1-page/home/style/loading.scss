@@ -1,0 +1,15 @@
+@use "../../../5-shared/style/variable" as v;
+
+.home.is-loading {
+  display: grid;
+  place-items: center;
+
+  .loading-mark {
+    color: v.$signal;
+    font-size: 14px;
+
+    @media (max-width: 640px) {
+      font-size: 14px * v.$mobile-scale;
+    }
+  }
+}

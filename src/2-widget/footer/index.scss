@@ -1,0 +1,167 @@
+@use "../../5-shared/style/variable" as v;
+
+.footer {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 48px;
+  padding: 6px 26px 6px 16px;
+  border-top: 1px solid v.$line;
+  background: v.$strip;
+  color: v.$muted;
+  font-size: 14px;
+
+  .status-meta {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .status-controls,
+  .status-scroll-area,
+  .status-actions {
+    display: contents;
+  }
+
+  .status-command {
+    position: relative;
+    width: max-content;
+    height: 35px;
+    min-width: 0;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-command);
+    font-size: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover,
+    &.is-active {
+      color: v.$ink;
+    }
+
+    > span:not(.status-separator) {
+      font-size: inherit;
+      line-height: 18px;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+    }
+
+    &.is-active svg {
+      fill: currentColor;
+      stroke-width: 1.5px;
+    }
+
+    .status-icon {
+      position: relative;
+      height: 24px;
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 24px;
+
+      svg {
+        grid-area: 1 / 1;
+      }
+    }
+
+    // Red dot on the icon's top-right corner when a bookmark changed today.
+    .status-dot {
+      position: absolute;
+      top: -3px;
+      right: -5px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-alert);
+      box-shadow: 0 0 0 2px v.$strip;
+    }
+  }
+
+  .status-separator {
+    display: none;
+  }
+
+  .global-search-command {
+    margin-left: auto;
+  }
+
+  .group-status-command {
+    flex: 0 1 auto;
+    justify-content: flex-start;
+  }
+
+  .group-status-name {
+    min-width: 0;
+    max-width: 351px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    min-height: 64px;
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+    font-size: 12px;
+
+    .status-command {
+      width: 100%;
+      height: 51px;
+      flex-direction: column;
+      gap: 4px;
+
+      > span:not(.status-separator) {
+        line-height: 16px;
+      }
+
+      .status-icon {
+        width: 24px;
+        display: block;
+      }
+    }
+
+    .status-meta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) repeat(3, 72px);
+      gap: 0;
+    }
+
+    .group-status-command {
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0 8px 0 16px;
+    }
+
+    .global-search-command {
+      margin-left: 0;
+    }
+
+    // Long names wrap to two lines before the ellipsis.
+    .status-command > span.group-status-name {
+      font-size: 15px;
+      line-height: 18px;
+    }
+
+    .group-status-name {
+      display: -webkit-box;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      text-align: left;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+  }
+}

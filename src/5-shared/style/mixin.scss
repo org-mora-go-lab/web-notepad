@@ -1,0 +1,138 @@
+@use "./variable" as v;
+
+// Side panel body: `.{name}-list` and `.{name}-empty` state.
+@mixin side-panel-list($name) {
+  .#{$name}-list {
+    min-height: 0;
+    padding: 14px;
+    overflow-y: auto;
+  }
+
+  .#{$name}-empty {
+    min-height: 280px;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 14px;
+    color: var(--color-empty);
+    text-align: center;
+
+    p {
+      max-width: 220px;
+      margin: 0;
+      font-family: v.$sans;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .#{$name}-empty {
+      svg {
+        width: 26px * v.$mobile-scale;
+        height: 26px * v.$mobile-scale;
+      }
+
+      p {
+        font-size: 16px * v.$mobile-scale;
+      }
+    }
+  }
+}
+
+// Note card: `.{name}-item` with `-item-heading`, `-actions` and `.remove-{name}`.
+@mixin note-card($name) {
+  .#{$name}-item {
+    margin-bottom: 10px;
+    padding: 16px;
+    border: 1px solid v.$line;
+    background: var(--color-field);
+  }
+
+  .#{$name}-item-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+
+    strong {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: v.$signal;
+      font-size: 15px;
+    }
+
+    time {
+      width: 12ch;
+      flex: 0 0 12ch;
+      color: var(--color-secondary);
+      font-size: 12px;
+      line-height: 16px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: pre;
+    }
+  }
+
+  .#{$name}-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    button {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 9px;
+      border: 1px solid v.$line;
+      background: transparent;
+      color: var(--color-timestamp);
+      font-size: 13px;
+      cursor: pointer;
+
+      &:hover {
+        border-color: v.$hover-line;
+        color: v.$ink;
+      }
+    }
+
+    .remove-#{$name} {
+      width: 30px;
+      padding: 0;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .#{$name}-item-heading {
+      strong {
+        font-size: 15px * v.$mobile-scale;
+      }
+
+      time {
+        font-size: 12px * v.$mobile-scale;
+        line-height: 19px;
+      }
+    }
+
+    .#{$name}-actions {
+      button {
+        height: 30px * v.$mobile-scale;
+        font-size: 13px * v.$mobile-scale;
+
+        svg {
+          width: 14px * v.$mobile-scale;
+          height: 14px * v.$mobile-scale;
+        }
+      }
+
+      .remove-#{$name} {
+        width: 30px * v.$mobile-scale;
+      }
+    }
+  }
+}

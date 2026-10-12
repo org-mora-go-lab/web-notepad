@@ -7,6 +7,7 @@ export {
   restoreFirstClosedTab,
 } from "./closed";
 export { createPinnedAndBookmarkedTabs } from "./create-pinned-and-bookmarked-tabs";
+export { expectCssPx } from "./css-px";
 export { confirmTabDelete, deleteTabPopup } from "./delete-tab-popup";
 export { divider, dividerDistanceFromCenter, dragDividerBy, dragDividerTo } from "./divider";
 export { expectSelectedLines, lineButtons } from "./line";
@@ -16,6 +17,7 @@ export {
   createGroup,
   createGroups,
   groupsCommand,
+  groupSelectCommand,
   groupStatusName,
   openClosedPanel,
   openPanel,

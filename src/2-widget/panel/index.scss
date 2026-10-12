@@ -1,0 +1,4 @@
+// Side panels position themselves as fixed drawers; the wrapper adds no box.
+.panel {
+  display: contents;
+}

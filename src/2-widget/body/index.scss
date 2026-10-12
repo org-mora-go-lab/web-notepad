@@ -1,0 +1,48 @@
+@use "../../5-shared/style/variable" as v;
+
+.body {
+  position: relative;
+  min-height: 0;
+  display: grid;
+
+  .note-pane-drop {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    border: 1px dashed v.$signal;
+    background: rgba(143, 227, 176, 0.08);
+
+    // Split zones cover the half of the pane where the new pane will open.
+    &.is-right {
+      left: 50%;
+    }
+
+    &.is-bottom {
+      top: 50%;
+    }
+
+    &.is-right.is-upper,
+    &.is-full.has-bottom-split {
+      bottom: 50%;
+    }
+
+    &.is-full.has-right-split {
+      right: 50%;
+    }
+
+    span {
+      padding: 6px 12px;
+      background: v.$raised;
+      color: v.$signal;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+
+      @media (max-width: 640px) {
+        font-size: 11px * v.$mobile-scale;
+      }
+    }
+  }
+}

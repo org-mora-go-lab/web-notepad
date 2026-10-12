@@ -1,4 +1,4 @@
-import type { ClosedTabEntry, GroupEntry, NoteTab } from "@/src/entity/notepad";
+import type { ClosedTabEntry, GroupEntry, NoteTab } from "@/src/4-entity/notepad";
 
 // A saved note tab whose title is its first line, as the app stores it.
 export const createTabFixture = (
@@ -33,8 +33,14 @@ export const createGroupFixture = (
   activeTabId: tabs[0].id,
   rightTabIds: [],
   activeRightTabId: null,
+  leftBottomTabIds: [],
+  activeLeftBottomTabId: null,
+  rightBottomTabIds: [],
+  activeRightBottomTabId: null,
   activePane: "left",
   splitRatio: 0.5,
+  leftRowRatio: 0.5,
+  rightRowRatio: 0.5,
   ...overrides,
 });
 

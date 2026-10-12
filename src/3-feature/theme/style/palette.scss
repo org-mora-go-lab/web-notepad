@@ -1,0 +1,88 @@
+:root {
+  color-scheme: dark;
+  --color-ink: #ffffff;
+  --color-muted: #85857f;
+  --color-pit: #090909;
+  --color-panel: #111110;
+  --color-raised: #191918;
+  --color-line: #30302d;
+  --color-saved: #b8b8b0;
+  --color-signal: #8fe3b0;
+  --color-tab-red: #f28b82;
+  --color-dim: #66665f;
+  --color-strip: #0d0d0c;
+  --color-hover-line: #66665e;
+  --color-field: #151514;
+  --color-empty: #555550;
+  --color-secondary: #6f6f69;
+  --color-timestamp: #a9a9a2;
+  --color-drawer: #10100f;
+  --color-drawer-border: #3a3a35;
+  --color-command: #bcbcb5;
+  --color-rail-border: #242422;
+  --color-rail-text: #40403c;
+  --color-placeholder: #464640;
+  --color-key: #171716;
+  --color-creation-border: #505050;
+  --color-highlight: #effff4;
+  --color-focus: rgba(255, 255, 255, 0.25);
+  --color-inactive-title: rgba(222, 222, 216, 0.62);
+  --color-alert: #ff5c5c;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: #202624;
+  --color-muted: #5e6863;
+  --color-pit: #e1e6e3;
+  --color-panel: #fafcfb;
+  --color-raised: #e9efeb;
+  --color-line: #cbd4ce;
+  --color-saved: #68776e;
+  --color-signal: #258356;
+  --color-tab-red: #b84b45;
+  --color-dim: #67716b;
+  --color-strip: #f0f4f1;
+  --color-hover-line: #7d8b82;
+  --color-field: #ffffff;
+  --color-empty: #717b75;
+  --color-secondary: #68736c;
+  --color-timestamp: #65716a;
+  --color-drawer: #f7faf8;
+  --color-drawer-border: #cbd4ce;
+  --color-command: #48574e;
+  --color-rail-border: #dce3de;
+  --color-rail-text: #7a877f;
+  --color-placeholder: #7c8981;
+  --color-key: #e9efeb;
+  --color-creation-border: #a8b9ae;
+  --color-highlight: #185537;
+  --color-focus: rgba(37, 95, 65, 0.4);
+  --color-inactive-title: #758178;
+  --color-alert: #e5484d;
+
+  .home .tab-item[data-tab-color="gray"] {
+    --tab-background: rgba(104, 119, 110, 0.1);
+    --tab-background-active: rgba(104, 119, 110, 0.22);
+  }
+
+  .home .tab-item[data-tab-color="green"] {
+    --tab-background: rgba(37, 131, 86, 0.1);
+    --tab-background-active: rgba(37, 131, 86, 0.22);
+  }
+
+  // Line numbers and editor lines share the LIGHT accents so the selection reads on white.
+  .home .note-editor {
+    &[data-tab-color="gray"] {
+      --selected-line-background: rgba(104, 119, 110, 0.15);
+    }
+
+    &[data-tab-color="red"] {
+      --selected-line-background: rgba(184, 75, 69, 0.13);
+    }
+
+    &[data-tab-color="green"] {
+      --selected-line-background: rgba(37, 131, 86, 0.15);
+    }
+  }
+}

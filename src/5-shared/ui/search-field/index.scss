@@ -1,0 +1,58 @@
+@use "../../style/variable" as v;
+@use "./style/search-highlight";
+
+.search-field {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 14px 6px;
+  padding: 0 10px;
+  border: 1px solid v.$line;
+  background: var(--color-field);
+  color: v.$dim;
+
+  &:focus-within {
+    border-color: v.$hover-line;
+  }
+
+  svg {
+    flex: 0 0 auto;
+  }
+
+  input {
+    color-scheme: dark;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: v.$ink;
+    font: inherit;
+    font-size: 14px;
+
+    &::placeholder {
+      color: v.$dim;
+    }
+
+    &::-webkit-search-cancel-button {
+      filter: brightness(0.4);
+      cursor: pointer;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .search-field {
+    svg {
+      width: 15px * v.$mobile-scale;
+      height: 15px * v.$mobile-scale;
+    }
+
+    input {
+      font-size: 14px * v.$mobile-scale;
+    }
+  }
+}
