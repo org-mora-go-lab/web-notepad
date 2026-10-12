@@ -11,11 +11,11 @@ export async function closeActiveTab(page: Page) {
   await page.locator(".tab-item.is-active .tab-close").click();
 }
 
-// Types `content` into the active tab, then closes it through the delete popup.
+// Types `content` into the active tab, then closes it; only content over 10 characters asks for confirmation.
 export async function closeActiveTabWithContent(page: Page, content: string) {
   await page.locator("textarea").fill(content);
   await closeActiveTab(page);
-  await confirmTabDelete(page);
+  if (Array.from(content).length > 10) await confirmTabDelete(page);
 }
 
 // Restores the first closed tab from the open Closed panel.

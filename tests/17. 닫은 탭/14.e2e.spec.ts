@@ -5,7 +5,7 @@ import { expectPanelTimes, openClosedPanel, seedStoredStateOnLoad } from "../__u
 
 test.use({ timezoneId: "UTC" });
 
-test("14. 닫은 시각은 YY. MM. DD와 hh:mm:ss AM/PM 영어 형식의 현지 시각을 줄바꿈 없이 두 줄로 표시한다", async ({ page }) => {
+test("14. 닫은 시각은 YY. MM. DD.와 초 없는 hh:mm AM/PM 영어 형식의 현지 시각을 줄바꿈 없이 두 줄로 표시한다", async ({ page }) => {
   const groups = ["Short", "Long group name for fixed timestamp layout"].map((name, index) =>
     createGroupFixture(`group-${index}`, name, [createTabFixture(`tab-${index}`, "Note")]),
   );

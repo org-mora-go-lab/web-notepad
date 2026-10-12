@@ -43,6 +43,7 @@ export function Home() {
     removeBookmark,
     createGroup,
     renameGroup,
+    toggleGroupPin,
     removeGroup,
     fontScale,
     language,
@@ -121,6 +122,7 @@ export function Home() {
         onSelectGroup={selectGroupAndClosePanel}
         onRemoveGroup={removeGroup}
         onRenameGroup={renameGroup}
+        onToggleGroupPin={toggleGroupPin}
         onRestoreClosedTab={restoreClosedTabAndClosePanel}
         onRemoveClosedTab={removeClosedTab}
         onOpenSearchedBookmark={openBookmarkAndClosePanel}

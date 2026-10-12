@@ -5,7 +5,7 @@ import { deleteTabPopup, expectCssPx } from "../__util__";
 
 test("11. 모바일 우측 패널과 확인 팝업의 아이콘·글자는 PC 크기의 1.2배로 표시한다", async ({ page }) => {
   await page.goto("/");
-  await page.locator(".note-area").fill("Keep me");
+  await page.locator(".note-area").fill("Keep me until confirmed");
   const popup = deleteTabPopup(page);
 
   for (const viewport of [DESKTOP_VIEWPORT, MOBILE_VIEWPORT]) {

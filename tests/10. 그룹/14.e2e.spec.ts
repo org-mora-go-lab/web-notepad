@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../__constant__";
-import { createGroup, groupsCommand, seedSortableGroups } from "../__util__";
+import { chooseGroupAction, createGroup, groupsCommand, seedSortableGroups } from "../__util__";
 
 test("14. 그룹 생성·이름 수정 직후와 새로고침 시에도 같은 정렬을 적용한다", async ({ page }) => {
   await seedSortableGroups(page);
@@ -20,7 +20,7 @@ test("14. 그룹 생성·이름 수정 직후와 새로고침 시에도 같은 �
     "Ungrouped",
   ]);
 
-  await page.getByRole("button", { name: "Zulu 그룹 수정" }).click();
+  await chooseGroupAction(page, "Zulu", "수정");
   await page.getByRole("textbox", { name: "Zulu 그룹 이름 수정" }).fill("Aardvark");
   await page.getByRole("button", { name: "그룹 수정 저장" }).click();
   const finalOrder = [

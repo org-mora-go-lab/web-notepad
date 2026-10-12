@@ -25,6 +25,7 @@ type Props = {
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
+  onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
   onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
   onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
   onOpenSearchedBookmark: ComponentProps<typeof GlobalSearch>["onOpenBookmark"];
@@ -50,6 +51,7 @@ export function Panel({
   onSelectGroup,
   onRemoveGroup,
   onRenameGroup,
+  onToggleGroupPin,
   onRestoreClosedTab,
   onRemoveClosedTab,
   onOpenSearchedBookmark,
@@ -77,6 +79,7 @@ export function Panel({
         onSelect={onSelectGroup}
         onRemove={onRemoveGroup}
         onRename={onRenameGroup}
+        onTogglePinGroup={onToggleGroupPin}
       />
       <Closed
         closedTabs={closedTabs}

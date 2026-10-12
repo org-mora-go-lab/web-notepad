@@ -10,7 +10,8 @@ export const getEditorFormat = (page: Page) =>
 
     return {
       lineRailWidth: lineRail.getBoundingClientRect().width,
-      lineHeight: editorStyle.getPropertyValue("--editor-line-height").trim(),
+      // The variable scales with the font setting, so read the resolved line number height.
+      lineHeight: `${firstLine.getBoundingClientRect().height}px`,
       topPadding: editorStyle.getPropertyValue("--editor-top-padding").trim(),
       lineNumberPadding: getComputedStyle(firstLine).paddingRight,
       editorPadding: getComputedStyle(textarea).padding,

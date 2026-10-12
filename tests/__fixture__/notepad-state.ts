@@ -27,6 +27,7 @@ export const createGroupFixture = (
 ): GroupEntry => ({
   id,
   name,
+  pinned: false,
   createdAt: 1,
   tabs,
   bookmarks: [],

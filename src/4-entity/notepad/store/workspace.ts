@@ -67,6 +67,7 @@ export const createGroupEntry = (
 ): GroupEntry => ({
   id,
   name,
+  pinned: false,
   createdAt,
   tabs: [tab],
   bookmarks: [],

@@ -9,7 +9,7 @@ import {
 
 test("12. 닫은 탭 삭제 팝업은 Cancel에 포커스를 두고 모든 취소 경로에서 항목과 패널을 유지한다", async ({ page }) => {
   await page.goto("/");
-  await closeActiveTabWithContent(page, "keep me");
+  await closeActiveTabWithContent(page, "keep this note");
   await openClosedPanel(page);
   const deleteButton = page.locator(".closed-item .remove-closed");
   const popup = closedDeletePopup(page);
@@ -25,7 +25,7 @@ test("12. 닫은 탭 삭제 팝업은 Cancel에 포커스를 두고 모든 취�
     await expect(popup.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
     await cancel();
     await expect(popup).toHaveCount(0);
-    await expect(closedContents(page)).toHaveText("keep me");
+    await expect(closedContents(page)).toHaveText("keep this note");
     await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "false");
   }
 });

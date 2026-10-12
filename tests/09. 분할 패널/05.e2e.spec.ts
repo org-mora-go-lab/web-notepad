@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-import { confirmTabDelete } from "../__util__";
 import { seedSplitState } from "./__util__";
 
 test("5. 오른쪽 패널의 탭을 모두 옮기거나 닫으면 분할 화면이 해제된다", async ({ page }) => {
@@ -19,7 +18,7 @@ test("5. 오른쪽 패널의 탭을 모두 옮기거나 닫으면 분할 화면�
   await expect(rightPane.locator(".tab-item")).toHaveCount(2);
   await rightPane.locator(".tab-item").nth(1).locator(".tab-close").click();
   await expect(rightPane.locator(".tab-item")).toHaveCount(1);
+  // "right" is 10 characters or fewer, so it closes without the delete popup.
   await rightPane.locator(".tab-close").click();
-  await confirmTabDelete(page);
   await expect(page.locator(".body")).toHaveCount(1);
 });

@@ -12,7 +12,7 @@ export const TAB_COLORS: readonly TabColor[] = [
   "pink",
 ];
 
-export const FONT_SCALES: readonly number[] = [0.8, 0.9, 1, 1.1, 1.2];
+export const FONT_SCALES: readonly number[] = [0.8, 0.9, 1, 1.1, 1.2, 1.3];
 
 export const DEFAULT_SETTINGS: NotepadSettings = {
   fontScale: 1,

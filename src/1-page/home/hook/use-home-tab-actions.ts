@@ -7,6 +7,7 @@ import {
   getPaneActiveTabId,
   getPaneOfTab,
   type GroupEntry,
+  isSubstantialContent,
   type PaneId,
   useNotepadStore,
 } from "@/src/4-entity/notepad";
@@ -34,7 +35,7 @@ export function useHomeTabActions({ editorRefs }: Options) {
 
     const content = editorOfTab(group, tabId)?.value ?? tab.content;
     if (content !== tab.content) state.updateTab(tabId, content);
-    if (content.length > 0) {
+    if (isSubstantialContent(content)) {
       setPendingCloseTabId(tabId);
     } else {
       state.closeTab(tabId);

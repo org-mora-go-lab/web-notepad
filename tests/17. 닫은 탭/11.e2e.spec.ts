@@ -9,18 +9,18 @@ import {
 
 test("11. 그룹 이름과 탭 내용을 대소문자 구분 없이 부분 검색하고 Closed placeholder를 표시한다", async ({ page }) => {
   await page.goto("/");
-  await closeActiveTabWithContent(page, "Alpha note");
+  await closeActiveTabWithContent(page, "Alpha closed note");
   await createGroups(page, "Work");
-  await closeActiveTabWithContent(page, "beta note");
+  await closeActiveTabWithContent(page, "beta closed note");
   await openClosedPanel(page);
 
   const search = page.getByRole("searchbox", { name: "닫은 탭 검색" });
   await expect(search).toHaveAttribute("placeholder", "Search closed");
   const contents = closedContents(page);
   await search.fill("ALPHA");
-  await expect(contents).toHaveText(["Alpha note"]);
+  await expect(contents).toHaveText(["Alpha closed note"]);
   await search.fill("wor");
-  await expect(contents).toHaveText(["beta note"]);
+  await expect(contents).toHaveText(["beta closed note"]);
   await search.fill("missing");
   await expect(contents).toHaveCount(0);
   await expect(page.locator("#closed-panel .search-empty-state")).toHaveText("No search results");

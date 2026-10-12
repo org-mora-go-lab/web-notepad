@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT, STORAGE_KEY } from "../__constant__";
-import { createGroup, groupsCommand } from "../__util__";
+import { chooseGroupAction, createGroup, groupsCommand } from "../__util__";
 
 test.use({ viewport: MOBILE_VIEWPORT, isMobile: true, hasTouch: true });
 
@@ -23,7 +23,7 @@ test("6. 터치 기기에서는 에디터·검색창·그룹 이름 입력란 �
   await createGroup(page, "Alpha");
   expect(await fontSize("#groups-panel .search-field input")).toBeGreaterThanOrEqual(16);
   expect(await fontSize(".group-create-form input")).toBeGreaterThanOrEqual(16);
-  await page.getByRole("button", { name: "Alpha 그룹 수정" }).click();
+  await chooseGroupAction(page, "Alpha", "수정");
   await expect(page.getByRole("textbox", { name: "Alpha 그룹 이름 수정" })).toBeVisible();
   expect(await fontSize(".group-edit-form input")).toBeGreaterThanOrEqual(16);
 });

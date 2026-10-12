@@ -4,7 +4,6 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "2-digit",
   hour: "2-digit",
   minute: "2-digit",
-  second: "2-digit",
   hour12: true,
 });
 
@@ -12,5 +11,5 @@ export const formatDate = (timestamp: number) => {
   const parts = Object.fromEntries(
     dateFormatter.formatToParts(timestamp).map(({ type, value }) => [type, value]),
   );
-  return `${parts.year}. ${parts.month}. ${parts.day}\n${parts.hour}:${parts.minute}:${parts.second} ${parts.dayPeriod}`;
+  return `${parts.year}. ${parts.month}. ${parts.day}.\n${parts.hour}:${parts.minute} ${parts.dayPeriod}`;
 };

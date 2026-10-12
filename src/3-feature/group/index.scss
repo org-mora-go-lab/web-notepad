@@ -1,5 +1,6 @@
 @use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
+@use "./style/group-action-menu";
 
 .group {
   .side-panel-drawer {
@@ -119,6 +120,11 @@
       width: 30px;
       height: 30px;
       flex: 0 0 auto;
+    }
+
+    .group-pin-indicator {
+      flex: 0 0 auto;
+      color: v.$signal;
     }
   }
 

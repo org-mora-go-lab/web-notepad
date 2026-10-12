@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../__constant__";
-import { createGroup, groupsCommand } from "../__util__";
+import { chooseGroupAction, createGroup, groupsCommand } from "../__util__";
 
-test("8. 그룹 추가·수정·삭제 버튼과 이름 수정 저장·취소 버튼은 정사각형으로 표시한다", async ({ page }) => {
+test("8. 그룹 추가·⋮ 메뉴 버튼과 이름 수정 저장·취소 버튼은 정사각형으로 표시한다", async ({ page }) => {
   await page.goto("/");
   await groupsCommand(page).click();
   await createGroup(page, "Alpha");
@@ -19,10 +19,9 @@ test("8. 그룹 추가·수정·삭제 버튼과 이름 수정 저장·취소 �
     await page.setViewportSize(viewport);
     const itemSize = viewport.width <= 640 ? 36 : 30;
     await expectSquare("그룹 생성", 42);
-    await expectSquare("Alpha 그룹 수정", itemSize);
-    await expectSquare("Alpha 그룹 삭제", itemSize);
+    await expectSquare("Alpha 그룹 메뉴", itemSize);
 
-    await panel.getByRole("button", { name: "Alpha 그룹 수정", exact: true }).click();
+    await chooseGroupAction(page, "Alpha", "수정");
     await expectSquare("그룹 수정 저장", itemSize);
     await expectSquare("그룹 수정 취소", itemSize);
     await panel.getByRole("button", { name: "그룹 수정 취소", exact: true }).click();

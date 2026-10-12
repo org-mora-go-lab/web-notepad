@@ -8,6 +8,7 @@ import {
   getPaneOfTab,
   getPaneTabs,
   getTitleFromContent,
+  isSubstantialContent,
   normalizeLayout,
   sanitizeSelectedLines,
   setPaneActiveTabId,
@@ -145,7 +146,7 @@ export const createTabActions: StateCreator<
     const group = getActiveGroup(state);
     const tab = group?.tabs.find((item) => item.id === tabId);
     if (!tab || tab.pinned) return;
-    if (tab.content) {
+    if (isSubstantialContent(tab.content)) {
       set({
         closedTabs: [
           { id: `closed-${crypto.randomUUID()}`, groupId: group.id, tab, closedAt: Date.now() },

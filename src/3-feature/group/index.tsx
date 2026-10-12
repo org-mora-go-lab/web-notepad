@@ -1,7 +1,7 @@
 "use client";
 
-import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { Check, EllipsisVertical, Pin, Plus, X } from "lucide-react";
+import { type FormEvent, useRef, useState } from "react";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
 import { compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
@@ -9,6 +9,8 @@ import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
+
+import { GroupActionMenu } from "./component";
 
 type Props = {
   groups: GroupEntry[];
@@ -21,6 +23,7 @@ type Props = {
   onSelect: (groupId: string) => void;
   onRemove: (groupId: string) => void;
   onRename: (groupId: string, name: string) => void;
+  onTogglePinGroup: (groupId: string) => void;
 };
 
 export function Group({
@@ -34,6 +37,7 @@ export function Group({
   onSelect,
   onRemove,
   onRename,
+  onTogglePinGroup,
 }: Props) {
   const [groupName, setGroupName] = useState("");
   const { t } = useI18n();
@@ -41,6 +45,10 @@ export function Group({
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
+  const [menu, setMenu] = useState<{ groupId: string; anchor: HTMLElement } | null>(null);
+  const menuGroup = groups.find((group) => group.id === menu?.groupId);
+  // The ⋮ button that opened the delete popup, focused again when the popup is cancelled.
+  const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
   const filteredGroups = groups
     .filter((group) => matchesSearchQuery(searchQuery, group.name))
@@ -146,28 +154,24 @@ export function Group({
                       <SearchHighlight text={group.name} query={searchQuery} />
                     </strong>
                   </button>
+                  {group.pinned && (
+                    <Pin className="group-pin-indicator" size={14} role="img" aria-label="고정된 그룹" />
+                  )}
                   {group.id !== UNGROUPED_GROUP_ID && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingGroupId(group.id);
-                          setEditingName(group.name);
-                        }}
-                        aria-label={`${group.name} 그룹 수정`}
-                        title={t.editGroup}
-                      >
-                        <Pencil size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDeletingGroupId(group.id)}
-                        aria-label={`${group.name} 그룹 삭제`}
-                        title={t.deleteGroup}
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </>
+                    <button
+                      className="group-menu-trigger"
+                      type="button"
+                      aria-label={`${group.name} 그룹 메뉴`}
+                      title={t.groupActions}
+                      aria-haspopup="menu"
+                      aria-expanded={menu?.groupId === group.id}
+                      onClick={(event) => {
+                        const anchor = event.currentTarget;
+                        setMenu(menu?.groupId === group.id ? null : { groupId: group.id, anchor });
+                      }}
+                    >
+                      <EllipsisVertical size={14} />
+                    </button>
                   )}
                 </>
               )}
@@ -175,13 +179,41 @@ export function Group({
           ))
         )}
       </div>
+    {open && menu && menuGroup && (
+      <GroupActionMenu
+        groupName={menuGroup.name}
+        anchor={menu.anchor}
+        pinned={menuGroup.pinned}
+        onClose={() => {
+          menu.anchor.focus();
+          setMenu(null);
+        }}
+        onEdit={() => {
+          setMenu(null);
+          setEditingGroupId(menuGroup.id);
+          setEditingName(menuGroup.name);
+        }}
+        onDelete={() => {
+          deleteAnchorRef.current = menu.anchor;
+          setMenu(null);
+          setDeletingGroupId(menuGroup.id);
+        }}
+        onTogglePin={() => {
+          setMenu(null);
+          onTogglePinGroup(menuGroup.id);
+        }}
+      />
+    )}
     {open && groupToDelete && (
       <ConfirmPopup
         title={t.deleteGroupTitle}
         message={t.deleteGroupMessage(groupToDelete.name)}
         closeLabel="삭제 확인 닫기"
         closeTitle={t.close}
-        onCancel={() => setDeletingGroupId(null)}
+        onCancel={() => {
+          setDeletingGroupId(null);
+          deleteAnchorRef.current?.focus();
+        }}
         onConfirm={() => {
           onRemove(groupToDelete.id);
           setDeletingGroupId(null);
