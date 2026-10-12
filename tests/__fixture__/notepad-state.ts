@@ -1,4 +1,4 @@
-import type { ClosedTabEntry, GroupEntry, NoteTab } from "@/src/entity/notepad";
+import type { ClosedTabEntry, GroupEntry, NoteTab } from "@/src/4-entity/notepad";
 
 // A saved note tab whose title is its first line, as the app stores it.
 export const createTabFixture = (

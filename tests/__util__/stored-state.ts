@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 
-import type { GroupEntry, NotepadState } from "@/src/entity/notepad";
+import type { GroupEntry, NotepadState } from "@/src/4-entity/notepad";
 
 import { STORAGE_KEY } from "../__constant__";
 

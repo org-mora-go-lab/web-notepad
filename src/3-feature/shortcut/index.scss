@@ -1,0 +1,60 @@
+@use "../../5-shared/style/variable" as v;
+
+.shortcut {
+  .side-panel-drawer {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .side-panel-header h2 {
+    font-size: 20px;
+  }
+
+  .side-panel-close svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .shortcut-list {
+    min-height: 0;
+    margin: 0;
+    padding: 8px 22px;
+    overflow-y: auto;
+  }
+
+  .shortcut-row {
+    min-height: 52px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid v.$line;
+
+    dt {
+      min-width: 0;
+      color: v.$saved;
+      font-size: 15px;
+    }
+
+    dd {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 5px;
+      margin: 0;
+    }
+
+    kbd {
+      padding: 4px 6px;
+      border: 1px solid v.$line;
+      background: var(--color-key);
+      color: v.$ink;
+      font-family: v.$mono;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}

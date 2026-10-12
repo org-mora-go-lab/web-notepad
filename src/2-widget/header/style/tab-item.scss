@@ -1,0 +1,211 @@
+@use "../../../5-shared/style/variable" as v;
+
+.header {
+  .tab-item {
+    position: relative;
+    width: max-content;
+    min-width: 130.485px;
+    max-width: 300.655px;
+    height: 39px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    color: v.$muted;
+
+    & + .tab-item::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: v.$line;
+      opacity: 0.6;
+      content: "";
+      pointer-events: none;
+    }
+
+    &[data-tab-color="gray"] {
+      --tab-accent: #{v.$saved};
+      --tab-glow: rgba(184, 184, 176, 0.55);
+      --tab-accent-muted: rgba(184, 184, 176, 0.58);
+      --tab-background: rgba(184, 184, 176, 0.08);
+      --tab-background-active: rgba(184, 184, 176, 0.16);
+    }
+
+    &[data-tab-color="red"] {
+      --tab-accent: #{v.$tab-red};
+      --tab-glow: rgba(242, 139, 130, 0.55);
+      --tab-accent-muted: rgba(242, 139, 130, 0.58);
+      --tab-background: rgba(242, 139, 130, 0.08);
+      --tab-background-active: rgba(242, 139, 130, 0.16);
+    }
+
+    &[data-tab-color="green"] {
+      --tab-accent: #{v.$signal};
+      --tab-glow: rgba(143, 227, 176, 0.55);
+      --tab-accent-muted: rgba(143, 227, 176, 0.58);
+      --tab-background: rgba(143, 227, 176, 0.08);
+      --tab-background-active: rgba(143, 227, 176, 0.16);
+    }
+
+    background: var(--tab-background, transparent);
+
+    &.is-dragging {
+      opacity: 0.4;
+    }
+
+    &.is-drop-target {
+      background: v.$raised;
+      box-shadow: inset 2px 0 v.$signal;
+    }
+
+    &.is-active {
+      background: var(--tab-background-active, #{v.$panel});
+      color: v.$ink;
+      box-shadow: inset 0 2px var(--tab-accent, #{v.$saved});
+    }
+
+    &.is-pinned {
+      background: var(--tab-background);
+
+      .tab-select {
+        // No close button renders on pinned tabs, so add back the trailing space it would occupy.
+        padding-right: 14px;
+        color: var(--tab-accent, #b9ddc5);
+      }
+
+      .tab-indicator.is-pin {
+        color: var(--tab-accent, #{v.$signal});
+      }
+    }
+
+    &.is-pinned.is-active {
+      background: var(--tab-background-active);
+      box-shadow: inset 0 2px var(--tab-accent, #{v.$saved});
+    }
+
+    @media (max-width: 640px) {
+      min-width: 114.406px;
+      max-width: 247.65px;
+      height: 45px;
+      padding-bottom: 1px;
+    }
+  }
+
+  .tab-select {
+    min-width: 0;
+    flex: 1;
+    height: 39px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 4px 0 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: default;
+  }
+
+  .tab-pin-indicator {
+    display: grid;
+    width: 16px;
+    height: 23px;
+    flex: 0 0 auto;
+    margin-right: 4px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: default;
+  }
+
+  .tab-bookmark-indicator {
+    display: grid;
+    width: 16px;
+    height: 19px;
+    flex: 0 0 auto;
+    margin-right: 4px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--tab-accent, #{v.$saved});
+  }
+
+  .tab-item[draggable="true"] .tab-title {
+    cursor: default;
+  }
+
+  .dirty-dot {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    position: relative;
+    margin-left: 11px;
+    margin-right: 4px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 11px;
+      height: 11px;
+      background: var(--tab-accent, #{v.$saved});
+      box-shadow: 0 0 8px var(--tab-glow, rgba(184, 184, 176, 0.55));
+      content: "";
+      transform: translate(-50%, -50%);
+    }
+
+    &.is-dirty::before {
+      filter: brightness(1.15);
+    }
+  }
+
+  .tab-title {
+    flex: 0 1 auto;
+    margin-left: 6px;
+    overflow: hidden;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tab-indicator {
+    flex: 0 0 auto;
+    color: v.$muted;
+
+    &.is-pin {
+      color: v.$signal;
+      transform: rotate(35deg);
+    }
+
+    &.is-bookmark {
+      color: var(--tab-accent, #{v.$saved});
+    }
+  }
+
+  .tab-close {
+    width: 34px;
+    height: 39px;
+  }
+
+  @media (max-width: 640px) {
+    .tab-select,
+    .tab-close {
+      height: 44px;
+    }
+
+    .tab-title {
+      font-size: 16px;
+    }
+
+    .dirty-dot::before {
+      width: 13px;
+      height: 13px;
+    }
+  }
+}

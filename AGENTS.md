@@ -26,13 +26,29 @@ Keep the numbered structure in `PRD.md` and `tests/` in exact sync. Each `## N. 
 
 Do not consider the work complete until all updated E2E tests pass. Run `npm run test:e2e` and require a 100% pass rate; fix implementation, test, fixture, mock, or utility issues before reporting completion.
 
+## Layer Structure
+
+- `src/` is split into numbered layers, ordered from top to bottom:
+
+  ```
+  src/
+      1-page/
+      2-widget/
+      3-feature/
+      4-entity/
+      5-shared/
+  ```
+
+- A layer may import only from layers with a higher number (lower in the list). Never import from a layer above it (for example, `3-feature` must not import from `2-widget` or `1-page`, and `5-shared` must not import from any other layer).
+- Keep the number prefix in every path, such as `@/src/3-feature` or `@use "../../5-shared/style/variable"`.
+
 ## Feature and Widget Module Structure
 
-- Each feature or widget module directly under `src/feature/` or `src/widget/` must implement its main module in its own `index.tsx`.
-- `src/feature/index.ts` and `src/widget/index.ts` must export the public modules for their respective directories.
+- Each feature or widget module directly under `src/3-feature/` or `src/2-widget/` must implement its main module in its own `index.tsx`.
+- `src/3-feature/index.ts` and `src/2-widget/index.ts` must export the public modules for their respective directories.
 - Those top-level barrels may export only each module's main implementation from `./<module>` (resolved through that module's `index.tsx`); do not export subcomponents such as `PaneDivider` from them. Apply this restriction equally to feature and widget modules.
 - Export subcomponents from the submodule's `component/index.ts` barrel, and import and use those subcomponents from the submodule's `index.tsx`.
-- `page/home` and other consumers must import feature and widget modules through the public `feature/index.ts` and `widget/index.ts` barrels.
+- `1-page/home` and other consumers must import feature and widget modules through the public `3-feature/index.ts` and `2-widget/index.ts` barrels.
 
 ## Internal Directory Barrels
 
@@ -43,22 +59,22 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 
 ## Entity Layer
 
-- `src/entity/` exists only to gather the functionality of a specific domain. Group each domain under its own `src/entity/<domain>/` directory (for example, `src/entity/notepad/` with its store, types, constants, and utilities) and export it through `src/entity/index.ts`.
-- Do not put domain-independent code in `src/entity/`. If code is not tied to a specific domain, put it in `src/shared/` instead.
+- `src/4-entity/` exists only to gather the functionality of a specific domain. Group each domain under its own `src/4-entity/<domain>/` directory (for example, `src/4-entity/notepad/` with its store, types, constants, and utilities) and export it through `src/4-entity/index.ts`.
+- Do not put domain-independent code in `src/4-entity/`. If code is not tied to a specific domain, put it in `src/5-shared/` instead.
 
 ## Shared Layer
 
-- Put domain-independent code shared across layers (`hook`, `type`, `ui`, `util`, `style`) under `src/shared/`, exported through `src/shared/index.ts`.
+- Put domain-independent code shared across layers (`hook`, `type`, `ui`, `util`, `style`) under `src/5-shared/`, exported through `src/5-shared/index.ts`.
 
 ## Shared UI Components
 
-- Put common UI components shared by feature, widget, or page modules under `src/shared/ui/`, not under a `component/` directory.
-- Structure each one exactly like a feature, widget, or page module: a `src/shared/ui/<component>/` directory with its main implementation in `index.tsx` and its main stylesheet in `index.scss`. Apply the subcomponent `component/` and `style/` rules below to these modules as well.
-- The top-level class selector in a UI component's `index.scss` must match its directory name (for example, `.side-panel` in `side-panel/index.scss`). Keep shared component styles in that stylesheet instead of SCSS mixins, and load it from the page stylesheet with `@use "../../shared/ui/<component>"`.
-- `src/shared/ui/index.ts` may export only each UI component's main implementation. Consumers import these components through `@/src/shared/ui` (or `@/src/shared`) and put module-specific overrides in their own stylesheet, scoped under their own top-level class.
+- Put common UI components shared by feature, widget, or page modules under `src/5-shared/ui/`, not under a `component/` directory.
+- Structure each one exactly like a feature, widget, or page module: a `src/5-shared/ui/<component>/` directory with its main implementation in `index.tsx` and its main stylesheet in `index.scss`. Apply the subcomponent `component/` and `style/` rules below to these modules as well.
+- The top-level class selector in a UI component's `index.scss` must match its directory name (for example, `.side-panel` in `side-panel/index.scss`). Keep shared component styles in that stylesheet instead of SCSS mixins, and load it from the page stylesheet with `@use "../../5-shared/ui/<component>"`.
+- `src/5-shared/ui/index.ts` may export only each UI component's main implementation. Consumers import these components through `@/src/5-shared/ui` (or `@/src/5-shared`) and put module-specific overrides in their own stylesheet, scoped under their own top-level class.
 
 ## Feature, Widget, and Page Stylesheets
 
 - Each feature, widget, or page module must keep its main stylesheet in `index.scss` next to its `index.tsx`. Put optional SCSS files for subcomponents under that module's `style/` directory.
-- The top-level class selector in a module's `index.scss` must match the module directory name (for example, `.body` in `body/index.scss` or `.bookmark` in `bookmark/index.scss`). Apply these stylesheet rules equally to `src/feature/`, `src/widget/`, and `src/page/` modules.
+- The top-level class selector in a module's `index.scss` must match the module directory name (for example, `.body` in `body/index.scss` or `.bookmark` in `bookmark/index.scss`). Apply these stylesheet rules equally to `src/3-feature/`, `src/2-widget/`, and `src/1-page/` modules.
 - Whenever a module adds `component/<sub-comp>.tsx`, it must add the matching `style/<sub-comp>.scss` in the same change, even if the stylesheet is initially empty. Apply this pairing rule to feature, widget, and page modules.

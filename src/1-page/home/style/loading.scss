@@ -1,0 +1,11 @@
+@use "../../../5-shared/style/variable" as v;
+
+.home.is-loading {
+  display: grid;
+  place-items: center;
+
+  .loading-mark {
+    color: v.$signal;
+    font-size: 14px;
+  }
+}
