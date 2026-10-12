@@ -11,7 +11,7 @@ test("6. 설정한 폰트 크기와 탭 색상 순서는 새로고침 후에도 
   await tabColorRadio(page, 2, "Yellow").check();
   await expect
     .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toEqual({ fontScale: 1.1, tabColorCycle: ["green", "yellow", "red"], language: "en" });
+    .toEqual({ fontScale: 1.1, tabColorCycle: ["green", "yellow", "red"], language: "en", panelSlide: false });
   await closeSettingsPanel(page);
 
   await page.reload();

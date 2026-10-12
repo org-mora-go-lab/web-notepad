@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Layers, Search } from "lucide-react";
+import { Bookmark, Layers } from "lucide-react";
 import { useRef } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -13,10 +13,8 @@ type Props = {
   bookmarksOpen: boolean;
   activeGroupName: string;
   groupsOpen: boolean;
-  globalSearchOpen: boolean;
   onToggleBookmarks: () => void;
   onToggleGroups: () => void;
-  onToggleGlobalSearch: () => void;
 };
 
 export function Footer({
@@ -24,10 +22,8 @@ export function Footer({
   bookmarksOpen,
   activeGroupName,
   groupsOpen,
-  globalSearchOpen,
   onToggleBookmarks,
   onToggleGroups,
-  onToggleGlobalSearch,
 }: Props) {
   const { t } = useI18n();
   const groupNameRef = useRef<HTMLSpanElement>(null);
@@ -51,20 +47,6 @@ export function Footer({
               title={activeGroupName}
             >
               {activeGroupName}
-            </span>
-          </button>
-          <button
-            className={`status-command global-search-command ${globalSearchOpen ? "is-active" : ""}`}
-            type="button"
-            onClick={onToggleGlobalSearch}
-            aria-expanded={globalSearchOpen}
-            aria-controls="global-search-panel"
-            aria-label="전체 검색"
-          >
-            <Search size={16} strokeWidth={1.8} />
-            <span className="global-search-label">{t.search}</span>
-            <span className="status-separator" aria-hidden="true">
-              |
             </span>
           </button>
           <div className="status-scroll-area">

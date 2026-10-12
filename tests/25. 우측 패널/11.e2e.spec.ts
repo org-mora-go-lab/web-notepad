@@ -22,6 +22,7 @@ test("11. 모바일 우측 패널과 확인 팝업의 아이콘·글자는 PC �
     await cancel.click();
     await expect(popup).toBeHidden();
 
+    await page.getByRole("button", { name: "MENU", exact: true }).click();
     await page.locator(".global-search-command").click();
     const panel = page.locator("#global-search-panel");
     await expect(panel).toHaveAttribute("aria-hidden", "false");

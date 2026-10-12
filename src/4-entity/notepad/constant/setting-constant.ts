@@ -18,4 +18,5 @@ export const DEFAULT_SETTINGS: NotepadSettings = {
   fontScale: 1,
   tabColorCycle: ["green", "gray", "red"],
   language: "en",
+  panelSlide: false,
 };

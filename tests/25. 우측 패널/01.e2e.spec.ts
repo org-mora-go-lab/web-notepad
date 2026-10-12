@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { groupsCommand, openClosedPanel, openSettingsPanel, openShortcutsPanel } from "../__util__";
 
-test("1. 하단 그룹·BOOKMARK와 MENU의 SHORTCUT·CLOSED·SETTINGS 명령으로 우측 패널을 연다", async ({ page }) => {
+test("1. 하단 그룹·BOOKMARK와 MENU의 SHORTCUT·CLOSED·SETTINGS·SEARCH 명령으로 우측 패널을 연다", async ({ page }) => {
   await page.goto("/");
 
   await groupsCommand(page).click();
@@ -29,4 +29,8 @@ test("1. 하단 그룹·BOOKMARK와 MENU의 SHORTCUT·CLOSED·SETTINGS 명령으
   await openSettingsPanel(page);
   await page.getByRole("button", { name: "설정 닫기" }).click();
   await expect(page.locator("#settings-panel")).toHaveAttribute("aria-hidden", "true");
+
+  await page.getByRole("button", { name: "MENU", exact: true }).click();
+  await page.locator(".additional-tools-search").click();
+  await expect(page.locator("#global-search-panel")).toHaveAttribute("aria-hidden", "false");
 });

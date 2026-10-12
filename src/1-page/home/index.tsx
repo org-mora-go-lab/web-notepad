@@ -46,13 +46,14 @@ export function Home() {
     removeGroup,
     fontScale,
     language,
+    panelSlide,
   } = useHome();
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
-  // The MENU's CLOSED, SETTINGS and SHORTCUT commands open their side panels.
+  // MENU commands open their side panels.
   const withMenu = (pane: PaneViewProps): PaneViewProps =>
     pane.hasMenu
       ? {
@@ -67,6 +68,9 @@ export function Home() {
           onOpenShortcuts: () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           },
+          onOpenSearch: () => {
+            if (openPanel !== "global-search") toggleSidePanel("global-search");
+          },
         }
       : pane;
 
@@ -79,6 +83,7 @@ export function Home() {
     <main
       className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
       style={{ "--font-scale": fontScale } as CSSProperties}
+      data-panel-slide={panelSlide ? "on" : "off"}
     >
       <section className="workspace">
         <div className={`pane-group ${split ? "is-split" : ""}`}>
@@ -92,10 +97,8 @@ export function Home() {
           bookmarksOpen={openPanel === "bookmarks"}
           activeGroupName={activeGroupName}
           groupsOpen={openPanel === "groups"}
-          globalSearchOpen={openPanel === "global-search"}
           onToggleBookmarks={() => toggleSidePanel("bookmarks")}
           onToggleGroups={() => toggleSidePanel("groups")}
-          onToggleGlobalSearch={() => toggleSidePanel("global-search")}
         />
       </section>
 

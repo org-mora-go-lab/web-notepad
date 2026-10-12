@@ -19,6 +19,7 @@ test("9. 설정 초기화 버튼은 확인 팝업에서 Reset을 선택한 경�
 
   await fontScaleRadio(page, "120%").check();
   await tabColorRadio(page, 1, "Pink").check();
+  await panel.getByRole("radio", { name: "On", exact: true }).check();
   await languageRadio(page, "한국어").check();
   await expect(panel.locator("h2")).toHaveText("설정");
 
@@ -48,7 +49,8 @@ test("9. 설정 초기화 버튼은 확인 팝업에서 Reset을 선택한 경�
   await expect(tabColorRadio(page, 2, "Gray")).toBeChecked();
   await expect(tabColorRadio(page, 3, "Red")).toBeChecked();
   await expect(languageRadio(page, "English")).toBeChecked();
+  await expect(panel.getByRole("radio", { name: "Off", exact: true })).toBeChecked();
   await expect
     .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toEqual({ fontScale: 1, tabColorCycle: ["green", "gray", "red"], language: "en" });
+    .toEqual({ fontScale: 1, tabColorCycle: ["green", "gray", "red"], language: "en", panelSlide: false });
 });

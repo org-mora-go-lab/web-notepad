@@ -5,14 +5,14 @@ test("8. PC와 모바일 하단 메뉴는 스크롤 없이 표시되고 각 패�
   const commands = page.locator(".status-meta .status-command:visible");
   for (const width of [320, 390, 640, 641, 1280]) {
     await page.setViewportSize({ width, height: 844 });
-    const count = 4;
+    const count = 3;
     await expect(commands).toHaveCount(count);
     for (const command of await commands.all()) {
       await expect(command).toBeInViewport();
       const bounds = (await command.boundingBox())!;
       const className = (await command.getAttribute("class")) ?? "";
       if (width <= 640) {
-        expect(bounds.width).toBeCloseTo(className.includes("group-status-command") ? width - 72 * 3 : 72, 1);
+        expect(bounds.width).toBeCloseTo(className.includes("group-status-command") ? width - 72 * 2 : 72, 1);
       }
       expect(bounds.height).toBe(width <= 640 ? 51 : 35);
       if (className.includes("group-status-command")) {

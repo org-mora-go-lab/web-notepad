@@ -37,7 +37,7 @@ test("9. 모바일 그룹명을 하단 버튼에 통합하고 편집기가 하�
     const footerBounds = (await page.locator(".footer").boundingBox())!;
     const editorBounds = (await page.locator(".pane-group").boundingBox())!;
     expect(panelBounds.height).toBe(51);
-    expect(panelBounds.width).toBeCloseTo(width - 72 * 3, 1);
+    expect(panelBounds.width).toBeCloseTo(width - 72 * 2, 1);
     expect(footerBounds.height).toBe(64);
     expect(editorBounds.y).toBe(0);
     expect(editorBounds.y + editorBounds.height).toBe(footerBounds.y);

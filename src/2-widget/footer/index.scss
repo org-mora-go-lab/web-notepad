@@ -94,7 +94,8 @@
     display: none;
   }
 
-  .global-search-command {
+  // The first right-side command pushes the commands to the right on PC.
+  .bookmark-command {
     margin-left: auto;
   }
 
@@ -134,7 +135,7 @@
 
     .status-meta {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) repeat(3, 72px);
+      grid-template-columns: minmax(0, 1fr) repeat(2, 72px);
       gap: 0;
     }
 
@@ -144,7 +145,7 @@
       padding: 0 8px 0 16px;
     }
 
-    .global-search-command {
+    .bookmark-command {
       margin-left: 0;
     }
 

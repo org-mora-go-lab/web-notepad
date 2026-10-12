@@ -50,10 +50,9 @@ test("10. 모바일 그룹명은 17px로 두 줄까지 줄바꿈 후 말줄임�
     await expect(name).toHaveCSS("font-size", "17px");
     await expect(name).toHaveCSS("line-height", "20px");
     const nameBounds = (await name.boundingBox())!;
-    const searchLabelBounds = (await page.locator(".global-search-command .global-search-label").boundingBox())!;
     expect(nameBounds.x).toBeCloseTo(16, 1);
     expect(nameBounds.height).toBeCloseTo(40, 0);
-    expect(nameBounds.x + nameBounds.width).toBeLessThan(searchLabelBounds.x);
+    expect(nameBounds.x + nameBounds.width).toBeLessThanOrEqual((await panel.boundingBox())!.x + (await panel.boundingBox())!.width);
     await expect(name).toHaveClass(/is-multiline/);
     expect(await centerOffset()).toBeCloseTo(0, 0);
   }

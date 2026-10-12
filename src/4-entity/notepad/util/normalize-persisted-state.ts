@@ -45,6 +45,8 @@ const normalizeSettings = (value: unknown): NotepadSettings => {
     language: LANGUAGES.includes(settings.language as Language)
       ? (settings.language as Language)
       : DEFAULT_SETTINGS.language,
+    panelSlide:
+      typeof settings.panelSlide === "boolean" ? settings.panelSlide : DEFAULT_SETTINGS.panelSlide,
   };
 };
 
