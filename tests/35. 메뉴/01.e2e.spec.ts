@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../__constant__";
 
-test("1. MENU는 탭 줄 우측 상단에 탭 목록과 겹치지 않게 배치하고 THEME·CLOSED·SETTINGS·SHORTCUT 순서로 표시한다", async ({ page }) => {
+test("1. MENU는 탭 줄 우측 상단에 탭 목록과 겹치지 않게 배치하고 THEME·SHORTCUT·SETTINGS·CLOSED 순서로 표시한다", async ({ page }) => {
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "MENU", exact: true });
   for (const viewport of BOTH_VIEWPORTS) {
@@ -25,8 +25,8 @@ test("1. MENU는 탭 줄 우측 상단에 탭 목록과 겹치지 않게 배치�
     const labels = await menu.locator('[role="menuitem"]:visible').evaluateAll(items =>
       items.map(item => item.textContent?.match(/THEME|CLOSED|SETTINGS|SHORTCUT/)?.[0]));
     expect(labels).toEqual(viewport.width <= 640
-      ? ["THEME", "CLOSED", "SETTINGS"]
-      : ["THEME", "CLOSED", "SETTINGS", "SHORTCUT"]);
+      ? ["THEME", "SETTINGS", "CLOSED"]
+      : ["THEME", "SHORTCUT", "SETTINGS", "CLOSED"]);
     await page.keyboard.press("Escape");
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
   }

@@ -79,21 +79,21 @@ export function AdditionalTools({ closedCount, onOpenClosed, onOpenSettings, onO
           }}
         >
           <Theme key={String(open)} onSelect={close} />
-          <button className="closed-command" type="button" role="menuitem"
-            aria-controls="closed-panel" aria-label="닫은 탭"
-            onClick={() => { close(); onOpenClosed(); }}>
-            <Ghost size={16} /><span>CLOSED</span>
-            {closedCount > 0 && <span className="closed-count">{closedCount}</span>}
+          <button className="additional-tools-shortcut" type="button" role="menuitem"
+            aria-controls="shortcuts-panel"
+            onClick={() => { close(); onOpenShortcuts(); }}>
+            <Keyboard size={16} /><span>SHORTCUT</span>
           </button>
           <button className="additional-tools-settings" type="button" role="menuitem"
             aria-controls="settings-panel" aria-label="설정"
             onClick={() => { close(); onOpenSettings(); }}>
             <Settings size={16} /><span>SETTINGS</span>
           </button>
-          <button className="additional-tools-shortcut" type="button" role="menuitem"
-            aria-controls="shortcuts-panel"
-            onClick={() => { close(); onOpenShortcuts(); }}>
-            <Keyboard size={16} /><span>SHORTCUT</span>
+          <button className="closed-command" type="button" role="menuitem"
+            aria-controls="closed-panel" aria-label="닫은 탭"
+            onClick={() => { close(); onOpenClosed(); }}>
+            <Ghost size={16} /><span>CLOSED</span>
+            {closedCount > 0 && <span className="closed-count">{closedCount}</span>}
           </button>
         </div>
     </div>
