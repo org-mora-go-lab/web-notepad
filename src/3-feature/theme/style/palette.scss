@@ -63,12 +63,12 @@
 
   .home .tab-item[data-tab-color="gray"] {
     --tab-background: rgba(104, 119, 110, 0.1);
-    --tab-background-active: rgba(104, 119, 110, 0.18);
+    --tab-background-active: rgba(104, 119, 110, 0.22);
   }
 
   .home .tab-item[data-tab-color="green"] {
     --tab-background: rgba(37, 131, 86, 0.1);
-    --tab-background-active: rgba(37, 131, 86, 0.18);
+    --tab-background-active: rgba(37, 131, 86, 0.22);
   }
 
   // Line numbers and editor lines share the LIGHT accents so the selection reads on white.

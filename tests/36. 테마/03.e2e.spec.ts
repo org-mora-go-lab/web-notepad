@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../__constant__";
 
-test("3. LIGHT의 그레이·그린 탭 배경은 더 진하게 표시하고 아이콘 강조색·레드 탭·DARK 색상은 유지한다", async ({ page }) => {
+test("3. LIGHT의 그레이·그린 탭 배경은 더 진하게, 활성 탭은 22%로 표시하고 아이콘 강조색·레드 탭·DARK 색상은 유지한다", async ({ page }) => {
   await page.goto("/");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
@@ -22,11 +22,11 @@ test("3. LIGHT의 그레이·그린 탭 배경은 더 진하게 표시하고 아
       return color;
     });
     await expect.poll(iconColor).toBe("rgb(37, 131, 86)");
-    await expect(activeTab).toHaveCSS("background-color", "rgba(37, 131, 86, 0.18)");
+    await expect(activeTab).toHaveCSS("background-color", "rgba(37, 131, 86, 0.22)");
     await expect.poll(inactiveBackground).toMatch(/^rgba\(37, 131, 86, 0\.1(?:02)?\)$/);
     await colorIcon.click();
     await expect.poll(iconColor).toBe("rgb(104, 119, 110)");
-    await expect(activeTab).toHaveCSS("background-color", "rgba(104, 119, 110, 0.18)");
+    await expect(activeTab).toHaveCSS("background-color", "rgba(104, 119, 110, 0.22)");
     await expect.poll(inactiveBackground).toMatch(/^rgba\(104, 119, 110, 0\.1(?:02)?\)$/);
     await colorIcon.click();
     await expect(activeTab).toHaveCSS("background-color", "rgba(242, 139, 130, 0.16)");

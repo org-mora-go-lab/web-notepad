@@ -62,7 +62,7 @@
     &.is-active {
       background: var(--tab-background-active, #{v.$panel});
       color: v.$ink;
-      box-shadow: inset 0 2px var(--tab-accent, #{v.$saved});
+      box-shadow: inset 0 3px var(--tab-accent, #{v.$saved});
     }
 
     &.is-pinned {
@@ -81,7 +81,7 @@
 
     &.is-pinned.is-active {
       background: var(--tab-background-active);
-      box-shadow: inset 0 2px var(--tab-accent, #{v.$saved});
+      box-shadow: inset 0 3px var(--tab-accent, #{v.$saved});
     }
 
     @media (max-width: 640px) {
@@ -200,7 +200,8 @@
     }
 
     .tab-title {
-      font-size: 16px * v.$mobile-scale;
+      // One step below the 1.2x scale so long titles fit the tab.
+      font-size: 16px * v.$mobile-scale - 1px;
     }
 
     .dirty-dot {
