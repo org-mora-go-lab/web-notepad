@@ -608,7 +608,7 @@
 
 8.  선택한 언어는 브라우저에 저장해 새로고침 후에도 유지하고 문서의 `lang` 속성에 반영하며, 잘못된 저장값은 English로 처리한다.
 
-9.  설정 패널 헤더의 닫기 버튼 왼쪽에 설정 초기화 버튼을 표시한다. 누르면 `Reset settings` 제목과 `All settings will return to their defaults. Do you want to reset them?` 문구의 앱 내부 확인 팝업을 표시하고 Cancel에 기본 포커스를 둔다. Cancel·닫기·Escape로 취소하면 설정을 유지하고, `Reset`을 선택한 경우에만 폰트 크기(100%)·탭 색상 순서(Green → Gray → Red)·언어(English)·패널 슬라이드 효과(Off)를 모두 기본값으로 되돌리고 저장하며 설정 패널은 열린 상태를 유지한다.
+9.  설정 패널 헤더의 고정 버튼 왼쪽에 설정 초기화 버튼을 표시해 초기화·고정·닫기 순서로 배치한다. 누르면 `Reset settings` 제목과 `All settings will return to their defaults. Do you want to reset them?` 문구의 앱 내부 확인 팝업을 표시하고 Cancel에 기본 포커스를 둔다. Cancel·닫기·Escape로 취소하면 설정을 유지하고, `Reset`을 선택한 경우에만 폰트 크기(100%)·탭 색상 순서(Green → Gray → Red)·언어(English)·패널 슬라이드 효과(Off)를 모두 기본값으로 되돌리고 저장하며 설정 패널은 열린 상태를 유지한다.
 
 10. `Tab Colors` 제목 오른쪽에 탭 색상 초기화 버튼을 표시한다. 누르면 확인 팝업 없이 탭 색상 순서만 기본값(Green → Gray → Red)으로 되돌리고 저장하며 폰트 크기와 언어는 유지한다.
 

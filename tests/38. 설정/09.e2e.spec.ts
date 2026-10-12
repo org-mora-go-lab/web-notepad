@@ -4,16 +4,19 @@ import { STORAGE_KEY } from "../__constant__";
 import { openSettingsPanel } from "../__util__";
 import { fontScaleRadio, languageRadio, settingsPanel, tabColorRadio } from "./__util__";
 
-test("9. 설정 초기화 버튼은 확인 팝업에서 Reset을 선택한 경우에만 폰트 크기·탭 색상 순서·언어를 기본값으로 되돌리고 취소하면 유지한다", async ({ page }) => {
+test("9. 고정 버튼 왼쪽의 설정 초기화 버튼은 확인 팝업에서 Reset을 선택한 경우에만 폰트 크기·탭 색상 순서·언어를 기본값으로 되돌리고 취소하면 유지한다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
   const panel = settingsPanel(page);
   const reset = panel.getByRole("button", { name: "설정 초기화", exact: true });
   const close = panel.getByRole("button", { name: "설정 닫기", exact: true });
   await expect(panel).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
+  const pinBounds = (await panel.locator(".side-panel-pin").boundingBox())!;
   const resetBounds = (await reset.boundingBox())!;
   const closeBounds = (await close.boundingBox())!;
   expect(resetBounds.x + resetBounds.width).toBeLessThanOrEqual(closeBounds.x);
+  expect(resetBounds.x + resetBounds.width).toBeLessThanOrEqual(pinBounds.x);
+  expect(pinBounds.x + pinBounds.width).toBeLessThanOrEqual(closeBounds.x);
   expect(resetBounds.width).toBeCloseTo(closeBounds.width, 0);
   expect(resetBounds.height).toBeCloseTo(closeBounds.height, 0);
 
