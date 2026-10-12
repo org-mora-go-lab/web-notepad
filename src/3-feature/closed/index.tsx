@@ -4,6 +4,7 @@ import { Ghost } from "lucide-react";
 import { useState } from "react";
 
 import type { ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
 
@@ -35,6 +36,7 @@ export function Closed({
   onRemove,
 }: Props) {
   const [deletingEntryId, setDeletingEntryId] = useState<string | null>(null);
+  const { t } = useI18n();
   // Tabs whose group was deleted are listed (and restored) under Ungrouped.
   const entries = closedTabs.map((entry) => ({
     entry,
@@ -48,7 +50,7 @@ export function Closed({
     <SidePanel
       className="closed"
       id="closed-panel"
-      title="Closed"
+      title={t.closedTitle}
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
@@ -58,18 +60,18 @@ export function Closed({
       <SearchField
         value={searchQuery}
         ariaLabel="닫은 탭 검색"
-        placeholder="Search closed"
+        placeholder={t.searchClosed}
         onChange={onSearchQueryChange}
       />
       <div className="closed-list">
         {closedTabs.length === 0 ? (
           <div className="closed-empty">
             <Ghost size={26} strokeWidth={1.4} />
-            <p>Empty Closed</p>
+            <p>{t.emptyClosed}</p>
           </div>
         ) : filteredEntries.length === 0 ? (
           <div className="search-empty-state">
-            <p>No search results</p>
+            <p>{t.noSearchResults}</p>
           </div>
         ) : (
           filteredEntries.map(({ entry, groupName }) => (
@@ -86,10 +88,10 @@ export function Closed({
       </div>
     {deletingEntryId && (
       <ConfirmPopup
-        title="Delete closed tab"
-        message="This closed tab will be permanently deleted and cannot be restored. Do you want to delete it?"
+        title={t.deleteClosedTabTitle}
+        message={t.deleteClosedTabMessage}
         closeLabel="삭제 확인 닫기"
-        closeTitle="닫기"
+        closeTitle={t.close}
         onCancel={() => setDeletingEntryId(null)}
         onConfirm={() => {
           onRemove(deletingEntryId);

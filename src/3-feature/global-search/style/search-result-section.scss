@@ -8,13 +8,13 @@
   h3 {
     margin: 0 0 2px;
     color: v.$muted;
-    font-size: 12px;
+    font-size: v.font(12px);
     font-weight: 500;
     text-transform: uppercase;
   }
 }
 @media (max-width: 640px) {
   .global-search-section h3 {
-    font-size: 12px * v.$mobile-scale;
+    font-size: v.font(12px * v.$mobile-scale);
   }
 }

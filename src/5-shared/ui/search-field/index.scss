@@ -1,3 +1,4 @@
+@use "../../style/mixin";
 @use "../../style/variable" as v;
 @use "./style/search-highlight";
 
@@ -31,7 +32,8 @@
     background: transparent;
     color: v.$ink;
     font: inherit;
-    font-size: 14px;
+    font-size: v.font(14px);
+    @include mixin.touch-input-font(14px);
 
     &::placeholder {
       color: v.$dim;
@@ -52,7 +54,8 @@
     }
 
     input {
-      font-size: 14px * v.$mobile-scale;
+      font-size: v.font(14px * v.$mobile-scale);
+      @include mixin.touch-input-font(14px * v.$mobile-scale);
     }
   }
 }

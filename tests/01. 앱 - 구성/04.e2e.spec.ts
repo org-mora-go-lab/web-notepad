@@ -9,7 +9,7 @@ test("4. 모바일 1.2배 확대에서 하단부·편집기·라인 번호는 �
 
   await expect(bookmarksCommand(page).locator(".status-label")).toHaveCSS("font-size", "12px");
   await expect(bookmarksCommand(page).locator("svg")).toHaveCSS("width", "24px");
-  await expect(page.locator(".group-status-name")).toHaveCSS("font-size", "15px");
+  await expect(page.locator(".group-status-name")).toHaveCSS("font-size", "17px");
   await expect(page.locator(".footer")).toHaveCSS("min-height", "64px");
 
   const editor = page.locator(".note-area");

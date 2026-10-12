@@ -21,7 +21,7 @@
       max-width: 220px;
       margin: 0;
       font-family: v.$sans;
-      font-size: 16px;
+      font-size: v.font(16px);
       line-height: 1.5;
     }
   }
@@ -34,7 +34,7 @@
       }
 
       p {
-        font-size: 16px * v.$mobile-scale;
+        font-size: v.font(16px * v.$mobile-scale);
       }
     }
   }
@@ -62,14 +62,14 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       color: v.$signal;
-      font-size: 15px;
+      font-size: v.font(15px);
     }
 
     time {
       width: 12ch;
       flex: 0 0 12ch;
       color: var(--color-secondary);
-      font-size: 12px;
+      font-size: v.font(12px);
       line-height: 16px;
       font-variant-numeric: tabular-nums;
       text-align: right;
@@ -91,7 +91,7 @@
       border: 1px solid v.$line;
       background: transparent;
       color: var(--color-timestamp);
-      font-size: 13px;
+      font-size: v.font(13px);
       cursor: pointer;
 
       &:hover {
@@ -110,11 +110,11 @@
   @media (max-width: 640px) {
     .#{$name}-item-heading {
       strong {
-        font-size: 15px * v.$mobile-scale;
+        font-size: v.font(15px * v.$mobile-scale);
       }
 
       time {
-        font-size: 12px * v.$mobile-scale;
+        font-size: v.font(12px * v.$mobile-scale);
         line-height: 19px;
       }
     }
@@ -122,7 +122,7 @@
     .#{$name}-actions {
       button {
         height: 30px * v.$mobile-scale;
-        font-size: 13px * v.$mobile-scale;
+        font-size: v.font(13px * v.$mobile-scale);
 
         svg {
           width: 14px * v.$mobile-scale;
@@ -134,5 +134,12 @@
         width: 30px * v.$mobile-scale;
       }
     }
+  }
+}
+
+// iOS zooms the page when focusing a text field under 16px, so touch devices keep 16px as a floor.
+@mixin touch-input-font($size) {
+  @media (pointer: coarse) {
+    font-size: max(16px, #{v.font($size)});
   }
 }

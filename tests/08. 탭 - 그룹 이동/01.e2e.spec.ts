@@ -32,7 +32,7 @@ test("1. 그룹 이동 시 탭 ID, 내용, 색상, 고정, 줄 선택과 연결 
     await expectSelectedLines(page, [false, true]);
     await bookmarksCommand(page).click();
     await expect(page.locator("#bookmarks-panel strong")).toHaveText("Move me");
-    await page.getByRole("button", { name: "열기", exact: true }).click();
+    await page.getByRole("button", { name: "Open", exact: true }).click();
     await expect(page.getByRole("tab")).toHaveCount(2);
     await expect(editor).toHaveValue("Move me\nselected line");
   }

@@ -1,12 +1,12 @@
-import type { NoteTab } from "../type";
+import type { NoteTab, TabColor } from "../type";
 
-export const createNoteTab = (number: number): NoteTab => ({
+export const createNoteTab = (number: number, tabColor: TabColor = "green"): NoteTab => ({
   id: `tab-${number}`,
   title: "-",
   content: "",
   savedContent: "",
   selectedLines: [],
-  tabColor: "green",
+  tabColor,
   pinned: false,
   bookmarked: false,
   updatedAt: 0,

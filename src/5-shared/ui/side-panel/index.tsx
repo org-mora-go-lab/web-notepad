@@ -3,6 +3,7 @@
 import { Pin, X } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { useI18n } from "../../hook";
 import { useSidePanelResize } from "./hook";
 
 type Props = {
@@ -16,6 +17,8 @@ type Props = {
   // PC only: docks the drawer to the right edge beside the workspace.
   pinned?: boolean;
   onTogglePin?: () => void;
+  // Extra header buttons shown just left of the close button.
+  headerActions?: ReactNode;
   onClose: () => void;
   children: ReactNode;
 };
@@ -30,10 +33,12 @@ export function SidePanel({
   ariaLabel,
   pinned = false,
   onTogglePin,
+  headerActions,
   onClose,
   children,
 }: Props) {
   const handleResizeStart = useSidePanelResize();
+  const { t } = useI18n();
 
   return (
     <div className={`side-panel ${className} ${pinned ? "is-pinned" : ""}`}>
@@ -65,11 +70,12 @@ export function SidePanel({
                 onClick={onTogglePin}
                 aria-pressed={pinned}
                 aria-label={pinned ? "패널 고정 해제" : "패널 고정"}
-                title={pinned ? "패널 고정 해제" : "패널 고정"}
+                title={pinned ? t.unpinPanel : t.pinPanel}
               >
                 <Pin size={14} />
               </button>
             )}
+            {headerActions}
             <button
               className="side-panel-close"
               type="button"

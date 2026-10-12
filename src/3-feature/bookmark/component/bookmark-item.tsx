@@ -3,6 +3,7 @@
 import { Bookmark as BookmarkIcon, Trash2 } from "lucide-react";
 
 import type { BookmarkEntry } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { formatDate } from "@/src/5-shared/util";
 
@@ -23,9 +24,10 @@ const getBodyWithoutTitle = (content: string, title: string) => {
 };
 
 export function BookmarkItem({ bookmark, searchQuery, onOpen, onRemove }: Props) {
+  const { t } = useI18n();
   const body = bookmark.content
     ? getBodyWithoutTitle(bookmark.content, bookmark.title)
-    : "Empty note";
+    : t.emptyNote;
 
   return (
     <article className="bookmark-item">
@@ -47,14 +49,14 @@ export function BookmarkItem({ bookmark, searchQuery, onOpen, onRemove }: Props)
       <div className="bookmark-actions">
         <button type="button" onClick={() => onOpen(bookmark.id)}>
           <BookmarkIcon size={14} />
-          열기
+          {t.open}
         </button>
         <button
           className="remove-bookmark"
           type="button"
           onClick={() => onRemove(bookmark.id)}
           aria-label={`${bookmark.title} 북마크 제거`}
-          title="북마크 제거"
+          title={t.removeBookmark}
         >
           <Trash2 size={14} />
         </button>

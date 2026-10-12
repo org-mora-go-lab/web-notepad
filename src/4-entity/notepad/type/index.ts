@@ -2,6 +2,7 @@ export type {
   BookmarkEntry,
   ClosedTabEntry,
   GroupEntry,
+  NotepadSettings,
   NotepadState,
   NoteTab,
   PaneColumn,

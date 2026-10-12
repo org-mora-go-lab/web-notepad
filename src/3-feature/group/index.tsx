@@ -5,6 +5,7 @@ import { type FormEvent, useState } from "react";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
 import { compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
@@ -35,6 +36,7 @@ export function Group({
   onRename,
 }: Props) {
   const [groupName, setGroupName] = useState("");
+  const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -64,7 +66,7 @@ export function Group({
     <SidePanel
       className="group"
       id="groups-panel"
-      title="Groups"
+      title={t.groupsTitle}
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
@@ -74,7 +76,7 @@ export function Group({
       <SearchField
         value={searchQuery}
         ariaLabel="그룹 검색"
-        placeholder="Search groups"
+        placeholder={t.searchGroups}
         onChange={setSearchQuery}
       />
       <form className="group-create-form" onSubmit={handleSubmit}>
@@ -82,7 +84,7 @@ export function Group({
           type="text"
           value={groupName}
           onChange={(event) => setGroupName(event.target.value)}
-          placeholder="Group name"
+          placeholder={t.groupName}
           aria-label="새 그룹 이름"
           maxLength={60}
         />
@@ -97,7 +99,7 @@ export function Group({
       <div className="group-list">
         {filteredGroups.length === 0 ? (
           <div className="search-empty-state">
-            <p>No search results</p>
+            <p>{t.noSearchResults}</p>
           </div>
         ) : (
           filteredGroups.map((group) => (
@@ -121,10 +123,10 @@ export function Group({
                       }
                     }}
                   />
-                  <button type="submit" aria-label="그룹 수정 저장" title="저장" disabled={!editingName.trim()}>
+                  <button type="submit" aria-label="그룹 수정 저장" title={t.save} disabled={!editingName.trim()}>
                     <Check size={14} />
                   </button>
-                  <button type="button" aria-label="그룹 수정 취소" title="취소" onClick={() => setEditingGroupId(null)}>
+                  <button type="button" aria-label="그룹 수정 취소" title={t.cancel} onClick={() => setEditingGroupId(null)}>
                     <X size={14} />
                   </button>
                 </form>
@@ -153,7 +155,7 @@ export function Group({
                           setEditingName(group.name);
                         }}
                         aria-label={`${group.name} 그룹 수정`}
-                        title="그룹 수정"
+                        title={t.editGroup}
                       >
                         <Pencil size={14} />
                       </button>
@@ -161,7 +163,7 @@ export function Group({
                         type="button"
                         onClick={() => setDeletingGroupId(group.id)}
                         aria-label={`${group.name} 그룹 삭제`}
-                        title="그룹 삭제"
+                        title={t.deleteGroup}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -175,10 +177,10 @@ export function Group({
       </div>
     {open && groupToDelete && (
       <ConfirmPopup
-        title="Delete group"
-        message={`Do you want to delete ${groupToDelete.name}?`}
+        title={t.deleteGroupTitle}
+        message={t.deleteGroupMessage(groupToDelete.name)}
         closeLabel="삭제 확인 닫기"
-        closeTitle="닫기"
+        closeTitle={t.close}
         onCancel={() => setDeletingGroupId(null)}
         onConfirm={() => {
           onRemove(groupToDelete.id);

@@ -6,7 +6,7 @@
   }
 
   .side-panel-header h2 {
-    font-size: 20px;
+    font-size: v.font(20px);
   }
 
   .side-panel-close svg {
@@ -32,7 +32,7 @@
     dt {
       min-width: 0;
       color: v.$saved;
-      font-size: 15px;
+      font-size: v.font(15px);
     }
 
     dd {
@@ -49,7 +49,7 @@
       background: var(--color-key);
       color: v.$ink;
       font-family: v.$mono;
-      font-size: 12px;
+      font-size: v.font(12px);
       white-space: nowrap;
     }
   }

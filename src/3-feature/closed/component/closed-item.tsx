@@ -3,6 +3,7 @@
 import { RotateCcw, Trash2 } from "lucide-react";
 
 import type { ClosedTabEntry } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { formatDate } from "@/src/5-shared/util";
 
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export function ClosedItem({ entry, groupName, searchQuery, onRestore, onRemove }: Props) {
+  const { t } = useI18n();
   return (
     <article className="closed-item">
       <div className="closed-item-heading">
@@ -31,14 +33,14 @@ export function ClosedItem({ entry, groupName, searchQuery, onRestore, onRemove 
       <div className="closed-actions">
         <button type="button" onClick={() => onRestore(entry.id)}>
           <RotateCcw size={14} />
-          복원
+          {t.restore}
         </button>
         <button
           className="remove-closed"
           type="button"
           onClick={() => onRemove(entry.id)}
           aria-label={`${entry.tab.title} 닫힌 탭 삭제`}
-          title="닫힌 탭 삭제"
+          title={t.deleteClosedTab}
         >
           <Trash2 size={14} />
         </button>

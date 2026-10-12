@@ -4,12 +4,14 @@ import { Plus } from "lucide-react";
 import { type RefObject, useState } from "react";
 
 import { compareGroups, type GroupEntry, type NoteTab } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 
 import { AdditionalTools, TabContextMenu, TabItem } from "./component";
 
 type Props = {
   closedCount?: number;
   onOpenClosed?: () => void;
+  onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
@@ -37,6 +39,7 @@ type ContextMenuState = { tabId: string; left: number; top: number };
 export function Header({
   closedCount = 0,
   onOpenClosed,
+  onOpenSettings,
   onOpenShortcuts,
   tabs,
   groups,
@@ -59,6 +62,7 @@ export function Header({
   onAdd,
 }: Props) {
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
+  const { t } = useI18n();
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const dragActive = draggingTabId !== null;
   const contextTab = tabs.find((tab) => tab.id === contextMenu?.tabId);
@@ -133,7 +137,7 @@ export function Header({
         type="button"
         onClick={onAdd}
         aria-label="새 탭 추가"
-        title="새 탭"
+        title={t.newTab}
       >
         <Plus size={14} />
       </button>
@@ -159,9 +163,10 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenClosed && <AdditionalTools
+      {onOpenShortcuts && onOpenClosed && onOpenSettings && <AdditionalTools
         closedCount={closedCount}
         onOpenClosed={onOpenClosed}
+        onOpenSettings={onOpenSettings}
         onOpenShortcuts={onOpenShortcuts}
       />}
     </div>

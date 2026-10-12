@@ -21,7 +21,7 @@ test("3. 원본 탭이 남아 있는 북마크를 열면 해당 탭을 활성화
   await page.locator("textarea").fill("other note");
 
   await bookmarksCommand(page).click();
-  await page.getByRole("button", { name: "열기" }).click();
+  await page.getByRole("button", { name: "Open", exact: true }).click();
 
   await expect(page.locator("textarea")).toHaveValue("bookmark source");
   await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "gray");

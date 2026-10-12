@@ -14,7 +14,12 @@ test("7. Escape로 패널 진입 버튼의 포커스를 해제하고 하단·MEN
       const panel = page.locator(`#${panelId}`);
       await openPanel(page, panelId);
       await expect(panel).toHaveAttribute("aria-hidden", "false");
-      const inMenu = panelId === "closed-panel" || panelId === "shortcuts-panel";
+      const menuKeys: Record<string, string[]> = {
+        "closed-panel": ["End"],
+        "settings-panel": ["End", "ArrowUp"],
+        "shortcuts-panel": ["ArrowDown"],
+      };
+      const inMenu = panelId in menuKeys;
       if (inMenu) await expect(page.getByRole("button", { name: "MENU", exact: true })).toBeFocused();
       else await expect(toggle).toBeFocused();
       await page.keyboard.press("Escape");
@@ -28,7 +33,7 @@ test("7. Escape로 패널 진입 버튼의 포커스를 해제하고 하단·MEN
         const menu = page.getByRole("button", { name: "MENU", exact: true });
         await expect(menu).not.toBeFocused();
         await menu.press("Enter");
-        await page.keyboard.press(panelId === "closed-panel" ? "ArrowDown" : "End");
+        for (const key of menuKeys[panelId]) await page.keyboard.press(key);
         await expect(toggle).toBeFocused();
         await expect(toggle).not.toHaveCSS("outline-style", "none");
         await page.keyboard.press("Escape");

@@ -2,8 +2,11 @@
 
 import "./index.scss";
 
+import { type CSSProperties, useEffect } from "react";
+
 import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
+import { I18nContext } from "@/src/5-shared/hook";
 
 import { Loading, PaneColumn, TabDeletePopup } from "./component";
 import type { PaneViewProps } from "./type";
@@ -41,9 +44,15 @@ export function Home() {
     createGroup,
     renameGroup,
     removeGroup,
+    fontScale,
+    language,
   } = useHome();
 
-  // The MENU's CLOSED and SHORTCUT commands open their side panels.
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
+  // The MENU's CLOSED, SETTINGS and SHORTCUT commands open their side panels.
   const withMenu = (pane: PaneViewProps): PaneViewProps =>
     pane.hasMenu
       ? {
@@ -51,6 +60,9 @@ export function Home() {
           closedCount: closedTabs.length,
           onOpenClosed: () => {
             if (openPanel !== "closed") toggleSidePanel("closed");
+          },
+          onOpenSettings: () => {
+            if (openPanel !== "settings") toggleSidePanel("settings");
           },
           onOpenShortcuts: () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
@@ -63,7 +75,11 @@ export function Home() {
   }
 
   return (
-    <main className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}>
+    <I18nContext value={language}>
+    <main
+      className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
+      style={{ "--font-scale": fontScale } as CSSProperties}
+    >
       <section className="workspace">
         <div className={`pane-group ${split ? "is-split" : ""}`}>
           {columns.map((column) => (
@@ -114,5 +130,6 @@ export function Home() {
         <TabDeletePopup onConfirm={confirmCloseTab} onCancel={cancelCloseTab} />
       )}
     </main>
+    </I18nContext>
   );
 }

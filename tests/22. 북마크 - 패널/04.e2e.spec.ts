@@ -26,7 +26,7 @@ test("4. 원본 탭이 없으면 내용과 탭 색상 및 선택한 줄을 복�
   await expect(page.locator("textarea")).toHaveValue("");
   await page.reload();
   await bookmarksCommand(page).click();
-  await page.getByRole("button", { name: "열기" }).click();
+  await page.getByRole("button", { name: "Open", exact: true }).click();
 
   await expect(page.locator("textarea")).toHaveValue("restored bookmark\nsecond\nthird");
   await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "red");

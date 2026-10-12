@@ -20,5 +20,5 @@ export async function closeActiveTabWithContent(page: Page, content: string) {
 
 // Restores the first closed tab from the open Closed panel.
 export async function restoreFirstClosedTab(page: Page) {
-  await page.locator(".closed-item").first().getByRole("button", { name: "복원" }).click();
+  await page.locator(".closed-item").first().getByRole("button", { name: "Restore", exact: true }).click();
 }

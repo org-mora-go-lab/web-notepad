@@ -1,6 +1,7 @@
 "use client";
 
 import type { ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
+import { useI18n } from "@/src/5-shared/hook";
 import { SearchField, SidePanel } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
 
@@ -33,6 +34,7 @@ export function GlobalSearch({
   onOpenBookmark,
   onOpenClosedSearch,
 }: Props) {
+  const { t } = useI18n();
   const query = searchQuery.trim();
   const groupResults = query
     ? groups.filter((group) => matchesSearchQuery(query, group.name))
@@ -64,7 +66,7 @@ export function GlobalSearch({
     <SidePanel
       className="global-search"
       id="global-search-panel"
-      title="Search"
+      title={t.searchTitle}
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
@@ -74,26 +76,26 @@ export function GlobalSearch({
       <SearchField
         value={searchQuery}
         ariaLabel="전체 검색"
-        placeholder="Search everything"
+        placeholder={t.searchEverything}
         onChange={onSearchQueryChange}
       />
       <div className="global-search-list">
         {!query ? (
           <div className="global-search-empty-state">
-            <p>Enter a search term</p>
+            <p>{t.enterSearchTerm}</p>
           </div>
         ) : resultCount === 0 ? (
           <div className="global-search-empty-state">
-            <p>No search results</p>
+            <p>{t.noSearchResults}</p>
           </div>
         ) : (
           <>
             {groupResults.length > 0 && (
-              <SearchResultSection title="Groups" className="global-search-groups">
+              <SearchResultSection title={t.groupsTitle} className="global-search-groups">
                 {groupResults.map((group) => (
                   <SearchResult
                     key={group.id}
-                    category="Group"
+                    category={t.groupCategory}
                     title={group.name}
                     query={query}
                     ariaLabel={`그룹 ${group.name} 선택`}
@@ -103,11 +105,11 @@ export function GlobalSearch({
               </SearchResultSection>
             )}
             {bookmarkResults.length > 0 && (
-              <SearchResultSection title="Bookmarks" className="global-search-bookmarks">
+              <SearchResultSection title={t.bookmarksTitle} className="global-search-bookmarks">
                 {bookmarkResults.map(({ group, bookmark }) => (
                   <SearchResult
                     key={`${group.id}:${bookmark.id}`}
-                    category="Bookmark"
+                    category={t.bookmarkCategory}
                     groupName={group.name}
                     title={bookmark.title}
                     description={bookmark.content}
@@ -119,11 +121,11 @@ export function GlobalSearch({
               </SearchResultSection>
             )}
             {closedResults.length > 0 && (
-              <SearchResultSection title="Closed" className="global-search-closed">
+              <SearchResultSection title={t.closedTitle} className="global-search-closed">
                 {closedResults.map(({ entry, groupName }) => (
                   <SearchResult
                     key={entry.id}
-                    category="Closed"
+                    category={t.closedCategory}
                     groupName={groupName}
                     title={entry.tab.title}
                     description={entry.tab.content}

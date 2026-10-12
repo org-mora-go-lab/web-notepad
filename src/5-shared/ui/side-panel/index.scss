@@ -84,7 +84,7 @@
     h2 {
       margin: 0;
       font-family: v.$sans;
-      font-size: 22px;
+      font-size: v.font(22px);
       font-weight: 500;
     }
   }
@@ -96,6 +96,7 @@
   }
 
   .side-panel-pin,
+  .side-panel-action,
   .side-panel-close {
     width: 28px;
     height: 28px;
@@ -156,13 +157,14 @@
     }
 
     .side-panel-header h2 {
-      font-size: 22px * v.$mobile-scale;
+      font-size: v.font(22px * v.$mobile-scale);
     }
 
     .side-panel-pin {
       display: none;
     }
 
+    .side-panel-action,
     .side-panel-close {
       width: 28px * v.$mobile-scale;
       height: 28px * v.$mobile-scale;

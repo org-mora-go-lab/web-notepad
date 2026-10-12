@@ -1,6 +1,11 @@
 "use client";
 
 import { Bookmark, Layers, Search } from "lucide-react";
+import { useRef } from "react";
+
+import { useI18n } from "@/src/5-shared/hook";
+
+import { useIsMultiline } from "./hook";
 
 type Props = {
   // A linked bookmark was created or synced today.
@@ -24,6 +29,9 @@ export function Footer({
   onToggleGroups,
   onToggleGlobalSearch,
 }: Props) {
+  const { t } = useI18n();
+  const groupNameRef = useRef<HTMLSpanElement>(null);
+  const groupNameMultiline = useIsMultiline(groupNameRef, activeGroupName);
   return (
     <footer className="footer">
       <div className="status-meta">
@@ -37,7 +45,13 @@ export function Footer({
             aria-label={`그룹 선택: ${activeGroupName}`}
             title={activeGroupName}
           >
-            <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>
+            <span
+              ref={groupNameRef}
+              className={`group-status-name ${groupNameMultiline ? "is-multiline" : ""}`}
+              title={activeGroupName}
+            >
+              {activeGroupName}
+            </span>
           </button>
           <button
             className={`status-command global-search-command ${globalSearchOpen ? "is-active" : ""}`}
@@ -48,7 +62,7 @@ export function Footer({
             aria-label="전체 검색"
           >
             <Search size={16} strokeWidth={1.8} />
-            <span className="global-search-label">SEARCH</span>
+            <span className="global-search-label">{t.search}</span>
             <span className="status-separator" aria-hidden="true">
               |
             </span>
@@ -68,7 +82,7 @@ export function Footer({
                     <span className="status-dot" role="img" aria-label="오늘 업데이트됨" />
                   )}
                 </span>
-                <span className="status-label">BOOKMARK</span>
+                <span className="status-label">{t.bookmark}</span>
                 <span className="status-separator" aria-hidden="true">
                   |
                 </span>
@@ -82,10 +96,10 @@ export function Footer({
             aria-expanded={groupsOpen}
             aria-controls="groups-panel"
             aria-label="그룹 선택"
-            title="그룹 선택"
+            title={t.selectGroup}
           >
             <Layers size={16} strokeWidth={1.8} />
-            <span className="status-label">GROUP</span>
+            <span className="status-label">{t.group}</span>
           </button>
         </div>
       </div>

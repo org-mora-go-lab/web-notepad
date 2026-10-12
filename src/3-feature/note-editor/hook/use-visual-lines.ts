@@ -1,11 +1,15 @@
 import { type RefObject, useLayoutEffect, useState } from "react";
 
+import { useNotepadStore } from "@/src/4-entity/notepad";
+
 export function useVisualLines(
   content: string,
   editorRef: RefObject<HTMLTextAreaElement | null>,
   lineRailRef: RefObject<HTMLDivElement | null>,
 ) {
   const [visualLines, setVisualLines] = useState<number[]>([0]);
+  // Font size changes rewrap lines without resizing the textarea.
+  const fontScale = useNotepadStore((state) => state.settings.fontScale);
 
   useLayoutEffect(() => {
     const textarea = editorRef.current;
@@ -68,7 +72,7 @@ export function useVisualLines(
       observer.disconnect();
       mirror.remove();
     };
-  }, [content, editorRef]);
+  }, [content, editorRef, fontScale]);
 
   useLayoutEffect(() => {
     if (lineRailRef.current && editorRef.current) {

@@ -1,3 +1,6 @@
+@use "sass:list";
+@use "../../../5-shared/style/variable" as v;
+
 :root {
   color-scheme: dark;
   --color-ink: #ffffff;
@@ -28,6 +31,12 @@
   --color-focus: rgba(255, 255, 255, 0.25);
   --color-inactive-title: rgba(222, 222, 216, 0.62);
   --color-alert: #ff5c5c;
+  --color-tab-gray: var(--color-saved);
+  --color-tab-green: var(--color-signal);
+
+  @each $name, $accents in v.$extra-tab-colors {
+    --color-tab-#{$name}: #{list.nth($accents, 1)};
+  }
 }
 
 :root[data-theme="light"] {
@@ -60,6 +69,19 @@
   --color-focus: rgba(37, 95, 65, 0.4);
   --color-inactive-title: #758178;
   --color-alert: #e5484d;
+
+  @each $name, $accents in v.$extra-tab-colors {
+    --color-tab-#{$name}: #{list.nth($accents, 2)};
+
+    .home .tab-item[data-tab-color="#{$name}"] {
+      --tab-background: color-mix(in srgb, var(--color-tab-#{$name}) 10%, transparent);
+      --tab-background-active: color-mix(in srgb, var(--color-tab-#{$name}) 22%, transparent);
+    }
+
+    .home .note-editor[data-tab-color="#{$name}"] {
+      --selected-line-background: color-mix(in srgb, var(--color-tab-#{$name}) 15%, transparent);
+    }
+  }
 
   .home .tab-item[data-tab-color="gray"] {
     --tab-background: rgba(104, 119, 110, 0.1);

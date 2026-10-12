@@ -9,7 +9,7 @@
   border-top: 1px solid v.$line;
   background: v.$strip;
   color: v.$muted;
-  font-size: 14px;
+  font-size: v.font(14px);
 
   .status-meta {
     width: 100%;
@@ -114,7 +114,7 @@
   @media (max-width: 640px) {
     min-height: 64px;
     padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
-    font-size: 12px;
+    font-size: v.font(12px);
 
     .status-command {
       width: 100%;
@@ -150,8 +150,8 @@
 
     // Long names wrap to two lines before the ellipsis.
     .status-command > span.group-status-name {
-      font-size: 15px;
-      line-height: 18px;
+      font-size: v.font(17px);
+      line-height: v.font(20px);
     }
 
     .group-status-name {
@@ -162,6 +162,12 @@
       text-align: left;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
+
+      // A single line sits 3px above center; two lines stay centered.
+      &:not(.is-multiline) {
+        position: relative;
+        top: -3px;
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel } from "@/src/5-shared/ui";
 
 type Props = {
@@ -9,26 +10,24 @@ type Props = {
   onClose: () => void;
 };
 
-const shortcuts = [
-  { action: "새 탭 추가", keys: ["Option + Tab"] },
-  { action: "활성 탭 닫기", keys: ["Option + Backspace"] },
-  {
-    action: "탭 간 이동",
-    keys: ["Option + Arrow Up", "Option + Arrow Down"],
-  },
-  { action: "내용 전체 선택", keys: ["Cmd + A", "Option + A"] },
-  { action: "오른쪽 패널로 이동", keys: ["Option + F12"] },
-  { action: "왼쪽 패널로 이동", keys: ["Option + F11"] },
-  { action: "탭 문자 삽입", keys: ["Tab"] },
-  { action: "라인 범위 선택 및 해제", keys: ["Shift + 클릭"] },
-];
-
 export function Shortcut({ open, pinned, onTogglePin, onClose }: Props) {
+  const { t } = useI18n();
+  const shortcuts = [
+    { action: t.shortcutNewTab, keys: ["Option + Tab"] },
+    { action: t.shortcutCloseTab, keys: ["Option + Backspace"] },
+    { action: t.shortcutMoveTab, keys: ["Option + Arrow Up", "Option + Arrow Down"] },
+    { action: t.shortcutSelectAll, keys: ["Cmd + A", "Option + A"] },
+    { action: t.shortcutMoveRight, keys: ["Option + F12"] },
+    { action: t.shortcutMoveLeft, keys: ["Option + F11"] },
+    { action: t.shortcutInsertTab, keys: ["Tab"] },
+    { action: t.shortcutLineRange, keys: [`Shift + ${t.click}`] },
+  ];
+
   return (
     <SidePanel
       className="shortcut"
       id="shortcuts-panel"
-      title="Shortcut (mac)"
+      title={t.shortcutTitle}
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}

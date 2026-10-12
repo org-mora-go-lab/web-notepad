@@ -48,6 +48,16 @@
       --tab-background-active: rgba(143, 227, 176, 0.16);
     }
 
+    @each $name, $_ in v.$extra-tab-colors {
+      &[data-tab-color="#{$name}"] {
+        --tab-accent: var(--color-tab-#{$name});
+        --tab-glow: color-mix(in srgb, var(--color-tab-#{$name}) 55%, transparent);
+        --tab-accent-muted: color-mix(in srgb, var(--color-tab-#{$name}) 58%, transparent);
+        --tab-background: color-mix(in srgb, var(--color-tab-#{$name}) 8%, transparent);
+        --tab-background-active: color-mix(in srgb, var(--color-tab-#{$name}) 16%, transparent);
+      }
+    }
+
     background: var(--tab-background, transparent);
 
     &.is-dragging {
@@ -169,7 +179,7 @@
     flex: 0 1 auto;
     margin-left: 6px;
     overflow: hidden;
-    font-size: 15px;
+    font-size: v.font(15px);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -201,7 +211,7 @@
 
     .tab-title {
       // One step below the 1.2x scale so long titles fit the tab.
-      font-size: 16px * v.$mobile-scale - 1px;
+      font-size: v.font(16px * v.$mobile-scale - 1px);
     }
 
     .dirty-dot {

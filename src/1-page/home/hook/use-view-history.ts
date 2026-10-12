@@ -26,6 +26,7 @@ const PANEL_IDS: ViewPanel[] = [
   "groups",
   "shortcuts",
   "global-search",
+  "settings",
 ];
 
 const isOptionalTabId = (value: unknown) =>
@@ -41,12 +42,7 @@ const isViewSnapshot = (value: unknown): value is ViewSnapshot => {
     isOptionalTabId(snapshot.leftBottomTabId) &&
     isOptionalTabId(snapshot.rightBottomTabId) &&
     PANE_IDS.includes(snapshot.pane as PaneId) &&
-    (snapshot.panel === null ||
-      snapshot.panel === "closed" ||
-      snapshot.panel === "bookmarks" ||
-      snapshot.panel === "groups" ||
-      snapshot.panel === "shortcuts" ||
-      snapshot.panel === "global-search")
+    (snapshot.panel === null || PANEL_IDS.includes(snapshot.panel as ViewPanel))
   );
 };
 

@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 
-import { Bookmark, Closed, GlobalSearch, Group, Shortcut } from "@/src/3-feature";
+import { Bookmark, Closed, GlobalSearch, Group, Setting, Shortcut } from "@/src/3-feature";
 import type { BookmarkEntry, ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
 import type { ViewPanel } from "@/src/5-shared";
 
@@ -105,6 +105,12 @@ export function Panel({
       />
       <Shortcut
         open={openPanel === "shortcuts"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
+        onClose={onClose}
+      />
+      <Setting
+        open={openPanel === "settings"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}

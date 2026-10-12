@@ -1,8 +1,12 @@
-import { UNGROUPED_GROUP_ID } from "../constant";
+import { LANGUAGES } from "@/src/5-shared/constant";
+import type { Language } from "@/src/5-shared/type";
+
+import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS, UNGROUPED_GROUP_ID } from "../constant";
 import type {
   BookmarkEntry,
   ClosedTabEntry,
   GroupEntry,
+  NotepadSettings,
   NotepadState,
   NoteTab,
   PaneId,
@@ -11,14 +15,38 @@ import type {
 import { createNoteTab, sanitizeSelectedLines } from "./note-tab";
 import { normalizeLayout, PANE_IDS } from "./pane-layout";
 
+const isTabColor = (value: unknown): value is TabColor =>
+  TAB_COLORS.includes(value as TabColor);
+
 const normalizeTabColor = (value: unknown, urgent?: unknown): TabColor =>
-  value === "gray" || value === "red" || value === "green"
+  isTabColor(value)
     ? value
     : value === "blue"
       ? "red"
       : urgent === false
         ? "gray"
         : "green";
+
+const normalizeSettings = (value: unknown): NotepadSettings => {
+  const settings = (value && typeof value === "object" ? value : {}) as Partial<
+    Record<keyof NotepadSettings, unknown>
+  >;
+  const cycle = settings.tabColorCycle;
+  const validCycle =
+    Array.isArray(cycle) &&
+    cycle.length === DEFAULT_SETTINGS.tabColorCycle.length &&
+    cycle.every(isTabColor) &&
+    new Set(cycle).size === cycle.length;
+  return {
+    fontScale: FONT_SCALES.includes(settings.fontScale as number)
+      ? (settings.fontScale as number)
+      : DEFAULT_SETTINGS.fontScale,
+    tabColorCycle: validCycle ? [...cycle] : [...DEFAULT_SETTINGS.tabColorCycle],
+    language: LANGUAGES.includes(settings.language as Language)
+      ? (settings.language as Language)
+      : DEFAULT_SETTINGS.language,
+  };
+};
 
 const finiteNumberOr = (value: unknown, fallback: number) =>
   typeof value === "number" && Number.isFinite(value) ? value : fallback;
@@ -95,6 +123,7 @@ export function normalizePersistedState(
   };
   delete persisted.unsavedSnapshots;
   delete persisted.nextUnsavedNumber;
+  const settings = normalizeSettings(persisted.settings);
   const hasLegacyTabs = Array.isArray(persisted.tabs);
   const legacyTabs = normalizeTabs(persisted.tabs, currentState.groups[0].tabs);
   const legacyBookmarks = normalizeBookmarks(
@@ -220,11 +249,12 @@ export function normalizePersistedState(
     activeGroupId,
     nextTabNumber,
     closedTabs: normalizeClosedTabs(persisted.closedTabs),
+    settings,
   };
 
   function createLegacyGroupTab(): NoteTab {
     while (reservedTabIds.has(`tab-${nextTabNumber}`)) nextTabNumber += 1;
-    const tab = createNoteTab(nextTabNumber);
+    const tab = createNoteTab(nextTabNumber, settings.tabColorCycle[0]);
     reservedTabIds.add(tab.id);
     nextTabNumber += 1;
     return tab;

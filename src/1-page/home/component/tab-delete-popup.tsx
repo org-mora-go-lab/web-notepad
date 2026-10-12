@@ -1,4 +1,4 @@
-import { ConfirmPopup, isAltBackspace } from "@/src/5-shared";
+import { ConfirmPopup, isAltBackspace, useI18n } from "@/src/5-shared";
 
 type Props = {
   onConfirm: () => void;
@@ -6,12 +6,13 @@ type Props = {
 };
 
 export function TabDeletePopup({ onConfirm, onCancel }: Props) {
+  const { t } = useI18n();
   return (
     <ConfirmPopup
-      title="Delete tab"
-      message="Do you want to close this tab?"
+      title={t.deleteTabTitle}
+      message={t.deleteTabMessage}
       closeLabel="Close deletion confirmation"
-      closeTitle="Close"
+      closeTitle={t.close}
       onConfirm={onConfirm}
       onCancel={onCancel}
       onKeyDown={(event, close) => {

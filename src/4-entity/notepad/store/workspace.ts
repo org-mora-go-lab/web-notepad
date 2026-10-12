@@ -38,7 +38,11 @@ export const allocateTab = (state: NotepadState) => {
     getReservedTabIds(state),
     state.nextTabNumber,
   );
-  return { tab: createNoteTab(number), number, nextTabNumber: number + 1 };
+  return {
+    tab: createNoteTab(number, state.settings.tabColorCycle[0]),
+    number,
+    nextTabNumber: number + 1,
+  };
 };
 
 // Pane fields of a workspace with every tab in the left pane.

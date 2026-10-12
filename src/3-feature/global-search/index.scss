@@ -21,14 +21,14 @@
       max-width: 220px;
       margin: 0;
       font-family: v.$sans;
-      font-size: 16px;
+      font-size: v.font(16px);
       line-height: 1.5;
     }
   }
 
   @media (max-width: 640px) {
     .global-search-empty-state p {
-      font-size: 16px * v.$mobile-scale;
+      font-size: v.font(16px * v.$mobile-scale);
     }
   }
 
