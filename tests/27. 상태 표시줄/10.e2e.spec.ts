@@ -53,7 +53,7 @@ test("10. 모바일 그룹명을 하단 버튼에 통합하고 편집기 공간�
     const editorBounds = (await page.locator(".pane-group").boundingBox())!;
     expect(panelBounds.height).toBe(51);
     expect(panelBounds.width).toBeCloseTo(width / 3, 1);
-    expect(nameBounds.width).toBeCloseTo((panelBounds.width - 16) * 1.2, 1);
+    expect(nameBounds.width).toBeCloseTo((panelBounds.width - 16) * 1.08, 1);
     expect(nameBounds.x + nameBounds.width).toBeCloseTo(width - 8, 1);
     expect(nameBounds.x).toBeGreaterThan(bookmarkLabelBounds.x + bookmarkLabelBounds.width);
     expect(editorBounds.y).toBe(0);
