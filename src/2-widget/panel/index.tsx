@@ -8,6 +8,8 @@ import type { ViewPanel } from "@/src/5-shared";
 
 type Props = {
   openPanel: ViewPanel | null;
+  pinned: boolean;
+  onTogglePin: () => void;
   bookmarks: BookmarkEntry[];
   groups: GroupEntry[];
   activeGroupId: string;
@@ -31,6 +33,8 @@ type Props = {
 
 export function Panel({
   openPanel,
+  pinned,
+  onTogglePin,
   bookmarks,
   groups,
   activeGroupId,
@@ -56,6 +60,8 @@ export function Panel({
       <Bookmark
         bookmarks={bookmarks}
         open={openPanel === "bookmarks"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
         onClose={onClose}
         onOpen={onOpenBookmark}
         onRemove={onRemoveBookmark}
@@ -64,6 +70,8 @@ export function Panel({
         groups={groups}
         activeGroupId={activeGroupId}
         open={openPanel === "groups"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
         onClose={onClose}
         onCreate={onCreateGroup}
         onSelect={onSelectGroup}
@@ -75,6 +83,8 @@ export function Panel({
         groups={groups}
         searchQuery={closedSearchQuery}
         open={openPanel === "closed"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
         onClose={onClose}
         onSearchQueryChange={onClosedSearchQueryChange}
         onRestore={onRestoreClosedTab}
@@ -86,12 +96,19 @@ export function Panel({
         searchQuery={globalSearchQuery}
         onSearchQueryChange={onGlobalSearchQueryChange}
         open={openPanel === "global-search"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
         onClose={onClose}
         onSelectGroup={onSelectGroup}
         onOpenBookmark={onOpenSearchedBookmark}
         onOpenClosedSearch={onOpenClosedSearch}
       />
-      <Shortcut open={openPanel === "shortcuts"} onClose={onClose} />
+      <Shortcut
+        open={openPanel === "shortcuts"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
+        onClose={onClose}
+      />
     </div>
   );
 }

@@ -83,7 +83,7 @@ export const createTabActions: StateCreator<
           current,
           tabId,
           { title: nextTitle, content: nextContent, updatedAt: Date.now() },
-          { title: nextTitle, content: nextContent },
+          { title: nextTitle, content: nextContent, updatedAt: Date.now() },
         ),
       );
     }),
@@ -100,7 +100,7 @@ export const createTabActions: StateCreator<
           current,
           tabId,
           { selectedLines: nextLines },
-          { selectedLines: [...nextLines] },
+          { selectedLines: [...nextLines], updatedAt: Date.now() },
         ),
       );
     }),
@@ -128,7 +128,7 @@ export const createTabActions: StateCreator<
       const colorIndex = TAB_COLORS.indexOf(tab.tabColor);
       const nextColor = TAB_COLORS[(colorIndex + 1) % TAB_COLORS.length];
       return updateGroup(state, group.id, (current) =>
-        patchTabAndBookmark(current, tabId, { tabColor: nextColor }, { tabColor: nextColor }),
+        patchTabAndBookmark(current, tabId, { tabColor: nextColor }, { tabColor: nextColor, updatedAt: Date.now() }),
       );
     }),
   togglePin: (tabId) =>

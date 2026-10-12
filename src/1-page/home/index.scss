@@ -1,6 +1,5 @@
 @use "../../5-shared/style/variable" as v;
 @use "../../5-shared/ui/confirm-popup";
-@use "../../5-shared/ui/expandable-content";
 @use "../../5-shared/ui/side-panel";
 @use "../../2-widget/header";
 @use "../../2-widget/body";
@@ -46,6 +45,13 @@
       grid-template-rows: minmax(0, 1fr) calc(
           64px + env(safe-area-inset-bottom)
         );
+    }
+  }
+
+  // A pinned right panel docks on the right, so the workspace (with MENU and GROUP) shifts left.
+  @media (min-width: 641px) {
+    &.is-panel-pinned .workspace {
+      width: calc(100% - #{v.$side-panel-width});
     }
   }
 

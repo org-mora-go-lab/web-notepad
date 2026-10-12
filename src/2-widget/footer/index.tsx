@@ -3,7 +3,8 @@
 import { Bookmark, Layers, Search } from "lucide-react";
 
 type Props = {
-  bookmarkCount: number;
+  // A linked bookmark was created or synced today.
+  hasBookmarkUpdateToday: boolean;
   bookmarksOpen: boolean;
   activeGroupName: string;
   groupsOpen: boolean;
@@ -14,7 +15,7 @@ type Props = {
 };
 
 export function Footer({
-  bookmarkCount,
+  hasBookmarkUpdateToday,
   bookmarksOpen,
   activeGroupName,
   groupsOpen,
@@ -63,8 +64,8 @@ export function Footer({
               >
                 <span className="status-icon">
                   <Bookmark size={16} strokeWidth={1.8} />
-                  {bookmarkCount > 0 && (
-                    <span className="status-count">{bookmarkCount}</span>
+                  {hasBookmarkUpdateToday && (
+                    <span className="status-dot" role="img" aria-label="오늘 업데이트됨" />
                   )}
                 </span>
                 <span className="status-label">BOOKMARK</span>

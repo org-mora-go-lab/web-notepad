@@ -3,7 +3,7 @@ import type { Page } from "@playwright/test";
 import { confirmTabDelete } from "./delete-tab-popup";
 
 export const closedContents = (page: Page) =>
-  page.locator(".closed-item .expandable-content-text");
+  page.locator(".closed-item .closed-item-content");
 export const closedDeletePopup = (page: Page) =>
   page.getByRole("alertdialog", { name: "Delete closed tab" });
 

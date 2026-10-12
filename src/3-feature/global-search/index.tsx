@@ -12,6 +12,8 @@ type Props = {
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   open: boolean;
+  pinned: boolean;
+  onTogglePin: () => void;
   onClose: () => void;
   onSelectGroup: (groupId: string) => void;
   onOpenBookmark: (groupId: string, bookmarkId: string) => void;
@@ -24,6 +26,8 @@ export function GlobalSearch({
   searchQuery,
   onSearchQueryChange,
   open,
+  pinned,
+  onTogglePin,
   onClose,
   onSelectGroup,
   onOpenBookmark,
@@ -62,6 +66,8 @@ export function GlobalSearch({
       id="global-search-panel"
       title="Search"
       open={open}
+      pinned={pinned}
+      onTogglePin={onTogglePin}
       closeLabel="전체 검색 닫기"
       onClose={onClose}
     >

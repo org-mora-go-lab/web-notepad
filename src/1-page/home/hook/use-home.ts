@@ -14,6 +14,7 @@ import {
   useNotepadStore,
 } from "@/src/4-entity/notepad";
 import { useTabStrip } from "@/src/5-shared/hook";
+import { isToday } from "@/src/5-shared/util";
 
 import type { PaneColumnProps, PaneViewProps } from "../type";
 import { useEditorFocus } from "./use-editor-focus";
@@ -22,6 +23,7 @@ import { useHomeTabActions } from "./use-home-tab-actions";
 import { useNotepadShortcuts } from "./use-notepad-shortcuts";
 import { usePaneDrag } from "./use-pane-drag";
 import { usePaneRefs } from "./use-pane-refs";
+import { usePanelPin } from "./use-panel-pin";
 import { useStoreHydrated } from "./use-store-hydrated";
 
 const COLUMNS: PaneColumn[] = ["left", "right"];
@@ -54,6 +56,8 @@ export function useHome() {
   const activeGroup = getActiveGroup(store);
   const bookmarks = activeGroup?.bookmarks ?? [];
   const activeGroupName = activeGroup?.name ?? "Ungrouped";
+  const hasBookmarkUpdateToday = bookmarks.some((bookmark) => isToday(bookmark.updatedAt));
+  const { panelPinned, togglePanelPin } = usePanelPin();
 
   const paneTabs = Object.fromEntries(
     PANE_IDS.map((pane) => [pane, activeGroup ? getPaneTabs(activeGroup, pane) : []]),
@@ -77,7 +81,7 @@ export function useHome() {
     confirmCloseTab,
   } = useHomeTabActions({ editorRefs });
 
-  const navigation = useHomeNavigation({ hydrated, addTabToPane });
+  const navigation = useHomeNavigation({ hydrated, panelPinned, addTabToPane });
   const {
     openPanel,
     selectTabWithHistory,
@@ -184,6 +188,9 @@ export function useHome() {
     bookmarks,
     groups,
     activeGroupName,
+    hasBookmarkUpdateToday,
+    panelPinned,
+    togglePanelPin,
     columns,
     removeBookmark,
     createGroup,

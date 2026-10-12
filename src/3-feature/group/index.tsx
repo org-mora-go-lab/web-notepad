@@ -13,6 +13,8 @@ type Props = {
   groups: GroupEntry[];
   activeGroupId: string;
   open: boolean;
+  pinned: boolean;
+  onTogglePin: () => void;
   onClose: () => void;
   onCreate: (name: string) => void;
   onSelect: (groupId: string) => void;
@@ -24,6 +26,8 @@ export function Group({
   groups,
   activeGroupId,
   open,
+  pinned,
+  onTogglePin,
   onClose,
   onCreate,
   onSelect,
@@ -62,6 +66,8 @@ export function Group({
       id="groups-panel"
       title="Groups"
       open={open}
+      pinned={pinned}
+      onTogglePin={onTogglePin}
       closeLabel="그룹 닫기"
       onClose={onClose}
     >

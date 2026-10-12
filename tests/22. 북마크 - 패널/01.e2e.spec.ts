@@ -19,6 +19,7 @@ test("1. 북마크 내용은 제목 줄을 제외한 전체 내용을 항상 펼
         tabColor: "green",
         selectedLines: [],
         createdAt: 2 - index,
+        updatedAt: 2 - index,
       })),
     })],
   });

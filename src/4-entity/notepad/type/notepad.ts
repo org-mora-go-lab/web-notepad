@@ -20,6 +20,8 @@ export type BookmarkEntry = {
   tabColor: TabColor;
   selectedLines: number[];
   createdAt: number;
+  // Last time the bookmark was created or synced from its source tab.
+  updatedAt: number;
 };
 
 // A closed tab kept in the Closed panel with the group it was closed from.

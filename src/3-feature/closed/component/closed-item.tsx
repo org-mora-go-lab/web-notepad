@@ -3,7 +3,6 @@
 import { RotateCcw, Trash2 } from "lucide-react";
 
 import type { ClosedTabEntry } from "@/src/4-entity/notepad";
-import { ExpandableContent } from "@/src/5-shared/ui";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { formatDate } from "@/src/5-shared/util";
 
@@ -26,9 +25,9 @@ export function ClosedItem({ entry, groupName, searchQuery, onRestore, onRemove 
           {formatDate(entry.closedAt)}
         </time>
       </div>
-      <ExpandableContent
-        content={<SearchHighlight text={entry.tab.content} query={searchQuery} />}
-      />
+      <p className="closed-item-content">
+        <SearchHighlight text={entry.tab.content} query={searchQuery} />
+      </p>
       <div className="closed-actions">
         <button type="button" onClick={() => onRestore(entry.id)}>
           <RotateCcw size={14} />

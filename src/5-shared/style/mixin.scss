@@ -25,6 +25,19 @@
       line-height: 1.5;
     }
   }
+
+  @media (max-width: 640px) {
+    .#{$name}-empty {
+      svg {
+        width: 26px * v.$mobile-scale;
+        height: 26px * v.$mobile-scale;
+      }
+
+      p {
+        font-size: 16px * v.$mobile-scale;
+      }
+    }
+  }
 }
 
 // Note card: `.{name}-item` with `-item-heading`, `-actions` and `.remove-{name}`.
@@ -91,6 +104,35 @@
       width: 30px;
       padding: 0;
       justify-content: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .#{$name}-item-heading {
+      strong {
+        font-size: 15px * v.$mobile-scale;
+      }
+
+      time {
+        font-size: 12px * v.$mobile-scale;
+        line-height: 19px;
+      }
+    }
+
+    .#{$name}-actions {
+      button {
+        height: 30px * v.$mobile-scale;
+        font-size: 13px * v.$mobile-scale;
+
+        svg {
+          width: 14px * v.$mobile-scale;
+          height: 14px * v.$mobile-scale;
+        }
+      }
+
+      .remove-#{$name} {
+        width: 30px * v.$mobile-scale;
+      }
     }
   }
 }

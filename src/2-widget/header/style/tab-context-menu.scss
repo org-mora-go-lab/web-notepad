@@ -59,5 +59,16 @@
       margin-top: 4px;
       padding-top: 4px;
     }
+
+    @media (max-width: 640px) {
+      button {
+        font-size: 15px * v.$mobile-scale;
+
+        > svg {
+          width: 14px * v.$mobile-scale;
+          height: 14px * v.$mobile-scale;
+        }
+      }
+    }
   }
 }

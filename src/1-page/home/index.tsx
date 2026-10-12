@@ -33,6 +33,9 @@ export function Home() {
     bookmarks,
     groups,
     activeGroupName,
+    hasBookmarkUpdateToday,
+    panelPinned,
+    togglePanelPin,
     columns,
     removeBookmark,
     createGroup,
@@ -60,7 +63,7 @@ export function Home() {
   }
 
   return (
-    <main className="home">
+    <main className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}>
       <section className="workspace">
         <div className={`pane-group ${split ? "is-split" : ""}`}>
           {columns.map((column) => (
@@ -69,7 +72,7 @@ export function Home() {
         </div>
 
         <Footer
-          bookmarkCount={bookmarks.length}
+          hasBookmarkUpdateToday={hasBookmarkUpdateToday}
           bookmarksOpen={openPanel === "bookmarks"}
           activeGroupName={activeGroupName}
           groupsOpen={openPanel === "groups"}
@@ -82,6 +85,8 @@ export function Home() {
 
       <Panel
         openPanel={openPanel}
+        pinned={panelPinned}
+        onTogglePin={togglePanelPin}
         bookmarks={bookmarks}
         groups={groups}
         activeGroupId={activeGroupId}

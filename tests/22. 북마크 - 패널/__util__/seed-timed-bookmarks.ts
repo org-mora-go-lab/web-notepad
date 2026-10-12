@@ -16,6 +16,7 @@ export async function seedTimedBookmarks(page: Page) {
         tabColor: "green",
         selectedLines: [],
         createdAt: Date.UTC(2026, 9, 11, 11, 30),
+        updatedAt: Date.UTC(2026, 9, 11, 11, 30),
       })),
     })],
   });

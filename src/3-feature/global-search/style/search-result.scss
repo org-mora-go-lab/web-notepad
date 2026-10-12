@@ -44,3 +44,18 @@
   color: v.$muted;
   font-size: 12px;
 }
+@media (max-width: 640px) {
+  .global-search-result {
+    strong {
+      font-size: 15px * v.$mobile-scale;
+    }
+
+    p {
+      font-size: 14px * v.$mobile-scale;
+    }
+  }
+
+  .global-search-result-category {
+    font-size: 12px * v.$mobile-scale;
+  }
+}

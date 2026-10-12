@@ -27,6 +27,7 @@
   --color-highlight: #effff4;
   --color-focus: rgba(255, 255, 255, 0.25);
   --color-inactive-title: rgba(222, 222, 216, 0.62);
+  --color-alert: #ff5c5c;
 }
 
 :root[data-theme="light"] {
@@ -58,6 +59,7 @@
   --color-highlight: #185537;
   --color-focus: rgba(37, 95, 65, 0.4);
   --color-inactive-title: #758178;
+  --color-alert: #e5484d;
 
   .home .tab-item[data-tab-color="gray"] {
     --tab-background: rgba(104, 119, 110, 0.1);
@@ -67,5 +69,20 @@
   .home .tab-item[data-tab-color="green"] {
     --tab-background: rgba(37, 131, 86, 0.1);
     --tab-background-active: rgba(37, 131, 86, 0.18);
+  }
+
+  // Line numbers and editor lines share the LIGHT accents so the selection reads on white.
+  .home .note-editor {
+    &[data-tab-color="gray"] {
+      --selected-line-background: rgba(104, 119, 110, 0.15);
+    }
+
+    &[data-tab-color="red"] {
+      --selected-line-background: rgba(184, 75, 69, 0.13);
+    }
+
+    &[data-tab-color="green"] {
+      --selected-line-background: rgba(37, 131, 86, 0.15);
+    }
   }
 }

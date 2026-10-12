@@ -59,6 +59,7 @@ const normalizeBookmarks = (value: unknown, fallback: BookmarkEntry[]) =>
         tabColor: normalizeTabColor(bookmark.tabColor),
         selectedLines: sanitizeSelectedLines(bookmark.selectedLines, content),
         createdAt: finiteNumberOr(bookmark.createdAt, Date.now()),
+        updatedAt: finiteNumberOr(bookmark.updatedAt, finiteNumberOr(bookmark.createdAt, Date.now())),
       };
     });
 

@@ -26,7 +26,7 @@ test("9. 닫은 탭이 많을 때 목록을 끝까지 스크롤해 마지막 콘
   });
 
   const lastItem = page.locator(".closed-item").last();
-  const lastContent = lastItem.locator(".expandable-content-text");
+  const lastContent = lastItem.locator(".closed-item-content");
   await expect(lastContent).toHaveText("bottom closed note");
   await expect(lastContent).toBeInViewport();
   await expect.poll(async () => {

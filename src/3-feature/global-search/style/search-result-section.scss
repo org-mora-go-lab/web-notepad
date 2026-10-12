@@ -13,3 +13,8 @@
     text-transform: uppercase;
   }
 }
+@media (max-width: 640px) {
+  .global-search-section h3 {
+    font-size: 12px * v.$mobile-scale;
+  }
+}

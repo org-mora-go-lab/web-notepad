@@ -99,3 +99,42 @@
     color: v.$pit;
   }
 }
+
+@media (max-width: 640px) {
+  .confirm-popup {
+    width: min(380px * v.$mobile-scale, calc(100vw - 32px));
+
+    h3 {
+      font-size: 16px * v.$mobile-scale;
+    }
+
+    p {
+      font-size: 14px * v.$mobile-scale;
+    }
+
+    button {
+      min-height: 34px * v.$mobile-scale;
+      font-size: 13px * v.$mobile-scale;
+
+      svg {
+        width: 14px * v.$mobile-scale;
+        height: 14px * v.$mobile-scale;
+      }
+    }
+
+    .confirm-popup-title > svg {
+      width: 18px * v.$mobile-scale;
+      height: 18px * v.$mobile-scale;
+    }
+
+    .confirm-popup-close {
+      width: 28px * v.$mobile-scale;
+      min-height: 28px * v.$mobile-scale;
+
+      svg {
+        width: 16px * v.$mobile-scale;
+        height: 16px * v.$mobile-scale;
+      }
+    }
+  }
+}

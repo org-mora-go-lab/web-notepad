@@ -12,6 +12,7 @@ export function createGlobalSearchState() {
       tabColor: "green",
       selectedLines: [],
       createdAt: 1,
+      updatedAt: 1,
     }],
   });
   const ungrouped = createGroupFixture("ungrouped", "Ungrouped", [

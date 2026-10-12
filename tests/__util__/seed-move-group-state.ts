@@ -14,7 +14,7 @@ export async function seedMoveGroupState(page: Page, {
   const source = createGroupFixture("ungrouped", "Ungrouped", [movedTab]);
   source.bookmarks = [{
     id: "bookmark-tab-1", sourceTabId: movedTab.id, title: movedTab.title,
-    content: movedTab.content, tabColor: movedTab.tabColor, selectedLines: [1], createdAt: 1,
+    content: movedTab.content, tabColor: movedTab.tabColor, selectedLines: [1], createdAt: 1, updatedAt: 1,
   }];
   if (splitSource) {
     source.tabs.push(createTabFixture("tab-3", "Keep source note"));

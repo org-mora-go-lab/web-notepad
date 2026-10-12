@@ -85,7 +85,7 @@
     }
 
     @media (max-width: 640px) {
-      min-width: 114.406px;
+      min-width: 114.406px * v.$mobile-scale;
       max-width: 247.65px;
       height: 45px;
       padding-bottom: 1px;
@@ -200,12 +200,32 @@
     }
 
     .tab-title {
-      font-size: 16px;
+      font-size: 16px * v.$mobile-scale;
     }
 
-    .dirty-dot::before {
-      width: 13px;
-      height: 13px;
+    .dirty-dot {
+      width: 14px * v.$mobile-scale;
+      height: 14px * v.$mobile-scale;
+
+      &::before {
+        width: 13px * v.$mobile-scale;
+        height: 13px * v.$mobile-scale;
+      }
+    }
+
+    .tab-pin-indicator,
+    .tab-bookmark-indicator {
+      width: 16px * v.$mobile-scale;
+    }
+
+    .tab-indicator {
+      width: 13px * v.$mobile-scale;
+      height: 13px * v.$mobile-scale;
+    }
+
+    .tab-close svg {
+      width: 11px * v.$mobile-scale;
+      height: 11px * v.$mobile-scale;
     }
   }
 }

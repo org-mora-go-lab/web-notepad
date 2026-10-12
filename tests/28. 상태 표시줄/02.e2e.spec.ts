@@ -1,69 +1,35 @@
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../__constant__";
-import { createGroupFixture, createTabFixture } from "../__fixture__";
-import { bookmarksCommand, chooseTabMenuItem, seedStoredStateOnLoad } from "../__util__";
+import { bookmarksCommand, chooseTabMenuItem } from "../__util__";
 
-test("2. BOOKMARK 개수는 아이콘 우측 상단 배지에 숫자만 표시하고 0이면 숨긴다", async ({ page }) => {
+test("2. BOOKMARK는 개수를 표시하지 않고 오늘 변경된 북마크가 있으면 아이콘 우측 상단에서 오른쪽 5px·위 3px 벗어난 위치에 붉은 점을 표시한다", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator(".bookmark-command .status-count, .closed-command .status-count")).toHaveCount(0);
+  const dot = bookmarksCommand(page).locator(".status-dot");
+  await expect(dot).toHaveCount(0);
+
   await chooseTabMenuItem(page, "Bookmark");
-  const count = bookmarksCommand(page).locator(".status-count");
+  await expect(bookmarksCommand(page).locator(".status-count")).toHaveCount(0);
+  await expect(bookmarksCommand(page)).not.toContainText("1");
 
-  await page.setViewportSize(DESKTOP_VIEWPORT);
-  await expect(count).toHaveText("1");
-  await expect(count).toBeInViewport();
-
-  await page.setViewportSize(MOBILE_VIEWPORT);
-  await expect(count).toHaveText("1");
-  await expect(count).toBeInViewport();
   for (const viewport of [DESKTOP_VIEWPORT, MOBILE_VIEWPORT]) {
     await page.setViewportSize(viewport);
-    for (const command of [bookmarksCommand(page)]) {
-      const iconBounds = (await command.locator("svg").boundingBox())!;
-      const badgeBounds = (await command.locator(".status-count").boundingBox())!;
-      const labelBounds = (await command.locator(".status-label").boundingBox())!;
-      expect(badgeBounds.x).toBeGreaterThan(iconBounds.x + iconBounds.width / 2);
-      expect(badgeBounds.x - iconBounds.x).toBeCloseTo(23, 1);
-      expect(badgeBounds.y).toBeLessThan(iconBounds.y);
-      if (viewport.width > 640) {
-        expect(badgeBounds.x + badgeBounds.width).toBeLessThanOrEqual(labelBounds.x);
-      } else {
-        expect(badgeBounds.y + badgeBounds.height).toBeLessThanOrEqual(labelBounds.y);
-      }
-    }
-  }
+    await expect(dot).toBeVisible();
+    await expect(dot).toBeInViewport();
+    await expect(dot).toHaveCSS("border-radius", "50%");
+    await expect(dot).toHaveCSS("background-color", "rgb(255, 92, 92)");
 
-  const tabs = Array.from({ length: 14 }, (_, index) =>
-    createTabFixture(`tab-${index}`, `Note ${index}`),
-  );
-  await seedStoredStateOnLoad(page, {
-    activeGroupId: "ungrouped",
-    groups: [createGroupFixture("ungrouped", "Ungrouped", tabs, {
-      bookmarks: tabs.map((tab, index) => ({
-        id: `bookmark-${index}`,
-        sourceTabId: tab.id,
-        title: tab.title,
-        content: tab.content,
-        tabColor: tab.tabColor,
-        selectedLines: [],
-        createdAt: index,
-      })),
-    })],
-  });
-  for (const viewport of [DESKTOP_VIEWPORT, MOBILE_VIEWPORT]) {
-    await page.setViewportSize(viewport);
-    for (const command of [bookmarksCommand(page)]) {
-      const badge = command.locator(".status-count");
-      await expect(badge).toHaveText("14");
-      await expect(badge).toBeInViewport();
-      const badgeBounds = (await badge.boundingBox())!;
-      const labelBounds = (await command.locator(".status-label").boundingBox())!;
-      if (viewport.width > 640) {
-        expect(badgeBounds.x + badgeBounds.width).toBeLessThanOrEqual(labelBounds.x);
-      } else {
-        expect(badgeBounds.y + badgeBounds.height).toBeLessThanOrEqual(labelBounds.y);
-      }
+    const iconBounds = (await bookmarksCommand(page).locator("svg").boundingBox())!;
+    const dotBounds = (await dot.boundingBox())!;
+    const labelBounds = (await bookmarksCommand(page).locator(".status-label").boundingBox())!;
+    const iconBox = (await bookmarksCommand(page).locator(".status-icon").boundingBox())!;
+    expect(dotBounds.x + dotBounds.width).toBeCloseTo(iconBox.x + iconBox.width + 5, 0);
+    expect(dotBounds.y).toBeCloseTo(iconBox.y - 3, 0);
+    expect(dotBounds.x).toBeGreaterThan(iconBounds.x + iconBounds.width / 2);
+    if (viewport.width > 640) {
+      expect(dotBounds.x + dotBounds.width).toBeLessThanOrEqual(labelBounds.x);
+    } else {
+      expect(dotBounds.y + dotBounds.height).toBeLessThanOrEqual(labelBounds.y);
     }
   }
 });

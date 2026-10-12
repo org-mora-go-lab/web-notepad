@@ -43,3 +43,16 @@
     }
   }
 }
+
+@media (max-width: 640px) {
+  .search-field {
+    svg {
+      width: 15px * v.$mobile-scale;
+      height: 15px * v.$mobile-scale;
+    }
+
+    input {
+      font-size: 14px * v.$mobile-scale;
+    }
+  }
+}

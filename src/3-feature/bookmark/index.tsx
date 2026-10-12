@@ -12,6 +12,8 @@ import { BookmarkItem } from "./component";
 type Props = {
   bookmarks: BookmarkEntry[];
   open: boolean;
+  pinned: boolean;
+  onTogglePin: () => void;
   onClose: () => void;
   onOpen: (bookmarkId: string) => void;
   onRemove: (bookmarkId: string) => void;
@@ -20,6 +22,8 @@ type Props = {
 export function Bookmark({
   bookmarks,
   open,
+  pinned,
+  onTogglePin,
   onClose,
   onOpen,
   onRemove,
@@ -35,6 +39,8 @@ export function Bookmark({
       id="bookmarks-panel"
       title="Bookmarks"
       open={open}
+      pinned={pinned}
+      onTogglePin={onTogglePin}
       closeLabel="북마크 닫기"
       onClose={onClose}
     >

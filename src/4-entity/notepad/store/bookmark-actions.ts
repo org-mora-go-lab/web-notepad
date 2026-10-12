@@ -56,6 +56,7 @@ export const createBookmarkActions: StateCreator<
             tabColor: tab.tabColor,
             selectedLines: [...tab.selectedLines],
             createdAt,
+            updatedAt: createdAt,
           },
           ...current.bookmarks,
         ],

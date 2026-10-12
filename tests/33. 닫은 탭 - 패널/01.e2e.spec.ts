@@ -13,6 +13,6 @@ test("1. CLOSED 명령으로 패널을 열고 항목 제목에 그룹 이름, �
   await expect(panel.locator(".side-panel-header h2")).toHaveText("Closed");
   const item = panel.locator(".closed-item");
   await expect(item.locator(".closed-item-heading strong")).toHaveText("Work");
-  await expect(item.locator(".expandable-content-text")).toHaveText("closed in work");
+  await expect(item.locator(".closed-item-content")).toHaveText("closed in work");
   await expect(item.locator("time")).toBeVisible();
 });

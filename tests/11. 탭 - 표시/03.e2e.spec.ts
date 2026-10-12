@@ -37,7 +37,7 @@ test("3. 인접한 일반·고정 탭 사이에 탭 전체 높이의 1px 그레�
       expect(separator.pointerEvents).toBe("none");
     }
     for (const tab of await tabs.all()) {
-      await expect(tab).toHaveCSS("min-width", viewport.width <= 640 ? "114.406px" : "130.485px");
+      await expect(tab).toHaveCSS("min-width", viewport.width <= 640 ? "137.287px" : "130.485px");
     }
   }
 });

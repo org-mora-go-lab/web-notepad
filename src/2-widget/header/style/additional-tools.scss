@@ -135,7 +135,41 @@
 
   @media (max-width: 640px) {
     .additional-tools { width: 45px; height: 45px; }
-    .additional-tools-trigger { padding: 0; }
+    .additional-tools-trigger {
+      padding: 0;
+
+      svg {
+        width: 22px * v.$mobile-scale;
+        height: 22px * v.$mobile-scale;
+        flex-basis: 22px * v.$mobile-scale;
+      }
+    }
+
+    .additional-tools-menu {
+      width: min(200px * v.$mobile-scale, calc(100vw - 16px));
+
+      button {
+        min-height: 38px * v.$mobile-scale;
+        font-size: 15px * v.$mobile-scale;
+
+        > svg:first-child {
+          width: 18px * v.$mobile-scale;
+          height: 18px * v.$mobile-scale;
+          flex-basis: 18px * v.$mobile-scale;
+        }
+
+        > svg:last-child:not(:first-child) {
+          width: 14px * v.$mobile-scale;
+          height: 14px * v.$mobile-scale;
+        }
+      }
+
+      .closed-count {
+        font-size: 12px * v.$mobile-scale;
+        line-height: 18px * v.$mobile-scale;
+      }
+    }
+
     .additional-tools-label,
     .additional-tools-menu .additional-tools-shortcut { display: none; }
     &.has-menu { padding-right: 45px; }

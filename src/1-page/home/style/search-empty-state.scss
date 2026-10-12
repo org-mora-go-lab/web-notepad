@@ -12,6 +12,10 @@
       margin: 0;
       font-family: v.$sans;
       font-size: 15px;
+
+      @media (max-width: 640px) {
+        font-size: 15px * v.$mobile-scale;
+      }
     }
   }
 }

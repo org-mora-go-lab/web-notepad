@@ -4,6 +4,8 @@ import { SidePanel } from "@/src/5-shared/ui";
 
 type Props = {
   open: boolean;
+  pinned: boolean;
+  onTogglePin: () => void;
   onClose: () => void;
 };
 
@@ -21,13 +23,15 @@ const shortcuts = [
   { action: "라인 범위 선택 및 해제", keys: ["Shift + 클릭"] },
 ];
 
-export function Shortcut({ open, onClose }: Props) {
+export function Shortcut({ open, pinned, onTogglePin, onClose }: Props) {
   return (
     <SidePanel
       className="shortcut"
       id="shortcuts-panel"
       title="Shortcut (mac)"
       open={open}
+      pinned={pinned}
+      onTogglePin={onTogglePin}
       closeLabel="단축키 닫기"
       ariaLabel="키보드 단축키"
       onClose={onClose}

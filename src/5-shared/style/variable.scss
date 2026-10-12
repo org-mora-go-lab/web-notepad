@@ -12,3 +12,13 @@ $strip: var(--color-strip);
 $hover-line: var(--color-hover-line);
 $sans: var(--font-geist-sans), sans-serif;
 $mono: var(--font-geist-mono), monospace;
+
+// Mobile enlarges icons and text outside the footer and editor by this factor.
+$mobile-scale: 1.2;
+
+// PC right panel width: dragged value kept between 320px and the viewport minus 400px.
+$side-panel-width: clamp(
+  320px,
+  var(--side-panel-width, 462px),
+  max(320px, calc(100vw - 400px))
+);

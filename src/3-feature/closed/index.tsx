@@ -14,6 +14,8 @@ type Props = {
   groups: GroupEntry[];
   searchQuery: string;
   open: boolean;
+  pinned: boolean;
+  onTogglePin: () => void;
   onClose: () => void;
   onSearchQueryChange: (query: string) => void;
   onRestore: (entryId: string) => void;
@@ -25,6 +27,8 @@ export function Closed({
   groups,
   searchQuery,
   open,
+  pinned,
+  onTogglePin,
   onClose,
   onSearchQueryChange,
   onRestore,
@@ -46,6 +50,8 @@ export function Closed({
       id="closed-panel"
       title="Closed"
       open={open}
+      pinned={pinned}
+      onTogglePin={onTogglePin}
       closeLabel="닫은 탭 패널 닫기"
       onClose={onClose}
     >

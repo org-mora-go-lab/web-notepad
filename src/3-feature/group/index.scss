@@ -49,8 +49,9 @@
       }
     }
 
+    // Square, matching the 42px input height.
     button {
-      width: 36px;
+      width: 42px;
       height: 42px;
       border-color: var(--color-creation-border);
       color: v.$ink;
@@ -146,6 +147,42 @@
     button:disabled {
       opacity: 0.45;
       cursor: default;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .group {
+    .group-create-form {
+      input {
+        font-size: 14px * v.$mobile-scale;
+      }
+
+      button svg {
+        width: 16px * v.$mobile-scale;
+        height: 16px * v.$mobile-scale;
+      }
+    }
+
+    .group-item {
+      strong {
+        font-size: 15px * v.$mobile-scale;
+      }
+
+      button {
+        width: 30px * v.$mobile-scale;
+        height: 30px * v.$mobile-scale;
+
+        svg {
+          width: 14px * v.$mobile-scale;
+          height: 14px * v.$mobile-scale;
+        }
+      }
+    }
+
+    .group-edit-form input {
+      height: 36px * v.$mobile-scale;
+      font-size: 15px * v.$mobile-scale;
     }
   }
 }

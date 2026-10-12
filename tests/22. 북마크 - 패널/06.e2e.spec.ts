@@ -4,7 +4,7 @@ import { seedTimedBookmarks } from "./__util__";
 
 test.use({ timezoneId: "UTC" });
 
-test("6. 북마크 시각은 제목 길이와 관계없이 고정된 우측 영역에 표시하고 긴 제목은 말줄임 처리한다", async ({ page }) => {
+test("6. 북마크 시각은 제목 길이와 관계없이 고정된 우측 영역(높이 PC 32px·모바일 38px)에 표시하고 긴 제목은 말줄임 처리한다", async ({ page }) => {
   await seedTimedBookmarks(page);
   const headings = page.locator(".bookmark-item-heading");
   for (const width of [320, 390, 1280]) {
@@ -15,7 +15,7 @@ test("6. 북마크 시각은 제목 길이와 관계없이 고정된 우측 영�
     for (const heading of await headings.all()) {
       const time = heading.locator("time");
       await expect(time).toHaveCSS("flex-shrink", "0");
-      await expect(time).toHaveCSS("height", "32px");
+      await expect(time).toHaveCSS("height", width <= 640 ? "38px" : "32px");
       // 12ch measured in the time element's own font.
       const twelveCh = await time.evaluate((element) => {
         const probe = document.createElement("span");

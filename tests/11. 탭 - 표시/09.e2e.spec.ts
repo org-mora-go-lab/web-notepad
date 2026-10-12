@@ -1,19 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../__constant__";
+import { expectCssPx } from "../__util__";
 
-test("9. 모바일 탭 제목은 16px, 색상 아이콘은 가로·세로 13px이며 아이콘 세로 위치를 유지한다", async ({ page }) => {
+test("9. 모바일 탭 제목은 19.2px, 색상 아이콘은 가로·세로 15.6px이며 아이콘 세로 위치를 유지한다", async ({ page }) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
   const tab = page.locator(".tab-item").first();
   const title = tab.locator(".tab-title");
 
-  await expect(title).toHaveCSS("font-size", "16px");
-  const iconSize = await tab.locator(".dirty-dot").evaluate((element) => {
-    const style = getComputedStyle(element, "::before");
-    return { width: style.width, height: style.height };
-  });
-  expect(iconSize).toEqual({ width: "13px", height: "13px" });
+  await expect(title).toHaveCSS("font-size", "19.2px");
+  await expectCssPx(tab.locator(".dirty-dot"), "width", 15.6, "::before");
+  await expectCssPx(tab.locator(".dirty-dot"), "height", 15.6, "::before");
   await expect(page.locator(".add-tab")).toHaveCSS("padding-bottom", "1px");
   const tabBounds = (await tab.boundingBox())!;
   const titleBounds = (await title.boundingBox())!;

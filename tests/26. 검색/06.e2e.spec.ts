@@ -20,6 +20,7 @@ test("6. 검색 결과에서 일치하는 키워드 부분을 음영으로 강�
       tabColor: "green",
       selectedLines: [],
       createdAt: 1,
+      updatedAt: 1,
     }],
   });
   await seedStoredStateOnLoad(page, {
@@ -53,7 +54,7 @@ test("6. 검색 결과에서 일치하는 키워드 부분을 음영으로 강�
   await openClosedPanel(page);
   await page.getByRole("searchbox", { name: "닫은 탭 검색" }).fill("WORK");
   await expect(page.locator(".closed-item-heading mark.search-highlight")).toHaveText("Work");
-  await expect(page.locator(".closed-item .expandable-content-text mark.search-highlight")).toHaveText("Work");
+  await expect(page.locator(".closed-item .closed-item-content mark.search-highlight")).toHaveText("Work");
   await page.getByRole("searchbox", { name: "닫은 탭 검색" }).fill("BETA");
-  await expect(page.locator(".closed-item .expandable-content-text mark.search-highlight")).toHaveText("Beta");
+  await expect(page.locator(".closed-item .closed-item-content mark.search-highlight")).toHaveText("Beta");
 });

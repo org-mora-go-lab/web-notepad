@@ -38,6 +38,40 @@
     }
   }
 
+  // Left-edge handle styled like the editor pane divider.
+  .side-panel-resizer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -5px;
+    z-index: 1;
+    width: 10px;
+    cursor: col-resize;
+    touch-action: none;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: v.$line;
+      content: "";
+      pointer-events: none;
+      transform: translateX(-50%);
+    }
+
+    &:hover::before {
+      background: v.$hover-line;
+    }
+  }
+
+  @media (min-width: 641px) {
+    .side-panel-drawer {
+      width: v.$side-panel-width;
+    }
+  }
+
   .side-panel-header {
     min-height: 55px;
     display: flex;
@@ -55,6 +89,13 @@
     }
   }
 
+  .side-panel-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .side-panel-pin,
   .side-panel-close {
     width: 28px;
     height: 28px;
@@ -72,6 +113,64 @@
 
     &:hover {
       color: v.$ink;
+    }
+  }
+
+  .side-panel-pin {
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &[aria-pressed="true"] {
+      border-color: v.$hover-line;
+      color: v.$signal;
+
+      svg {
+        fill: currentColor;
+      }
+    }
+  }
+
+  // A pinned drawer docks beside the workspace instead of covering it.
+  @media (min-width: 641px) {
+    &.is-pinned {
+      .side-panel-backdrop {
+        display: none;
+      }
+
+      // Pinned panels open and close in place without the slide.
+      .side-panel-drawer {
+        transition: none;
+
+        &.is-open {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .side-panel-resizer {
+      display: none;
+    }
+
+    .side-panel-header h2 {
+      font-size: 22px * v.$mobile-scale;
+    }
+
+    .side-panel-pin {
+      display: none;
+    }
+
+    .side-panel-close {
+      width: 28px * v.$mobile-scale;
+      height: 28px * v.$mobile-scale;
+
+      svg {
+        width: 12px * v.$mobile-scale;
+        height: 12px * v.$mobile-scale;
+      }
     }
   }
 }

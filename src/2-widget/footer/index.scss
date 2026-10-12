@@ -70,24 +70,23 @@
       height: 24px;
       flex: 0 0 auto;
       display: grid;
-      grid-template-columns: 24px max-content;
+      grid-template-columns: 24px;
 
       svg {
         grid-area: 1 / 1;
       }
     }
 
-    .status-count {
-      grid-area: 1 / 2;
-      align-self: start;
-      margin-top: -5px;
-      margin-left: -1px;
-      padding: 0 3px;
-      background: v.$strip;
-      border-radius: 4px;
-      font-size: 12px;
-      line-height: 16px;
-      white-space: nowrap;
+    // Red dot on the icon's top-right corner when a bookmark changed today.
+    .status-dot {
+      position: absolute;
+      top: -3px;
+      right: -5px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-alert);
+      box-shadow: 0 0 0 2px v.$strip;
     }
   }
 
@@ -130,15 +129,6 @@
       .status-icon {
         width: 24px;
         display: block;
-      }
-
-      .status-count {
-        position: absolute;
-        top: -4px;
-        left: 23px;
-        margin: 0;
-        font-size: 10px;
-        line-height: 14px;
       }
     }
 

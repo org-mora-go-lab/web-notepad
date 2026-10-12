@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   getActiveGroup,
@@ -16,11 +16,24 @@ import { useViewHistory, type ViewSnapshot } from "./use-view-history";
 
 type Options = {
   hydrated: boolean;
+  panelPinned: boolean;
   addTabToPane: (pane: PaneId) => void;
 };
 
-export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
+// Pinning only applies to the PC layout; mobile keeps the overlay drawer.
+const isPinLayout = () => window.matchMedia("(min-width: 641px)").matches;
+
+export function useHomeNavigation({ hydrated, panelPinned, addTabToPane }: Options) {
   const [openPanel, setOpenPanel] = useState<ViewPanel | null>(null);
+  // A pinned panel stays open until its X button closes it.
+  const keepsPanelOpen = useCallback(
+    () => panelPinned && openPanel !== null && isPinLayout(),
+    [openPanel, panelPinned],
+  );
+  const keepsPanelOpenRef = useRef(keepsPanelOpen);
+  useEffect(() => {
+    keepsPanelOpenRef.current = keepsPanelOpen;
+  }, [keepsPanelOpen]);
   const [globalSearchQuery, setGlobalSearchQuery] = useState("");
   const getCurrentView = useCallback((panel: ViewPanel | null = openPanel): ViewSnapshot => {
     const group = getActiveGroup(useNotepadStore.getState());
@@ -54,7 +67,9 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
       if (tab) state.selectTab(tab.id);
     }
     state.setActivePane(snapshot.pane);
-    setOpenPanel(snapshot.panel);
+    setOpenPanel((current) =>
+      snapshot.panel === null && keepsPanelOpenRef.current() ? current : snapshot.panel,
+    );
   }, []);
 
   const { pushView } = useViewHistory(
@@ -71,12 +86,19 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
 
   const toggleSidePanel = useCallback((panel: ViewPanel) => {
     if (openPanel === panel) {
-      closeSidePanels();
+      if (!keepsPanelOpen()) closeSidePanels();
       return;
     }
     setOpenPanel(panel);
     pushView(getCurrentView(panel));
-  }, [closeSidePanels, getCurrentView, openPanel, pushView]);
+  }, [closeSidePanels, getCurrentView, keepsPanelOpen, openPanel, pushView]);
+
+  // Records a panel action; the panel closes unless it is pinned.
+  const finishPanelAction = useCallback(() => {
+    const panel = keepsPanelOpen() ? openPanel : null;
+    setOpenPanel(panel);
+    pushView(getCurrentView(panel));
+  }, [getCurrentView, keepsPanelOpen, openPanel, pushView]);
 
   const selectTabWithHistory = useCallback((tabId: string) => {
     useNotepadStore.getState().selectTab(tabId);
@@ -93,17 +115,15 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
 
   const selectGroupAndClosePanel = useCallback((groupId: string) => {
     useNotepadStore.getState().selectGroup(groupId);
-    setOpenPanel(null);
-    pushView(getCurrentView(null));
-  }, [getCurrentView, pushView]);
+    finishPanelAction();
+  }, [finishPanelAction]);
 
   const openBookmarkAndClosePanel = useCallback((groupId: string, bookmarkId: string) => {
     const state = useNotepadStore.getState();
     state.selectGroup(groupId);
     state.openBookmark(bookmarkId);
-    setOpenPanel(null);
-    pushView(getCurrentView(null));
-  }, [getCurrentView, pushView]);
+    finishPanelAction();
+  }, [finishPanelAction]);
 
   const openBookmarkInCurrentGroupAndClosePanel = useCallback((bookmarkId: string) => {
     const state = useNotepadStore.getState();
@@ -112,9 +132,8 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
 
   const restoreClosedTabAndClosePanel = useCallback((entryId: string) => {
     useNotepadStore.getState().restoreClosedTab(entryId);
-    setOpenPanel(null);
-    pushView(getCurrentView(null));
-  }, [getCurrentView, pushView]);
+    finishPanelAction();
+  }, [finishPanelAction]);
 
   const addTabAndRecord = useCallback((pane: PaneId) => {
     addTabToPane(pane);
@@ -133,6 +152,7 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
         event.key !== "Escape" || event.isComposing || event.defaultPrevented ||
         document.querySelector("dialog[open]")
       ) return;
+      if (keepsPanelOpen()) return;
       event.preventDefault();
       if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       if (openPanel === "global-search") setGlobalSearchQuery("");
@@ -140,7 +160,7 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeSidePanels, openPanel]);
+  }, [closeSidePanels, keepsPanelOpen, openPanel]);
 
   return {
     openPanel,
