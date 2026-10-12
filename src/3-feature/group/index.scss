@@ -1,3 +1,4 @@
+@use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
 
 .group {
@@ -39,6 +40,7 @@
       color: v.$ink;
       font: inherit;
       font-size: v.font(14px);
+      @include mixin.touch-input-font(14px);
 
       &:focus {
         border-color: v.$hover-line;
@@ -138,6 +140,7 @@
       color: v.$ink;
       font: inherit;
       font-size: v.font(15px);
+      @include mixin.touch-input-font(15px);
 
       &:focus {
         border-color: v.$hover-line;
@@ -156,6 +159,7 @@
     .group-create-form {
       input {
         font-size: v.font(14px * v.$mobile-scale);
+        @include mixin.touch-input-font(14px * v.$mobile-scale);
       }
 
       button svg {
@@ -183,6 +187,7 @@
     .group-edit-form input {
       height: 36px * v.$mobile-scale;
       font-size: v.font(15px * v.$mobile-scale);
+      @include mixin.touch-input-font(15px * v.$mobile-scale);
     }
   }
 }

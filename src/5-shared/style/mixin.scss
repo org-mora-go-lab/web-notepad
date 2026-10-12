@@ -136,3 +136,10 @@
     }
   }
 }
+
+// iOS zooms the page when focusing a text field under 16px, so touch devices keep 16px as a floor.
+@mixin touch-input-font($size) {
+  @media (pointer: coarse) {
+    font-size: max(16px, #{v.font($size)});
+  }
+}

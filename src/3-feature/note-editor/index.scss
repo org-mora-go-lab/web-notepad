@@ -1,3 +1,4 @@
+@use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
 @use "./style/editor";
 
@@ -91,6 +92,7 @@
     background: transparent;
     color: v.$ink;
     font-size: v.font(19px);
+    @include mixin.touch-input-font(19px);
     line-height: var(--editor-line-height);
     tab-size: 4;
 
