@@ -76,6 +76,7 @@ const en = {
   resetSettings: "Reset settings",
   reset: "Reset",
   resetTabColors: "Reset tab colors",
+  shuffleTabColors: "Shuffle tab colors",
   resetSettingsMessage: "All settings will return to their defaults. Do you want to reset them?",
 };
 
@@ -156,6 +157,7 @@ const ko: Messages = {
   resetSettings: "설정 초기화",
   reset: "초기화",
   resetTabColors: "탭 색상 초기화",
+  shuffleTabColors: "탭 색상 무작위 선택",
   resetSettingsMessage: "모든 설정이 기본값으로 돌아갑니다. 초기화하시겠습니까?",
 };
 

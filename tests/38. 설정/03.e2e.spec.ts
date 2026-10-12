@@ -26,6 +26,7 @@ test("3. 탭 색상 순서의 1·2·3번째 색상을 기본 9가지 색상 중�
   expect(await hint.innerText()).toBe(
     "New tabs start with the first color.\n(Green → Gray → Red)",
   );
+  await expect(hint.locator(".setting-hint-text")).toHaveCSS("padding-bottom", "5px");
   const chips = hint.locator(".setting-color-chip");
   await expect(chips).toHaveText(["Green", "Gray", "Red"]);
   for (const [index, color] of ["rgb(143, 227, 176)", "rgb(184, 184, 176)", "rgb(242, 139, 130)"].entries()) {

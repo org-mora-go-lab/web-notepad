@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Shuffle } from "lucide-react";
 import { useId, useState } from "react";
 
 import { FONT_SCALES, TAB_COLORS, useNotepadStore } from "@/src/4-entity/notepad";
@@ -29,6 +29,7 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
   const setLanguage = useNotepadStore((state) => state.setLanguage);
   const resetSettings = useNotepadStore((state) => state.resetSettings);
   const resetTabColorCycle = useNotepadStore((state) => state.resetTabColorCycle);
+  const shuffleTabColorCycle = useNotepadStore((state) => state.shuffleTabColorCycle);
   const [confirmingReset, setConfirmingReset] = useState(false);
 
   return (
@@ -83,10 +84,18 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
             >
               <RotateCcw size={13} />
             </button>
+            <button
+              className="setting-section-reset"
+              type="button"
+              onClick={shuffleTabColorCycle}
+              aria-label="탭 색상 무작위 선택"
+              title={t.shuffleTabColors}
+            >
+              <Shuffle size={13} />
+            </button>
           </div>
           <p className="setting-hint">
-            {t.tabColorHint}
-            <br />
+            <span className="setting-hint-text">{t.tabColorHint}</span>
             <span className="setting-color-guide">
               (
               {settings.tabColorCycle.map((color, index) => (
@@ -114,6 +123,8 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
                     aria-label={colorLabels[color]}
                     title={colorLabels[color]}
                     checked={selected === color}
+                    // Colors already used by an earlier slot are locked here.
+                    disabled={settings.tabColorCycle.slice(0, index).includes(color)}
                     onChange={() => setTabColorCycleColor(index, color)}
                   />
                 ))}
