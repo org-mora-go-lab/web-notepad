@@ -96,6 +96,7 @@
   }
 
   .side-panel-pin,
+  .side-panel-action,
   .side-panel-close {
     width: 28px;
     height: 28px;
@@ -163,6 +164,7 @@
       display: none;
     }
 
+    .side-panel-action,
     .side-panel-close {
       width: 28px * v.$mobile-scale;
       height: 28px * v.$mobile-scale;

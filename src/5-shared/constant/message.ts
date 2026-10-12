@@ -73,6 +73,9 @@ const en = {
   tabColorGroup: (order: number) => `Tab color ${order}`,
   tabColorHint: "New tabs start with the first color.",
   language: "Language",
+  resetSettings: "Reset settings",
+  reset: "Reset",
+  resetSettingsMessage: "All settings will return to their defaults. Do you want to reset them?",
 };
 
 export type Messages = typeof en;
@@ -149,6 +152,9 @@ const ko: Messages = {
   tabColorGroup: (order: number) => `탭 색상 ${order}`,
   tabColorHint: "새 탭은 첫 번째 색상으로 시작합니다.",
   language: "언어",
+  resetSettings: "설정 초기화",
+  reset: "초기화",
+  resetSettingsMessage: "모든 설정이 기본값으로 돌아갑니다. 초기화하시겠습니까?",
 };
 
 export const MESSAGES: Record<Language, Messages> = { en, ko };

@@ -1,11 +1,12 @@
 "use client";
 
-import { useId } from "react";
+import { RotateCcw } from "lucide-react";
+import { useId, useState } from "react";
 
 import { FONT_SCALES, TAB_COLORS, useNotepadStore } from "@/src/4-entity/notepad";
 import { LANGUAGE_LABELS, LANGUAGES } from "@/src/5-shared/constant";
 import { useI18n } from "@/src/5-shared/hook";
-import { SidePanel } from "@/src/5-shared/ui";
+import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
 
 import { TAB_COLOR_LABELS } from "./constant";
 
@@ -26,6 +27,8 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
   const setFontScale = useNotepadStore((state) => state.setFontScale);
   const setTabColorCycleColor = useNotepadStore((state) => state.setTabColorCycleColor);
   const setLanguage = useNotepadStore((state) => state.setLanguage);
+  const resetSettings = useNotepadStore((state) => state.resetSettings);
+  const [confirmingReset, setConfirmingReset] = useState(false);
 
   return (
     <SidePanel
@@ -35,6 +38,17 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
+      headerActions={
+        <button
+          className="side-panel-action setting-reset"
+          type="button"
+          onClick={() => setConfirmingReset(true)}
+          aria-label="설정 초기화"
+          title={t.resetSettings}
+        >
+          <RotateCcw size={14} />
+        </button>
+      }
       closeLabel="설정 닫기"
       ariaLabel="설정"
       onClose={onClose}
@@ -101,6 +115,21 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
           </div>
         </section>
       </div>
+      {confirmingReset && (
+        <ConfirmPopup
+          title={t.resetSettings}
+          message={t.resetSettingsMessage}
+          closeLabel="초기화 확인 닫기"
+          closeTitle={t.close}
+          confirmLabel={t.reset}
+          confirmIcon={<RotateCcw size={14} aria-hidden="true" />}
+          onCancel={() => setConfirmingReset(false)}
+          onConfirm={() => {
+            resetSettings();
+            setConfirmingReset(false);
+          }}
+        />
+      )}
     </SidePanel>
   );
 }

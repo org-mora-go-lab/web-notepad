@@ -84,6 +84,7 @@ export type NotepadState = {
   setFontScale: (fontScale: number) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;
   setLanguage: (language: Language) => void;
+  resetSettings: () => void;
   addTab: (pane?: PaneId) => void;
   selectTab: (tabId: string) => void;
   updateTab: (tabId: string, content: string) => void;

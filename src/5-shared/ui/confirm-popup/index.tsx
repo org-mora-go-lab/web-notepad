@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Trash2, X } from "lucide-react";
-import type { KeyboardEvent } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 
 import { useConfirmDialog, useI18n } from "../../hook";
 
@@ -10,17 +10,22 @@ type Props = {
   message: string;
   closeLabel: string;
   closeTitle: string;
+  // Defaults to a "Delete" action with a trash icon.
+  confirmLabel?: string;
+  confirmIcon?: ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
   onKeyDown?: (event: KeyboardEvent<HTMLDialogElement>, close: (action: () => void) => void) => boolean;
 };
 
-// Delete confirmation dialog with Cancel focused first and a destructive Delete action.
+// Confirmation dialog with Cancel focused first and a destructive confirm action (Delete by default).
 export function ConfirmPopup({
   title,
   message,
   closeLabel,
   closeTitle,
+  confirmLabel,
+  confirmIcon,
   onConfirm,
   onCancel,
   onKeyDown,
@@ -53,8 +58,8 @@ export function ConfirmPopup({
             {t.cancel}
           </button>
           <button className="confirm-popup-confirm" type="button" onClick={() => close(onConfirm)}>
-            <Trash2 size={14} aria-hidden="true" />
-            {t.delete}
+            {confirmIcon ?? <Trash2 size={14} aria-hidden="true" />}
+            {confirmLabel ?? t.delete}
           </button>
         </div>
       </div>

@@ -17,6 +17,8 @@ type Props = {
   // PC only: docks the drawer to the right edge beside the workspace.
   pinned?: boolean;
   onTogglePin?: () => void;
+  // Extra header buttons shown just left of the close button.
+  headerActions?: ReactNode;
   onClose: () => void;
   children: ReactNode;
 };
@@ -31,6 +33,7 @@ export function SidePanel({
   ariaLabel,
   pinned = false,
   onTogglePin,
+  headerActions,
   onClose,
   children,
 }: Props) {
@@ -72,6 +75,7 @@ export function SidePanel({
                 <Pin size={14} />
               </button>
             )}
+            {headerActions}
             <button
               className="side-panel-close"
               type="button"
