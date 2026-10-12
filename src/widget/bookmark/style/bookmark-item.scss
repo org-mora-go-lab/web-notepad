@@ -1,5 +1,0 @@
-@use "../../../entity/style/mixin";
-
-.bookmark {
-  @include mixin.note-card("bookmark");
-}

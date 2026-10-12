@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import type { ViewPanel } from "@/src/entity";
 import { getActiveGroup, useNotepadStore } from "@/src/entity/notepad";
 
-import { useViewHistory,type ViewPanel, type ViewSnapshot } from "./use-view-history";
+import { useViewHistory, type ViewSnapshot } from "./use-view-history";
 
 type Options = {
   hydrated: boolean;

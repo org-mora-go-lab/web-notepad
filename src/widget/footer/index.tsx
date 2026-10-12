@@ -13,7 +13,7 @@ type Props = {
   onToggleGlobalSearch: () => void;
 };
 
-export function StatusBar({
+export function Footer({
   bookmarkCount,
   bookmarksOpen,
   activeGroupName,
@@ -24,7 +24,7 @@ export function StatusBar({
   onToggleGlobalSearch,
 }: Props) {
   return (
-    <footer className="status-bar">
+    <footer className="footer">
       <div className="status-meta">
         <div className="status-controls">
           <button

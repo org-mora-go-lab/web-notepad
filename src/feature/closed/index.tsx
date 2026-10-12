@@ -4,9 +4,8 @@ import { Ghost } from "lucide-react";
 import { useState } from "react";
 
 import type { ClosedTabEntry, GroupEntry } from "@/src/entity/notepad";
-import { ConfirmPopup, SidePanel } from "@/src/entity/ui";
-import { SearchField } from "@/src/feature";
-import { matchesSearchQuery } from "@/src/feature/search-field/util";
+import { ConfirmPopup, SearchField, SidePanel } from "@/src/entity/ui";
+import { matchesSearchQuery } from "@/src/entity/ui/search-field/util";
 
 import { ClosedItem } from "./component";
 

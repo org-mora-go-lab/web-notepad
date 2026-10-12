@@ -27,7 +27,7 @@ test("9. PC와 모바일 하단 메뉴는 스크롤 없이 표시되고 각 패�
       expect(labelBounds.x).toBeGreaterThanOrEqual(bounds.x);
       expect(labelBounds.x + labelBounds.width).toBeLessThanOrEqual(bounds.x + bounds.width);
     }
-    expect(await page.locator(".status-bar").evaluate((bar) => bar.scrollWidth <= bar.clientWidth)).toBe(true);
+    expect(await page.locator(".footer").evaluate((bar) => bar.scrollWidth <= bar.clientWidth)).toBe(true);
   }
 
   for (const command of await commands.all()) {

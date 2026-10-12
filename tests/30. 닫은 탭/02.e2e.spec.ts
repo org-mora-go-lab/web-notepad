@@ -12,7 +12,7 @@ test("2. PC와 모바일 MENU의 CLOSED 명령은 전체 개수를 표시하고 
   const command = closedCommand(page);
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    await expect(page.locator('.status-bar [aria-controls="closed-panel"]')).toHaveCount(0);
+    await expect(page.locator('.footer [aria-controls="closed-panel"]')).toHaveCount(0);
     await page.getByRole("button", { name: "MENU", exact: true }).click();
     await expect(command).toContainText("CLOSED");
     await expect(command.locator("svg")).toBeInViewport();

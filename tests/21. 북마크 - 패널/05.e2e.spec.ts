@@ -25,13 +25,9 @@ test("5. 북마크 패널의 제목, 북마크 텍스트, 검색 입력과 빈 �
       "15px",
     );
     await expect(item.locator("time")).toHaveCSS("font-size", "12px");
-    await expect(item.locator(".expandable-content-text")).toHaveCSS(
+    await expect(item.locator(".bookmark-item-content")).toHaveCSS(
       "font-size",
       "16px",
-    );
-    await expect(item.locator(".expandable-content-toggle")).toHaveCSS(
-      "font-size",
-      "13px",
     );
     await expect(item.locator(".bookmark-actions button").first()).toHaveCSS(
       "font-size",

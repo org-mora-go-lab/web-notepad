@@ -4,8 +4,8 @@ import { RotateCcw, Trash2 } from "lucide-react";
 
 import type { ClosedTabEntry } from "@/src/entity/notepad";
 import { ExpandableContent } from "@/src/entity/ui";
+import { SearchHighlight } from "@/src/entity/ui/search-field/component";
 import { formatDate } from "@/src/entity/util";
-import { SearchHighlight } from "@/src/feature/search-field/component";
 
 type Props = {
   entry: ClosedTabEntry;

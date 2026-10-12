@@ -49,7 +49,7 @@ test("10. 모바일 그룹명을 하단 버튼에 통합하고 편집기 공간�
     const panelBounds = (await panel.boundingBox())!;
     const nameBounds = (await name.boundingBox())!;
     const bookmarkLabelBounds = (await page.locator(".bookmark-command .status-label").boundingBox())!;
-    const footerBounds = (await page.locator(".status-bar").boundingBox())!;
+    const footerBounds = (await page.locator(".footer").boundingBox())!;
     const editorBounds = (await page.locator(".pane-group").boundingBox())!;
     expect(panelBounds.height).toBe(51);
     expect(panelBounds.width).toBeCloseTo(width / 3, 1);
@@ -60,7 +60,7 @@ test("10. 모바일 그룹명을 하단 버튼에 통합하고 편집기 공간�
     expect(editorBounds.y + editorBounds.height).toBe(footerBounds.y);
     expect(editorBounds.height).toBe(844 - footerBounds.height);
     expect(
-      await page.locator(".status-bar").evaluate(
+      await page.locator(".footer").evaluate(
         (element) => element.scrollWidth <= element.clientWidth,
       ),
     ).toBe(true);

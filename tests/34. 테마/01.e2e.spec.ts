@@ -14,7 +14,7 @@ test("1. DARK가 기본값이며 LIGHT로 전환하면 편집기와 패널 색�
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.locator(".workspace")).toHaveCSS("background-color", "rgb(250, 252, 251)");
     await expect(page.locator("textarea")).toHaveCSS("color", "rgb(32, 38, 36)");
-    await expect(page.locator(".status-bar")).toHaveCSS("background-color", "rgb(240, 244, 241)");
+    await expect(page.locator(".footer")).toHaveCSS("background-color", "rgb(240, 244, 241)");
     const colorIcon = page.locator(".tab-item.is-active .dirty-dot");
     const iconColor = () => colorIcon.evaluate(element => getComputedStyle(element, "::before").backgroundColor);
     const activeTab = page.locator(".tab-item.is-active");

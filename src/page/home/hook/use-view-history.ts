@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 
-export type ViewPanel = "closed" | "bookmarks" | "groups" | "shortcuts" | "global-search";
+import type { ViewPanel } from "@/src/entity";
 export type ViewPane = "left" | "right";
 
 export type ViewSnapshot = {

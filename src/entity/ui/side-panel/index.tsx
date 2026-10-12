@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import type { ReactNode } from "react";
 
 type Props = {
-  // Module class added next to `side-panel` so each widget can style its own panel.
+  // Module class added next to `side-panel` so each feature can style its own panel.
   className: string;
   id: string;
   title: string;

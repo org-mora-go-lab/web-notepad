@@ -1,6 +1,6 @@
-@use "../../../entity/style/variable" as v;
+@use "../../entity/style/variable" as v;
 
-.status-bar {
+.footer {
   display: flex;
   align-items: center;
   min-width: 0;

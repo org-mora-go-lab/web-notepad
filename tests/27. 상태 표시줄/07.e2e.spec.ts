@@ -4,7 +4,7 @@ import { BOTH_VIEWPORTS } from "../__constant__";
 
 test("7. PC와 모바일에서 상태 표시줄 높이와 패딩을 적용한다", async ({ page }) => {
   await page.goto("/");
-  const statusBar = page.locator(".status-bar");
+  const statusBar = page.locator(".footer");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     const mobile = viewport.width <= 640;

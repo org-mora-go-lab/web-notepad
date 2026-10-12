@@ -15,7 +15,7 @@ test("1. 하단 그룹·BOOKMARK와 MENU의 SHORTCUT·CLOSED 명령으로 우측
   await page.getByRole("button", { name: "북마크 닫기" }).click();
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "true");
 
-  await expect(page.locator('.status-bar [aria-controls="shortcuts-panel"]')).toHaveCount(0);
+  await expect(page.locator('.footer [aria-controls="shortcuts-panel"]')).toHaveCount(0);
   await openShortcutsPanel(page);
   await expect(page.locator("#shortcuts-panel")).toHaveAttribute("aria-hidden", "false");
   await page.getByRole("button", { name: "단축키 닫기" }).click();

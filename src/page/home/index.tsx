@@ -3,9 +3,9 @@
 import "./index.scss";
 
 import { useHome } from "@/src/page/home/hook";
-import { Bookmark, Closed, GlobalSearch, Group, Shortcut } from "@/src/widget";
+import { Footer, Panel } from "@/src/widget";
 
-import { Loading, PaneView, StatusBar, TabDeletePopup } from "./component";
+import { Loading, PaneView, TabDeletePopup } from "./component";
 
 export function Home() {
   const {
@@ -62,7 +62,7 @@ export function Home() {
           }} />}
         </div>
 
-        <StatusBar
+        <Footer
           bookmarkCount={bookmarks.length}
           bookmarksOpen={openPanel === "bookmarks"}
           activeGroupName={activeGroupName}
@@ -74,48 +74,31 @@ export function Home() {
         />
       </section>
 
-      <Bookmark
+      <Panel
+        openPanel={openPanel}
         bookmarks={bookmarks}
-        open={openPanel === "bookmarks"}
-        onClose={closeSidePanels}
-        onOpen={openBookmarkInCurrentGroupAndClosePanel}
-        onRemove={removeBookmark}
-      />
-      <Group
         groups={groups}
         activeGroupId={activeGroupId}
-        open={openPanel === "groups"}
-        onClose={closeSidePanels}
-        onCreate={createGroup}
-        onSelect={selectGroupAndClosePanel}
-        onRemove={removeGroup}
-        onRename={renameGroup}
-      />
-      <Closed
         closedTabs={closedTabs}
-        groups={groups}
-        searchQuery={closedSearchQuery}
-        open={openPanel === "closed"}
+        closedSearchQuery={closedSearchQuery}
+        globalSearchQuery={globalSearchQuery}
         onClose={closeSidePanels}
-        onSearchQueryChange={setClosedSearchQuery}
-        onRestore={restoreClosedTabAndClosePanel}
-        onRemove={removeClosedTab}
-      />
-      <GlobalSearch
-        groups={groups}
-        closedTabs={closedTabs}
-        searchQuery={globalSearchQuery}
-        onSearchQueryChange={setGlobalSearchQuery}
-        open={openPanel === "global-search"}
-        onClose={closeSidePanels}
+        onClosedSearchQueryChange={setClosedSearchQuery}
+        onGlobalSearchQueryChange={setGlobalSearchQuery}
+        onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
+        onRemoveBookmark={removeBookmark}
+        onCreateGroup={createGroup}
         onSelectGroup={selectGroupAndClosePanel}
-        onOpenBookmark={openBookmarkAndClosePanel}
+        onRemoveGroup={removeGroup}
+        onRenameGroup={renameGroup}
+        onRestoreClosedTab={restoreClosedTabAndClosePanel}
+        onRemoveClosedTab={removeClosedTab}
+        onOpenSearchedBookmark={openBookmarkAndClosePanel}
         onOpenClosedSearch={(query) => {
           setClosedSearchQuery(query);
           toggleSidePanel("closed");
         }}
       />
-      <Shortcut open={openPanel === "shortcuts"} onClose={closeSidePanels} />
       {pendingCloseTabId && (
         <TabDeletePopup onConfirm={confirmCloseTab} onCancel={cancelCloseTab} />
       )}

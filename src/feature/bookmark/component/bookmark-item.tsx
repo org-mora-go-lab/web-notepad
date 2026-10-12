@@ -3,9 +3,8 @@
 import { Bookmark as BookmarkIcon, Trash2 } from "lucide-react";
 
 import type { BookmarkEntry } from "@/src/entity/notepad";
-import { ExpandableContent } from "@/src/entity/ui";
+import { SearchHighlight } from "@/src/entity/ui/search-field/component";
 import { formatDate } from "@/src/entity/util";
-import { SearchHighlight } from "@/src/feature/search-field/component";
 
 type Props = {
   bookmark: BookmarkEntry;
@@ -14,7 +13,20 @@ type Props = {
   onRemove: (bookmarkId: string) => void;
 };
 
+// Drops the first line when the heading already shows it as the title.
+const getBodyWithoutTitle = (content: string, title: string) => {
+  const lines = content.split("\n");
+  const titleIndex = lines.findIndex((line) => line.trim());
+  if (titleIndex < 0 || lines[titleIndex].trim() !== title) return content;
+
+  return lines.slice(titleIndex + 1).join("\n").replace(/^\s*\n/, "");
+};
+
 export function BookmarkItem({ bookmark, searchQuery, onOpen, onRemove }: Props) {
+  const body = bookmark.content
+    ? getBodyWithoutTitle(bookmark.content, bookmark.title)
+    : "Empty note";
+
   return (
     <article className="bookmark-item">
       <div className="bookmark-item-heading">
@@ -25,14 +37,13 @@ export function BookmarkItem({ bookmark, searchQuery, onOpen, onRemove }: Props)
           {formatDate(bookmark.createdAt)}
         </time>
       </div>
-      <ExpandableContent
-        content={
-          <SearchHighlight
-            text={bookmark.content || "Empty note"}
-            query={searchQuery}
-          />
-        }
-      />
+      {body.trim() ? (
+        <p className="bookmark-item-content">
+          <SearchHighlight text={body} query={searchQuery} />
+        </p>
+      ) : (
+        <p className="bookmark-item-content is-empty" aria-hidden="true" />
+      )}
       <div className="bookmark-actions">
         <button type="button" onClick={() => onOpen(bookmark.id)}>
           <BookmarkIcon size={14} />
