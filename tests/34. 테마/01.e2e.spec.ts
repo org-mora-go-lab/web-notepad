@@ -36,7 +36,7 @@ test("1. DARK가 기본값이며 LIGHT로 전환하면 편집기와 패널 색�
     await colorIcon.click();
     await expect(activeTab).toHaveCSS("background-color", "rgba(242, 139, 130, 0.16)");
     await colorIcon.click();
-    await page.locator('[aria-controls="groups-panel"]').press("Enter");
+    await page.locator(".group-status-command").press("Enter");
     await expect(page.locator("#groups-panel")).toHaveCSS("background-color", "rgb(247, 250, 248)");
     await expect(page.locator("#groups-panel .search-field")).toHaveCSS("background-color", "rgb(255, 255, 255)");
     await page.keyboard.press("Escape");

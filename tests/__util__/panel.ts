@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
-export const groupsCommand = (page: Page) =>
-  page.locator('button[aria-controls="groups-panel"]');
+export const groupsCommand = (page: Page) => page.locator(".group-status-command");
+export const groupSelectCommand = (page: Page) => page.locator(".group-select-command");
 export const bookmarksCommand = (page: Page) =>
   page.locator('button[aria-controls="bookmarks-panel"]');
 export const closedCommand = (page: Page) =>
@@ -11,7 +11,7 @@ export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
 export async function openPanel(page: Page, panelId: string) {
-  const command = page.locator(`button[aria-controls="${panelId}"]`);
+  const command = page.locator(`button[aria-controls="${panelId}"]`).first();
   if (panelId === "closed-panel" || panelId === "shortcuts-panel") {
     const menu = page.getByRole("button", { name: "MENU", exact: true });
     await menu.click();

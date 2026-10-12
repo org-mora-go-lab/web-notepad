@@ -10,7 +10,7 @@ test("7. Escape로 패널 진입 버튼의 포커스를 해제하고 하단·MEN
     await page.setViewportSize(viewport);
 
     for (const panelId of [...panelIds].reverse()) {
-      const toggle = page.locator(`button[aria-controls="${panelId}"]`);
+      const toggle = page.locator(`button[aria-controls="${panelId}"]`).first();
       const panel = page.locator(`#${panelId}`);
       await openPanel(page, panelId);
       await expect(panel).toHaveAttribute("aria-hidden", "false");
@@ -40,8 +40,7 @@ test("7. Escape로 패널 진입 버튼의 포커스를 해제하고 하단·MEN
       );
       const index = visibleIds.indexOf(panelId);
       const fromNext = index < visibleIds.length - 1;
-      const neighborId = visibleIds[fromNext ? index + 1 : index - 1];
-      await page.locator(`button[aria-controls="${neighborId}"]`).focus();
+      await page.locator(".status-meta .status-command:visible").nth(fromNext ? index + 1 : index - 1).focus();
       await page.keyboard.press(fromNext ? "Shift+Tab" : "Tab");
       await expect(toggle).toBeFocused();
       await expect(toggle).not.toHaveCSS("outline-style", "none");

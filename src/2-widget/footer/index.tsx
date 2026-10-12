@@ -28,6 +28,17 @@ export function Footer({
       <div className="status-meta">
         <div className="status-controls">
           <button
+            className={`status-command group-status-command ${groupsOpen ? "is-active" : ""}`}
+            type="button"
+            onClick={onToggleGroups}
+            aria-expanded={groupsOpen}
+            aria-controls="groups-panel"
+            aria-label={`그룹 선택: ${activeGroupName}`}
+            title={activeGroupName}
+          >
+            <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>
+          </button>
+          <button
             className={`status-command global-search-command ${globalSearchOpen ? "is-active" : ""}`}
             type="button"
             onClick={onToggleGlobalSearch}
@@ -64,18 +75,16 @@ export function Footer({
             </div>
           </div>
           <button
-            className={`status-command group-status-command ${groupsOpen ? "is-active" : ""}`}
+            className={`status-command group-select-command ${groupsOpen ? "is-active" : ""}`}
             type="button"
             onClick={onToggleGroups}
             aria-expanded={groupsOpen}
             aria-controls="groups-panel"
-            aria-label={`그룹 선택: ${activeGroupName}`}
-            title={activeGroupName}
+            aria-label="그룹 선택"
+            title="그룹 선택"
           >
-            <span className="status-icon">
-              <Layers size={16} strokeWidth={1.8} />
-            </span>
-            <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>
+            <Layers size={16} strokeWidth={1.8} />
+            <span className="status-label">GROUP</span>
           </button>
         </div>
       </div>

@@ -95,12 +95,13 @@
     display: none;
   }
 
-  .bookmark-command {
+  .global-search-command {
     margin-left: auto;
   }
 
   .group-status-command {
     flex: 0 1 auto;
+    justify-content: flex-start;
   }
 
   .group-status-name {
@@ -143,18 +144,34 @@
 
     .status-meta {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr) repeat(3, 72px);
       gap: 0;
     }
 
-    .bookmark-command {
+    .group-status-command {
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0 8px 0 16px;
+    }
+
+    .global-search-command {
       margin-left: 0;
     }
 
+    // Long names wrap to two lines before the ellipsis.
+    .status-command > span.group-status-name {
+      font-size: 15px;
+      line-height: 18px;
+    }
+
     .group-status-name {
-      width: max-content;
-      max-width: calc(108% - 17.28px);
-      transform: translateX(min(0px, calc(100vw / 6 - 50% - 8px)));
+      display: -webkit-box;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      text-align: left;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
   }
 }

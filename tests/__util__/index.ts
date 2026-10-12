@@ -16,6 +16,7 @@ export {
   createGroup,
   createGroups,
   groupsCommand,
+  groupSelectCommand,
   groupStatusName,
   openClosedPanel,
   openPanel,
