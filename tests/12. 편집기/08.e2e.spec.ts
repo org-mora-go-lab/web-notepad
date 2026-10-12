@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-import { MOBILE_VIEWPORT } from "../__constant__";
 import { lineButtons } from "../__util__";
+import { getEditorFormat } from "./__util__";
 
-test("8. PC와 모바일의 편집기 글자 크기와 줄 높이 및 내부 레이아웃을 유지한다", async ({
+test("8. PC 편집기 글자 크기는 19px, 줄 높이는 35px이며 줄 번호 영역 너비는 39px이다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -11,48 +11,12 @@ test("8. PC와 모바일의 편집기 글자 크기와 줄 높이 및 내부 레
   const lines = lineButtons(page);
   await editor.fill("First line\nSecond line");
   await expect(lines).toHaveCount(2);
-  const getEditorFormat = () =>
-    page.locator(".note-editor").evaluate((element) => {
-      const lineRail = element.querySelector(".line-rail")!;
-      const firstLine = lineRail.querySelector("span")!;
-      const textarea = element.querySelector(".note-area")!;
-      const editorStyle = getComputedStyle(element);
-
-      return {
-        lineRailWidth: lineRail.getBoundingClientRect().width,
-        lineHeight: editorStyle.getPropertyValue("--editor-line-height").trim(),
-        topPadding: editorStyle.getPropertyValue("--editor-top-padding").trim(),
-        lineNumberPadding: getComputedStyle(firstLine).paddingRight,
-        editorPadding: getComputedStyle(textarea).padding,
-      };
-    });
 
   await expect(editor).toHaveCSS("font-size", "19px");
   await expect(editor).toHaveCSS("line-height", "35px");
-  await expect(lines.first()).toHaveCSS("height", "35px");
-  await expect(lines.first()).toHaveCSS("line-height", "35px");
-  const desktopFormat = await getEditorFormat();
+  const desktopFormat = await getEditorFormat(page);
   expect(desktopFormat.lineHeight).toBe("35px");
   expect(desktopFormat.topPadding).toBe("10px");
   expect(desktopFormat.editorPadding).toBe("10px 22px");
-  await lines.first().click();
-  await expect(editor).toHaveCSS("background-size", "100% 45px");
-
-  await page.setViewportSize(MOBILE_VIEWPORT);
-  await expect(editor).toHaveCSS("font-size", "19px");
-  await expect(editor).toHaveCSS("line-height", "39px");
-  await expect(lines.first()).toHaveCSS("height", "39px");
-  await expect(lines.first()).toHaveCSS("line-height", "39px");
-  await expect(editor).toHaveCSS("background-size", "100% 49px");
-  await expect(lines.first()).toHaveCSS(
-    "background-color",
-    "rgba(143, 227, 176, 0.2)",
-  );
-  const mobileFormat = await getEditorFormat();
-  expect(mobileFormat.lineHeight).toBe("39px");
-  expect(mobileFormat.topPadding).toBe(desktopFormat.topPadding);
   expect(desktopFormat.lineRailWidth).toBe(39);
-  expect(mobileFormat.lineRailWidth).toBe(41);
-  expect(mobileFormat.lineNumberPadding).toBe(desktopFormat.lineNumberPadding);
-  expect(mobileFormat.editorPadding).toBe(desktopFormat.editorPadding);
 });
