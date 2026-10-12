@@ -150,8 +150,8 @@
 
     // Long names wrap to two lines before the ellipsis.
     .status-command > span.group-status-name {
-      font-size: v.font(15px);
-      line-height: 18px;
+      font-size: v.font(17px);
+      line-height: v.font(20px);
     }
 
     .group-status-name {
@@ -162,6 +162,12 @@
       text-align: left;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
+
+      // A single line sits 3px above center; two lines stay centered.
+      &:not(.is-multiline) {
+        position: relative;
+        top: -3px;
+      }
     }
   }
 }

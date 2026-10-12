@@ -1,8 +1,11 @@
 "use client";
 
 import { Bookmark, Layers, Search } from "lucide-react";
+import { useRef } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
+
+import { useIsMultiline } from "./hook";
 
 type Props = {
   // A linked bookmark was created or synced today.
@@ -27,6 +30,8 @@ export function Footer({
   onToggleGlobalSearch,
 }: Props) {
   const { t } = useI18n();
+  const groupNameRef = useRef<HTMLSpanElement>(null);
+  const groupNameMultiline = useIsMultiline(groupNameRef, activeGroupName);
   return (
     <footer className="footer">
       <div className="status-meta">
@@ -40,7 +45,13 @@ export function Footer({
             aria-label={`그룹 선택: ${activeGroupName}`}
             title={activeGroupName}
           >
-            <span className="group-status-name" title={activeGroupName}>{activeGroupName}</span>
+            <span
+              ref={groupNameRef}
+              className={`group-status-name ${groupNameMultiline ? "is-multiline" : ""}`}
+              title={activeGroupName}
+            >
+              {activeGroupName}
+            </span>
           </button>
           <button
             className={`status-command global-search-command ${globalSearchOpen ? "is-active" : ""}`}
