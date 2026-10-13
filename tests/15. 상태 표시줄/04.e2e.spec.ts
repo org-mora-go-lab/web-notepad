@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../__constant__";
 import { groupsCommand, groupSelectCommand } from "../__util__";
 
-test("4. 맨 오른쪽 그룹 선택 버튼은 아이콘과 그룹 이름을 표시하고 그룹 패널을 연다", async ({ page }) => {
+test("4. 맨 왼쪽 그룹 선택 버튼은 아이콘과 그룹 이름을 표시하고 그룹 패널을 연다", async ({ page }) => {
   await page.goto("/");
   const groupName = groupsCommand(page);
   const groupIcon = groupSelectCommand(page);
@@ -17,7 +17,7 @@ test("4. 맨 오른쪽 그룹 선택 버튼은 아이콘과 그룹 이름을 표
     const commands = await page.locator(".status-meta .status-command:visible").all();
     const iconBox = (await groupIcon.boundingBox())!;
     for (const command of commands) {
-      expect((await command.boundingBox())!.x).toBeLessThanOrEqual(iconBox.x);
+      expect((await command.boundingBox())!.x).toBeGreaterThanOrEqual(iconBox.x);
     }
 
     for (const command of [groupName]) {

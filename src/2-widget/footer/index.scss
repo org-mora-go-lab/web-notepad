@@ -94,7 +94,12 @@
     display: none;
   }
 
+  // Group select sits on the left; BOOKMARK and DASHBOARD are pushed to the right.
   .group-select-command {
+    order: -1;
+  }
+
+  .bookmark-command {
     margin-left: auto;
   }
 
@@ -119,7 +124,7 @@
       gap: 12px;
     }
 
-    // Mobile: icon-only BOOKMARK on the left, group icon + name on the right.
+    // Mobile: group icon + name on the left, BOOKMARK / DASHBOARD on the right.
     .status-command {
       height: 61.2px;
       gap: 8px;
@@ -142,7 +147,6 @@
       flex-direction: column;
       justify-content: center;
       gap: 4px;
-      margin-right: 16px;
 
       &.status-command > span.status-label {
         font-size: v.font(10px);
@@ -152,9 +156,12 @@
       }
     }
 
+    .bookmark-command {
+      margin-right: 16px;
+    }
+
     .group-select-command {
       flex: 0 1 auto;
-      max-width: calc(100% - 52px);
     }
 
     .status-command > span.group-select-name {

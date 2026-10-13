@@ -34,7 +34,9 @@ test("16. 모바일 그룹명은 17px 한 줄로 말줄임하고 전체 이름 �
     const panelBounds = (await panel.boundingBox())!;
     const nameBounds = (await name.boundingBox())!;
     expect(nameBounds.x + nameBounds.width).toBeLessThanOrEqual(panelBounds.x + panelBounds.width);
-    expect(panelBounds.x + panelBounds.width).toBeCloseTo(width - 21, 1);
+    expect(panelBounds.x).toBeCloseTo(21, 1);
+    const dashboardBounds = (await page.locator(".dashboard-command").boundingBox())!;
+    expect(panelBounds.x + panelBounds.width).toBeLessThanOrEqual(dashboardBounds.x);
   }
 
   await page.setViewportSize({ width: 390, height: 844 });
