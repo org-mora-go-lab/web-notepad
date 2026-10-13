@@ -13,4 +13,11 @@ test("15. 그룹을 생성해도 그룹 드롭다운을 열린 상태로 유지�
   await expect(menu).toBeVisible();
   await expect(groupsCommand(page)).toHaveAttribute("aria-expanded", "true");
   await expect(menu.locator(".group-item").filter({ hasText: "New group" })).toBeVisible();
+
+  // The create row sits right below Ungrouped, above the other groups.
+  const formBox = (await menu.locator(".group-create-form").boundingBox())!;
+  const ungroupedBox = (await menu.locator(".group-item").filter({ hasText: "Ungrouped" }).boundingBox())!;
+  const newGroupBox = (await menu.locator(".group-item").filter({ hasText: "New group" }).boundingBox())!;
+  expect(formBox.y).toBeGreaterThanOrEqual(ungroupedBox.y + ungroupedBox.height);
+  expect(newGroupBox.y).toBeGreaterThanOrEqual(formBox.y + formBox.height);
 });

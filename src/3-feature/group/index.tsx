@@ -22,7 +22,10 @@ type Props = {
   onTogglePinGroup: (groupId: string) => void;
 };
 
+type GroupRow = Pick<GroupEntry, "id" | "name" | "pinned">;
+
 const ANCHOR_SELECTOR = ".group-select-command";
+const MOBILE_QUERY = "(max-width: 640px)";
 
 // Group switcher dropdown that opens above the bottom bar's group button, styled like the tab context menu.
 // Pick a group, or pin / rename / delete / create one right in the list.
@@ -45,12 +48,39 @@ function GroupMenu({
   // The delete button that opened the popup, focused again when the popup is cancelled.
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
-  // The virtual All Group comes first, Ungrouped right below it, then the other groups (pinned first).
-  const rows: Array<Pick<GroupEntry, "id" | "name" | "pinned">> = [
+  // All Group and Ungrouped share the first row (two halves); the create row follows, then the other groups (pinned first).
+  const specialRows: GroupRow[] = [
     { id: ALL_GROUP_ID, name: ALL_GROUP_NAME, pinned: false },
     ...groups.filter((group) => group.id === UNGROUPED_GROUP_ID),
-    ...[...groups].sort(compareGroups).filter((group) => group.id !== UNGROUPED_GROUP_ID),
   ];
+  const otherRows: GroupRow[] = [...groups].sort(compareGroups).filter((group) => group.id !== UNGROUPED_GROUP_ID);
+
+  const renderRow = (group: GroupRow) => {
+    const special = group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID;
+    return (
+      <GroupItem
+        key={group.id}
+        name={group.name}
+        active={group.id === activeGroupId}
+        pinned={group.pinned}
+        editable={!special}
+        muted={special}
+        actionsOpen={actionsGroupId === group.id}
+        onToggleActions={() => setActionsGroupId((current) => (current === group.id ? null : group.id))}
+        onSelect={() => {
+          onSelect(group.id);
+          // Mobile closes the dropdown right after a group is picked.
+          if (window.matchMedia(MOBILE_QUERY).matches) onClose();
+        }}
+        onRename={(name) => onRename(group.id, name)}
+        onTogglePin={() => onTogglePinGroup(group.id)}
+        onDelete={(anchor) => {
+          deleteAnchorRef.current = anchor;
+          setDeletingGroupId(group.id);
+        }}
+      />
+    );
+  };
 
   useLayoutEffect(() => {
     const menu = menuRef.current;
@@ -91,33 +121,10 @@ function GroupMenu({
     <div className="group">
       <div ref={menuRef} className="group-menu" id="groups-menu" role="dialog" aria-label="그룹 선택">
         <div className="group-list">
-          {rows.map((group) => {
-            const special = group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID;
-            return (
-              <GroupItem
-                key={group.id}
-                name={group.name}
-                active={group.id === activeGroupId}
-                pinned={group.pinned}
-                editable={!special}
-                muted={special}
-                actionsOpen={actionsGroupId === group.id}
-                onToggleActions={() => setActionsGroupId((current) => (current === group.id ? null : group.id))}
-                onSelect={() => {
-                  onSelect(group.id);
-                  onClose();
-                }}
-                onRename={(name) => onRename(group.id, name)}
-                onTogglePin={() => onTogglePinGroup(group.id)}
-                onDelete={(anchor) => {
-                  deleteAnchorRef.current = anchor;
-                  setDeletingGroupId(group.id);
-                }}
-              />
-            );
-          })}
+          <div className="group-split-row">{specialRows.map(renderRow)}</div>
+          <GroupCreateForm onCreate={onCreate} />
+          {otherRows.map(renderRow)}
         </div>
-        <GroupCreateForm onCreate={onCreate} />
       </div>
       {groupToDelete && (
         <ConfirmPopup

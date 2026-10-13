@@ -8,6 +8,17 @@
     overflow-y: auto;
   }
 
+  // All Group and Ungrouped sit side by side as two halves.
+  .group-split-row {
+    display: flex;
+    gap: 4px;
+
+    .group-item {
+      min-width: 0;
+      flex: 1;
+    }
+  }
+
   .group-item {
     min-height: 39px;
     display: flex;
@@ -15,7 +26,11 @@
     gap: 6px;
     padding: 0 4px 0 10px;
 
-    &:hover,
+    // Hover is lighter than the selected group.
+    &:hover {
+      background: color-mix(in srgb, #{v.$line} 50%, transparent);
+    }
+
     &.is-active {
       background: v.$line;
     }

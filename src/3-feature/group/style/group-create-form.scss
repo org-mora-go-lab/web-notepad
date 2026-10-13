@@ -5,8 +5,9 @@
   .group-create-form {
     display: flex;
     gap: 6px;
-    padding: 8px;
-    border-top: 1px solid v.$line;
+    margin: 4px 0;
+    padding: 8px 4px;
+    border-block: 1px solid v.$line;
 
     input {
       min-width: 0;

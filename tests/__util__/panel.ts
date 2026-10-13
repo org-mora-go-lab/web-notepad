@@ -44,8 +44,10 @@ export async function createGroups(page: Page, ...names: string[]) {
   await page.keyboard.press("Escape");
 }
 
-// Opens the group dropdown and selects the group with the exact name.
+// Opens the group dropdown, selects the group with the exact name and closes the dropdown.
 export async function switchGroup(page: Page, name: string) {
   await groupsCommand(page).click();
   await page.locator(".group-item").getByRole("button", { name, exact: true }).click();
+  // Selecting keeps the dropdown open, so close it for the caller.
+  await page.keyboard.press("Escape");
 }
