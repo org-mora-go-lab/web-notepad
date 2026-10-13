@@ -13,7 +13,7 @@ const en = {
   dashboard: "DASHBOARD",
   dashboardTitle: "Dashboard",
   statusTodo: "Todo",
-  statusInProgress: "In Progress",
+  statusInProgress: "Ongoing",
   statusDone: "Done",
   group: "GROUP",
   selectGroup: "Select group",

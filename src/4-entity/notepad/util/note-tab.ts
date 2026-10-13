@@ -49,7 +49,7 @@ export const getTitleFromContent = (content: unknown, fallback: string) => {
 // Tabs with more than 10 characters ask before closing and are kept in Closed; shorter ones are deleted outright.
 export const isSubstantialContent = (content: string) => Array.from(content).length > 10;
 
-// Todo / In Progress / Done follow the position of the tab color in the cycle; colors outside it count as Todo.
+// Todo / Ongoing / Done follow the position of the tab color in the cycle; colors outside it count as Todo.
 export const getTabStatus = (tab: NoteTab, tabColorCycle: TabColor[]): TabStatus =>
   TAB_STATUSES[Math.max(0, tabColorCycle.indexOf(tab.tabColor))] ?? "todo";
 

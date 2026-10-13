@@ -25,7 +25,7 @@ type Props = {
 };
 
 // Kanban board of the current group's tabs. A tab's column follows its tab color:
-// the 1st, 2nd and 3rd color of the tab color cycle are Todo, In Progress and Done.
+// the 1st, 2nd and 3rd color of the tab color cycle are Todo, Ongoing and Done.
 export function Dashboard({
   groupName,
   tabs,

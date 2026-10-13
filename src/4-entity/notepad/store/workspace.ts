@@ -4,6 +4,7 @@ import type {
   GroupEntry,
   NotepadState,
   NoteTab,
+  TabColor,
 } from "../type";
 import {
   createNoteTab,
@@ -124,3 +125,25 @@ export const patchTabAndBookmark = (
     bookmark.sourceTabId === tabId ? { ...bookmark, ...bookmarkPatch } : bookmark,
   ),
 });
+
+// Applies a new tab color cycle. A tab's dashboard status follows its color's position in the cycle,
+// so every tab (and bookmark / closed tab) keeps its position by taking the new color of that slot.
+export const withTabColorCycle = (state: NotepadState, tabColorCycle: TabColor[]) => {
+  const previous = state.settings.tabColorCycle;
+  const recolor = (color: TabColor) => {
+    const index = previous.indexOf(color);
+    return index >= 0 && tabColorCycle[index] ? tabColorCycle[index] : color;
+  };
+  return {
+    settings: { ...state.settings, tabColorCycle },
+    groups: state.groups.map((group) => ({
+      ...group,
+      tabs: group.tabs.map((tab) => ({ ...tab, tabColor: recolor(tab.tabColor) })),
+      bookmarks: group.bookmarks.map((bookmark) => ({ ...bookmark, tabColor: recolor(bookmark.tabColor) })),
+    })),
+    closedTabs: state.closedTabs.map((entry) => ({
+      ...entry,
+      tab: { ...entry.tab, tabColor: recolor(entry.tab.tabColor) },
+    })),
+  };
+};

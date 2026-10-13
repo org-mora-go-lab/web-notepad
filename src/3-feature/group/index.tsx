@@ -154,7 +154,7 @@ export function Group({
                   >
                     <strong
                       className={
-                        group.id === UNGROUPED_GROUP_ID ? "is-ungrouped" : ""
+                        group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID ? "is-ungrouped" : ""
                       }
                     >
                       <SearchHighlight text={group.name} query={searchQuery} />
