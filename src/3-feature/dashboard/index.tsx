@@ -10,7 +10,6 @@ import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
 import { DashboardCard } from "./component";
 
 type Props = {
-  groupName: string;
   tabs: NoteTab[];
   // Closed tabs of the shown group(s); they fill the Closed column.
   closedTabs: ClosedTabEntry[];
@@ -32,7 +31,6 @@ type Props = {
 // Kanban board of the current group's tabs. A tab's column follows its tab color:
 // the 1st, 2nd and 3rd color of the tab color cycle are Todo, WIP and Done.
 export function Dashboard({
-  groupName,
   tabs,
   closedTabs,
   groups,
@@ -75,7 +73,6 @@ export function Dashboard({
       onClose={onClose}
     >
       <div className="dashboard-list">
-        <p className="dashboard-group">{groupName}</p>
         <div className="dashboard-board">
           {TAB_STATUSES.map((status) => {
             const columnTabs = tabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status);

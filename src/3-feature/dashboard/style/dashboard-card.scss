@@ -2,6 +2,7 @@
 
 .dashboard {
   .dashboard-card {
+    position: relative;
     min-width: 0;
     border: 1px solid v.$line;
     border-radius: 6px;
@@ -31,6 +32,26 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+  }
+
+  // Pinned and bookmarked tabs line up their icons (pin left of bookmark) in the card's top-right corner.
+  .dashboard-card-indicators {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    color: var(--dashboard-accent, #{v.$saved});
+    pointer-events: none;
+  }
+
+  .dashboard-card-pin,
+  .dashboard-card-bookmark {
+    display: flex;
+  }
+
+  .dashboard-card-open strong {
+    padding-right: 40px;
   }
 
   .dashboard-card-group {

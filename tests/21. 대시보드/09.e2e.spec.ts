@@ -9,8 +9,6 @@ test("9. 대시보드 내부 글자를 1.2배로 표시하고 개수의 오른�
   const panel = dashboardPanel(page);
   const card = dashboardColumn(page, "todo").locator(".dashboard-card");
 
-  await expect(panel.locator(".dashboard-group")).toHaveCSS("font-size", "16px");
-  await expect(panel.locator(".dashboard-group")).toHaveCSS("padding-bottom", "10px");
   await expect(panel.locator(".dashboard-column h3").first()).toHaveCSS("font-size", "16.8px");
   await expect(card.locator("strong")).toHaveCSS("font-size", "16.8px");
   await expect(card.locator(".dashboard-card-preview")).toHaveCSS("font-size", "15.6px");

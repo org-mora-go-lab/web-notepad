@@ -120,7 +120,6 @@ export function Home() {
           pinned={panelPinned}
           onTogglePin={togglePanelPin}
           bookmarks={bookmarks}
-          activeGroupName={activeGroupName}
           activeGroupTabs={activeGroupTabs}
           tabColorCycle={tabColorCycle}
           groups={groups}

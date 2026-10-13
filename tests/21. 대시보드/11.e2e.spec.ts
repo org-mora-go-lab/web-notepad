@@ -9,7 +9,6 @@ test("11. All Group의 대시보드는 모든 그룹의 탭을 모아 보여주�
   await page.locator(".group-item").last().getByRole("button", { name: "All Group", exact: true }).click();
   await openPanel(page, "dashboard-panel");
 
-  await expect(dashboardPanel(page).locator(".dashboard-group")).toHaveText("All Group");
   await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(4);
   const workCard = dashboardColumn(page, "todo").locator(".dashboard-card").filter({ hasText: "Work only task" });
   await expect(workCard.locator(".dashboard-card-group")).toHaveText("Work");

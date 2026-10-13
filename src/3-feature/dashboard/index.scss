@@ -15,16 +15,6 @@
     flex-direction: column;
   }
 
-  .dashboard-group {
-    margin: 0 0 12px;
-    padding-bottom: 10px;
-    overflow: hidden;
-    color: var(--color-secondary);
-    font-size: v.font(16px);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   .dashboard-board {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
