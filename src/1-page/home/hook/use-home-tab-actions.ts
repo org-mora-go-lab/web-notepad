@@ -35,7 +35,7 @@ export function useHomeTabActions({ editorRefs }: Options) {
 
     const content = editorOfTab(group, tabId)?.value ?? tab.content;
     if (content !== tab.content) state.updateTab(tabId, content);
-    if (isSubstantialContent(content)) {
+    if (isSubstantialContent(content) && !tab.bookmarked) {
       setPendingCloseTabId(tabId);
     } else {
       state.closeTab(tabId);
