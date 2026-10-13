@@ -27,7 +27,7 @@
     strong {
       overflow: hidden;
       color: v.$signal;
-      font-size: v.font(14px);
+      font-size: v.font(14px * 1.2);
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -38,7 +38,7 @@
     overflow: hidden;
     color: v.$saved;
     font-family: v.$sans;
-    font-size: v.font(13px);
+    font-size: v.font(13px * 1.2);
     line-height: 1.4;
     overflow-wrap: anywhere;
     white-space: pre-wrap;

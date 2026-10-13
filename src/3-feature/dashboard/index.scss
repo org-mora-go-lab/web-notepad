@@ -13,7 +13,7 @@
     margin: 0 0 12px;
     overflow: hidden;
     color: var(--color-secondary);
-    font-size: v.font(13px);
+    font-size: v.font(13px * 1.2);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -21,7 +21,7 @@
   .dashboard-board {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    gap: 15px;
     align-items: start;
   }
 
@@ -35,13 +35,14 @@
       gap: 8px;
       margin: 0 0 10px;
       color: v.$signal;
-      font-size: v.font(14px);
+      font-size: v.font(14px * 1.2);
     }
   }
 
   .dashboard-count {
     color: var(--color-secondary);
-    font-size: v.font(12px);
+    padding-right: 10px;
+    font-size: v.font(12px * 1.2);
     font-variant-numeric: tabular-nums;
   }
 
