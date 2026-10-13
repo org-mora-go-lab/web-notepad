@@ -4,7 +4,6 @@ import { Bookmark, Pin } from "lucide-react";
 import type { DragEvent } from "react";
 
 import type { NoteTab } from "@/src/4-entity/notepad";
-import { useI18n } from "@/src/5-shared/hook";
 
 type Props = {
   tab: NoteTab;
@@ -25,7 +24,6 @@ const getPreview = (tab: NoteTab) => {
 };
 
 export function DashboardCard({ id, tab, groupName, dragging, onOpen, onDragStart, onDragEnd }: Props) {
-  const { t } = useI18n();
   const preview = getPreview(tab);
 
   return (
@@ -37,7 +35,7 @@ export function DashboardCard({ id, tab, groupName, dragging, onOpen, onDragStar
       onDragEnd={onDragEnd}
     >
       <button className="dashboard-card-open" type="button" onClick={() => onOpen(tab.id)}>
-        <strong>{tab.content.trim() ? tab.title : t.emptyNote}</strong>
+        <strong>{tab.title}</strong>
         {groupName && <span className="dashboard-card-group">{groupName}</span>}
         {preview && <span className="dashboard-card-preview">{preview}</span>}
       </button>

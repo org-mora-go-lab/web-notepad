@@ -35,7 +35,9 @@ export function useHomeTabActions({ editorRefs }: Options) {
 
     const content = editorOfTab(group, tabId)?.value ?? tab.content;
     if (content !== tab.content) state.updateTab(tabId, content);
-    if (isSubstantialContent(content) && !tab.bookmarked) {
+    // A tab restored from Closed and left unedited closes without asking.
+    const unchangedSinceRestore = tab.restoredContent !== undefined && content === tab.restoredContent;
+    if (isSubstantialContent(content) && !tab.bookmarked && !unchangedSinceRestore) {
       setPendingCloseTabId(tabId);
     } else {
       state.closeTab(tabId);

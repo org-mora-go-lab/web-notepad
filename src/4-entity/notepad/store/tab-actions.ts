@@ -182,7 +182,9 @@ const closeTabEntry = (
     const group = getTabGroup(state, tabId);
     const tab = group?.tabs.find((item) => item.id === tabId);
     if (!group || !tab || tab.pinned) return;
-    if (forceKeep || (isSubstantialContent(tab.content) && !tab.bookmarked)) {
+    // A tab restored from Closed and left unedited goes back to Closed, whatever its length or bookmark.
+    const unchangedSinceRestore = tab.restoredContent !== undefined && tab.content === tab.restoredContent;
+    if (forceKeep || unchangedSinceRestore || (isSubstantialContent(tab.content) && !tab.bookmarked)) {
       set({
         closedTabs: [
           { id: `closed-${crypto.randomUUID()}`, groupId: group.id, tab, closedAt: Date.now() },

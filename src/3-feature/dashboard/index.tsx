@@ -48,6 +48,9 @@ export function Dashboard({
 }: Props) {
   const { t } = useI18n();
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
+  // Empty notes are not listed on the dashboard.
+  const visibleTabs = tabs.filter((tab) => tab.content.trim());
+  const visibleClosedTabs = closedTabs.filter((entry) => entry.tab.content.trim());
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
   // A pinned tab dropped on Closed waits for confirmation before it is unpinned and closed.
   const [pendingPinnedTabId, setPendingPinnedTabId] = useState<string | null>(null);
@@ -75,8 +78,8 @@ export function Dashboard({
       <div className="dashboard-list">
         <div className="dashboard-board">
           {TAB_STATUSES.map((status) => {
-            const columnTabs = tabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status);
-            const columnClosed = status === "done" ? closedTabs : [];
+            const columnTabs = visibleTabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status);
+            const columnClosed = status === "done" ? visibleClosedTabs : [];
             return (
               <section
                 key={status}
@@ -98,7 +101,7 @@ export function Dashboard({
                   if (draggingTabId?.startsWith("closed-")) {
                     if (status !== "done") onChangeClosedStatus(draggingTabId, status);
                   } else if (draggingTabId) {
-                    const dragged = tabs.find((tab) => tab.id === draggingTabId);
+                    const dragged = visibleTabs.find((tab) => tab.id === draggingTabId);
                     if (status === "done" && dragged?.pinned) setPendingPinnedTabId(draggingTabId);
                     else onChangeStatus(draggingTabId, status);
                   }

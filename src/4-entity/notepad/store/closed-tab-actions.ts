@@ -32,6 +32,7 @@ export const createClosedTabActions: StateCreator<
     const tab = {
       ...entry.tab,
       id: tabId,
+      restoredContent: entry.tab.content,
       bookmarked: target.bookmarks.some((bookmark) => bookmark.sourceTabId === tabId),
     };
 

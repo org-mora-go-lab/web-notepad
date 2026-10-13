@@ -34,6 +34,8 @@ export type NoteTab = {
   pinned: boolean;
   bookmarked: boolean;
   updatedAt: number;
+  // Content of a tab restored from Closed; closing it again without edits skips the confirmation.
+  restoredContent?: string;
 };
 
 export type BookmarkEntry = {

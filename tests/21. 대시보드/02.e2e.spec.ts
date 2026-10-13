@@ -16,5 +16,11 @@ test("2. 현재 그룹의 탭을 탭 색상(Gray·Green·Purple)에 따라 Todo�
   await page.keyboard.press("Escape");
   await addTabButton(page).click();
   await openPanel(page, "dashboard-panel");
+  // The new tab is empty, so it is not listed until it has content.
+  await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(1);
+  await page.keyboard.press("Escape");
+  await page.locator(".note-area").fill("Fresh note");
+  await openPanel(page, "dashboard-panel");
   await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(2);
+  await expect(dashboardColumn(page, "todo")).toContainText("Fresh note");
 });
