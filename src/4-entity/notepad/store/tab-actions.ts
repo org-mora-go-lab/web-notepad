@@ -7,6 +7,7 @@ import {
   getPaneColumn,
   getPaneOfTab,
   getPaneTabs,
+  getStatusColor,
   getTitleFromContent,
   isSubstantialContent,
   normalizeLayout,
@@ -31,6 +32,7 @@ type TabActions = Pick<
   | "moveTab"
   | "cycleTabColor"
   | "togglePin"
+  | "setTabStatus"
   | "closeTab"
 >;
 
@@ -139,6 +141,16 @@ export const createTabActions: StateCreator<
       if (!tab) return state;
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(current, tabId, { pinned: !tab.pinned }),
+      );
+    }),
+  // Moving a tab to a dashboard column gives it that column's tab color.
+  setTabStatus: (tabId, status) =>
+    set((state) => {
+      const group = getActiveGroup(state);
+      if (!group || !group.tabs.some((tab) => tab.id === tabId)) return state;
+      const tabColor = getStatusColor(status, state.settings.tabColorCycle);
+      return updateGroup(state, group.id, (current) =>
+        patchTabAndBookmark(current, tabId, { tabColor }, { tabColor, updatedAt: Date.now() }),
       );
     }),
   closeTab: (tabId) => {

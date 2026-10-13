@@ -6,7 +6,7 @@ import { RIGHT_PANEL_VIEWPORTS } from "./__constant__";
 test("10. 닫힌 우측 패널은 그림자를 남기지 않고 열린 패널만 불투명도 18%의 옅은 그림자를 표시한다", async ({ page }) => {
   await page.goto("/");
   const panels = page.locator(".side-panel-drawer");
-  await expect(panels).toHaveCount(6);
+  await expect(panels).toHaveCount(7);
 
   for (const { viewport, panelIds } of RIGHT_PANEL_VIEWPORTS) {
     await page.setViewportSize(viewport);

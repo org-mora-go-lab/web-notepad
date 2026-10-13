@@ -1,0 +1,92 @@
+@use "../../5-shared/style/mixin";
+@use "../../5-shared/style/variable" as v;
+@use "./style/dashboard-card";
+
+.dashboard {
+  @include mixin.side-panel-list("dashboard");
+
+  .side-panel-drawer {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .dashboard-group {
+    margin: 0 0 12px;
+    overflow: hidden;
+    color: var(--color-secondary);
+    font-size: v.font(13px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
+
+  .dashboard-column {
+    min-width: 0;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 0 10px;
+      color: v.$signal;
+      font-size: v.font(14px);
+    }
+  }
+
+  .dashboard-count {
+    color: var(--color-secondary);
+    font-size: v.font(12px);
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Accent of each tab color, used by the column marker and the cards.
+  [data-tab-color="gray"] {
+    --dashboard-accent: #{v.$saved};
+  }
+
+  [data-tab-color="red"] {
+    --dashboard-accent: #{v.$tab-red};
+  }
+
+  [data-tab-color="green"] {
+    --dashboard-accent: #{v.$signal};
+  }
+
+  @each $name, $_ in v.$extra-tab-colors {
+    [data-tab-color="#{$name}"] {
+      --dashboard-accent: var(--color-tab-#{$name});
+    }
+  }
+
+  .dashboard-column h3 {
+    padding-left: 8px;
+    border-left: 3px solid var(--dashboard-accent, v.$line);
+  }
+
+  // An empty column keeps room for one card and highlights while a card is dragged over it.
+  .dashboard-cards {
+    min-height: 72px;
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    border: 1px dashed v.$line;
+    padding: 6px;
+  }
+
+  .dashboard-column.is-drop-target .dashboard-cards {
+    border-color: var(--dashboard-accent, v.$signal);
+    background: v.$raised;
+  }
+
+  @media (max-width: 640px) {
+    .dashboard-board {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

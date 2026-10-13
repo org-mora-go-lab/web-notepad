@@ -30,10 +30,14 @@ export function Home() {
     selectGroupAndClosePanel,
     openBookmarkAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
+    openTabAndClosePanel,
     restoreClosedTabAndClosePanel,
     activeTab,
     split,
     bookmarks,
+    activeGroupTabs,
+    tabColorCycle,
+    setTabStatus,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
@@ -96,9 +100,11 @@ export function Home() {
         <Footer
           hasBookmarkUpdateToday={hasBookmarkUpdateToday}
           bookmarksOpen={openPanel === "bookmarks"}
+          dashboardOpen={openPanel === "dashboard"}
           activeGroupName={activeGroupName}
           groupsOpen={openPanel === "groups"}
           onToggleBookmarks={() => toggleSidePanel("bookmarks")}
+          onToggleDashboard={() => toggleSidePanel("dashboard")}
           onToggleGroups={() => toggleSidePanel("groups")}
         />
       </section>
@@ -108,6 +114,9 @@ export function Home() {
         pinned={panelPinned}
         onTogglePin={togglePanelPin}
         bookmarks={bookmarks}
+        activeGroupName={activeGroupName}
+        activeGroupTabs={activeGroupTabs}
+        tabColorCycle={tabColorCycle}
         groups={groups}
         activeGroupId={activeGroupId}
         closedTabs={closedTabs}
@@ -118,6 +127,8 @@ export function Home() {
         onGlobalSearchQueryChange={setGlobalSearchQuery}
         onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
         onRemoveBookmark={removeBookmark}
+        onOpenDashboardTab={openTabAndClosePanel}
+        onChangeTabStatus={setTabStatus}
         onCreateGroup={createGroup}
         onSelectGroup={selectGroupAndClosePanel}
         onRemoveGroup={removeGroup}

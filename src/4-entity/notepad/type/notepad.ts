@@ -21,6 +21,9 @@ export type NotepadSettings = {
   panelSlide: boolean;
 };
 
+// Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
+export type TabStatus = "todo" | "in-progress" | "done";
+
 export type NoteTab = {
   id: string;
   title: string;
@@ -104,6 +107,7 @@ export type NotepadState = {
   setRowRatio: (column: PaneColumn, ratio: number) => void;
   cycleTabColor: (tabId: string) => void;
   togglePin: (tabId: string) => void;
+  setTabStatus: (tabId: string, status: TabStatus) => void;
   toggleBookmark: (tabId: string) => void;
   closeTab: (tabId: string) => void;
   openBookmark: (bookmarkId: string) => void;

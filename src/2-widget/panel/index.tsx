@@ -2,8 +2,8 @@
 
 import type { ComponentProps } from "react";
 
-import { Bookmark, Closed, GlobalSearch, Group, Setting, Shortcut } from "@/src/3-feature";
-import type { BookmarkEntry, ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
+import { Bookmark, Closed, Dashboard, GlobalSearch, Group, Setting, Shortcut } from "@/src/3-feature";
+import type { BookmarkEntry, ClosedTabEntry, GroupEntry, NoteTab, TabColor } from "@/src/4-entity/notepad";
 import type { ViewPanel } from "@/src/5-shared";
 
 type Props = {
@@ -11,6 +11,9 @@ type Props = {
   pinned: boolean;
   onTogglePin: () => void;
   bookmarks: BookmarkEntry[];
+  activeGroupName: string;
+  activeGroupTabs: NoteTab[];
+  tabColorCycle: TabColor[];
   groups: GroupEntry[];
   activeGroupId: string;
   closedTabs: ClosedTabEntry[];
@@ -21,6 +24,8 @@ type Props = {
   onGlobalSearchQueryChange: (query: string) => void;
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
+  onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
+  onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
@@ -37,6 +42,9 @@ export function Panel({
   pinned,
   onTogglePin,
   bookmarks,
+  activeGroupName,
+  activeGroupTabs,
+  tabColorCycle,
   groups,
   activeGroupId,
   closedTabs,
@@ -47,6 +55,8 @@ export function Panel({
   onGlobalSearchQueryChange,
   onOpenBookmark,
   onRemoveBookmark,
+  onOpenDashboardTab,
+  onChangeTabStatus,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
@@ -67,6 +77,17 @@ export function Panel({
         onClose={onClose}
         onOpen={onOpenBookmark}
         onRemove={onRemoveBookmark}
+      />
+      <Dashboard
+        groupName={activeGroupName}
+        tabs={activeGroupTabs}
+        tabColorCycle={tabColorCycle}
+        open={openPanel === "dashboard"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
+        onClose={onClose}
+        onOpenTab={onOpenDashboardTab}
+        onChangeStatus={onChangeTabStatus}
       />
       <Group
         groups={groups}

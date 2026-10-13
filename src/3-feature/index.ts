@@ -1,5 +1,6 @@
 export { Bookmark } from "./bookmark";
 export { Closed } from "./closed";
+export { Dashboard } from "./dashboard";
 export { GlobalSearch } from "./global-search";
 export { Group } from "./group";
 export { NoteEditor } from "./note-editor";

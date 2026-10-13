@@ -1,0 +1,48 @@
+@use "../../../5-shared/style/variable" as v;
+
+.dashboard {
+  .dashboard-card {
+    min-width: 0;
+    border: 1px solid v.$line;
+    border-left: 3px solid var(--dashboard-accent, v.$line);
+    background: var(--color-field);
+    cursor: grab;
+
+    &.is-dragging {
+      opacity: 0.4;
+    }
+  }
+
+  .dashboard-card-open {
+    width: 100%;
+    display: grid;
+    gap: 4px;
+    padding: 10px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: inherit;
+
+    strong {
+      overflow: hidden;
+      color: v.$signal;
+      font-size: v.font(14px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .dashboard-card-preview {
+    display: -webkit-box;
+    overflow: hidden;
+    color: v.$saved;
+    font-family: v.$sans;
+    font-size: v.font(13px);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Layers } from "lucide-react";
+import { Bookmark, Layers, LayoutDashboard } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -8,18 +8,22 @@ type Props = {
   // A linked bookmark was created or synced today.
   hasBookmarkUpdateToday: boolean;
   bookmarksOpen: boolean;
+  dashboardOpen: boolean;
   activeGroupName: string;
   groupsOpen: boolean;
   onToggleBookmarks: () => void;
+  onToggleDashboard: () => void;
   onToggleGroups: () => void;
 };
 
 export function Footer({
   hasBookmarkUpdateToday,
   bookmarksOpen,
+  dashboardOpen,
   activeGroupName,
   groupsOpen,
   onToggleBookmarks,
+  onToggleDashboard,
   onToggleGroups,
 }: Props) {
   const { t } = useI18n();
@@ -46,6 +50,18 @@ export function Footer({
                 <span className="status-separator" aria-hidden="true">
                   |
                 </span>
+              </button>
+              <button
+                className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}
+                type="button"
+                onClick={onToggleDashboard}
+                aria-expanded={dashboardOpen}
+                aria-controls="dashboard-panel"
+              >
+                <span className="status-icon">
+                  <LayoutDashboard size={16} strokeWidth={1.8} />
+                </span>
+                <span className="status-label">{t.dashboard}</span>
               </button>
             </div>
           </div>

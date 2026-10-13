@@ -1,4 +1,4 @@
-import type { NotepadSettings, TabColor } from "../type";
+import type { NotepadSettings, TabColor, TabStatus } from "../type";
 
 export const TAB_COLORS: readonly TabColor[] = [
   "gray",
@@ -20,3 +20,6 @@ export const DEFAULT_SETTINGS: NotepadSettings = {
   language: "en",
   panelSlide: false,
 };
+
+// Dashboard columns, in display order.
+export const TAB_STATUSES: readonly TabStatus[] = ["todo", "in-progress", "done"];

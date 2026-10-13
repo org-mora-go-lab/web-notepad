@@ -5,7 +5,7 @@ test("14. PC와 모바일 하단 메뉴는 스크롤 없이 표시되고 각 패
   const commands = page.locator(".status-meta .status-command:visible");
   for (const width of [320, 390, 640, 641, 1280]) {
     await page.setViewportSize({ width, height: 844 });
-    const count = 2;
+    const count = 3;
     await expect(commands).toHaveCount(count);
     for (const command of await commands.all()) {
       await expect(command).toBeInViewport();
@@ -14,7 +14,7 @@ test("14. PC와 모바일 하단 메뉴는 스크롤 없이 표시되고 각 패
       }
       expect(bounds.height).toBeCloseTo(width <= 640 ? 61.2 : 35, 1);
       const label = command.locator(".status-label:visible, .global-search-label:visible");
-      if (width <= 640 && (await command.getAttribute("class"))?.includes("bookmark-command")) continue;
+      if (width <= 640 && /bookmark-command|dashboard-command/.test((await command.getAttribute("class")) ?? "")) continue;
       await expect(label).toBeVisible();
       const labelBounds = (await label.boundingBox())!;
       const iconBounds = (await command.locator("svg").boundingBox())!;

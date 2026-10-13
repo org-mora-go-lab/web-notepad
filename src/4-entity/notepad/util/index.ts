@@ -3,6 +3,8 @@ export { normalizePersistedState } from "./normalize-persisted-state";
 export {
   createNoteTab,
   getNextTabNumber,
+  getStatusColor,
+  getTabStatus,
   getTitleFromContent,
   isSubstantialContent,
   sanitizeSelectedLines,

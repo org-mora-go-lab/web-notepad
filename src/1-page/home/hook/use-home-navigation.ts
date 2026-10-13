@@ -130,6 +130,11 @@ export function useHomeNavigation({ hydrated, panelPinned, addTabToPane }: Optio
     openBookmarkAndClosePanel(state.activeGroupId, bookmarkId);
   }, [openBookmarkAndClosePanel]);
 
+  const openTabAndClosePanel = useCallback((tabId: string) => {
+    useNotepadStore.getState().selectTab(tabId);
+    finishPanelAction();
+  }, [finishPanelAction]);
+
   const restoreClosedTabAndClosePanel = useCallback((entryId: string) => {
     useNotepadStore.getState().restoreClosedTab(entryId);
     finishPanelAction();
@@ -173,6 +178,7 @@ export function useHomeNavigation({ hydrated, panelPinned, addTabToPane }: Optio
     selectGroupAndClosePanel,
     openBookmarkAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
+    openTabAndClosePanel,
     restoreClosedTabAndClosePanel,
     addTabAndRecord,
     moveTabToPaneAndRecord,
