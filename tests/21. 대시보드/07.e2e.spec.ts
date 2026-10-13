@@ -15,25 +15,23 @@ test("7. 비어 있는 컬럼도 카드 하나가 들어갈 만큼의 공간을 
   await source.dispatchEvent("dragstart", { dataTransfer });
   await target.dispatchEvent("dragover", { dataTransfer });
   await expect(target).toHaveClass(/is-drop-target/);
-  const brighter = await area.evaluate((element) => {
-    const style = getComputedStyle(element);
+  await expect(area).toHaveCSS("border-radius", "12px");
+  await expect.poll(() => area.evaluate((element) => {
     const context = document.createElement("canvas").getContext("2d")!;
-    const channels = (color: string) => {
-      context.fillStyle = color;
-      context.fillRect(0, 0, 1, 1);
-      return Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3);
-    };
-    const original = channels(style.getPropertyValue("--color-raised").trim());
-    return channels(style.backgroundColor).every((value, index) =>
-      value > original[index] && Math.abs(value - (255 * 0.12 + original[index] * 0.88)) <= 1,
-    );
-  });
-  expect(brighter).toBe(true);
+    context.fillStyle = getComputedStyle(element).backgroundColor;
+    context.fillRect(0, 0, 1, 1);
+    const [red, green, blue, alpha] = context.getImageData(0, 0, 1, 1).data;
+    return Math.min(red, green, blue) > 170 && Math.abs(alpha / 255 - 0.14) < 0.01;
+  })).toBe(true);
+  await expect(area).not.toHaveCSS("box-shadow", "none");
   await expect(area).toHaveCSS("border-top-width", "0px");
   await target.dispatchEvent("dragleave", { dataTransfer });
   await expect(target).not.toHaveClass(/is-drop-target/);
   await expect(area).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await expect(area).toHaveCSS("box-shadow", "none");
   await source.dispatchEvent("dragend", { dataTransfer });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(area).toHaveCSS("transition-duration", "0s");
 
   await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "done"));
   await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(0);
