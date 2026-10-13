@@ -50,9 +50,6 @@ const en = {
   emptyClosed: "Empty Closed",
   restore: "Restore",
   deleteClosedTab: "Delete closed tab",
-  deleteClosedTabTitle: "Delete closed tab",
-  deleteClosedTabMessage:
-    "This closed tab will be permanently deleted and cannot be restored. Do you want to delete it?",
   searchTitle: "Search",
   searchEverything: "Search everything",
   enterSearchTerm: "Enter a search term",
@@ -142,8 +139,6 @@ const ko: Messages = {
   emptyClosed: "닫은 탭이 없습니다",
   restore: "복원",
   deleteClosedTab: "닫은 탭 삭제",
-  deleteClosedTabTitle: "닫은 탭 삭제",
-  deleteClosedTabMessage: "닫은 탭은 영구적으로 삭제되며 복원할 수 없습니다. 삭제하시겠습니까?",
   searchTitle: "검색",
   searchEverything: "전체 검색",
   enterSearchTerm: "검색어를 입력하세요",

@@ -3,7 +3,6 @@ export {
   closeActiveTab,
   closeActiveTabWithContent,
   closedContents,
-  closedDeletePopup,
   restoreFirstClosedTab,
 } from "./closed";
 export { createPinnedAndBookmarkedTabs } from "./create-pinned-and-bookmarked-tabs";

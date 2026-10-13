@@ -480,13 +480,13 @@
 
 8.  닫은 탭 내용은 접지 않은 전체 내용으로 항상 표시하며 `더보기`·`간소화` 버튼을 표시하지 않는다.
 
-9.  닫은 탭 항목의 삭제 버튼을 누르면 `Delete closed tab` 제목과 `This closed tab will be permanently deleted and cannot be restored. Do you want to delete it?` 문구의 앱 내부 확인 팝업을 표시하고, Delete를 선택한 경우에만 영구 삭제한다.
+9.  닫은 탭 항목의 삭제 버튼을 누르면 확인 팝업 없이 즉시 영구 삭제하며 브라우저 내장 확인창도 표시하지 않는다.
 
 10. 남은 닫은 탭 항목이 없으면 `Empty Closed`를 표시한다.
 
 11. 그룹 이름, 탭 제목과 내용을 대소문자 구분 없이 부분 검색하며 검색창의 placeholder는 `Search closed`다. 검색 결과가 없으면 `No search results`를 표시한다.
 
-12. 닫은 탭 삭제 팝업은 Cancel에 기본 포커스를 두며, Cancel, 닫기, Escape 또는 바깥 영역 클릭으로 취소하면 항목을 유지하고 Closed 패널은 열린 상태로 둔다.
+12. 닫은 탭을 삭제해도 Closed 패널은 열린 상태로 유지하고 다른 닫은 탭 항목은 그대로 둔다.
 
 13. 닫은 시각은 그룹명 길이와 관계없이 항목 우측의 고정 폭 12ch·높이 PC 32px·모바일 38px 영역에 표시하고, 긴 그룹명은 말줄임 처리해 시각 영역과 겹치지 않는다. PC와 모바일에 동일하게 적용한다.
 

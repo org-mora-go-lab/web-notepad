@@ -4,8 +4,6 @@ import { confirmTabDelete } from "./delete-tab-popup";
 
 export const closedContents = (page: Page) =>
   page.locator(".closed-item .closed-item-content");
-export const closedDeletePopup = (page: Page) =>
-  page.getByRole("alertdialog", { name: "Delete closed tab" });
 
 export async function closeActiveTab(page: Page) {
   await page.locator(".tab-item.is-active .tab-close").click();

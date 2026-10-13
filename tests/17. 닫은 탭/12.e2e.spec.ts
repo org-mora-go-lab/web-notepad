@@ -1,31 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  closeActiveTabWithContent,
-  closedContents,
-  closedDeletePopup,
-  openClosedPanel,
-} from "../__util__";
+import { closeActiveTabWithContent, closedContents, openClosedPanel } from "../__util__";
 
-test("12. 닫은 탭 삭제 팝업은 Cancel에 포커스를 두고 모든 취소 경로에서 항목과 패널을 유지한다", async ({ page }) => {
+test("12. 닫은 탭을 삭제해도 Closed 패널은 열린 상태로 유지하고 다른 항목은 그대로 둔다", async ({ page }) => {
   await page.goto("/");
   await closeActiveTabWithContent(page, "keep this note");
+  await closeActiveTabWithContent(page, "delete this note");
   await openClosedPanel(page);
-  const deleteButton = page.locator(".closed-item .remove-closed");
-  const popup = closedDeletePopup(page);
-  const cancelPaths = [
-    () => popup.getByRole("button", { name: "Cancel", exact: true }).click(),
-    () => popup.getByRole("button", { name: "삭제 확인 닫기" }).click(),
-    () => page.keyboard.press("Escape"),
-    () => page.mouse.click(4, 4),
-  ];
+  await expect(closedContents(page)).toHaveText(["delete this note", "keep this note"]);
 
-  for (const cancel of cancelPaths) {
-    await deleteButton.click();
-    await expect(popup.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
-    await cancel();
-    await expect(popup).toHaveCount(0);
-    await expect(closedContents(page)).toHaveText("keep this note");
-    await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "false");
-  }
+  await page.locator(".closed-item").first().locator(".remove-closed").click();
+  await expect(closedContents(page)).toHaveText("keep this note");
+  await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "false");
 });
