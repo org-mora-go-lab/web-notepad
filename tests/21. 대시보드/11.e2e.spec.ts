@@ -17,7 +17,7 @@ test("11. All Group의 대시보드는 모든 그룹의 탭을 모아 보여주�
   await workCard.dragTo(dashboardColumn(page, "done"));
   await expect(dashboardColumn(page, "done")).toContainText("Work only task");
   const stored = await readStoredState(page);
-  const work = stored.groups.find((group) => group.id === "work")!;
-  expect(work.tabs[0].tabColor).toBe("purple");
+  const closed = stored.closedTabs?.find((entry) => entry.groupId === "work");
+  expect(closed?.tab.tabColor).toBe("purple");
   expect(stored.groups.find((group) => group.id === "ungrouped")!.tabs[0].tabColor).toBe("gray");
 });

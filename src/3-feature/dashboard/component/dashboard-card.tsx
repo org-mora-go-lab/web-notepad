@@ -7,6 +7,8 @@ import { useI18n } from "@/src/5-shared/hook";
 
 type Props = {
   tab: NoteTab;
+  // Drag identity; defaults to the tab id (closed entries pass their entry id).
+  id?: string;
   groupName?: string;
   dragging: boolean;
   onOpen: (tabId: string) => void;
@@ -21,7 +23,7 @@ const getPreview = (tab: NoteTab) => {
   return titleIndex < 0 ? "" : lines.slice(titleIndex + 1).join("\n").trim();
 };
 
-export function DashboardCard({ tab, groupName, dragging, onOpen, onDragStart, onDragEnd }: Props) {
+export function DashboardCard({ id, tab, groupName, dragging, onOpen, onDragStart, onDragEnd }: Props) {
   const { t } = useI18n();
   const preview = getPreview(tab);
 
@@ -30,7 +32,7 @@ export function DashboardCard({ tab, groupName, dragging, onOpen, onDragStart, o
       className={`dashboard-card ${dragging ? "is-dragging" : ""}`}
       data-tab-color={tab.tabColor}
       draggable
-      onDragStart={(event) => onDragStart(tab.id, event)}
+      onDragStart={(event) => onDragStart(id ?? tab.id, event)}
       onDragEnd={onDragEnd}
     >
       <button className="dashboard-card-open" type="button" onClick={() => onOpen(tab.id)}>

@@ -38,6 +38,7 @@ export function Home() {
     activeGroupTabs,
     tabColorCycle,
     setTabStatus,
+    moveClosedTabToStatus,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
@@ -133,6 +134,7 @@ export function Home() {
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
+          onChangeClosedTabStatus={moveClosedTabToStatus}
           onCreateGroup={createGroup}
           onSelectGroup={selectGroupAndClosePanel}
           onRemoveGroup={removeGroup}

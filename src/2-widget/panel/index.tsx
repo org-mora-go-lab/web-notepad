@@ -27,6 +27,7 @@ type Props = {
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
+  onChangeClosedTabStatus: ComponentProps<typeof Dashboard>["onChangeClosedStatus"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
@@ -58,6 +59,7 @@ export function Panel({
   onRemoveBookmark,
   onOpenDashboardTab,
   onChangeTabStatus,
+  onChangeClosedTabStatus,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
@@ -82,6 +84,7 @@ export function Panel({
       <Dashboard
         groupName={activeGroupName}
         tabs={activeGroupTabs}
+        closedTabs={closedTabs.filter((entry) => activeGroupId === ALL_GROUP_ID || entry.groupId === activeGroupId)}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
@@ -91,6 +94,8 @@ export function Panel({
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
+        onRestoreClosed={onRestoreClosedTab}
+        onChangeClosedStatus={onChangeClosedTabStatus}
       />
       <Group
         groups={groups}

@@ -120,5 +120,6 @@ export type NotepadState = {
   removeGroup: (groupId: string) => void;
   selectGroup: (groupId: string) => void;
   restoreClosedTab: (entryId: string) => void;
+  moveClosedTabToStatus: (entryId: string, status: TabStatus) => void;
   removeClosedTab: (entryId: string) => void;
 };

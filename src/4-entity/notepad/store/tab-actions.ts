@@ -154,8 +154,8 @@ export const createTabActions: StateCreator<
         patchTabAndBookmark(current, tabId, { pinned: !tab.pinned }),
       );
     }),
-  // Moving a tab to a dashboard column gives it that column's tab color.
-  setTabStatus: (tabId, status) =>
+  // Moving a tab to a dashboard column gives it that column's tab color; the Closed column closes it without a prompt.
+  setTabStatus: (tabId, status) => {
     set((state) => {
       const group = state.groups.find((item) => item.tabs.some((tab) => tab.id === tabId));
       if (!group) return state;
@@ -163,13 +163,26 @@ export const createTabActions: StateCreator<
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(current, tabId, { tabColor }, { tabColor, updatedAt: Date.now() }),
       );
-    }),
-  closeTab: (tabId) => {
+    });
+    const state = get();
+    const tab = getTabGroup(state, tabId)?.tabs.find((item) => item.id === tabId);
+    if (status === "done" && tab) closeTabEntry(set, get, tabId, true);
+  },
+  closeTab: (tabId) => closeTabEntry(set, get, tabId, false),
+});
+
+// forceKeep keeps the tab in Closed regardless of its length or bookmark (dashboard Closed column).
+const closeTabEntry = (
+  set: (partial: Partial<NotepadState>) => void,
+  get: () => NotepadState,
+  tabId: string,
+  forceKeep: boolean,
+) => {
     const state = get();
     const group = getTabGroup(state, tabId);
     const tab = group?.tabs.find((item) => item.id === tabId);
     if (!group || !tab || tab.pinned) return;
-    if (isSubstantialContent(tab.content) && !tab.bookmarked) {
+    if (forceKeep || (isSubstantialContent(tab.content) && !tab.bookmarked)) {
       set({
         closedTabs: [
           { id: `closed-${crypto.randomUUID()}`, groupId: group.id, tab, closedAt: Date.now() },
@@ -211,5 +224,4 @@ export const createTabActions: StateCreator<
         return normalizeLayout(next);
       }),
     });
-  },
-});
+};

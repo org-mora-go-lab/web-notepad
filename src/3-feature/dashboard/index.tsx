@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
+import type { ClosedTabEntry, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 import { getStatusColor, getTabStatus, TAB_STATUSES } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel } from "@/src/5-shared/ui";
@@ -12,6 +12,8 @@ import { DashboardCard } from "./component";
 type Props = {
   groupName: string;
   tabs: NoteTab[];
+  // Closed tabs of the shown group(s); they fill the Closed column.
+  closedTabs: ClosedTabEntry[];
   groups: GroupEntry[];
   // All Group: cards show the group they belong to.
   showGroupNames: boolean;
@@ -22,6 +24,8 @@ type Props = {
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
+  onRestoreClosed: (entryId: string) => void;
+  onChangeClosedStatus: (entryId: string, status: TabStatus) => void;
 };
 
 // Kanban board of the current group's tabs. A tab's column follows its tab color:
@@ -29,6 +33,7 @@ type Props = {
 export function Dashboard({
   groupName,
   tabs,
+  closedTabs,
   groups,
   showGroupNames,
   tabColorCycle,
@@ -38,6 +43,8 @@ export function Dashboard({
   onClose,
   onOpenTab,
   onChangeStatus,
+  onRestoreClosed,
+  onChangeClosedStatus,
 }: Props) {
   const { t } = useI18n();
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
@@ -68,6 +75,7 @@ export function Dashboard({
         <div className="dashboard-board">
           {TAB_STATUSES.map((status) => {
             const columnTabs = tabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status);
+            const columnClosed = status === "done" ? closedTabs : [];
             return (
               <section
                 key={status}
@@ -86,15 +94,35 @@ export function Dashboard({
                 }}
                 onDrop={(event) => {
                   event.preventDefault();
-                  if (draggingTabId) onChangeStatus(draggingTabId, status);
+                  if (draggingTabId?.startsWith("closed-")) {
+                    if (status !== "done") onChangeClosedStatus(draggingTabId, status);
+                  } else if (draggingTabId) {
+                    onChangeStatus(draggingTabId, status);
+                  }
                   endDrag();
                 }}
               >
                 <h3>
                   {statusLabels[status]}
-                  <span className="dashboard-count">{columnTabs.length}</span>
+                  <span className="dashboard-count">{columnTabs.length + columnClosed.length}</span>
                 </h3>
                 <div className="dashboard-cards">
+                  {columnClosed.map((entry) => (
+                    <DashboardCard
+                      key={entry.id}
+                      id={entry.id}
+                      tab={entry.tab}
+                      groupName={showGroupNames ? groups.find((group) => group.id === entry.groupId)?.name ?? "Ungrouped" : undefined}
+                      dragging={draggingTabId === entry.id}
+                      onOpen={() => onRestoreClosed(entry.id)}
+                      onDragStart={(entryId, event) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", entryId);
+                        setDraggingTabId(entryId);
+                      }}
+                      onDragEnd={endDrag}
+                    />
+                  ))}
                   {columnTabs.map((tab) => (
                     <DashboardCard
                       key={tab.id}
