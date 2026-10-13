@@ -23,6 +23,7 @@ const HISTORY_STATE_KEY = "__webNotepadView";
 const PANEL_IDS: ViewPanel[] = [
   "closed",
   "bookmarks",
+  "dashboard",
   "groups",
   "shortcuts",
   "global-search",

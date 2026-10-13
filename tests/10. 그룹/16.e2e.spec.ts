@@ -1,19 +1,19 @@
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../__constant__";
-import { createGroup, groupsCommand } from "../__util__";
+import { createGroup, groupsCommand, groupStatusName } from "../__util__";
 
-test("16. 현재 그룹 이름을 하단 왼쪽 버튼에 아이콘 없이 표시하고 PC는 최대 351px 한 줄 말줄임으로 표시한다", async ({ page }) => {
+test("16. 현재 그룹 이름을 PC와 모바일 모두 우측 그룹 선택 버튼에 아이콘과 함께 표시하고 PC는 최대 351px 한 줄 말줄임으로 표시한다", async ({ page }) => {
   await page.goto("/");
   await groupsCommand(page).click();
   const name = "Very long group name for desktop and mobile line clamp check";
   await createGroup(page, name);
-  const groupName = page.locator(".group-status-name");
+  const groupName = groupStatusName(page);
   for (const viewport of [DESKTOP_VIEWPORT, MOBILE_VIEWPORT]) {
     await page.setViewportSize(viewport);
     await expect(groupName).toBeVisible();
     await expect(groupName).toHaveText(name);
-    await expect(groupsCommand(page).locator("svg")).toHaveCount(0);
+    await expect(groupsCommand(page).locator("svg")).toHaveCount(1);
   }
 
   await page.setViewportSize(DESKTOP_VIEWPORT);

@@ -1,11 +1,10 @@
 "use client";
 
 import { Ghost } from "lucide-react";
-import { useState } from "react";
 
 import type { ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
+import { SearchField, SidePanel } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
 
 import { ClosedItem } from "./component";
@@ -35,7 +34,6 @@ export function Closed({
   onRestore,
   onRemove,
 }: Props) {
-  const [deletingEntryId, setDeletingEntryId] = useState<string | null>(null);
   const { t } = useI18n();
   // Tabs whose group was deleted are listed (and restored) under Ungrouped.
   const entries = closedTabs.map((entry) => ({
@@ -81,24 +79,11 @@ export function Closed({
               groupName={groupName}
               searchQuery={searchQuery}
               onRestore={onRestore}
-              onRemove={setDeletingEntryId}
+              onRemove={onRemove}
             />
           ))
         )}
       </div>
-    {deletingEntryId && (
-      <ConfirmPopup
-        title={t.deleteClosedTabTitle}
-        message={t.deleteClosedTabMessage}
-        closeLabel="삭제 확인 닫기"
-        closeTitle={t.close}
-        onCancel={() => setDeletingEntryId(null)}
-        onConfirm={() => {
-          onRemove(deletingEntryId);
-          setDeletingEntryId(null);
-        }}
-      />
-    )}
     </SidePanel>
   );
 }

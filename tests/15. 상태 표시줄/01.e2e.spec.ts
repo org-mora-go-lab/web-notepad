@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../__constant__";
 import { bookmarksCommand } from "../__util__";
 
-test("1. PC와 모바일에서 BOOKMARK 아이콘과 라벨을 표시한다", async ({ page }) => {
+test("1. PC는 BOOKMARK 아이콘과 라벨을, 모바일은 아이콘만 표시한다", async ({ page }) => {
   await page.goto("/");
   const label = bookmarksCommand(page).locator(".status-label");
   const icon = bookmarksCommand(page).locator("svg");
@@ -14,6 +14,6 @@ test("1. PC와 모바일에서 BOOKMARK 아이콘과 라벨을 표시한다", as
   await expect(icon).toBeInViewport();
 
   await page.setViewportSize(MOBILE_VIEWPORT);
-  await expect(label).toBeVisible();
+  await expect(label).toBeHidden();
   await expect(icon).toBeInViewport();
 });

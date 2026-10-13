@@ -10,7 +10,11 @@ import {
   normalizeLayout,
   setPaneActiveTabId,
 } from "../util";
-import { getActiveGroup, updateGroup } from "./workspace";
+import {
+  getActiveGroup,
+  getEditableGroup,
+  updateGroup,
+} from "./workspace";
 
 type PaneActions = Pick<
   NotepadState,
@@ -28,7 +32,7 @@ export const createPaneActions: StateCreator<
 > = (set) => ({
   moveTabToPane: (tabId, pane) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = getEditableGroup(state);
       if (!group || !group.tabs.some((tab) => tab.id === tabId)) return state;
       const fromPane = getPaneOfTab(group, tabId);
       if (fromPane === pane) return state;

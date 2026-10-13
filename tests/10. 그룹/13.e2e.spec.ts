@@ -13,5 +13,6 @@ test("13. 그룹은 한글 우선 한국어 문자순으로 정렬하고 Ungroup
     "Alpha",
     "Zulu",
     "Ungrouped",
+    "All Group",
   ]);
 });

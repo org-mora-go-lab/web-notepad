@@ -23,9 +23,9 @@ test("3. 그룹 검색 결과에 Ungrouped가 포함되면 맨 아래에 둔다"
   const search = page.getByRole("searchbox", { name: "그룹 검색" });
 
   await search.fill("r");
-  await expect(names).toHaveText(["Aardvark", "Burger", "Ungrouped"]);
+  await expect(names).toHaveText(["Aardvark", "Burger", "Ungrouped", "All Group"]);
   await search.fill("U");
-  await expect(names).toHaveText(["Burger", "Zulu", "Ungrouped"]);
+  await expect(names).toHaveText(["Burger", "Zulu", "Ungrouped", "All Group"]);
   await search.fill("a");
-  await expect(names).toHaveText(["Aardvark"]);
+  await expect(names).toHaveText(["Aardvark", "All Group"]);
 });

@@ -94,21 +94,15 @@
     display: none;
   }
 
-  // The first right-side command pushes the commands to the right on PC.
-  .bookmark-command {
+  .group-select-command {
     margin-left: auto;
   }
 
-  .group-status-command {
-    flex: 0 1 auto;
-    justify-content: flex-start;
-  }
-
-  .status-command > span.group-status-name {
+  .status-command > span.group-select-name {
     font-size: v.font(16px);
   }
 
-  .group-status-name {
+  .group-select-name {
     min-width: 0;
     max-width: 351px;
     overflow: hidden;
@@ -117,62 +111,44 @@
   }
 
   @media (max-width: 640px) {
-    min-height: 64px;
-    padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+    min-height: 76.8px;
+    padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
     font-size: v.font(12px);
 
-    .status-command {
-      width: 100%;
-      height: 51px;
-      flex-direction: column;
-      gap: 4px;
+    .status-meta {
+      gap: 12px;
+    }
 
-      > span:not(.status-separator) {
-        line-height: 16px;
+    // Mobile: icon-only BOOKMARK on the left, group icon + name on the right.
+    .status-command {
+      height: 61.2px;
+      gap: 8px;
+
+      svg {
+        width: 28.8px;
+        height: 28.8px;
+        flex-basis: 28.8px;
       }
 
       .status-icon {
-        width: 24px;
-        display: block;
+        height: 28.8px;
+        grid-template-columns: 28.8px;
       }
     }
 
-    .status-meta {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) repeat(2, 72px);
-      gap: 0;
+    .bookmark-command .status-label,
+    .dashboard-command .status-label {
+      display: none;
     }
 
-    .group-status-command {
-      align-items: flex-start;
-      justify-content: center;
-      padding: 0 8px 0 16px;
+    .group-select-command {
+      flex: 0 1 auto;
+      max-width: calc(100% - 52px);
     }
 
-    .bookmark-command {
-      margin-left: 0;
-    }
-
-    // Long names wrap to two lines before the ellipsis.
-    .status-command > span.group-status-name {
+    .status-command > span.group-select-name {
+      max-width: none;
       font-size: v.font(17px);
-      line-height: v.font(20px);
-    }
-
-    .group-status-name {
-      display: -webkit-box;
-      max-width: 100%;
-      white-space: normal;
-      overflow-wrap: anywhere;
-      text-align: left;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-
-      // A single line sits 3px above center; two lines stay centered.
-      &:not(.is-multiline) {
-        position: relative;
-        top: -3px;
-      }
     }
   }
 }

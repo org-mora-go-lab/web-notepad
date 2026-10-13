@@ -14,8 +14,7 @@ test("4. 탭 색상 아이콘은 설정한 순서로 순환하고 새 탭은 1�
   await tabColorRadio(page, 3, "Indigo").check();
   await closeSettingsPanel(page);
 
-  // A tab whose color is outside the cycle moves to the first color.
-  await cycleActiveTabColor(page);
+  // Existing tabs keep their slot: the gray tab becomes the new first color.
   await expect(tab).toHaveAttribute("data-tab-color", "pink");
   await expect
     .poll(() => tab.locator(".dirty-dot").evaluate(

@@ -47,6 +47,7 @@ export function useHome() {
     cycleTabColor,
     togglePin,
     toggleBookmark,
+    setTabStatus,
     removeBookmark,
     createGroup,
     renameGroup,
@@ -57,6 +58,7 @@ export function useHome() {
 
   const activeGroup = getActiveGroup(store);
   const bookmarks = activeGroup?.bookmarks ?? [];
+  const activeGroupTabs = activeGroup?.tabs ?? [];
   const activeGroupName = activeGroup?.name ?? "Ungrouped";
   const hasBookmarkUpdateToday = bookmarks.some((bookmark) => isToday(bookmark.updatedAt));
   const { panelPinned, togglePanelPin } = usePanelPin();
@@ -194,6 +196,9 @@ export function useHome() {
     panelPinned,
     togglePanelPin,
     columns,
+    activeGroupTabs,
+    tabColorCycle: settings.tabColorCycle,
+    setTabStatus,
     removeBookmark,
     createGroup,
     renameGroup,

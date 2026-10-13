@@ -8,4 +8,5 @@ export type {
   PaneColumn,
   PaneId,
   TabColor,
+  TabStatus,
 } from "./notepad";

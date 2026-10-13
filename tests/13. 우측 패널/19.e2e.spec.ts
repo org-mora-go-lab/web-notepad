@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../__constant__";
-import { createGroups, groupsCommand, openPanel } from "../__util__";
+import { createGroups, groupsCommand, groupStatusName, openPanel } from "../__util__";
 import { closePanelWithX, panelPinButton } from "./__util__";
 
 test("19. 고정한 패널은 X 버튼을 누르기 전까지 Escape·명령 재선택·항목 선택·뒤로가기로 닫지 않는다", async ({ page }) => {
@@ -20,11 +20,11 @@ test("19. 고정한 패널은 X 버튼을 누르기 전까지 Escape·명령 재
   await expect(panel).toHaveAttribute("aria-hidden", "false");
 
   await panel.locator(".group-item").getByRole("button", { name: "Ungrouped", exact: true }).click();
-  await expect(page.locator(".group-status-name")).toHaveText("Ungrouped");
+  await expect(groupStatusName(page)).toHaveText("Ungrouped");
   await expect(panel).toHaveAttribute("aria-hidden", "false");
 
   await page.goBack();
-  await expect(page.locator(".group-status-name")).toHaveText("Alpha");
+  await expect(groupStatusName(page)).toHaveText("Alpha");
   await expect(panel).toHaveAttribute("aria-hidden", "false");
 
   await closePanelWithX(page, "groups-panel");

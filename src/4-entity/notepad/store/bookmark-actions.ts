@@ -6,6 +6,7 @@ import {
   activateTab,
   allocateTab,
   getActiveGroup,
+  getTabGroup,
   updateGroup,
 } from "./workspace";
 
@@ -22,9 +23,9 @@ export const createBookmarkActions: StateCreator<
 > = (set, get) => ({
   toggleBookmark: (tabId) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = getTabGroup(state, tabId);
       const tab = group?.tabs.find((item) => item.id === tabId);
-      if (!tab) return state;
+      if (!group || !tab) return state;
 
       const existing = group.bookmarks.find(
         (item) => item.sourceTabId === tabId,

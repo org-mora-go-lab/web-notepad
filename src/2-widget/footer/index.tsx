@@ -1,54 +1,36 @@
 "use client";
 
-import { Bookmark, Layers } from "lucide-react";
-import { useRef } from "react";
+import { Bookmark, Layers, LayoutDashboard } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
-
-import { useIsMultiline } from "./hook";
 
 type Props = {
   // A linked bookmark was created or synced today.
   hasBookmarkUpdateToday: boolean;
   bookmarksOpen: boolean;
+  dashboardOpen: boolean;
   activeGroupName: string;
   groupsOpen: boolean;
   onToggleBookmarks: () => void;
+  onToggleDashboard: () => void;
   onToggleGroups: () => void;
 };
 
 export function Footer({
   hasBookmarkUpdateToday,
   bookmarksOpen,
+  dashboardOpen,
   activeGroupName,
   groupsOpen,
   onToggleBookmarks,
+  onToggleDashboard,
   onToggleGroups,
 }: Props) {
   const { t } = useI18n();
-  const groupNameRef = useRef<HTMLSpanElement>(null);
-  const groupNameMultiline = useIsMultiline(groupNameRef, activeGroupName);
   return (
     <footer className="footer">
       <div className="status-meta">
         <div className="status-controls">
-          <button
-            className={`status-command group-status-command ${groupsOpen ? "is-active" : ""}`}
-            type="button"
-            onClick={onToggleGroups}
-            aria-expanded={groupsOpen}
-            aria-controls="groups-panel"
-            aria-label={`그룹 선택: ${activeGroupName}`}
-            title={activeGroupName}
-          >
-            <span
-              ref={groupNameRef}
-              className={`group-status-name ${groupNameMultiline ? "is-multiline" : ""}`}
-              title={activeGroupName}
-            >
-              {activeGroupName}
-            </span>
-          </button>
           <div className="status-scroll-area">
             <div className="status-actions">
               <button
@@ -69,6 +51,18 @@ export function Footer({
                   |
                 </span>
               </button>
+              <button
+                className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}
+                type="button"
+                onClick={onToggleDashboard}
+                aria-expanded={dashboardOpen}
+                aria-controls="dashboard-panel"
+              >
+                <span className="status-icon">
+                  <LayoutDashboard size={16} strokeWidth={1.8} />
+                </span>
+                <span className="status-label">{t.dashboard}</span>
+              </button>
             </div>
           </div>
           <button
@@ -77,11 +71,11 @@ export function Footer({
             onClick={onToggleGroups}
             aria-expanded={groupsOpen}
             aria-controls="groups-panel"
-            aria-label="그룹 선택"
-            title={t.selectGroup}
+            aria-label={`그룹 선택: ${activeGroupName}`}
+            title={activeGroupName}
           >
             <Layers size={16} strokeWidth={1.8} />
-            <span className="status-label">{t.group}</span>
+            <span className="status-label group-select-name" title={activeGroupName}>{activeGroupName}</span>
           </button>
         </div>
       </div>

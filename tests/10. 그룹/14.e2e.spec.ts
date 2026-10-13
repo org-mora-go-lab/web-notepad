@@ -18,6 +18,7 @@ test("14. 그룹 생성·이름 수정 직후와 새로고침 시에도 같은 �
     "Beta",
     "Zulu",
     "Ungrouped",
+    "All Group",
   ]);
 
   await chooseGroupAction(page, "Zulu", "수정");
@@ -31,6 +32,7 @@ test("14. 그룹 생성·이름 수정 직후와 새로고침 시에도 같은 �
     "Alpha",
     "Beta",
     "Ungrouped",
+    "All Group",
   ];
   await expect(names).toHaveText(finalOrder);
 

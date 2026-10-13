@@ -30,10 +30,14 @@ export function Home() {
     selectGroupAndClosePanel,
     openBookmarkAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
+    openTabAndClosePanel,
     restoreClosedTabAndClosePanel,
     activeTab,
     split,
     bookmarks,
+    activeGroupTabs,
+    tabColorCycle,
+    setTabStatus,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
@@ -81,60 +85,74 @@ export function Home() {
 
   return (
     <I18nContext value={language}>
-    <main
-      className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
-      style={{ "--font-scale": fontScale } as CSSProperties}
-      data-panel-slide={panelSlide ? "on" : "off"}
-    >
-      <section className="workspace">
-        <div className={`pane-group ${split ? "is-split" : ""}`}>
-          {columns.map((column) => (
-            <PaneColumn key={column.column} {...column} panes={column.panes.map(withMenu)} />
-          ))}
-        </div>
+      <main
+        className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
+        style={{ "--font-scale": fontScale } as CSSProperties}
+        data-panel-slide={panelSlide ? "on" : "off"}
+      >
+        <section className="workspace">
+          <div className={`pane-group ${split ? "is-split" : ""}`}>
+            {columns.map((column) => (
+              <PaneColumn
+                key={column.column}
+                {...column}
+                panes={column.panes.map(withMenu)}
+              />
+            ))}
+          </div>
 
-        <Footer
-          hasBookmarkUpdateToday={hasBookmarkUpdateToday}
-          bookmarksOpen={openPanel === "bookmarks"}
+          <Footer
+            hasBookmarkUpdateToday={hasBookmarkUpdateToday}
+            bookmarksOpen={openPanel === "bookmarks"}
+            dashboardOpen={openPanel === "dashboard"}
+            activeGroupName={activeGroupName}
+            groupsOpen={openPanel === "groups"}
+            onToggleBookmarks={() => toggleSidePanel("bookmarks")}
+            onToggleDashboard={() => toggleSidePanel("dashboard")}
+            onToggleGroups={() => toggleSidePanel("groups")}
+          />
+        </section>
+
+        <Panel
+          openPanel={openPanel}
+          pinned={panelPinned}
+          onTogglePin={togglePanelPin}
+          bookmarks={bookmarks}
           activeGroupName={activeGroupName}
-          groupsOpen={openPanel === "groups"}
-          onToggleBookmarks={() => toggleSidePanel("bookmarks")}
-          onToggleGroups={() => toggleSidePanel("groups")}
+          activeGroupTabs={activeGroupTabs}
+          tabColorCycle={tabColorCycle}
+          groups={groups}
+          activeGroupId={activeGroupId}
+          closedTabs={closedTabs}
+          closedSearchQuery={closedSearchQuery}
+          globalSearchQuery={globalSearchQuery}
+          onClose={closeSidePanels}
+          onClosedSearchQueryChange={setClosedSearchQuery}
+          onGlobalSearchQueryChange={setGlobalSearchQuery}
+          onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
+          onRemoveBookmark={removeBookmark}
+          onOpenDashboardTab={openTabAndClosePanel}
+          onChangeTabStatus={setTabStatus}
+          onCreateGroup={createGroup}
+          onSelectGroup={selectGroupAndClosePanel}
+          onRemoveGroup={removeGroup}
+          onRenameGroup={renameGroup}
+          onToggleGroupPin={toggleGroupPin}
+          onRestoreClosedTab={restoreClosedTabAndClosePanel}
+          onRemoveClosedTab={removeClosedTab}
+          onOpenSearchedBookmark={openBookmarkAndClosePanel}
+          onOpenClosedSearch={(query) => {
+            setClosedSearchQuery(query);
+            toggleSidePanel("closed");
+          }}
         />
-      </section>
-
-      <Panel
-        openPanel={openPanel}
-        pinned={panelPinned}
-        onTogglePin={togglePanelPin}
-        bookmarks={bookmarks}
-        groups={groups}
-        activeGroupId={activeGroupId}
-        closedTabs={closedTabs}
-        closedSearchQuery={closedSearchQuery}
-        globalSearchQuery={globalSearchQuery}
-        onClose={closeSidePanels}
-        onClosedSearchQueryChange={setClosedSearchQuery}
-        onGlobalSearchQueryChange={setGlobalSearchQuery}
-        onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
-        onRemoveBookmark={removeBookmark}
-        onCreateGroup={createGroup}
-        onSelectGroup={selectGroupAndClosePanel}
-        onRemoveGroup={removeGroup}
-        onRenameGroup={renameGroup}
-        onToggleGroupPin={toggleGroupPin}
-        onRestoreClosedTab={restoreClosedTabAndClosePanel}
-        onRemoveClosedTab={removeClosedTab}
-        onOpenSearchedBookmark={openBookmarkAndClosePanel}
-        onOpenClosedSearch={(query) => {
-          setClosedSearchQuery(query);
-          toggleSidePanel("closed");
-        }}
-      />
-      {pendingCloseTabId && (
-        <TabDeletePopup onConfirm={confirmCloseTab} onCancel={cancelCloseTab} />
-      )}
-    </main>
+        {pendingCloseTabId && (
+          <TabDeletePopup
+            onConfirm={confirmCloseTab}
+            onCancel={cancelCloseTab}
+          />
+        )}
+      </main>
     </I18nContext>
   );
 }

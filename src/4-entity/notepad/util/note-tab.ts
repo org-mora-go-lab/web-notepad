@@ -1,5 +1,5 @@
-import { DEFAULT_SETTINGS } from "../constant";
-import type { NoteTab, TabColor } from "../type";
+import { DEFAULT_SETTINGS, TAB_STATUSES } from "../constant";
+import type { NoteTab, TabColor, TabStatus } from "../type";
 
 export const createNoteTab = (number: number, tabColor: TabColor = DEFAULT_SETTINGS.tabColorCycle[0]): NoteTab => ({
   id: `tab-${number}`,
@@ -48,3 +48,10 @@ export const getTitleFromContent = (content: unknown, fallback: string) => {
 
 // Tabs with more than 10 characters ask before closing and are kept in Closed; shorter ones are deleted outright.
 export const isSubstantialContent = (content: string) => Array.from(content).length > 10;
+
+// Todo / WIP / Done follow the position of the tab color in the cycle; colors outside it count as Todo.
+export const getTabStatus = (tab: NoteTab, tabColorCycle: TabColor[]): TabStatus =>
+  TAB_STATUSES[Math.max(0, tabColorCycle.indexOf(tab.tabColor))] ?? "todo";
+
+export const getStatusColor = (status: TabStatus, tabColorCycle: TabColor[]): TabColor =>
+  tabColorCycle[TAB_STATUSES.indexOf(status)];

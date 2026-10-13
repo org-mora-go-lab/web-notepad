@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../__constant__";
 import { groupsCommand, groupSelectCommand } from "../__util__";
 
-test("4. 맨 오른쪽 GROUP 그룹 선택 버튼과 그룹 이름 모두 그룹 패널을 연다", async ({ page }) => {
+test("4. 맨 오른쪽 그룹 선택 버튼은 아이콘과 그룹 이름을 표시하고 그룹 패널을 연다", async ({ page }) => {
   await page.goto("/");
   const groupName = groupsCommand(page);
   const groupIcon = groupSelectCommand(page);
@@ -11,17 +11,16 @@ test("4. 맨 오른쪽 GROUP 그룹 선택 버튼과 그룹 이름 모두 그룹
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await expect(groupIcon.locator("svg")).toHaveCount(1);
-    await expect(groupIcon.locator(".status-label")).toHaveText("GROUP");
-    await expect(groupIcon).toHaveAttribute("aria-label", "그룹 선택");
+    await expect(groupIcon.locator(".status-label")).toHaveText("Ungrouped");
+    await expect(groupIcon).toHaveAttribute("aria-label", "그룹 선택: Ungrouped");
 
     const commands = await page.locator(".status-meta .status-command:visible").all();
     const iconBox = (await groupIcon.boundingBox())!;
     for (const command of commands) {
       expect((await command.boundingBox())!.x).toBeLessThanOrEqual(iconBox.x);
     }
-    expect((await groupName.boundingBox())!.x).toBeLessThan(iconBox.x);
 
-    for (const command of [groupName, groupIcon]) {
+    for (const command of [groupName]) {
       await command.click();
       await expect(groupsPanel).toHaveAttribute("aria-hidden", "false");
       await expect(command).toHaveAttribute("aria-expanded", "true");

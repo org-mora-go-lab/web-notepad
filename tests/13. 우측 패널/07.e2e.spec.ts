@@ -9,17 +9,17 @@ test("7. Escape로 패널 진입 버튼의 포커스를 해제하고 하단·MEN
   for (const { viewport, panelIds } of RIGHT_PANEL_VIEWPORTS) {
     await page.setViewportSize(viewport);
 
+    const menuKeys: Record<string, string[]> = {
+      "closed-panel": ["End", "ArrowUp"],
+      "settings-panel": ["End", "ArrowUp", "ArrowUp", "ArrowUp"],
+      "shortcuts-panel": ["ArrowDown"],
+      "global-search-panel": ["End"],
+    };
     for (const panelId of [...panelIds].reverse()) {
-      const toggle = page.locator(`button[aria-controls="${panelId}"]`).first();
+      const toggle = page.locator(`button[aria-controls="${panelId}"]${panelId in menuKeys ? "" : ":visible"}`).first();
       const panel = page.locator(`#${panelId}`);
       await openPanel(page, panelId);
       await expect(panel).toHaveAttribute("aria-hidden", "false");
-      const menuKeys: Record<string, string[]> = {
-        "closed-panel": ["End", "ArrowUp"],
-        "settings-panel": ["End", "ArrowUp", "ArrowUp", "ArrowUp"],
-        "shortcuts-panel": ["ArrowDown"],
-        "global-search-panel": ["End"],
-      };
       const inMenu = panelId in menuKeys;
       if (inMenu) await expect(page.getByRole("button", { name: "MENU", exact: true })).toBeFocused();
       else await expect(toggle).toBeFocused();

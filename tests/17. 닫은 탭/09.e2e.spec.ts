@@ -1,13 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  closeActiveTabWithContent,
-  closedDeletePopup,
-  openClosedPanel,
-  readStoredState,
-} from "../__util__";
+import { closeActiveTabWithContent, openClosedPanel, readStoredState } from "../__util__";
 
-test("9. 닫은 탭 삭제 시 영구 삭제 확인 팝업을 표시하고 Delete를 선택한 경우에만 삭제한다", async ({ page }) => {
+test("9. 닫은 탭 삭제 버튼은 확인 팝업 없이 즉시 영구 삭제한다", async ({ page }) => {
   await page.goto("/");
   await closeActiveTabWithContent(page, "remove this note");
   await openClosedPanel(page);
@@ -18,17 +13,8 @@ test("9. 닫은 탭 삭제 시 영구 삭제 확인 팝업을 표시하고 Delet
     await dialog.dismiss();
   });
   await page.locator(".closed-item .remove-closed").click();
-  const popup = closedDeletePopup(page);
-  await expect(popup).toBeVisible();
-  await expect(popup).toContainText("Delete closed tab");
-  await expect(popup).toContainText(
-    "This closed tab will be permanently deleted and cannot be restored. Do you want to delete it?",
-  );
-  await expect(page.locator(".closed-item")).toHaveCount(1);
-  expect(nativeDialogOpened).toBe(false);
-
-  await popup.getByRole("button", { name: "Delete", exact: true }).click();
-  await expect(popup).toHaveCount(0);
+  await expect(page.getByRole("alertdialog")).toHaveCount(0);
   await expect(page.locator(".closed-item")).toHaveCount(0);
+  expect(nativeDialogOpened).toBe(false);
   expect((await readStoredState(page)).closedTabs).toEqual([]);
 });

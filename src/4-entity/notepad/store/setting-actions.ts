@@ -4,6 +4,7 @@ import { LANGUAGES } from "@/src/5-shared/constant";
 
 import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS } from "../constant";
 import type { NotepadState } from "../type";
+import { withTabColorCycle } from "./workspace";
 
 type SettingActions = Pick<
   NotepadState,
@@ -31,7 +32,7 @@ export const createSettingActions: StateCreator<
       if (usedIndex >= 0 && usedIndex < index) return state;
       if (usedIndex >= 0) cycle[usedIndex] = cycle[index];
       cycle[index] = color;
-      return { settings: { ...state.settings, tabColorCycle: cycle } };
+      return withTabColorCycle(state, cycle);
     }),
   setLanguage: (language) =>
     set((state) =>
@@ -42,9 +43,7 @@ export const createSettingActions: StateCreator<
   setPanelSlide: (panelSlide) =>
     set((state) => ({ settings: { ...state.settings, panelSlide: Boolean(panelSlide) } })),
   resetTabColorCycle: () =>
-    set((state) => ({
-      settings: { ...state.settings, tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle] },
-    })),
+    set((state) => withTabColorCycle(state, [...DEFAULT_SETTINGS.tabColorCycle])),
   // Picks distinct random colors for every slot, never repeating the current order.
   shuffleTabColorCycle: () =>
     set((state) => {
@@ -54,10 +53,11 @@ export const createSettingActions: StateCreator<
         const pool = [...TAB_COLORS];
         cycle = current.map(() => pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
       }
-      return { settings: { ...state.settings, tabColorCycle: cycle } };
+      return withTabColorCycle(state, cycle);
     }),
   resetSettings: () =>
-    set({
+    set((state) => ({
+      ...withTabColorCycle(state, [...DEFAULT_SETTINGS.tabColorCycle]),
       settings: { ...DEFAULT_SETTINGS, tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle] },
-    }),
+    })),
 });

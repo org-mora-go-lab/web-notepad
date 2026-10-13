@@ -2,12 +2,12 @@ import { expect, test } from "@playwright/test";
 
 import { addTabButton, deleteTabPopup } from "../__util__";
 
-test("3. 내용이 11자 이상인 탭은 확인 팝업에서 Delete를 선택해야 삭제한다", async ({ page }) => {
+test("3. 내용이 11자 이상인 탭은 확인 팝업에서 Close를 선택해야 닫한다", async ({ page }) => {
   await page.goto("/");
   const tabs = page.locator(".tab-item");
   const editor = page.locator("textarea");
   const popup = deleteTabPopup(page);
-  const deleteButton = popup.getByRole("button", { name: "Delete", exact: true });
+  const deleteButton = popup.getByRole("button", { name: "Close", exact: true });
 
   for (const action of ["close", "middle"]) {
     await editor.fill("12345678901");

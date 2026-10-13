@@ -1,7 +1,7 @@
 import { LANGUAGES } from "@/src/5-shared/constant";
 import type { Language } from "@/src/5-shared/type";
 
-import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS, UNGROUPED_GROUP_ID } from "../constant";
+import { ALL_GROUP_ID, DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS, UNGROUPED_GROUP_ID } from "../constant";
 import type {
   BookmarkEntry,
   ClosedTabEntry,
@@ -234,7 +234,8 @@ export function normalizePersistedState(
   const requestedActiveGroupId = persisted.activeGroupId;
   const activeGroupId =
     typeof requestedActiveGroupId === "string" &&
-    groups.some((group) => group.id === requestedActiveGroupId)
+    (requestedActiveGroupId === ALL_GROUP_ID ||
+      groups.some((group) => group.id === requestedActiveGroupId))
       ? requestedActiveGroupId
       : UNGROUPED_GROUP_ID;
   delete persisted.tabs;

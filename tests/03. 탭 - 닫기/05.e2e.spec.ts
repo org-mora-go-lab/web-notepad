@@ -7,7 +7,7 @@ test("5. 탭 삭제 팝업은 Cancel에 기본 포커스를 두고 포커스를 
   const editor = page.locator("textarea");
   const popup = deleteTabPopup(page);
   const cancelButton = popup.getByRole("button", { name: "Cancel", exact: true });
-  const deleteButton = popup.getByRole("button", { name: "Delete", exact: true });
+  const deleteButton = popup.getByRole("button", { name: "Close", exact: true });
   const closeButton = popup.getByRole("button", { name: "Close deletion confirmation" });
   const focusedInPopup = popup.locator(":focus");
   await editor.fill("Do not delete this note");

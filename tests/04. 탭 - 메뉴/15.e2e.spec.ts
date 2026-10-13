@@ -11,6 +11,7 @@ import {
 
 // Seeded storage gains default settings once the app persists again.
 const withDefaults = (state: StoredState) => ({
+  allGroupActiveTabId: null,
   ...state,
   closedTabs: state.closedTabs ?? [],
   settings: state.settings ?? { fontScale: 1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false },
