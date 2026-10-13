@@ -80,7 +80,7 @@
   }
 
   .dashboard-column.is-drop-target .dashboard-cards {
-    background: v.$raised;
+    background: color-mix(in srgb, white 12%, #{v.$raised});
   }
 
   @media (max-width: 640px) {
