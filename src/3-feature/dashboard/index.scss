@@ -77,10 +77,15 @@
     display: grid;
     gap: 8px;
     align-content: start;
+    // Reserve space for the drop outline without moving cards during a drag.
+    padding: 6px;
+    margin-inline: -6px;
   }
 
   .dashboard-column.is-drop-target .dashboard-cards {
-    background: v.$raised;
+    outline: 1px dashed v.$signal;
+    outline-offset: -1px;
+    background: rgba(143, 227, 176, 0.08);
   }
 
   @media (max-width: 640px) {
