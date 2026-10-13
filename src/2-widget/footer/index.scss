@@ -136,9 +136,20 @@
       }
     }
 
-    .bookmark-command .status-label,
-    .dashboard-command .status-label {
-      display: none;
+    // Mobile: BOOKMARK / DASHBOARD labels sit under their icons, spaced apart.
+    .bookmark-command,
+    .dashboard-command {
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      margin-right: 16px;
+
+      &.status-command > span.status-label {
+        font-size: v.font(10px);
+        line-height: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
     }
 
     .group-select-command {

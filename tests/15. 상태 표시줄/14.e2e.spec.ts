@@ -14,8 +14,13 @@ test("14. PC와 모바일 하단 메뉴는 스크롤 없이 표시되고 각 패
       }
       expect(bounds.height).toBeCloseTo(width <= 640 ? 61.2 : 35, 1);
       const label = command.locator(".status-label:visible, .global-search-label:visible");
-      if (width <= 640 && /bookmark-command|dashboard-command/.test((await command.getAttribute("class")) ?? "")) continue;
       await expect(label).toBeVisible();
+      if (width <= 640 && /bookmark-command|dashboard-command/.test((await command.getAttribute("class")) ?? "")) {
+        const below = (await label.boundingBox())!;
+        const icon = (await command.locator("svg").boundingBox())!;
+        expect(below.y).toBeGreaterThanOrEqual(icon.y + icon.height);
+        continue;
+      }
       const labelBounds = (await label.boundingBox())!;
       const iconBounds = (await command.locator("svg").boundingBox())!;
       expect(labelBounds.x).toBeGreaterThanOrEqual(iconBounds.x + iconBounds.width);
