@@ -11,10 +11,18 @@ test("7. 비어 있는 컬럼도 카드 하나가 들어갈 만큼의 공간을 
   const source = dashboardColumn(page, "todo").locator(".dashboard-card");
   const target = dashboardColumn(page, "done");
   const area = target.locator(".dashboard-cards");
+  const firstTargetCard = area.locator(".dashboard-card").first();
+  const beforeDrag = (await firstTargetCard.boundingBox())!;
   const dataTransfer = await page.evaluateHandle(() => new DataTransfer());
   await source.dispatchEvent("dragstart", { dataTransfer });
   await target.dispatchEvent("dragover", { dataTransfer });
   await expect(target).toHaveClass(/is-drop-target/);
+  const highlightedArea = (await area.boundingBox())!;
+  const duringDrag = (await firstTargetCard.boundingBox())!;
+  expect(duringDrag).toEqual(beforeDrag);
+  expect(duringDrag.y - highlightedArea.y).toBeCloseTo(6, 0);
+  expect(duringDrag.x - highlightedArea.x).toBeCloseTo(6, 0);
+  expect(highlightedArea.x + highlightedArea.width - duringDrag.x - duringDrag.width).toBeCloseTo(6, 0);
   await expect(area).toHaveCSS("border-radius", "0px");
   await expect(area).toHaveCSS("background-color", "rgba(143, 227, 176, 0.08)");
   await expect(area).toHaveCSS("outline-style", "dashed");
@@ -36,6 +44,7 @@ test("7. 비어 있는 컬럼도 카드 하나가 들어갈 만큼의 공간을 
   await target.dispatchEvent("dragleave", { dataTransfer });
   await expect(target).not.toHaveClass(/is-drop-target/);
   await expect(area).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  expect(await firstTargetCard.boundingBox()).toEqual(beforeDrag);
   await expect(area).toHaveCSS("box-shadow", "none");
   await source.dispatchEvent("dragend", { dataTransfer });
   await expect(area).toHaveCSS("outline-style", "none");
