@@ -15,23 +15,30 @@ test("7. 비어 있는 컬럼도 카드 하나가 들어갈 만큼의 공간을 
   await source.dispatchEvent("dragstart", { dataTransfer });
   await target.dispatchEvent("dragover", { dataTransfer });
   await expect(target).toHaveClass(/is-drop-target/);
-  await expect(area).toHaveCSS("border-radius", "12px");
-  await expect.poll(() => area.evaluate((element) => {
-    const context = document.createElement("canvas").getContext("2d")!;
-    context.fillStyle = getComputedStyle(element).backgroundColor;
-    context.fillRect(0, 0, 1, 1);
-    const [red, green, blue, alpha] = context.getImageData(0, 0, 1, 1).data;
-    return Math.min(red, green, blue) > 170 && Math.abs(alpha / 255 - 0.14) < 0.01;
-  })).toBe(true);
-  await expect(area).not.toHaveCSS("box-shadow", "none");
+  await expect(area).toHaveCSS("border-radius", "0px");
+  await expect(area).toHaveCSS("background-color", "rgba(143, 227, 176, 0.08)");
+  await expect(area).toHaveCSS("outline-style", "dashed");
+  await expect(area).toHaveCSS("outline-width", "1px");
+  await expect(area).toHaveCSS("outline-offset", "-1px");
+  const signal = await area.evaluate((element) => getComputedStyle(element).getPropertyValue("--color-signal").trim());
+  const expectedColor = await area.evaluate((element, color) => {
+    const probe = document.createElement("span");
+    probe.style.color = color;
+    element.appendChild(probe);
+    const result = getComputedStyle(probe).color;
+    probe.remove();
+    return result;
+  }, signal);
+  await expect(area).toHaveCSS("outline-color", expectedColor);
+  await expect(area).toHaveCSS("box-shadow", "none");
+  await expect(area).toHaveCSS("transition-duration", "0s");
   await expect(area).toHaveCSS("border-top-width", "0px");
   await target.dispatchEvent("dragleave", { dataTransfer });
   await expect(target).not.toHaveClass(/is-drop-target/);
   await expect(area).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   await expect(area).toHaveCSS("box-shadow", "none");
   await source.dispatchEvent("dragend", { dataTransfer });
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(area).toHaveCSS("transition-duration", "0s");
+  await expect(area).toHaveCSS("outline-style", "none");
 
   await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "done"));
   await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(0);
