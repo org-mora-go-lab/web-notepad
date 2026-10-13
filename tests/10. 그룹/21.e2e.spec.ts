@@ -7,15 +7,15 @@ test("21. Ungrouped와 All Group을 다른 그룹보다 옅은 같은 색으로 
   await groupsCommand(page).click();
 
   const ungrouped = page
-    .locator("#groups-panel .group-item")
+    .locator("#groups-menu .group-item")
     .filter({ hasText: "Ungrouped" })
     .locator("strong");
   const created = page
-    .locator("#groups-panel .group-item")
+    .locator("#groups-menu .group-item")
     .filter({ hasText: "Work" })
     .locator("strong");
   const allGroup = page
-    .locator("#groups-panel .group-item")
+    .locator("#groups-menu .group-item")
     .filter({ hasText: "All Group" })
     .locator("strong");
   await createGroup(page, "Work");

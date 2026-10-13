@@ -7,7 +7,7 @@ test("4. 모바일 1.2배 확대에서 하단부 아이콘·높이는 1.2배, �
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
 
-  await expect(bookmarksCommand(page).locator(".status-label")).toBeHidden();
+  await expect(bookmarksCommand(page).locator(".status-label")).toBeVisible();
   await expect(bookmarksCommand(page).locator("svg")).toHaveCSS("width", /^28\.(8|79)/);
   await expect(page.locator(".group-select-name")).toHaveCSS("font-size", "17px");
   await expect(page.locator(".footer")).toHaveCSS("min-height", "76.8px");

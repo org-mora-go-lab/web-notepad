@@ -70,7 +70,8 @@ export function Footer({
             type="button"
             onClick={onToggleGroups}
             aria-expanded={groupsOpen}
-            aria-controls="groups-panel"
+            aria-haspopup="dialog"
+            aria-controls="groups-menu"
             aria-label={`그룹 선택: ${activeGroupName}`}
             title={activeGroupName}
           >

@@ -2,9 +2,10 @@ import type { StateCreator } from "zustand";
 
 import { UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState } from "../type";
+import { getStatusColor } from "../util";
 import { allocateTab, updateGroup } from "./workspace";
 
-type ClosedTabActions = Pick<NotepadState, "restoreClosedTab" | "removeClosedTab">;
+type ClosedTabActions = Pick<NotepadState, "restoreClosedTab" | "removeClosedTab" | "moveClosedTabToStatus">;
 
 export const createClosedTabActions: StateCreator<
   NotepadState,
@@ -31,6 +32,7 @@ export const createClosedTabActions: StateCreator<
     const tab = {
       ...entry.tab,
       id: tabId,
+      restoredContent: entry.tab.content,
       bookmarked: target.bookmarks.some((bookmark) => bookmark.sourceTabId === tabId),
     };
 
@@ -45,6 +47,16 @@ export const createClosedTabActions: StateCreator<
       nextTabNumber: allocated?.nextTabNumber ?? state.nextTabNumber,
       closedTabs: state.closedTabs.filter((item) => item.id !== entryId),
     });
+  },
+  // Dragging a closed card out of the dashboard Closed column restores it with the target column color.
+  moveClosedTabToStatus: (entryId, status) => {
+    const tabColor = getStatusColor(status, get().settings.tabColorCycle);
+    set((state) => ({
+      closedTabs: state.closedTabs.map((item) =>
+        item.id === entryId ? { ...item, tab: { ...item.tab, tabColor } } : item,
+      ),
+    }));
+    get().restoreClosedTab(entryId);
   },
   removeClosedTab: (entryId) =>
     set((state) => ({

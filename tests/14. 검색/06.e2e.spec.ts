@@ -1,60 +1,25 @@
 import { expect, test } from "@playwright/test";
 
-import { createClosedTabFixture, createGroupFixture, createTabFixture } from "../__fixture__";
-import {
-  bookmarksCommand,
-  groupsCommand,
-  openClosedPanel,
-  seedStoredStateOnLoad,
-} from "../__util__";
+import { BOTH_VIEWPORTS } from "../__constant__";
+import { seedStoredStateOnLoad } from "../__util__";
+import { createGlobalSearchState } from "./__fixture__";
 
-test("6. 검색 결과에서 일치하는 키워드 부분을 음영으로 강조한다", async ({ page }) => {
-  const group = createGroupFixture("work", "Work group", [
-    createTabFixture("active-tab", "Current note"),
-  ], {
-    bookmarks: [{
-      id: "bookmark-1",
-      sourceTabId: "active-tab",
-      title: "Alpha bookmark",
-      content: "Read alpha again",
-      tabColor: "green",
-      selectedLines: [],
-      createdAt: 1,
-      updatedAt: 1,
-    }],
-  });
-  await seedStoredStateOnLoad(page, {
-    activeGroupId: group.id,
-    groups: [group],
-    nextTabNumber: 2,
-    closedTabs: [
-      createClosedTabFixture(
-        "closed-1",
-        group.id,
-        createTabFixture("closed-tab", "Beta note from Work"),
-      ),
-    ],
-  });
-
-  await groupsCommand(page).click();
-  await page.getByRole("searchbox", { name: "그룹 검색" }).fill("WORK");
-  await expect(page.locator(".group-select mark.search-highlight")).toHaveText("Work");
-
-  await page.getByRole("button", { name: "그룹 닫기" }).click();
-  await bookmarksCommand(page).click();
-  await page.getByRole("searchbox", { name: "북마크 검색" }).fill("ALPHA");
-  const bookmarkHighlights = page.locator(".bookmark-item mark.search-highlight");
-  await expect(bookmarkHighlights).toHaveText(["Alpha", "alpha"]);
-  await expect(bookmarkHighlights.first()).toHaveCSS(
-    "background-color",
-    "rgba(143, 227, 176, 0.22)",
-  );
-
-  await page.getByRole("button", { name: "북마크 닫기" }).click();
-  await openClosedPanel(page);
-  await page.getByRole("searchbox", { name: "닫은 탭 검색" }).fill("WORK");
-  await expect(page.locator(".closed-item-heading mark.search-highlight")).toHaveText("Work");
-  await expect(page.locator(".closed-item .closed-item-content mark.search-highlight")).toHaveText("Work");
-  await page.getByRole("searchbox", { name: "닫은 탭 검색" }).fill("BETA");
-  await expect(page.locator(".closed-item .closed-item-content mark.search-highlight")).toHaveText("Beta");
+test("6. MENU의 SEARCH 항목은 PC와 모바일 모두 다른 MENU 항목과 같이 아이콘 오른쪽에 라벨을 표시한다", async ({ page }) => {
+  await seedStoredStateOnLoad(page, createGlobalSearchState());
+  const menu = page.getByRole("button", { name: "MENU", exact: true });
+  const command = page.locator(".additional-tools-search");
+  const closed = page.locator(".additional-tools-menu .closed-command");
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    await menu.click();
+    await expect(command).toContainText("SEARCH");
+    const iconBounds = (await command.locator("svg").boundingBox())!;
+    const labelBounds = (await command.locator("span").boundingBox())!;
+    expect(iconBounds.x + iconBounds.width).toBeLessThanOrEqual(labelBounds.x);
+    expect(iconBounds.y + iconBounds.height / 2).toBeCloseTo(labelBounds.y + labelBounds.height / 2, 0);
+    // Same row layout as CLOSED above it.
+    const closedIcon = (await closed.locator("svg").first().boundingBox())!;
+    expect(iconBounds.x).toBeCloseTo(closedIcon.x, 0);
+    await page.keyboard.press("Escape");
+  }
 });

@@ -2,7 +2,7 @@
 
 import "./index.scss";
 
-import { type CSSProperties, useEffect } from "react";
+import { type CSSProperties, useCallback, useEffect, useState } from "react";
 
 import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
@@ -38,6 +38,8 @@ export function Home() {
     activeGroupTabs,
     tabColorCycle,
     setTabStatus,
+    togglePin,
+    moveClosedTabToStatus,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
@@ -45,14 +47,17 @@ export function Home() {
     togglePanelPin,
     columns,
     removeBookmark,
-    createGroup,
+    createGroupAndRecord,
     renameGroup,
     toggleGroupPin,
-    removeGroup,
+    removeGroupAndRecord,
     fontScale,
     language,
     panelSlide,
   } = useHome();
+
+  const [groupMenuOpen, setGroupMenuOpen] = useState(false);
+  const closeGroupMenu = useCallback(() => setGroupMenuOpen(false), []);
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -106,10 +111,10 @@ export function Home() {
             bookmarksOpen={openPanel === "bookmarks"}
             dashboardOpen={openPanel === "dashboard"}
             activeGroupName={activeGroupName}
-            groupsOpen={openPanel === "groups"}
+            groupsOpen={groupMenuOpen}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
-            onToggleGroups={() => toggleSidePanel("groups")}
+            onToggleGroups={() => setGroupMenuOpen((current) => !current)}
           />
         </section>
 
@@ -118,11 +123,12 @@ export function Home() {
           pinned={panelPinned}
           onTogglePin={togglePanelPin}
           bookmarks={bookmarks}
-          activeGroupName={activeGroupName}
           activeGroupTabs={activeGroupTabs}
           tabColorCycle={tabColorCycle}
           groups={groups}
           activeGroupId={activeGroupId}
+          groupMenuOpen={groupMenuOpen}
+          onCloseGroupMenu={closeGroupMenu}
           closedTabs={closedTabs}
           closedSearchQuery={closedSearchQuery}
           globalSearchQuery={globalSearchQuery}
@@ -133,9 +139,11 @@ export function Home() {
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
-          onCreateGroup={createGroup}
+          onUnpinTab={togglePin}
+          onChangeClosedTabStatus={moveClosedTabToStatus}
+          onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}
-          onRemoveGroup={removeGroup}
+          onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
           onToggleGroupPin={toggleGroupPin}
           onRestoreClosedTab={restoreClosedTabAndClosePanel}

@@ -72,6 +72,7 @@ const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
         tabColor,
         pinned: Boolean(tab.pinned),
         bookmarked: Boolean(tab.bookmarked),
+        restoredContent: typeof tab.restoredContent === "string" ? tab.restoredContent : undefined,
       };
     });
 

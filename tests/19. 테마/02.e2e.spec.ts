@@ -14,8 +14,7 @@ test("2. LIGHT는 밝은 중립 배경과 짙은 글자로 편집기·하단 메
     await expect(page.locator("textarea")).toHaveCSS("color", "rgb(32, 38, 36)");
     await expect(page.locator(".footer")).toHaveCSS("background-color", "rgb(240, 244, 241)");
     await page.locator(".group-select-command").press("Enter");
-    await expect(page.locator("#groups-panel")).toHaveCSS("background-color", "rgb(247, 250, 248)");
-    await expect(page.locator("#groups-panel .search-field")).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(page.locator("#groups-menu")).toHaveCSS("background-color", "rgb(233, 239, 235)");
     await page.keyboard.press("Escape");
     await page.getByRole("button", { name: "MENU", exact: true }).click();
     await page.getByRole("menuitem", { name: "THEME", exact: true }).click();

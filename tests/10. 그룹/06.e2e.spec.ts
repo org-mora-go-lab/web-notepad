@@ -37,12 +37,12 @@ test("6. 그룹 이름 수정은 저장·취소 버튼과 Enter·Escape를 지�
   await expect(groupStatusName(page)).toHaveText("Focus");
   await page.reload();
   await expect(groupStatusName(page)).toHaveText("Focus");
+  await groupsCommand(page).click();
   await expect(page.locator("textarea")).toHaveValue("private note");
   expect((await readStoredState(page)).activeGroupId).toBe(originalId);
   expect((await readActiveGroup(page)).bookmarks[0].content).toBe("private note");
 
   await page.setViewportSize(MOBILE_VIEWPORT);
-  await expect(groupsCommand(page)).toHaveAttribute("aria-expanded", "true");
   await editFocus();
   await focusInput.fill("Mobile");
   const saveButton = page.getByRole("button", { name: "그룹 수정 저장" });

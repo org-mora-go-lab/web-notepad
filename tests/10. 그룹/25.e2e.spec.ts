@@ -6,7 +6,7 @@ import { seedDashboardTabs } from "../21. 대시보드/__util__";
 test("25. All Group에서도 탭을 수정할 수 있고 변경은 탭이 속한 그룹에 적용되며 새 탭은 Ungrouped에 추가한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await groupsCommand(page).click();
-  await page.locator(".group-item").last().getByRole("button", { name: "All Group", exact: true }).click();
+  await page.locator(".group-item").first().getByRole("button", { name: "All Group", exact: true }).click();
 
   const tabs = page.locator(".tab-item");
   await expect(tabs).toHaveCount(4);

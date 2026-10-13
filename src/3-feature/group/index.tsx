@@ -1,23 +1,19 @@
 "use client";
 
-import { Check, EllipsisVertical, Pin, Plus, X } from "lucide-react";
-import { type FormEvent, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
 import { ALL_GROUP_ID, ALL_GROUP_NAME, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
-import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
-import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
+import { ConfirmPopup } from "@/src/5-shared/ui";
 
-import { GroupActionMenu } from "./component";
+import { GroupCreateForm, GroupItem } from "./component";
 
 type Props = {
   groups: GroupEntry[];
   activeGroupId: string;
   open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
   onClose: () => void;
   onCreate: (name: string) => void;
   onSelect: (groupId: string) => void;
@@ -26,12 +22,17 @@ type Props = {
   onTogglePinGroup: (groupId: string) => void;
 };
 
-export function Group({
+type GroupRow = Pick<GroupEntry, "id" | "name" | "pinned">;
+
+const ANCHOR_SELECTOR = ".group-select-command";
+const MOBILE_QUERY = "(max-width: 640px)";
+
+// Group switcher dropdown that opens above the bottom bar's group button, styled like the tab context menu.
+// Pick a group, or pin / rename / delete / create one right in the list.
+// Portaled to the body (inside a `.group` wrapper for styles) like the other floating menus.
+function GroupMenu({
   groups,
   activeGroupId,
-  open,
-  pinned,
-  onTogglePin,
   onClose,
   onCreate,
   onSelect,
@@ -39,193 +40,114 @@ export function Group({
   onRename,
   onTogglePinGroup,
 }: Props) {
-  const [groupName, setGroupName] = useState("");
   const { t } = useI18n();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState("");
+  const menuRef = useRef<HTMLDivElement>(null);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
-  const [menu, setMenu] = useState<{ groupId: string; anchor: HTMLElement } | null>(null);
-  const menuGroup = groups.find((group) => group.id === menu?.groupId);
-  // The ⋮ button that opened the delete popup, focused again when the popup is cancelled.
+  // The row whose pin / edit / delete buttons are shown (opened with its … button).
+  const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
+  // The delete button that opened the popup, focused again when the popup is cancelled.
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
-  // The virtual All Group always comes last, below Ungrouped.
-  const allGroup: Pick<GroupEntry, "id" | "name" | "pinned"> = {
-    id: ALL_GROUP_ID,
-    name: ALL_GROUP_NAME,
-    pinned: false,
-  };
-  const filteredGroups = [...[...groups].sort(compareGroups), allGroup].filter((group) =>
-    matchesSearchQuery(searchQuery, group.name),
-  );
+  // All Group and Ungrouped share the first row (two halves); the create row follows, then the other groups (pinned first).
+  const specialRows: GroupRow[] = [
+    { id: ALL_GROUP_ID, name: ALL_GROUP_NAME, pinned: false },
+    ...groups.filter((group) => group.id === UNGROUPED_GROUP_ID),
+  ];
+  const otherRows: GroupRow[] = [...groups].sort(compareGroups).filter((group) => group.id !== UNGROUPED_GROUP_ID);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const trimmedName = groupName.trim();
-    if (!trimmedName) return;
-    onCreate(trimmedName);
-    setGroupName("");
-  };
-
-  const handleRename = (event: FormEvent<HTMLFormElement>, groupId: string) => {
-    event.preventDefault();
-    const trimmedName = editingName.trim();
-    if (!trimmedName) return;
-    onRename(groupId, trimmedName);
-    setEditingGroupId(null);
-  };
-
-  return (
-    <SidePanel
-      className="group"
-      id="groups-panel"
-      title={t.groupsTitle}
-      open={open}
-      pinned={pinned}
-      onTogglePin={onTogglePin}
-      closeLabel="그룹 닫기"
-      onClose={onClose}
-    >
-      <SearchField
-        value={searchQuery}
-        ariaLabel="그룹 검색"
-        placeholder={t.searchGroups}
-        onChange={setSearchQuery}
+  const renderRow = (group: GroupRow) => {
+    const special = group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID;
+    return (
+      <GroupItem
+        key={group.id}
+        name={group.name}
+        active={group.id === activeGroupId}
+        pinned={group.pinned}
+        editable={!special}
+        muted={special}
+        actionsOpen={actionsGroupId === group.id}
+        onToggleActions={() => setActionsGroupId((current) => (current === group.id ? null : group.id))}
+        onSelect={() => {
+          onSelect(group.id);
+          // Mobile closes the dropdown right after a group is picked.
+          if (window.matchMedia(MOBILE_QUERY).matches) onClose();
+        }}
+        onRename={(name) => onRename(group.id, name)}
+        onTogglePin={() => onTogglePinGroup(group.id)}
+        onDelete={(anchor) => {
+          deleteAnchorRef.current = anchor;
+          setDeletingGroupId(group.id);
+        }}
       />
-      <form className="group-create-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={groupName}
-          onChange={(event) => setGroupName(event.target.value)}
-          placeholder={t.groupName}
-          aria-label="새 그룹 이름"
-          maxLength={60}
-        />
-        <button
-          type="submit"
-          aria-label="그룹 생성"
-          disabled={!groupName.trim()}
-        >
-          <Plus size={16} />
-        </button>
-      </form>
-      <div className="group-list">
-        {filteredGroups.length === 0 ? (
-          <div className="search-empty-state">
-            <p>{t.noSearchResults}</p>
-          </div>
-        ) : (
-          filteredGroups.map((group) => (
-            <article
-              className={`group-item ${group.id === activeGroupId ? "is-active" : ""}`}
-              key={group.id}
-            >
-              {editingGroupId === group.id ? (
-                <form className="group-edit-form" onSubmit={(event) => handleRename(event, group.id)}>
-                  <input
-                    type="text"
-                    value={editingName}
-                    onChange={(event) => setEditingName(event.target.value)}
-                    aria-label={`${group.name} 그룹 이름 수정`}
-                    maxLength={60}
-                    autoFocus
-                    onKeyDown={(event) => {
-                      if (event.key === "Escape") {
-                        event.preventDefault();
-                        setEditingGroupId(null);
-                      }
-                    }}
-                  />
-                  <button type="submit" aria-label="그룹 수정 저장" title={t.save} disabled={!editingName.trim()}>
-                    <Check size={14} />
-                  </button>
-                  <button type="button" aria-label="그룹 수정 취소" title={t.cancel} onClick={() => setEditingGroupId(null)}>
-                    <X size={14} />
-                  </button>
-                </form>
-              ) : (
-                <>
-                  <button
-                    className="group-select"
-                    type="button"
-                    aria-pressed={group.id === activeGroupId}
-                    onClick={() => onSelect(group.id)}
-                  >
-                    <strong
-                      className={
-                        group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID ? "is-ungrouped" : ""
-                      }
-                    >
-                      <SearchHighlight text={group.name} query={searchQuery} />
-                    </strong>
-                  </button>
-                  {group.pinned && (
-                    <Pin className="group-pin-indicator" size={14} role="img" aria-label="고정된 그룹" />
-                  )}
-                  {group.id !== UNGROUPED_GROUP_ID && group.id !== ALL_GROUP_ID && (
-                    <button
-                      className="group-menu-trigger"
-                      type="button"
-                      aria-label={`${group.name} 그룹 메뉴`}
-                      title={t.groupActions}
-                      aria-haspopup="menu"
-                      aria-expanded={menu?.groupId === group.id}
-                      onClick={(event) => {
-                        const anchor = event.currentTarget;
-                        setMenu(menu?.groupId === group.id ? null : { groupId: group.id, anchor });
-                      }}
-                    >
-                      <EllipsisVertical size={14} />
-                    </button>
-                  )}
-                </>
-              )}
-            </article>
-          ))
-        )}
+    );
+  };
+
+  useLayoutEffect(() => {
+    const menu = menuRef.current;
+    const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
+    if (!menu || !anchor) return;
+    const position = () => {
+      const rect = anchor.getBoundingClientRect();
+      menu.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - menu.offsetWidth - 8))}px`;
+      menu.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+    };
+    position();
+    window.addEventListener("resize", position);
+    return () => window.removeEventListener("resize", position);
+  }, []);
+
+  useEffect(() => {
+    if (groupToDelete) return;
+    const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (!menuRef.current?.contains(target) && !anchor?.contains(target)) onClose();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      anchor?.focus();
+      onClose();
+    };
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [groupToDelete, onClose]);
+
+  return createPortal(
+    <div className="group">
+      <div ref={menuRef} className="group-menu" id="groups-menu" role="dialog" aria-label="그룹 선택">
+        <div className="group-list">
+          <div className="group-split-row">{specialRows.map(renderRow)}</div>
+          <GroupCreateForm onCreate={onCreate} />
+          {otherRows.map(renderRow)}
+        </div>
       </div>
-    {open && menu && menuGroup && (
-      <GroupActionMenu
-        groupName={menuGroup.name}
-        anchor={menu.anchor}
-        pinned={menuGroup.pinned}
-        onClose={() => {
-          menu.anchor.focus();
-          setMenu(null);
-        }}
-        onEdit={() => {
-          setMenu(null);
-          setEditingGroupId(menuGroup.id);
-          setEditingName(menuGroup.name);
-        }}
-        onDelete={() => {
-          deleteAnchorRef.current = menu.anchor;
-          setMenu(null);
-          setDeletingGroupId(menuGroup.id);
-        }}
-        onTogglePin={() => {
-          setMenu(null);
-          onTogglePinGroup(menuGroup.id);
-        }}
-      />
-    )}
-    {open && groupToDelete && (
-      <ConfirmPopup
-        title={t.deleteGroupTitle}
-        message={t.deleteGroupMessage(groupToDelete.name)}
-        closeLabel="삭제 확인 닫기"
-        closeTitle={t.close}
-        onCancel={() => {
-          setDeletingGroupId(null);
-          deleteAnchorRef.current?.focus();
-        }}
-        onConfirm={() => {
-          onRemove(groupToDelete.id);
-          setDeletingGroupId(null);
-        }}
-      />
-    )}
-    </SidePanel>
+      {groupToDelete && (
+        <ConfirmPopup
+          title={t.deleteGroupTitle}
+          message={t.deleteGroupMessage(groupToDelete.name)}
+          closeLabel="삭제 확인 닫기"
+          closeTitle={t.close}
+          onCancel={() => {
+            setDeletingGroupId(null);
+            deleteAnchorRef.current?.focus();
+          }}
+          onConfirm={() => {
+            onRemove(groupToDelete.id);
+            setDeletingGroupId(null);
+          }}
+        />
+      )}
+    </div>,
+    document.body,
   );
+}
+
+// The menu content mounts only while open, so row / popup state resets every time it closes.
+export function Group({ open, ...props }: Props) {
+  return open ? <GroupMenu open={open} {...props} /> : null;
 }

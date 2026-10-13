@@ -19,7 +19,7 @@ test("10. 그룹 삭제 팝업을 취소하면 모든 경로에서 그룹과 노
   await openDelete();
   await page.keyboard.press("Escape");
   await expect(popup).toHaveCount(0);
-  await expect(page.locator("#groups-panel")).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator("#groups-menu")).toBeVisible();
   await assertPreserved();
   await openDelete();
   await popup.getByRole("button", { name: "삭제 확인 닫기" }).click();

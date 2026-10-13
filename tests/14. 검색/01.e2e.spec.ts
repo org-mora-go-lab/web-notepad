@@ -1,26 +1,23 @@
 import { expect, test } from "@playwright/test";
 
-import { createGroup, groupsCommand } from "../__util__";
+import { bookmarksCommand, restoreStoredBookmark } from "../__util__";
 
-test("1. 그룹 패널은 그룹 이름을 대소문자 구분 없이 부분 검색하며 placeholder는 Search groups다", async ({ page }) => {
-  await page.goto("/");
-  await groupsCommand(page).click();
-  await createGroup(page, "Work");
-  const search = page.getByRole("searchbox", { name: "그룹 검색" });
-  const items = page.locator(".group-item");
-  await expect(search).toBeVisible();
-  await expect(search).toHaveAttribute("placeholder", "Search groups");
-  await expect(items).toHaveCount(3);
+test("1. 북마크 패널은 제목과 내용을 대소문자 구분 없이 부분 검색하며 placeholder는 Search bookmarks다", async ({ page }) => {
+  await restoreStoredBookmark(page, {});
+  await bookmarksCommand(page).click();
+  const search = page.getByRole("searchbox", { name: "북마크 검색" });
+  const items = page.locator(".bookmark-item");
+  await expect(search).toHaveAttribute("placeholder", "Search bookmarks");
+  await expect(items).toHaveCount(1);
 
-  await search.fill("work");
+  await search.fill("OLD BOOK");
   await expect(items).toHaveCount(1);
-  await expect(items).toContainText("Work");
-  await search.fill("OR");
+  await search.fill("TWO");
   await expect(items).toHaveCount(1);
-  await expect(items).toContainText("Work");
-  await search.fill("ungrouped");
+  await search.fill("hre");
   await expect(items).toHaveCount(1);
-  await expect(items).toContainText("Ungrouped");
   await search.fill("missing");
   await expect(items).toHaveCount(0);
+  await search.fill("");
+  await expect(items).toHaveCount(1);
 });

@@ -24,7 +24,6 @@ const PANEL_IDS: ViewPanel[] = [
   "closed",
   "bookmarks",
   "dashboard",
-  "groups",
   "shortcuts",
   "global-search",
   "settings",

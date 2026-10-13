@@ -34,6 +34,8 @@ export type NoteTab = {
   pinned: boolean;
   bookmarked: boolean;
   updatedAt: number;
+  // Content of a tab restored from Closed; closing it again without edits skips the confirmation.
+  restoredContent?: string;
 };
 
 export type BookmarkEntry = {
@@ -120,5 +122,6 @@ export type NotepadState = {
   removeGroup: (groupId: string) => void;
   selectGroup: (groupId: string) => void;
   restoreClosedTab: (entryId: string) => void;
+  moveClosedTabToStatus: (entryId: string, status: TabStatus) => void;
   removeClosedTab: (entryId: string) => void;
 };

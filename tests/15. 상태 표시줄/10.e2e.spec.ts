@@ -10,8 +10,9 @@ test("10. 상태표시줄 아이콘 크기와 명령 간격을 PC·모바일에�
     await page.setViewportSize(viewport);
     const mobile = viewport.width <= 640;
     for (const command of await commands.all()) {
-      await expect(command).toHaveCSS("gap", mobile ? "8px" : "7px");
-      await expect(command).toHaveCSS("flex-direction", "row");
+      const stacked = mobile && /bookmark-command|dashboard-command/.test((await command.getAttribute("class")) ?? "");
+      await expect(command).toHaveCSS("gap", stacked ? "4px" : mobile ? "8px" : "7px");
+      await expect(command).toHaveCSS("flex-direction", stacked ? "column" : "row");
       await expect(command.locator("svg")).toHaveCSS("width", mobile ? /^28\.(8|79)/ : "24px");
       await expect(command.locator("svg")).toHaveCSS("height", mobile ? /^28\.(8|79)/ : "24px");
     }

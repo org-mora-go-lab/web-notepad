@@ -1,199 +1,25 @@
-@use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
-@use "./style/group-action-menu";
+@use "./style/group-create-form";
+@use "./style/group-item";
 
+// Matches the tab context menu: raised surface, 39px rows, 15px labels.
 .group {
-  .side-panel-drawer {
-    grid-template-rows: auto auto auto minmax(0, 1fr);
-  }
-
-  .side-panel-close,
-  .group-create-form button,
-  .group-edit-form button,
-  .group-item > button:not(.group-select) {
-    display: grid;
-    place-items: center;
+  .group-menu {
+    position: fixed;
+    z-index: 50;
+    width: 280px;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 96px);
+    display: flex;
+    flex-direction: column;
     border: 1px solid v.$line;
-    background: transparent;
-    color: v.$dim;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-      border-color: v.$hover-line;
-      color: v.$ink;
-    }
+    background: v.$raised;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   }
 
-  .group-create-form {
-    display: flex;
-    gap: 8px;
-    padding: 14px;
-    border-bottom: 1px solid v.$line;
-
-    input {
-      min-width: 0;
-      height: 42px;
-      flex: 1;
-      padding: 0 10px;
-      border: 1px solid v.$line;
-      outline: none;
-      background: var(--color-field);
-      color: v.$ink;
-      font: inherit;
-      font-size: v.font(14px);
-      @include mixin.touch-input-font(14px);
-
-      &:focus {
-        border-color: v.$hover-line;
-      }
-
-      &::placeholder {
-        color: v.$dim;
-      }
-    }
-
-    // Square, matching the 42px input height.
-    button {
-      width: 42px;
-      height: 42px;
-      border-color: var(--color-creation-border);
-      color: v.$ink;
-
-      &:disabled {
-        opacity: 0.45;
-        cursor: default;
-      }
-    }
-  }
-
-  .group-list {
-    min-height: 0;
-    padding: 20px 14px;
-    overflow-y: auto;
-  }
-
-  .group-item {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 14px;
-    padding: 8px 12px;
-    border: 1px solid v.$line;
-    background: var(--color-field);
-
-    &.is-active {
-      border-color: v.$hover-line;
-      background: v.$raised;
-    }
-
-    .group-select {
-      min-width: 0;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      padding: 4px 0;
-      border: 0;
-      background: transparent;
-      text-align: left;
-      cursor: pointer;
-
-      &:hover strong {
-        color: v.$ink;
-      }
-    }
-
-    strong {
-      min-width: 0;
-      overflow-wrap: anywhere;
-      color: v.$signal;
-      font-size: v.font(15px);
-      font-weight: 500;
-
-      &.is-ungrouped {
-        color: v.$muted;
-      }
-    }
-
-    button {
-      width: 30px;
-      height: 30px;
-      flex: 0 0 auto;
-    }
-
-    .group-pin-indicator {
-      flex: 0 0 auto;
-      color: v.$signal;
-    }
-  }
-
-  .group-edit-form {
-    min-width: 0;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    input {
-      min-width: 0;
-      flex: 1;
-      height: 36px;
-      padding: 0 8px;
-      border: 1px solid v.$line;
-      outline: none;
-      background: var(--color-field);
-      color: v.$ink;
-      font: inherit;
-      font-size: v.font(15px);
-      @include mixin.touch-input-font(15px);
-
-      &:focus {
-        border-color: v.$hover-line;
-      }
-    }
-
-    button:disabled {
-      opacity: 0.45;
-      cursor: default;
-    }
-  }
-}
-
-@media (max-width: 640px) {
-  .group {
-    .group-create-form {
-      input {
-        font-size: v.font(14px * v.$mobile-scale);
-        @include mixin.touch-input-font(14px * v.$mobile-scale);
-      }
-
-      button svg {
-        width: 16px * v.$mobile-scale;
-        height: 16px * v.$mobile-scale;
-      }
-    }
-
-    .group-item {
-      strong {
-        font-size: v.font(15px * v.$mobile-scale);
-      }
-
-      button {
-        width: 30px * v.$mobile-scale;
-        height: 30px * v.$mobile-scale;
-
-        svg {
-          width: 14px * v.$mobile-scale;
-          height: 14px * v.$mobile-scale;
-        }
-      }
-    }
-
-    .group-edit-form input {
-      height: 36px * v.$mobile-scale;
-      font-size: v.font(15px * v.$mobile-scale);
-      @include mixin.touch-input-font(15px * v.$mobile-scale);
+  @media (max-width: 640px) {
+    .group-menu {
+      width: 280px * v.$mobile-scale;
     }
   }
 }

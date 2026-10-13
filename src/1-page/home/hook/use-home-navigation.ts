@@ -122,6 +122,17 @@ export function useHomeNavigation({ hydrated, panelPinned, addTabToPane }: Optio
     finishPanelAction();
   }, [finishPanelAction]);
 
+  // Creating or deleting a group can change the active group, so the view history records it.
+  const createGroupAndRecord = useCallback((name: string) => {
+    useNotepadStore.getState().createGroup(name);
+    pushView(getCurrentView());
+  }, [getCurrentView, pushView]);
+
+  const removeGroupAndRecord = useCallback((groupId: string) => {
+    useNotepadStore.getState().removeGroup(groupId);
+    pushView(getCurrentView());
+  }, [getCurrentView, pushView]);
+
   const openBookmarkAndClosePanel = useCallback((groupId: string, bookmarkId: string) => {
     const state = useNotepadStore.getState();
     state.selectGroup(groupId);
@@ -180,6 +191,8 @@ export function useHomeNavigation({ hydrated, panelPinned, addTabToPane }: Optio
     selectTabWithHistory,
     activatePaneWithHistory,
     selectGroupAndClosePanel,
+    createGroupAndRecord,
+    removeGroupAndRecord,
     openBookmarkAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,

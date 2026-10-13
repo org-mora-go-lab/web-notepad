@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 
-import type { GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
+import type { ClosedTabEntry, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 import { getStatusColor, getTabStatus, TAB_STATUSES } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { SidePanel } from "@/src/5-shared/ui";
+import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
 
 import { DashboardCard } from "./component";
 
 type Props = {
-  groupName: string;
   tabs: NoteTab[];
+  // Closed tabs of the shown group(s); they fill the Closed column.
+  closedTabs: ClosedTabEntry[];
   groups: GroupEntry[];
   // All Group: cards show the group they belong to.
   showGroupNames: boolean;
@@ -22,13 +23,16 @@ type Props = {
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
+  onUnpinTab: (tabId: string) => void;
+  onRestoreClosed: (entryId: string) => void;
+  onChangeClosedStatus: (entryId: string, status: TabStatus) => void;
 };
 
 // Kanban board of the current group's tabs. A tab's column follows its tab color:
 // the 1st, 2nd and 3rd color of the tab color cycle are Todo, WIP and Done.
 export function Dashboard({
-  groupName,
   tabs,
+  closedTabs,
   groups,
   showGroupNames,
   tabColorCycle,
@@ -38,10 +42,18 @@ export function Dashboard({
   onClose,
   onOpenTab,
   onChangeStatus,
+  onUnpinTab,
+  onRestoreClosed,
+  onChangeClosedStatus,
 }: Props) {
   const { t } = useI18n();
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
+  // Empty notes are not listed on the dashboard.
+  const visibleTabs = tabs.filter((tab) => tab.content.trim());
+  const visibleClosedTabs = closedTabs.filter((entry) => entry.tab.content.trim());
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
+  // A pinned tab dropped on Closed waits for confirmation before it is unpinned and closed.
+  const [pendingPinnedTabId, setPendingPinnedTabId] = useState<string | null>(null);
   const statusLabels: Record<TabStatus, string> = {
     todo: t.statusTodo,
     "in-progress": t.statusInProgress,
@@ -64,10 +76,10 @@ export function Dashboard({
       onClose={onClose}
     >
       <div className="dashboard-list">
-        <p className="dashboard-group">{groupName}</p>
         <div className="dashboard-board">
           {TAB_STATUSES.map((status) => {
-            const columnTabs = tabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status);
+            const columnTabs = visibleTabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status);
+            const columnClosed = status === "done" ? visibleClosedTabs : [];
             return (
               <section
                 key={status}
@@ -86,15 +98,37 @@ export function Dashboard({
                 }}
                 onDrop={(event) => {
                   event.preventDefault();
-                  if (draggingTabId) onChangeStatus(draggingTabId, status);
+                  if (draggingTabId?.startsWith("closed-")) {
+                    if (status !== "done") onChangeClosedStatus(draggingTabId, status);
+                  } else if (draggingTabId) {
+                    const dragged = visibleTabs.find((tab) => tab.id === draggingTabId);
+                    if (status === "done" && dragged?.pinned) setPendingPinnedTabId(draggingTabId);
+                    else onChangeStatus(draggingTabId, status);
+                  }
                   endDrag();
                 }}
               >
                 <h3>
                   {statusLabels[status]}
-                  <span className="dashboard-count">{columnTabs.length}</span>
+                  <span className="dashboard-count">{columnTabs.length + columnClosed.length}</span>
                 </h3>
                 <div className="dashboard-cards">
+                  {columnClosed.map((entry) => (
+                    <DashboardCard
+                      key={entry.id}
+                      id={entry.id}
+                      tab={entry.tab}
+                      groupName={showGroupNames ? groups.find((group) => group.id === entry.groupId)?.name ?? "Ungrouped" : undefined}
+                      dragging={draggingTabId === entry.id}
+                      onOpen={() => onRestoreClosed(entry.id)}
+                      onDragStart={(entryId, event) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", entryId);
+                        setDraggingTabId(entryId);
+                      }}
+                      onDragEnd={endDrag}
+                    />
+                  ))}
                   {columnTabs.map((tab) => (
                     <DashboardCard
                       key={tab.id}
@@ -120,6 +154,21 @@ export function Dashboard({
           })}
         </div>
       </div>
+      {pendingPinnedTabId && (
+        <ConfirmPopup
+          title={t.closePinnedTabTitle}
+          message={t.closePinnedTabMessage}
+          closeLabel="Close confirmation"
+          closeTitle={t.close}
+          confirmLabel={t.unpinAndClose}
+          onConfirm={() => {
+            onUnpinTab(pendingPinnedTabId);
+            onChangeStatus(pendingPinnedTabId, "done");
+            setPendingPinnedTabId(null);
+          }}
+          onCancel={() => setPendingPinnedTabId(null)}
+        />
+      )}
     </SidePanel>
   );
 }

@@ -17,15 +17,12 @@ test("8. 그룹 전환을 URL 이력으로 기록하고 뒤로가기·앞으로�
   });
 
   await groupsCommand(page).click();
-  await page.getByRole("button", { name: "Work", exact: true }).click();
+  await page.locator(".group-item").getByRole("button", { name: "Work", exact: true }).click();
   await expect(groupStatusName(page)).toHaveText("Work");
-  await expect(page.locator("#groups-panel")).toHaveAttribute("aria-hidden", "true");
   await expect(new URL(page.url()).searchParams.get("group")).toBe("work");
 
   await page.goBack();
   await expect(groupStatusName(page)).toHaveText("Ungrouped");
-  await expect(page.locator("#groups-panel")).toHaveAttribute("aria-hidden", "false");
   await page.goForward();
   await expect(groupStatusName(page)).toHaveText("Work");
-  await expect(page.locator("#groups-panel")).toHaveAttribute("aria-hidden", "true");
 });

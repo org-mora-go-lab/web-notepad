@@ -12,21 +12,24 @@ type Props = {
   pinned: boolean;
   onTogglePin: () => void;
   bookmarks: BookmarkEntry[];
-  activeGroupName: string;
   activeGroupTabs: NoteTab[];
   tabColorCycle: TabColor[];
   groups: GroupEntry[];
   activeGroupId: string;
+  groupMenuOpen: boolean;
   closedTabs: ClosedTabEntry[];
   closedSearchQuery: string;
   globalSearchQuery: string;
   onClose: () => void;
+  onCloseGroupMenu: () => void;
   onClosedSearchQueryChange: (query: string) => void;
   onGlobalSearchQueryChange: (query: string) => void;
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
+  onUnpinTab: ComponentProps<typeof Dashboard>["onUnpinTab"];
+  onChangeClosedTabStatus: ComponentProps<typeof Dashboard>["onChangeClosedStatus"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
@@ -43,21 +46,24 @@ export function Panel({
   pinned,
   onTogglePin,
   bookmarks,
-  activeGroupName,
   activeGroupTabs,
   tabColorCycle,
   groups,
   activeGroupId,
+  groupMenuOpen,
   closedTabs,
   closedSearchQuery,
   globalSearchQuery,
   onClose,
+  onCloseGroupMenu,
   onClosedSearchQueryChange,
   onGlobalSearchQueryChange,
   onOpenBookmark,
   onRemoveBookmark,
   onOpenDashboardTab,
   onChangeTabStatus,
+  onUnpinTab,
+  onChangeClosedTabStatus,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
@@ -80,8 +86,8 @@ export function Panel({
         onRemove={onRemoveBookmark}
       />
       <Dashboard
-        groupName={activeGroupName}
         tabs={activeGroupTabs}
+        closedTabs={closedTabs.filter((entry) => activeGroupId === ALL_GROUP_ID || entry.groupId === activeGroupId)}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
@@ -91,14 +97,15 @@ export function Panel({
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
+        onUnpinTab={onUnpinTab}
+        onRestoreClosed={onRestoreClosedTab}
+        onChangeClosedStatus={onChangeClosedTabStatus}
       />
       <Group
         groups={groups}
         activeGroupId={activeGroupId}
-        open={openPanel === "groups"}
-        pinned={pinned}
-        onTogglePin={onTogglePin}
-        onClose={onClose}
+        open={groupMenuOpen}
+        onClose={onCloseGroupMenu}
         onCreate={onCreateGroup}
         onSelect={onSelectGroup}
         onRemove={onRemoveGroup}

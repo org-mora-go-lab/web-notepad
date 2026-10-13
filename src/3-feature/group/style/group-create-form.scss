@@ -1,0 +1,71 @@
+@use "../../../5-shared/style/mixin";
+@use "../../../5-shared/style/variable" as v;
+
+.group {
+  .group-create-form {
+    display: flex;
+    gap: 6px;
+    margin: 4px 0;
+    padding: 8px 4px;
+    border-block: 1px solid v.$line;
+
+    input {
+      min-width: 0;
+      height: 34px;
+      flex: 1;
+      padding: 0 10px;
+      border: 1px solid v.$line;
+      outline: none;
+      background: var(--color-field);
+      color: v.$ink;
+      font: inherit;
+      font-size: v.font(14px);
+      @include mixin.touch-input-font(14px);
+
+      &:focus {
+        border-color: v.$hover-line;
+      }
+
+      &::placeholder {
+        color: v.$dim;
+      }
+    }
+
+    // Square, matching the 34px input height.
+    button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--color-creation-border);
+      background: transparent;
+      color: v.$ink;
+      cursor: pointer;
+
+      &:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .group-create-form {
+      input {
+        height: 34px * v.$mobile-scale;
+        font-size: v.font(14px * v.$mobile-scale);
+        @include mixin.touch-input-font(14px * v.$mobile-scale);
+      }
+
+      button {
+        width: 34px * v.$mobile-scale;
+        height: 34px * v.$mobile-scale;
+
+        svg {
+          width: 16px * v.$mobile-scale;
+          height: 16px * v.$mobile-scale;
+        }
+      }
+    }
+  }
+}
