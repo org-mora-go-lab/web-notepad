@@ -2,6 +2,12 @@
 
 // Right drawer shell; each panel sets its own `.side-panel-drawer` grid rows.
 .side-panel {
+  --panel-edge-shade: rgba(255, 255, 255, 0.16);
+
+  [data-theme="light"] & {
+    --panel-edge-shade: rgba(0, 0, 0, 0.22);
+  }
+
   // Transparent click catcher: closes the open panel without darkening the page.
   .side-panel-backdrop {
     position: fixed;
@@ -34,6 +40,18 @@
       box-shadow: -20px 0 60px rgba(0, 0, 0, 0.18);
       transform: translateX(0);
     }
+  }
+
+  // A narrow fading shade makes an unpinned drawer feel lifted off the workspace.
+  &:not(.is-pinned) .side-panel-drawer.is-open::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 100%;
+    width: 18px;
+    background: linear-gradient(to right, transparent, var(--panel-edge-shade));
+    pointer-events: none;
   }
 
   // Left-edge handle styled like the editor pane divider.

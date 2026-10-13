@@ -15,6 +15,7 @@ test("16. 패널을 고정하면 패널은 슬라이드 효과 없이 우측에 
 
   await expect(panel).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
   await expect(panel).toHaveCSS("transition-duration", "0s");
+  expect(await panel.evaluate((element) => getComputedStyle(element, "::before").content)).toBe("none");
   const panelBounds = (await panel.boundingBox())!;
   expect(panelBounds.x + panelBounds.width).toBeCloseTo(DESKTOP_VIEWPORT.width, 0);
   await expect.poll(async () => (await workspaceBounds(page)).width).toBeCloseTo(panelBounds.x, 0);
