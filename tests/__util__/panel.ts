@@ -1,14 +1,14 @@
 import { expect, type Page } from "@playwright/test";
 
-// The command showing the current group name: the left button on mobile, the right group button on PC.
+// The group button on the right of the bottom bar (icon + current group name).
 export const groupsCommand = (page: Page) =>
-  page.locator(".group-status-command:visible, .group-select-command:has(.group-select-name:visible)");
+  page.locator(".group-select-command");
 export const groupSelectCommand = (page: Page) => page.locator(".group-select-command");
 export const bookmarksCommand = (page: Page) =>
   page.locator('button[aria-controls="bookmarks-panel"]');
 export const closedCommand = (page: Page) =>
   page.locator('button[aria-controls="closed-panel"]');
-export const groupStatusName = (page: Page) => page.locator(".group-status-name:visible, .group-select-name:visible");
+export const groupStatusName = (page: Page) => page.locator(".group-select-name");
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 

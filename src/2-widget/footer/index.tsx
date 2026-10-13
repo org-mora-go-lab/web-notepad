@@ -1,11 +1,8 @@
 "use client";
 
 import { Bookmark, Layers } from "lucide-react";
-import { useRef } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
-
-import { useIsMultiline } from "./hook";
 
 type Props = {
   // A linked bookmark was created or synced today.
@@ -26,29 +23,10 @@ export function Footer({
   onToggleGroups,
 }: Props) {
   const { t } = useI18n();
-  const groupNameRef = useRef<HTMLSpanElement>(null);
-  const groupNameMultiline = useIsMultiline(groupNameRef, activeGroupName);
   return (
     <footer className="footer">
       <div className="status-meta">
         <div className="status-controls">
-          <button
-            className={`status-command group-status-command ${groupsOpen ? "is-active" : ""}`}
-            type="button"
-            onClick={onToggleGroups}
-            aria-expanded={groupsOpen}
-            aria-controls="groups-panel"
-            aria-label={`그룹 선택: ${activeGroupName}`}
-            title={activeGroupName}
-          >
-            <span
-              ref={groupNameRef}
-              className={`group-status-name ${groupNameMultiline ? "is-multiline" : ""}`}
-              title={activeGroupName}
-            >
-              {activeGroupName}
-            </span>
-          </button>
           <div className="status-scroll-area">
             <div className="status-actions">
               <button
@@ -77,11 +55,10 @@ export function Footer({
             onClick={onToggleGroups}
             aria-expanded={groupsOpen}
             aria-controls="groups-panel"
-            aria-label="그룹 선택"
-            title={t.selectGroup}
+            aria-label={`그룹 선택: ${activeGroupName}`}
+            title={activeGroupName}
           >
             <Layers size={16} strokeWidth={1.8} />
-            <span className="status-label group-select-label">{t.group}</span>
             <span className="status-label group-select-name" title={activeGroupName}>{activeGroupName}</span>
           </button>
         </div>

@@ -21,15 +21,13 @@ test("2. BOOKMARK는 개수를 표시하지 않고 오늘 변경된 북마크가
 
     const iconBounds = (await bookmarksCommand(page).locator("svg").boundingBox())!;
     const dotBounds = (await dot.boundingBox())!;
-    const labelBounds = (await bookmarksCommand(page).locator(".status-label").boundingBox())!;
     const iconBox = (await bookmarksCommand(page).locator(".status-icon").boundingBox())!;
     expect(dotBounds.x + dotBounds.width).toBeCloseTo(iconBox.x + iconBox.width + 5, 0);
     expect(dotBounds.y).toBeCloseTo(iconBox.y - 3, 0);
     expect(dotBounds.x).toBeGreaterThan(iconBounds.x + iconBounds.width / 2);
     if (viewport.width > 640) {
+      const labelBounds = (await bookmarksCommand(page).locator(".status-label").boundingBox())!;
       expect(dotBounds.x + dotBounds.width).toBeLessThanOrEqual(labelBounds.x);
-    } else {
-      expect(dotBounds.y + dotBounds.height).toBeLessThanOrEqual(labelBounds.y);
     }
   }
 });

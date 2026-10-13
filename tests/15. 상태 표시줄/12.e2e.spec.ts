@@ -8,12 +8,12 @@ test("12. PC와 모바일에서 상태 표시줄 높이와 패딩을 적용한�
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     const mobile = viewport.width <= 640;
-    const height = mobile ? 64 : 48;
+    const height = mobile ? 76.8 : 48;
     await expect(statusBar).toHaveCSS("padding-top", "6px");
-    await expect(statusBar).toHaveCSS("padding-right", mobile ? "0px" : "26px");
+    await expect(statusBar).toHaveCSS("padding-right", mobile ? "21px" : "26px");
     await expect(statusBar).toHaveCSS("padding-bottom", "6px");
-    await expect(statusBar).toHaveCSS("padding-left", mobile ? "0px" : "16px");
-    expect((await statusBar.boundingBox())!.height).toBe(height);
-    expect((await statusBar.boundingBox())!.y + height).toBe(viewport.height);
+    await expect(statusBar).toHaveCSS("padding-left", mobile ? "21px" : "16px");
+    expect((await statusBar.boundingBox())!.height).toBeCloseTo(height, 1);
+    expect((await statusBar.boundingBox())!.y + height).toBeCloseTo(viewport.height, 1);
   }
 });

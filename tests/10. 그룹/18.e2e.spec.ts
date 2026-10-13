@@ -13,9 +13,7 @@ test("18. 긴 그룹 이름은 전체 이름 툴팁·접근성 라벨로 제공�
   for (const viewport of [DESKTOP_VIEWPORT, MOBILE_VIEWPORT]) {
     await page.setViewportSize(viewport);
     await expect(groupName).toHaveAttribute("title", name);
-    if (viewport === MOBILE_VIEWPORT) {
-      await expect(groupsCommand(page)).toHaveAttribute("aria-label", `그룹 선택: ${name}`);
-    }
+    await expect(groupsCommand(page)).toHaveAttribute("aria-label", `그룹 선택: ${name}`);
     let checked = 0;
     const nameBox = (await groupName.boundingBox())!;
     for (const label of await otherLabels.all()) {
@@ -29,6 +27,6 @@ test("18. 긴 그룹 이름은 전체 이름 툴팁·접근성 라벨로 제공�
       expect(overlaps).toBe(false);
       checked += 1;
     }
-    expect(checked).toBeGreaterThan(0);
+    if (viewport === DESKTOP_VIEWPORT) expect(checked).toBeGreaterThan(0);
   }
 });

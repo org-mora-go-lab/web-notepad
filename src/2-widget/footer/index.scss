@@ -94,14 +94,12 @@
     display: none;
   }
 
-  // PC: the left group name is hidden; the group button on the right shows it instead.
-  .group-status-command,
-  .group-select-label {
-    display: none;
-  }
-
   .group-select-command {
     margin-left: auto;
+  }
+
+  .status-command > span.group-select-name {
+    font-size: v.font(16px);
   }
 
   .group-select-name {
@@ -112,91 +110,44 @@
     white-space: nowrap;
   }
 
-  .status-command > span.group-status-name {
-    font-size: v.font(16px);
-  }
-
-  .group-status-name {
-    min-width: 0;
-    max-width: 351px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   @media (max-width: 640px) {
-    .group-status-command {
-      display: flex;
+    min-height: 76.8px;
+    padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
+    font-size: v.font(12px);
+
+    .status-meta {
+      gap: 12px;
     }
 
-    .group-select-label {
-      display: inline;
+    // Mobile: icon-only BOOKMARK on the left, group icon + name on the right.
+    .status-command {
+      height: 61.2px;
+      gap: 8px;
+
+      svg {
+        width: 28.8px;
+        height: 28.8px;
+        flex-basis: 28.8px;
+      }
+
+      .status-icon {
+        height: 28.8px;
+        grid-template-columns: 28.8px;
+      }
     }
 
-    .group-select-name {
+    .bookmark-command .status-label {
       display: none;
     }
 
     .group-select-command {
-      margin-left: 0;
+      flex: 0 1 auto;
+      max-width: calc(100% - 52px);
     }
 
-    min-height: 64px;
-    padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
-    font-size: v.font(12px);
-
-    .status-command {
-      width: 100%;
-      height: 51px;
-      flex-direction: column;
-      gap: 4px;
-
-      > span:not(.status-separator) {
-        line-height: 16px;
-      }
-
-      .status-icon {
-        width: 24px;
-        display: block;
-      }
-    }
-
-    .status-meta {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) repeat(2, 72px);
-      gap: 0;
-    }
-
-    .group-status-command {
-      align-items: flex-start;
-      justify-content: center;
-      padding: 0 8px 0 16px;
-    }
-
-    .bookmark-command {
-      margin-left: 0;
-    }
-
-    // Long names wrap to two lines before the ellipsis.
-    .status-command > span.group-status-name {
+    .status-command > span.group-select-name {
+      max-width: none;
       font-size: v.font(17px);
-      line-height: v.font(20px);
-    }
-
-    .group-status-name {
-      display: -webkit-box;
-      max-width: 100%;
-      white-space: normal;
-      overflow-wrap: anywhere;
-      text-align: left;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-
-      // A single line sits 3px above center; two lines stay centered.
-      &:not(.is-multiline) {
-        position: relative;
-        top: -3px;
-      }
     }
   }
 }
