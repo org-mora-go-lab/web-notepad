@@ -1,0 +1,141 @@
+@use "../../../5-shared/style/mixin";
+@use "../../../5-shared/style/variable" as v;
+
+.group {
+  .group-list {
+    min-height: 0;
+    padding: 4px;
+    overflow-y: auto;
+  }
+
+  .group-item {
+    min-height: 39px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 4px 0 10px;
+
+    &:hover,
+    &.is-active {
+      background: v.$line;
+    }
+
+    .group-select {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      align-self: stretch;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    strong {
+      min-width: 0;
+      overflow: hidden;
+      color: v.$signal;
+      font-size: v.font(15px);
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.is-ungrouped {
+        color: v.$muted;
+      }
+    }
+
+    .group-actions {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 2px;
+    }
+
+    .group-actions button,
+    .group-edit-form button {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: v.$dim;
+      cursor: pointer;
+
+      &:hover:not(:disabled),
+      &:focus-visible {
+        outline: none;
+        color: v.$ink;
+      }
+
+      &.is-pinned {
+        color: v.$signal;
+
+        svg {
+          fill: currentColor;
+        }
+      }
+
+      &:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+    }
+  }
+
+  .group-edit-form {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+
+    input {
+      min-width: 0;
+      flex: 1;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid v.$line;
+      outline: none;
+      background: var(--color-field);
+      color: v.$ink;
+      font: inherit;
+      font-size: v.font(15px);
+      @include mixin.touch-input-font(15px);
+
+      &:focus {
+        border-color: v.$hover-line;
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .group-item {
+      min-height: 39px * v.$mobile-scale;
+
+      strong {
+        font-size: v.font(15px * v.$mobile-scale);
+      }
+
+      .group-actions button,
+      .group-edit-form button {
+        width: 28px * v.$mobile-scale;
+        height: 28px * v.$mobile-scale;
+
+        svg {
+          width: 14px * v.$mobile-scale;
+          height: 14px * v.$mobile-scale;
+        }
+      }
+    }
+
+    .group-edit-form input {
+      height: 30px * v.$mobile-scale;
+      font-size: v.font(15px * v.$mobile-scale);
+      @include mixin.touch-input-font(15px * v.$mobile-scale);
+    }
+  }
+}

@@ -1,25 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-import { BOTH_VIEWPORTS } from "../__constant__";
-import { seedStoredStateOnLoad } from "../__util__";
+import { openGlobalSearchPanel, seedStoredStateOnLoad } from "../__util__";
 import { createGlobalSearchState } from "./__fixture__";
 
-test("8. MENU의 SEARCH 항목은 PC와 모바일 모두 다른 MENU 항목과 같이 아이콘 오른쪽에 라벨을 표시한다", async ({ page }) => {
+test("8. 그룹·북마크·모든 그룹의 닫은 탭을 대소문자 구분 없이 부분 검색한다", async ({ page }) => {
   await seedStoredStateOnLoad(page, createGlobalSearchState());
-  const menu = page.getByRole("button", { name: "MENU", exact: true });
-  const command = page.locator(".additional-tools-search");
-  const closed = page.locator(".additional-tools-menu .closed-command");
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    await menu.click();
-    await expect(command).toContainText("SEARCH");
-    const iconBounds = (await command.locator("svg").boundingBox())!;
-    const labelBounds = (await command.locator("span").boundingBox())!;
-    expect(iconBounds.x + iconBounds.width).toBeLessThanOrEqual(labelBounds.x);
-    expect(iconBounds.y + iconBounds.height / 2).toBeCloseTo(labelBounds.y + labelBounds.height / 2, 0);
-    // Same row layout as CLOSED above it.
-    const closedIcon = (await closed.locator("svg").first().boundingBox())!;
-    expect(iconBounds.x).toBeCloseTo(closedIcon.x, 0);
-    await page.keyboard.press("Escape");
-  }
+  await openGlobalSearchPanel(page);
+  const search = page.getByRole("searchbox", { name: "전체 검색" });
+  await search.fill("wOr");
+  await expect(page.locator(".global-search-groups .global-search-result")).toHaveCount(1);
+  await expect(page.locator(".global-search-bookmarks .global-search-result")).toHaveCount(1);
+  await expect(page.locator(".global-search-closed .global-search-result")).toHaveCount(1);
+  await search.fill("gOaLs");
+  await expect(page.locator(".global-search-bookmarks .global-search-result")).toHaveCount(1);
+  await search.fill("aRcHiVeD");
+  await expect(page.locator(".global-search-closed .global-search-result")).toHaveCount(2);
 });

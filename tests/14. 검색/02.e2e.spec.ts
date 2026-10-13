@@ -1,23 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import { bookmarksCommand, restoreStoredBookmark } from "../__util__";
+import { bookmarksCommand } from "../__util__";
 
-test("2. 북마크 패널은 제목과 내용을 대소문자 구분 없이 부분 검색하며 placeholder는 Search bookmarks다", async ({ page }) => {
-  await restoreStoredBookmark(page, {});
+test("2. 북마크 검색창은 헤더 아래에 표시하며 위쪽 여백 14px, 아래쪽 여백 6px를 적용한다", async ({ page }) => {
+  await page.goto("/");
   await bookmarksCommand(page).click();
   const search = page.getByRole("searchbox", { name: "북마크 검색" });
-  const items = page.locator(".bookmark-item");
-  await expect(search).toHaveAttribute("placeholder", "Search bookmarks");
-  await expect(items).toHaveCount(1);
-
-  await search.fill("OLD BOOK");
-  await expect(items).toHaveCount(1);
-  await search.fill("TWO");
-  await expect(items).toHaveCount(1);
-  await search.fill("hre");
-  await expect(items).toHaveCount(1);
-  await search.fill("missing");
-  await expect(items).toHaveCount(0);
-  await search.fill("");
-  await expect(items).toHaveCount(1);
+  await expect(search).toBeVisible();
+  const margins = await search.evaluate((element) => {
+    const style = getComputedStyle(element.closest("label")!);
+    return [style.marginTop, style.marginBottom];
+  });
+  expect(margins).toEqual(["14px", "6px"]);
 });

@@ -16,10 +16,12 @@ type Props = {
   tabColorCycle: TabColor[];
   groups: GroupEntry[];
   activeGroupId: string;
+  groupMenuOpen: boolean;
   closedTabs: ClosedTabEntry[];
   closedSearchQuery: string;
   globalSearchQuery: string;
   onClose: () => void;
+  onCloseGroupMenu: () => void;
   onClosedSearchQueryChange: (query: string) => void;
   onGlobalSearchQueryChange: (query: string) => void;
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
@@ -48,10 +50,12 @@ export function Panel({
   tabColorCycle,
   groups,
   activeGroupId,
+  groupMenuOpen,
   closedTabs,
   closedSearchQuery,
   globalSearchQuery,
   onClose,
+  onCloseGroupMenu,
   onClosedSearchQueryChange,
   onGlobalSearchQueryChange,
   onOpenBookmark,
@@ -100,10 +104,8 @@ export function Panel({
       <Group
         groups={groups}
         activeGroupId={activeGroupId}
-        open={openPanel === "groups"}
-        pinned={pinned}
-        onTogglePin={onTogglePin}
-        onClose={onClose}
+        open={groupMenuOpen}
+        onClose={onCloseGroupMenu}
         onCreate={onCreateGroup}
         onSelect={onSelectGroup}
         onRemove={onRemoveGroup}

@@ -9,7 +9,7 @@ export { createPinnedAndBookmarkedTabs } from "./create-pinned-and-bookmarked-ta
 export { expectCssPx } from "./css-px";
 export { confirmTabDelete, deleteTabPopup } from "./delete-tab-popup";
 export { divider, dividerDistanceFromCenter, dragDividerBy, dragDividerTo } from "./divider";
-export { chooseGroupAction, groupMenuButton } from "./group-menu";
+export { chooseGroupAction, groupMenu } from "./group-menu";
 export { expectSelectedLines, lineButtons } from "./line";
 export {
   bookmarksCommand,

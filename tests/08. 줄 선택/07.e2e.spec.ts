@@ -18,7 +18,7 @@ test("7. 그룹 전환과 분할 패널 이동 후에도 선택한 줄을 복원
   await groupsCommand(page).click();
   await createGroup(page, "Work");
   await expectSelectedLines(page, [false]);
-  await page.getByRole("button", { name: "그룹 닫기" }).click();
+  await page.keyboard.press("Escape");
   await switchGroup(page, "Ungrouped");
   await expectSelectedLines(page, [false, true, true]);
 

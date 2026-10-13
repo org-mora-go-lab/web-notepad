@@ -21,7 +21,6 @@ test("6. 터치 기기에서는 에디터·검색창·그룹 이름 입력란 �
 
   await groupsCommand(page).click();
   await createGroup(page, "Alpha");
-  expect(await fontSize("#groups-panel .search-field input")).toBeGreaterThanOrEqual(16);
   expect(await fontSize(".group-create-form input")).toBeGreaterThanOrEqual(16);
   await chooseGroupAction(page, "Alpha", "수정");
   await expect(page.getByRole("textbox", { name: "Alpha 그룹 이름 수정" })).toBeVisible();

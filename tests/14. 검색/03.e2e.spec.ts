@@ -1,31 +1,34 @@
 import { expect, test } from "@playwright/test";
 
-import { groupsCommand, seedStoredStateOnLoad } from "../__util__";
+import { bookmarksCommand } from "../__util__";
 
-test("3. 그룹 검색 결과에 Ungrouped가 포함되면 맨 아래에 둔다", async ({ page }) => {
-  const groups = [
-    { id: "ungrouped", name: "Ungrouped", createdAt: 0 },
-    { id: "zulu", name: "Zulu", createdAt: 1 },
-    { id: "aardvark", name: "Aardvark", createdAt: 2 },
-    { id: "burger", name: "Burger", createdAt: 3 },
-  ].map(({ id, name, createdAt }, index) => ({
-    id,
-    name,
-    createdAt,
-    tabs: [{ id: `tab-${index + 1}`, title: name, content: "" }],
-    bookmarks: [],
-    activeTabId: `tab-${index + 1}`,
-  }));
-  await seedStoredStateOnLoad(page, { activeGroupId: "ungrouped", groups });
+test("3. 검색어 지우기 아이콘을 패널 닫기 버튼과 같은 옅은 회색으로 표시한다", async ({ page }) => {
+  await page.goto("/");
+  await bookmarksCommand(page).click();
 
-  await groupsCommand(page).click();
-  const names = page.locator(".group-item .group-select strong");
-  const search = page.getByRole("searchbox", { name: "그룹 검색" });
+  const search = page.getByRole("searchbox", { name: "북마크 검색" });
+  await search.fill("검색어");
 
-  await search.fill("r");
-  await expect(names).toHaveText(["Aardvark", "Burger", "Ungrouped", "All Group"]);
-  await search.fill("U");
-  await expect(names).toHaveText(["Burger", "Zulu", "Ungrouped", "All Group"]);
-  await search.fill("a");
-  await expect(names).toHaveText(["Aardvark", "All Group"]);
+  await expect
+    .poll(() =>
+      search.evaluate(() => {
+        const rules = Array.from(document.styleSheets).flatMap((sheet) => {
+          try {
+            return Array.from(sheet.cssRules);
+          } catch {
+            return [];
+          }
+        });
+        const cancelButtonRule = rules.find(
+          (rule) =>
+            rule instanceof CSSStyleRule &&
+            rule.selectorText.includes("::-webkit-search-cancel-button"),
+        );
+
+        return cancelButtonRule instanceof CSSStyleRule
+          ? cancelButtonRule.style.filter
+          : "";
+      }),
+    )
+    .toBe("brightness(0.4)");
 });

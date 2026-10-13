@@ -31,20 +31,20 @@ export const openShortcutsPanel = (page: Page) => openPanel(page, "shortcuts-pan
 export const openSettingsPanel = (page: Page) => openPanel(page, "settings-panel");
 export const openGlobalSearchPanel = (page: Page) => openPanel(page, "global-search-panel");
 
-// Creates a group from the open groups panel.
+// Creates a group from the open group dropdown.
 export async function createGroup(page: Page, name: string) {
   await page.getByRole("textbox", { name: "새 그룹 이름" }).fill(name);
   await page.getByRole("button", { name: "그룹 생성" }).click();
 }
 
-// Opens the groups panel, creates the groups, and closes the panel again.
+// Opens the group dropdown, creates the groups, and closes it again.
 export async function createGroups(page: Page, ...names: string[]) {
   await groupsCommand(page).click();
   for (const name of names) await createGroup(page, name);
-  await page.getByRole("button", { name: "그룹 닫기" }).click();
+  await page.keyboard.press("Escape");
 }
 
-// Opens the groups panel and selects the group with the exact name.
+// Opens the group dropdown and selects the group with the exact name.
 export async function switchGroup(page: Page, name: string) {
   await groupsCommand(page).click();
   await page.locator(".group-item").getByRole("button", { name, exact: true }).click();

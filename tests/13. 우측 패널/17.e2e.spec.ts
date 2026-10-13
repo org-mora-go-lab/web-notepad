@@ -7,12 +7,12 @@ import { closePanelWithX, panelPinButton, workspaceBounds } from "./__util__";
 test("17. 고정한 패널을 X 버튼으로 닫거나 고정을 해제하면 body가 화면 전체 너비로 돌아온다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
-  await openPanel(page, "groups-panel");
-  await panelPinButton(page, "groups-panel").click();
+  await openPanel(page, "dashboard-panel");
+  await panelPinButton(page, "dashboard-panel").click();
   await expect.poll(async () => (await workspaceBounds(page)).width).toBeLessThan(DESKTOP_VIEWPORT.width);
 
-  await closePanelWithX(page, "groups-panel");
-  await expect(page.locator("#groups-panel")).toHaveAttribute("aria-hidden", "true");
+  await closePanelWithX(page, "dashboard-panel");
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute("aria-hidden", "true");
   await expect.poll(async () => (await workspaceBounds(page)).width).toBe(DESKTOP_VIEWPORT.width);
 
   // The pin stays on, so the next panel opens docked.

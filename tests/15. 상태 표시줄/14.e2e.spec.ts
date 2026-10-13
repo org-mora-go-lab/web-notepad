@@ -36,9 +36,13 @@ test("14. PC와 모바일 하단 메뉴는 스크롤 없이 표시되고 각 패
     await command.click();
     await expect(command).toHaveAttribute("aria-expanded", "true");
     await expect(command).toHaveClass(/is-active/);
-    await expect(page.locator(`#${panelId}`)).toHaveAttribute("aria-hidden", "false");
+    // The group button opens a dropdown (removed when closed); the others open side panels.
+    const target = page.locator(`#${panelId}`);
+    if (panelId === "groups-menu") await expect(target).toBeVisible();
+    else await expect(target).toHaveAttribute("aria-hidden", "false");
     await page.keyboard.press("Escape");
     await expect(command).toHaveAttribute("aria-expanded", "false");
-    await expect(page.locator(`#${panelId}`)).toHaveAttribute("aria-hidden", "true");
+    if (panelId === "groups-menu") await expect(target).toHaveCount(0);
+    else await expect(target).toHaveAttribute("aria-hidden", "true");
   }
 });

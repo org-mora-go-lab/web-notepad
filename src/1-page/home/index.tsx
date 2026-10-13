@@ -2,7 +2,7 @@
 
 import "./index.scss";
 
-import { type CSSProperties, useEffect } from "react";
+import { type CSSProperties, useCallback, useEffect, useState } from "react";
 
 import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
@@ -47,14 +47,17 @@ export function Home() {
     togglePanelPin,
     columns,
     removeBookmark,
-    createGroup,
+    createGroupAndRecord,
     renameGroup,
     toggleGroupPin,
-    removeGroup,
+    removeGroupAndRecord,
     fontScale,
     language,
     panelSlide,
   } = useHome();
+
+  const [groupMenuOpen, setGroupMenuOpen] = useState(false);
+  const closeGroupMenu = useCallback(() => setGroupMenuOpen(false), []);
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -108,10 +111,10 @@ export function Home() {
             bookmarksOpen={openPanel === "bookmarks"}
             dashboardOpen={openPanel === "dashboard"}
             activeGroupName={activeGroupName}
-            groupsOpen={openPanel === "groups"}
+            groupsOpen={groupMenuOpen}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
-            onToggleGroups={() => toggleSidePanel("groups")}
+            onToggleGroups={() => setGroupMenuOpen((current) => !current)}
           />
         </section>
 
@@ -124,6 +127,8 @@ export function Home() {
           tabColorCycle={tabColorCycle}
           groups={groups}
           activeGroupId={activeGroupId}
+          groupMenuOpen={groupMenuOpen}
+          onCloseGroupMenu={closeGroupMenu}
           closedTabs={closedTabs}
           closedSearchQuery={closedSearchQuery}
           globalSearchQuery={globalSearchQuery}
@@ -136,9 +141,9 @@ export function Home() {
           onChangeTabStatus={setTabStatus}
           onUnpinTab={togglePin}
           onChangeClosedTabStatus={moveClosedTabToStatus}
-          onCreateGroup={createGroup}
+          onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}
-          onRemoveGroup={removeGroup}
+          onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
           onToggleGroupPin={toggleGroupPin}
           onRestoreClosedTab={restoreClosedTabAndClosePanel}

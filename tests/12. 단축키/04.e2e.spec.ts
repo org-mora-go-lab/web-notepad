@@ -31,16 +31,8 @@ test("4. 편집기 외의 입력 요소에서 Cmd+A는 즉시 해당 입력 내�
 
   await page.getByRole("button", { name: "북마크 닫기" }).click();
   await groupsCommand(page).click();
-  const groupSearch = page.locator(
-    '#groups-panel input[aria-label="그룹 검색"]',
-  );
-  const groupQuery = "그룹 검색어";
-  await groupSearch.fill(groupQuery);
-  await page.keyboard.press("Meta+a");
-  await expectImmediateInputSelection(groupSearch, groupQuery.length);
-
   const groupName = page.locator(
-    '#groups-panel input[aria-label="새 그룹 이름"]',
+    '#groups-menu input[aria-label="새 그룹 이름"]',
   );
   const newGroupName = "새 그룹 이름";
   await groupName.fill(newGroupName);
