@@ -16,4 +16,6 @@ test("9. 대시보드 내부 글자를 1.2배로 표시하고 개수의 오른�
   await expect(card.locator(".dashboard-card-preview")).toHaveCSS("font-size", "15.6px");
   await expect(panel.locator(".dashboard-count").first()).toHaveCSS("font-size", "14.4px");
   await expect(panel.locator(".dashboard-count").first()).toHaveCSS("padding-right", "10px");
+  await expect(panel.locator(".dashboard-column h3").first()).toHaveCSS("padding-top", "5px");
+  await expect(panel.locator(".dashboard-column h3").first()).toHaveCSS("padding-bottom", "5px");
 });

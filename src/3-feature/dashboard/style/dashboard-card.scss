@@ -4,7 +4,7 @@
   .dashboard-card {
     min-width: 0;
     border: 1px solid v.$line;
-    border-left: 3px solid var(--dashboard-accent, v.$line);
+    border-radius: 6px;
     background: var(--color-field);
     cursor: grab;
 

@@ -7,6 +7,7 @@ test("2. 현재 그룹의 탭을 탭 색상(Gray·Green·Purple)에 따라 Todo�
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
   await expect(dashboardPanel(page).locator(".dashboard-column h3")).toHaveText(["Todo1", "WIP1", "Closed1"]);
+  await expect(dashboardPanel(page).locator(".dashboard-column h3").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   await expect(dashboardColumn(page, "todo")).toContainText("Alpha task");
   await expect(dashboardColumn(page, "todo")).toContainText("alpha body");
   await expect(dashboardColumn(page, "in-progress")).toContainText("Beta task");
