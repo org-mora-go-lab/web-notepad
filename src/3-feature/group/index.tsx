@@ -27,10 +27,9 @@ const ANCHOR_SELECTOR = ".group-select-command";
 // Group switcher dropdown that opens above the bottom bar's group button, styled like the tab context menu.
 // Pick a group, or pin / rename / delete / create one right in the list.
 // Portaled to the body (inside a `.group` wrapper for styles) like the other floating menus.
-export function Group({
+function GroupMenu({
   groups,
   activeGroupId,
-  open,
   onClose,
   onCreate,
   onSelect,
@@ -41,19 +40,22 @@ export function Group({
   const { t } = useI18n();
   const menuRef = useRef<HTMLDivElement>(null);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
+  // The row whose pin / edit / delete buttons are shown (opened with its … button).
+  const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
   // The delete button that opened the popup, focused again when the popup is cancelled.
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
-  // The virtual All Group always comes last, below Ungrouped.
+  // The virtual All Group comes first, Ungrouped right below it, then the other groups (pinned first).
   const rows: Array<Pick<GroupEntry, "id" | "name" | "pinned">> = [
-    ...[...groups].sort(compareGroups),
     { id: ALL_GROUP_ID, name: ALL_GROUP_NAME, pinned: false },
+    ...groups.filter((group) => group.id === UNGROUPED_GROUP_ID),
+    ...[...groups].sort(compareGroups).filter((group) => group.id !== UNGROUPED_GROUP_ID),
   ];
 
   useLayoutEffect(() => {
     const menu = menuRef.current;
     const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
-    if (!open || !menu || !anchor) return;
+    if (!menu || !anchor) return;
     const position = () => {
       const rect = anchor.getBoundingClientRect();
       menu.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - menu.offsetWidth - 8))}px`;
@@ -62,10 +64,10 @@ export function Group({
     position();
     window.addEventListener("resize", position);
     return () => window.removeEventListener("resize", position);
-  }, [open]);
+  }, []);
 
   useEffect(() => {
-    if (!open || groupToDelete) return;
+    if (groupToDelete) return;
     const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
@@ -83,9 +85,7 @@ export function Group({
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, groupToDelete, onClose]);
-
-  if (!open) return null;
+  }, [groupToDelete, onClose]);
 
   return createPortal(
     <div className="group">
@@ -101,6 +101,8 @@ export function Group({
                 pinned={group.pinned}
                 editable={!special}
                 muted={special}
+                actionsOpen={actionsGroupId === group.id}
+                onToggleActions={() => setActionsGroupId((current) => (current === group.id ? null : group.id))}
                 onSelect={() => {
                   onSelect(group.id);
                   onClose();
@@ -136,4 +138,9 @@ export function Group({
     </div>,
     document.body,
   );
+}
+
+// The menu content mounts only while open, so row / popup state resets every time it closes.
+export function Group({ open, ...props }: Props) {
+  return open ? <GroupMenu open={open} {...props} /> : null;
 }

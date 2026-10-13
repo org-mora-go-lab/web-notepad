@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Pencil, Pin, Trash2, X } from "lucide-react";
+import { Check, Ellipsis, Pencil, Pin, Trash2, X } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -12,6 +12,9 @@ type Props = {
   // The default and virtual groups only support selecting.
   editable: boolean;
   muted: boolean;
+  // Pin / edit / delete appear in place of the … button once it is pressed.
+  actionsOpen: boolean;
+  onToggleActions: () => void;
   onSelect: () => void;
   onRename: (name: string) => void;
   onTogglePin: () => void;
@@ -19,7 +22,7 @@ type Props = {
 };
 
 // One group row: click the name to switch; pin / edit / delete are inline icon buttons.
-export function GroupItem({ name, active, pinned, editable, muted, onSelect, onRename, onTogglePin, onDelete }: Props) {
+export function GroupItem({ name, active, pinned, editable, muted, actionsOpen, onToggleActions, onSelect, onRename, onTogglePin, onDelete }: Props) {
   const { t } = useI18n();
   const [editingName, setEditingName] = useState<string | null>(null);
 
@@ -66,7 +69,21 @@ export function GroupItem({ name, active, pinned, editable, muted, onSelect, onR
       <button className="group-select" type="button" aria-pressed={active} title={name} onClick={onSelect}>
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>
-      {editable && (
+      {editable && !actionsOpen && (
+        <div className="group-actions">
+          {pinned && <Pin className="group-pin-indicator" size={14} role="img" aria-label="고정된 그룹" />}
+          <button
+            type="button"
+            aria-label={`${name} 그룹 메뉴`}
+            aria-expanded={false}
+            title={t.groupActions}
+            onClick={onToggleActions}
+          >
+            <Ellipsis size={14} />
+          </button>
+        </div>
+      )}
+      {editable && actionsOpen && (
         <div className="group-actions">
           <button
             className={`group-pin ${pinned ? "is-pinned" : ""}`}
@@ -74,11 +91,17 @@ export function GroupItem({ name, active, pinned, editable, muted, onSelect, onR
             aria-label={`${name} 그룹 ${pinned ? "고정 해제" : "고정"}`}
             aria-pressed={pinned}
             title={pinned ? t.unpin : t.pin}
-            onClick={onTogglePin}
+            onClick={() => {
+              onTogglePin();
+              onToggleActions();
+            }}
           >
             <Pin size={14} />
           </button>
-          <button type="button" aria-label={`${name} 그룹 수정`} title={t.edit} onClick={() => setEditingName(name)}>
+          <button type="button" aria-label={`${name} 그룹 수정`} title={t.edit} onClick={() => {
+              onToggleActions();
+              setEditingName(name);
+            }}>
             <Pencil size={14} />
           </button>
           <button

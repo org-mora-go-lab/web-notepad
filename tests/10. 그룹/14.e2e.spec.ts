@@ -11,28 +11,28 @@ test("14. 그룹 생성·이름 수정 직후와 새로고침 시에도 같은 �
 
   await createGroup(page, "Beta");
   await expect(names).toHaveText([
+    "All Group",
+    "Ungrouped",
     "가방",
     "나무",
     "다람쥐",
     "Alpha",
     "Beta",
     "Zulu",
-    "Ungrouped",
-    "All Group",
   ]);
 
   await chooseGroupAction(page, "Zulu", "수정");
   await page.getByRole("textbox", { name: "Zulu 그룹 이름 수정" }).fill("Aardvark");
   await page.getByRole("button", { name: "그룹 수정 저장" }).click();
   const finalOrder = [
+    "All Group",
+    "Ungrouped",
     "가방",
     "나무",
     "다람쥐",
     "Aardvark",
     "Alpha",
     "Beta",
-    "Ungrouped",
-    "All Group",
   ];
   await expect(names).toHaveText(finalOrder);
 

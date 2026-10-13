@@ -9,8 +9,8 @@ test("5. 기본 그룹을 제외한 그룹은 인라인 수정 버튼으로 이�
   await groupsCommand(page).click();
   await createGroup(page, "Work");
 
-  await expect(page.getByRole("button", { name: "Ungrouped 그룹 수정" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Work 그룹 수정", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ungrouped 그룹 메뉴" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Work 그룹 메뉴", exact: true })).toBeVisible();
   await chooseGroupAction(page, "Work", "수정");
   const nameInput = page.getByRole("textbox", { name: "Work 그룹 이름 수정" });
   await expect(nameInput).toHaveValue("Work");

@@ -53,6 +53,12 @@
       gap: 2px;
     }
 
+    .group-pin-indicator {
+      align-self: center;
+      color: v.$signal;
+      fill: currentColor;
+    }
+
     .group-actions button,
     .group-edit-form button {
       width: 28px;

@@ -6,7 +6,7 @@ import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "./__util__";
 test("11. All Group의 대시보드는 모든 그룹의 탭을 모아 보여주고 소속 그룹의 상태를 바꾼다", async ({ page }) => {
   await seedDashboardTabs(page);
   await groupsCommand(page).click();
-  await page.locator(".group-item").last().getByRole("button", { name: "All Group", exact: true }).click();
+  await page.locator(".group-item").first().getByRole("button", { name: "All Group", exact: true }).click();
   await openPanel(page, "dashboard-panel");
 
   await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(4);
