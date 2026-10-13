@@ -1,6 +1,6 @@
 import type { StateCreator } from "zustand";
 
-import { UNGROUPED_GROUP_ID } from "../constant";
+import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState } from "../type";
 import { assignTabToPane, normalizeLayout } from "../util";
 import { allocateTab, createGroupEntry } from "./workspace";
@@ -124,7 +124,7 @@ export const createGroupActions: StateCreator<
     }),
   selectGroup: (groupId) =>
     set((state) =>
-      state.groups.some((group) => group.id === groupId)
+      groupId === ALL_GROUP_ID || state.groups.some((group) => group.id === groupId)
         ? { activeGroupId: groupId }
         : state,
     ),

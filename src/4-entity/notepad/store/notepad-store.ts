@@ -13,6 +13,8 @@ import { createTabActions } from "./tab-actions";
 import { createGroupEntry } from "./workspace";
 
 export {
+  ALL_GROUP_ID,
+  ALL_GROUP_NAME,
   MAX_SPLIT_RATIO,
   MIN_SPLIT_RATIO,
   UNGROUPED_GROUP_ID,
@@ -31,6 +33,7 @@ export const useNotepadStore = create<NotepadState>()(
       activeGroupId: UNGROUPED_GROUP_ID,
       groups: [createGroupEntry(UNGROUPED_GROUP_ID, "Ungrouped", 0, createNoteTab(1))],
       closedTabs: [],
+      allGroupActiveTabId: null,
       settings: DEFAULT_SETTINGS,
     }),
     {

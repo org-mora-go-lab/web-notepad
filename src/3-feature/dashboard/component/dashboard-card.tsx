@@ -7,6 +7,7 @@ import { useI18n } from "@/src/5-shared/hook";
 
 type Props = {
   tab: NoteTab;
+  groupName?: string;
   dragging: boolean;
   onOpen: (tabId: string) => void;
   onDragStart: (tabId: string, event: DragEvent<HTMLElement>) => void;
@@ -20,7 +21,7 @@ const getPreview = (tab: NoteTab) => {
   return titleIndex < 0 ? "" : lines.slice(titleIndex + 1).join("\n").trim();
 };
 
-export function DashboardCard({ tab, dragging, onOpen, onDragStart, onDragEnd }: Props) {
+export function DashboardCard({ tab, groupName, dragging, onOpen, onDragStart, onDragEnd }: Props) {
   const { t } = useI18n();
   const preview = getPreview(tab);
 
@@ -34,6 +35,7 @@ export function DashboardCard({ tab, dragging, onOpen, onDragStart, onDragEnd }:
     >
       <button className="dashboard-card-open" type="button" onClick={() => onOpen(tab.id)}>
         <strong>{tab.content.trim() ? tab.title : t.emptyNote}</strong>
+        {groupName && <span className="dashboard-card-group">{groupName}</span>}
         {preview && <span className="dashboard-card-preview">{preview}</span>}
       </button>
     </article>

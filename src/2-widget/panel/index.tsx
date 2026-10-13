@@ -4,6 +4,7 @@ import type { ComponentProps } from "react";
 
 import { Bookmark, Closed, Dashboard, GlobalSearch, Group, Setting, Shortcut } from "@/src/3-feature";
 import type { BookmarkEntry, ClosedTabEntry, GroupEntry, NoteTab, TabColor } from "@/src/4-entity/notepad";
+import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
 import type { ViewPanel } from "@/src/5-shared";
 
 type Props = {
@@ -81,6 +82,8 @@ export function Panel({
       <Dashboard
         groupName={activeGroupName}
         tabs={activeGroupTabs}
+        groups={groups}
+        showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
         open={openPanel === "dashboard"}
         pinned={pinned}

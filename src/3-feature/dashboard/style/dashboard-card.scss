@@ -33,6 +33,14 @@
     }
   }
 
+  .dashboard-card-group {
+    overflow: hidden;
+    color: var(--color-secondary);
+    font-size: v.font(12px * 1.2);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .dashboard-card-preview {
     display: -webkit-box;
     overflow: hidden;

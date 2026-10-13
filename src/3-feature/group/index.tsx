@@ -4,7 +4,7 @@ import { Check, EllipsisVertical, Pin, Plus, X } from "lucide-react";
 import { type FormEvent, useRef, useState } from "react";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
-import { compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import { ALL_GROUP_ID, ALL_GROUP_NAME, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
@@ -50,9 +50,15 @@ export function Group({
   // The ⋮ button that opened the delete popup, focused again when the popup is cancelled.
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
-  const filteredGroups = groups
-    .filter((group) => matchesSearchQuery(searchQuery, group.name))
-    .sort(compareGroups);
+  // The virtual All Group always comes last, below Ungrouped.
+  const allGroup: Pick<GroupEntry, "id" | "name" | "pinned"> = {
+    id: ALL_GROUP_ID,
+    name: ALL_GROUP_NAME,
+    pinned: false,
+  };
+  const filteredGroups = [...[...groups].sort(compareGroups), allGroup].filter((group) =>
+    matchesSearchQuery(searchQuery, group.name),
+  );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -157,7 +163,7 @@ export function Group({
                   {group.pinned && (
                     <Pin className="group-pin-indicator" size={14} role="img" aria-label="고정된 그룹" />
                   )}
-                  {group.id !== UNGROUPED_GROUP_ID && (
+                  {group.id !== UNGROUPED_GROUP_ID && group.id !== ALL_GROUP_ID && (
                     <button
                       className="group-menu-trigger"
                       type="button"

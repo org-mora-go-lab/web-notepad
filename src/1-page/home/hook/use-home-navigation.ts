@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
+  ALL_GROUP_ID,
   getActiveGroup,
   getPaneActiveTabId,
   getPaneTabs,
@@ -50,11 +51,14 @@ export function useHomeNavigation({ hydrated, panelPinned, addTabToPane }: Optio
 
   const restoreView = useCallback((snapshot: ViewSnapshot) => {
     const state = useNotepadStore.getState();
-    const targetGroup =
-      state.groups.find((group) => group.id === snapshot.groupId) ?? state.groups[0];
-    if (!targetGroup) return;
+    const exists =
+      snapshot.groupId === ALL_GROUP_ID || state.groups.some((group) => group.id === snapshot.groupId);
+    const fallbackGroupId = state.groups[0]?.id;
+    if (!exists && !fallbackGroupId) return;
 
-    state.selectGroup(targetGroup.id);
+    state.selectGroup(exists ? snapshot.groupId : fallbackGroupId);
+    const targetGroup = getActiveGroup(useNotepadStore.getState());
+    if (!targetGroup) return;
     const snapshotTabIds: Record<PaneId, string | null> = {
       left: snapshot.leftTabId,
       right: snapshot.rightTabId,

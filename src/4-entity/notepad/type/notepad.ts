@@ -87,6 +87,8 @@ export type NotepadState = {
   groups: GroupEntry[];
   activeGroupId: string;
   closedTabs: ClosedTabEntry[];
+  // Selected tab of the read-only All Group view.
+  allGroupActiveTabId: string | null;
   settings: NotepadSettings;
   setFontScale: (fontScale: number) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;

@@ -1,5 +1,6 @@
 import type { StateCreator } from "zustand";
 
+import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState } from "../type";
 import {
   assignTabToPane,
@@ -19,6 +20,7 @@ import {
   allocateTab,
   EMPTY_SPLIT_LAYOUT,
   getActiveGroup,
+  getTabGroup,
   patchTabAndBookmark,
   updateGroup,
 } from "./workspace";
@@ -44,11 +46,15 @@ export const createTabActions: StateCreator<
 > = (set, get) => ({
   addTab: (pane = "left") => {
     const state = get();
-    const group = getActiveGroup(state);
+    // The All Group adds new tabs to Ungrouped.
+    const inAllGroup = state.activeGroupId === ALL_GROUP_ID;
+    const group = inAllGroup
+      ? state.groups.find((item) => item.id === UNGROUPED_GROUP_ID)
+      : getActiveGroup(state);
     if (!group) return;
     const { tab, nextTabNumber } = allocateTab(state);
     // A pane that is not open falls back to the left pane.
-    const target = getPaneTabs(group, pane).length > 0 ? pane : "left";
+    const target = !inAllGroup && getPaneTabs(group, pane).length > 0 ? pane : "left";
     const bottom = target === "left-bottom" || target === "right-bottom";
     const rowRatioKey = getPaneColumn(target) === "right" ? "rightRowRatio" : "leftRowRatio";
 
@@ -63,19 +69,24 @@ export const createTabActions: StateCreator<
         };
       }),
       nextTabNumber,
+      ...(inAllGroup ? { allGroupActiveTabId: tab.id } : {}),
     });
   },
   selectTab: (tabId) =>
     set((state) => {
+      if (state.activeGroupId === ALL_GROUP_ID) {
+        const exists = state.groups.some((group) => group.tabs.some((tab) => tab.id === tabId));
+        return exists ? { allGroupActiveTabId: tabId } : state;
+      }
       const group = getActiveGroup(state);
       if (!group || !group.tabs.some((tab) => tab.id === tabId)) return state;
       return updateGroup(state, group.id, (current) => activateTab(current, tabId));
     }),
   updateTab: (tabId, content) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = getTabGroup(state, tabId);
       const tab = group?.tabs.find((item) => item.id === tabId);
-      if (!tab) return state;
+      if (!group || !tab) return state;
 
       const nextContent = typeof content === "string" ? content : "";
       const nextTitle = getTitleFromContent(nextContent, tab.title);
@@ -90,7 +101,7 @@ export const createTabActions: StateCreator<
     }),
   setTabSelectedLines: (tabId, selectedLines) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = getTabGroup(state, tabId);
       const tab = group?.tabs.find((item) => item.id === tabId);
       if (!group || !tab) return state;
       const nextLines = sanitizeSelectedLines(selectedLines, tab.content);
@@ -107,7 +118,7 @@ export const createTabActions: StateCreator<
     }),
   moveTab: (fromTabId, toTabId) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = getTabGroup(state, fromTabId);
       if (!group) return state;
       const from = group.tabs.findIndex((tab) => tab.id === fromTabId);
       const to = group.tabs.findIndex((tab) => tab.id === toTabId);
@@ -123,7 +134,7 @@ export const createTabActions: StateCreator<
     }),
   cycleTabColor: (tabId) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = getTabGroup(state, tabId);
       const tab = group?.tabs.find((item) => item.id === tabId);
       if (!group || !tab) return state;
       const cycle = state.settings.tabColorCycle;
@@ -135,10 +146,10 @@ export const createTabActions: StateCreator<
     }),
   togglePin: (tabId) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = getTabGroup(state, tabId);
       if (!group) return state;
       const tab = group.tabs.find((item) => item.id === tabId);
-      if (!tab) return state;
+      if (!group || !tab) return state;
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(current, tabId, { pinned: !tab.pinned }),
       );
@@ -146,8 +157,8 @@ export const createTabActions: StateCreator<
   // Moving a tab to a dashboard column gives it that column's tab color.
   setTabStatus: (tabId, status) =>
     set((state) => {
-      const group = getActiveGroup(state);
-      if (!group || !group.tabs.some((tab) => tab.id === tabId)) return state;
+      const group = state.groups.find((item) => item.tabs.some((tab) => tab.id === tabId));
+      if (!group) return state;
       const tabColor = getStatusColor(status, state.settings.tabColorCycle);
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(current, tabId, { tabColor }, { tabColor, updatedAt: Date.now() }),
@@ -155,9 +166,9 @@ export const createTabActions: StateCreator<
     }),
   closeTab: (tabId) => {
     const state = get();
-    const group = getActiveGroup(state);
+    const group = getTabGroup(state, tabId);
     const tab = group?.tabs.find((item) => item.id === tabId);
-    if (!tab || tab.pinned) return;
+    if (!group || !tab || tab.pinned) return;
     if (isSubstantialContent(tab.content) && !tab.bookmarked) {
       set({
         closedTabs: [

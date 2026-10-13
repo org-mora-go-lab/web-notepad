@@ -10,7 +10,7 @@ test("1. 그룹 패널은 그룹 이름을 대소문자 구분 없이 부분 검
   const items = page.locator(".group-item");
   await expect(search).toBeVisible();
   await expect(search).toHaveAttribute("placeholder", "Search groups");
-  await expect(items).toHaveCount(2);
+  await expect(items).toHaveCount(3);
 
   await search.fill("work");
   await expect(items).toHaveCount(1);

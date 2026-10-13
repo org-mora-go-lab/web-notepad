@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
+import type { GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 import { getStatusColor, getTabStatus, TAB_STATUSES } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel } from "@/src/5-shared/ui";
@@ -12,6 +12,9 @@ import { DashboardCard } from "./component";
 type Props = {
   groupName: string;
   tabs: NoteTab[];
+  groups: GroupEntry[];
+  // All Group: cards show the group they belong to.
+  showGroupNames: boolean;
   tabColorCycle: TabColor[];
   open: boolean;
   pinned: boolean;
@@ -26,6 +29,8 @@ type Props = {
 export function Dashboard({
   groupName,
   tabs,
+  groups,
+  showGroupNames,
   tabColorCycle,
   open,
   pinned,
@@ -94,6 +99,11 @@ export function Dashboard({
                     <DashboardCard
                       key={tab.id}
                       tab={tab}
+                      groupName={
+                        showGroupNames
+                          ? groups.find((group) => group.tabs.some((item) => item.id === tab.id))?.name
+                          : undefined
+                      }
                       dragging={draggingTabId === tab.id}
                       onOpen={onOpenTab}
                       onDragStart={(tabId, event) => {
