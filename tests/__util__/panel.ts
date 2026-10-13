@@ -1,17 +1,19 @@
 import { expect, type Page } from "@playwright/test";
 
-export const groupsCommand = (page: Page) => page.locator(".group-status-command");
+// The command showing the current group name: the left button on mobile, the right group button on PC.
+export const groupsCommand = (page: Page) =>
+  page.locator(".group-status-command:visible, .group-select-command:has(.group-select-name:visible)");
 export const groupSelectCommand = (page: Page) => page.locator(".group-select-command");
 export const bookmarksCommand = (page: Page) =>
   page.locator('button[aria-controls="bookmarks-panel"]');
 export const closedCommand = (page: Page) =>
   page.locator('button[aria-controls="closed-panel"]');
-export const groupStatusName = (page: Page) => page.locator(".group-status-name");
+export const groupStatusName = (page: Page) => page.locator(".group-status-name:visible, .group-select-name:visible");
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
 export async function openPanel(page: Page, panelId: string) {
-  const command = page.locator(`button[aria-controls="${panelId}"]`).first();
+  const command = page.locator(`button[aria-controls="${panelId}"]:visible`).first();
   if (panelId === "closed-panel" || panelId === "shortcuts-panel" || panelId === "settings-panel" || panelId === "global-search-panel") {
     const menu = page.getByRole("button", { name: "MENU", exact: true });
     await menu.click();

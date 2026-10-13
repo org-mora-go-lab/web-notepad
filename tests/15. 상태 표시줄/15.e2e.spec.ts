@@ -19,7 +19,7 @@ test("15. 모바일 그룹명을 하단 버튼에 통합하고 편집기가 하�
   const panel = page.locator(".group-status-command");
   const name = panel.locator(".group-status-name");
   await page.setViewportSize(DESKTOP_VIEWPORT);
-  await expect(name).toBeVisible();
+  await expect(panel).toBeHidden();
   await expect(page.locator(".current-group-panel")).toHaveCount(0);
 
   await page.setViewportSize({ width: 320, height: 844 });

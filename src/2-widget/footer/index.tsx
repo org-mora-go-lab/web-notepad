@@ -81,7 +81,8 @@ export function Footer({
             title={t.selectGroup}
           >
             <Layers size={16} strokeWidth={1.8} />
-            <span className="status-label">{t.group}</span>
+            <span className="status-label group-select-label">{t.group}</span>
+            <span className="status-label group-select-name" title={activeGroupName}>{activeGroupName}</span>
           </button>
         </div>
       </div>

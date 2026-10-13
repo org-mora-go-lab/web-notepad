@@ -146,7 +146,7 @@ export const createTabActions: StateCreator<
     const group = getActiveGroup(state);
     const tab = group?.tabs.find((item) => item.id === tabId);
     if (!tab || tab.pinned) return;
-    if (isSubstantialContent(tab.content)) {
+    if (isSubstantialContent(tab.content) && !tab.bookmarked) {
       set({
         closedTabs: [
           { id: `closed-${crypto.randomUUID()}`, groupId: group.id, tab, closedAt: Date.now() },

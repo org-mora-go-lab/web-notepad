@@ -94,14 +94,22 @@
     display: none;
   }
 
-  // The first right-side command pushes the commands to the right on PC.
-  .bookmark-command {
+  // PC: the left group name is hidden; the group button on the right shows it instead.
+  .group-status-command,
+  .group-select-label {
+    display: none;
+  }
+
+  .group-select-command {
     margin-left: auto;
   }
 
-  .group-status-command {
-    flex: 0 1 auto;
-    justify-content: flex-start;
+  .group-select-name {
+    min-width: 0;
+    max-width: 351px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .status-command > span.group-status-name {
@@ -117,6 +125,22 @@
   }
 
   @media (max-width: 640px) {
+    .group-status-command {
+      display: flex;
+    }
+
+    .group-select-label {
+      display: inline;
+    }
+
+    .group-select-name {
+      display: none;
+    }
+
+    .group-select-command {
+      margin-left: 0;
+    }
+
     min-height: 64px;
     padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
     font-size: v.font(12px);
