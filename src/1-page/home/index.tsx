@@ -38,6 +38,7 @@ export function Home() {
     activeGroupTabs,
     tabColorCycle,
     setTabStatus,
+    togglePin,
     moveClosedTabToStatus,
     groups,
     activeGroupName,
@@ -134,6 +135,7 @@ export function Home() {
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
+          onUnpinTab={togglePin}
           onChangeClosedTabStatus={moveClosedTabToStatus}
           onCreateGroup={createGroup}
           onSelectGroup={selectGroupAndClosePanel}

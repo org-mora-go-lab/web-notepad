@@ -27,6 +27,7 @@ type Props = {
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
+  onUnpinTab: ComponentProps<typeof Dashboard>["onUnpinTab"];
   onChangeClosedTabStatus: ComponentProps<typeof Dashboard>["onChangeClosedStatus"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
@@ -59,6 +60,7 @@ export function Panel({
   onRemoveBookmark,
   onOpenDashboardTab,
   onChangeTabStatus,
+  onUnpinTab,
   onChangeClosedTabStatus,
   onCreateGroup,
   onSelectGroup,
@@ -94,6 +96,7 @@ export function Panel({
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
+        onUnpinTab={onUnpinTab}
         onRestoreClosed={onRestoreClosedTab}
         onChangeClosedStatus={onChangeClosedTabStatus}
       />

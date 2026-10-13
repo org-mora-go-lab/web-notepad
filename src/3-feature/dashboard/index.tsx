@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { ClosedTabEntry, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 import { getStatusColor, getTabStatus, TAB_STATUSES } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { SidePanel } from "@/src/5-shared/ui";
+import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
 
 import { DashboardCard } from "./component";
 
@@ -24,6 +24,7 @@ type Props = {
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
+  onUnpinTab: (tabId: string) => void;
   onRestoreClosed: (entryId: string) => void;
   onChangeClosedStatus: (entryId: string, status: TabStatus) => void;
 };
@@ -43,12 +44,15 @@ export function Dashboard({
   onClose,
   onOpenTab,
   onChangeStatus,
+  onUnpinTab,
   onRestoreClosed,
   onChangeClosedStatus,
 }: Props) {
   const { t } = useI18n();
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
+  // A pinned tab dropped on Closed waits for confirmation before it is unpinned and closed.
+  const [pendingPinnedTabId, setPendingPinnedTabId] = useState<string | null>(null);
   const statusLabels: Record<TabStatus, string> = {
     todo: t.statusTodo,
     "in-progress": t.statusInProgress,
@@ -97,7 +101,9 @@ export function Dashboard({
                   if (draggingTabId?.startsWith("closed-")) {
                     if (status !== "done") onChangeClosedStatus(draggingTabId, status);
                   } else if (draggingTabId) {
-                    onChangeStatus(draggingTabId, status);
+                    const dragged = tabs.find((tab) => tab.id === draggingTabId);
+                    if (status === "done" && dragged?.pinned) setPendingPinnedTabId(draggingTabId);
+                    else onChangeStatus(draggingTabId, status);
                   }
                   endDrag();
                 }}
@@ -148,6 +154,21 @@ export function Dashboard({
           })}
         </div>
       </div>
+      {pendingPinnedTabId && (
+        <ConfirmPopup
+          title={t.closePinnedTabTitle}
+          message={t.closePinnedTabMessage}
+          closeLabel="Close confirmation"
+          closeTitle={t.close}
+          confirmLabel={t.unpinAndClose}
+          onConfirm={() => {
+            onUnpinTab(pendingPinnedTabId);
+            onChangeStatus(pendingPinnedTabId, "done");
+            setPendingPinnedTabId(null);
+          }}
+          onCancel={() => setPendingPinnedTabId(null)}
+        />
+      )}
     </SidePanel>
   );
 }
