@@ -1,6 +1,18 @@
 import { DEFAULT_SETTINGS, TAB_STATUSES } from "../../constant";
 import type { NoteTab, TabColor, TabStatus } from "../../type";
 
+const graphemeSegmenter =
+  typeof Intl.Segmenter === "function"
+    ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
+    : null;
+
+const truncateGraphemes = (value: string, maximum: number) =>
+  graphemeSegmenter
+    ? Array.from(graphemeSegmenter.segment(value), ({ segment }) => segment)
+        .slice(0, maximum)
+        .join("")
+    : Array.from(value).slice(0, maximum).join("");
+
 export const createNoteTab = (
   number: number,
   tabColor: TabColor = DEFAULT_SETTINGS.tabColorCycle[0],
@@ -56,7 +68,7 @@ export const getTitleFromContent = (content: unknown, fallback: string) => {
     .map((line) => line.trim())
     .find(Boolean);
 
-  return firstLine?.slice(0, 28) || fallback;
+  return firstLine ? truncateGraphemes(firstLine, 28) : fallback;
 };
 
 // Tabs with more than 10 characters ask before closing and are kept in Closed; shorter ones are deleted outright.

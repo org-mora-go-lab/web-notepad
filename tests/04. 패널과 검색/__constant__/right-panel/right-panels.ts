@@ -1,0 +1,25 @@
+import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../../__constant__";
+
+export const RIGHT_PANEL_IDS = [
+  "bookmarks-panel",
+  "dashboard-panel",
+  "shortcuts-panel",
+  "closed-panel",
+  "settings-panel",
+  "global-search-panel",
+];
+
+// The SHORTCUT command is hidden on mobile; the other panel commands remain available.
+export const RIGHT_PANEL_VIEWPORTS = [
+  { viewport: DESKTOP_VIEWPORT, panelIds: RIGHT_PANEL_IDS },
+  {
+    viewport: MOBILE_VIEWPORT,
+    panelIds: [
+      "bookmarks-panel",
+      "dashboard-panel",
+      "closed-panel",
+      "settings-panel",
+      "global-search-panel",
+    ],
+  },
+];

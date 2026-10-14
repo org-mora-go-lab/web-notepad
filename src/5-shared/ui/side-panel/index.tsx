@@ -35,12 +35,13 @@ export function SidePanel({
         className={`side-panel-drawer ${open ? "is-open" : ""}`}
         aria-hidden={!open}
         aria-label={ariaLabel}
+        inert={!open}
       >
         <div
           className="side-panel-resizer"
           role="separator"
           aria-orientation="vertical"
-          aria-label="패널 크기 조절"
+          aria-label={t.resizePanel}
           onPointerDown={handleResizeStart}
         />
         <div className="side-panel-header">
@@ -53,7 +54,7 @@ export function SidePanel({
                 type="button"
                 onClick={onTogglePin}
                 aria-pressed={pinned}
-                aria-label={pinned ? "패널 고정 해제" : "패널 고정"}
+                aria-label={pinned ? t.unpinPanel : t.pinPanel}
                 title={pinned ? t.unpinPanel : t.pinPanel}
               >
                 <Pin size={14} />

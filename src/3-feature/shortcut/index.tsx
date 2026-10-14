@@ -34,8 +34,8 @@ export function Shortcut({
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
-      closeLabel="단축키 닫기"
-      ariaLabel="키보드 단축키"
+      closeLabel={t.closePanel(t.shortcutTitle)}
+      ariaLabel={t.shortcutTitle}
       onClose={onClose}
     >
       <dl className="shortcut-list">

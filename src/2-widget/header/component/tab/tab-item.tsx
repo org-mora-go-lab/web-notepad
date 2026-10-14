@@ -70,7 +70,7 @@ export function TabItem({
         className={`dirty-dot ${dirty ? "is-dirty" : ""}`}
         type="button"
         onClick={() => onCycleTabColor(tab.id)}
-        aria-label={`${tab.title} 탭 색상 변경`}
+        aria-label={t.changeTabColorFor(tab.title)}
         title={t.changeTabColor}
       />
       <button
@@ -89,7 +89,7 @@ export function TabItem({
         {tab.pinned && (
           <span
             className="tab-pin-indicator"
-            aria-label="고정됨"
+            aria-label={t.pinned}
             title={t.pinned}
           >
             <Pin
@@ -115,7 +115,7 @@ export function TabItem({
           className="tab-close"
           type="button"
           onClick={() => onClose(tab.id)}
-          aria-label={`${tab.title} 닫기`}
+          aria-label={t.closeTabFor(tab.title)}
           title={t.closeTab}
         >
           <X size={11} />

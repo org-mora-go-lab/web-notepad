@@ -10,7 +10,7 @@ export function TabDeletePopup({ onConfirm, onCancel }: TabDeletePopupProps) {
     <ConfirmPopup
       title={t.deleteTabTitle}
       message={t.deleteTabMessage}
-      closeLabel="Close deletion confirmation"
+      closeLabel={t.closeDeleteTabConfirmation}
       closeTitle={t.close}
       confirmLabel={t.close}
       confirmIcon={<X size={14} aria-hidden="true" />}

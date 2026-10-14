@@ -33,12 +33,13 @@ export function Bookmark({
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
-      closeLabel="북마크 닫기"
+      closeLabel={t.closePanel(t.bookmarksTitle)}
+      ariaLabel={t.bookmarksTitle}
       onClose={onClose}
     >
       <SearchField
         value={searchQuery}
-        ariaLabel="북마크 검색"
+        ariaLabel={t.searchBookmarks}
         placeholder={t.searchBookmarks}
         onChange={setSearchQuery}
       />

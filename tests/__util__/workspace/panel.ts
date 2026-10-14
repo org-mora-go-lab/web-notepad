@@ -24,7 +24,7 @@ export async function openPanel(page: Page, panelId: string) {
     panelId === "settings-panel" ||
     panelId === "global-search-panel"
   ) {
-    const menu = page.getByRole("button", { name: "MENU", exact: true });
+    const menu = page.locator(".additional-tools-trigger");
     await menu.click();
     await expect(menu).toHaveAttribute("aria-expanded", "true");
     await expect(command).toBeVisible();
@@ -53,8 +53,8 @@ export const openGlobalSearchPanel = (page: Page) =>
 
 // Creates a group from the open group dropdown.
 export async function createGroup(page: Page, name: string) {
-  await page.getByRole("textbox", { name: "새 그룹 이름" }).fill(name);
-  await page.getByRole("button", { name: "그룹 생성" }).click();
+  await page.getByRole("textbox", { name: "New group name" }).fill(name);
+  await page.getByRole("button", { name: "Create group" }).click();
 }
 
 // Opens the group dropdown, creates the groups, and closes it again.

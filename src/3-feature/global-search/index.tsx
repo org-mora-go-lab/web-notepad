@@ -60,12 +60,13 @@ export function GlobalSearch({
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
-      closeLabel="전체 검색 닫기"
+      closeLabel={t.closePanel(t.searchTitle)}
+      ariaLabel={t.searchTitle}
       onClose={onClose}
     >
       <SearchField
         value={searchQuery}
-        ariaLabel="전체 검색"
+        ariaLabel={t.searchEverything}
         placeholder={t.searchEverything}
         onChange={onSearchQueryChange}
       />
@@ -93,7 +94,7 @@ export function GlobalSearch({
                     category={t.groupCategory}
                     title={group.name}
                     query={query}
-                    ariaLabel={`그룹 ${group.name} 선택`}
+                    ariaLabel={t.selectGroupResult(group.name)}
                     onSelect={() => onSelectGroup(group.id)}
                   />
                 ))}
@@ -112,7 +113,7 @@ export function GlobalSearch({
                     title={bookmark.title}
                     description={bookmark.content}
                     query={query}
-                    ariaLabel={`북마크 ${bookmark.title} 열기`}
+                    ariaLabel={t.openBookmarkResult(bookmark.title)}
                     onSelect={() => onOpenBookmark(group.id, bookmark.id)}
                   />
                 ))}
@@ -131,7 +132,7 @@ export function GlobalSearch({
                     title={entry.tab.title}
                     description={entry.tab.content}
                     query={query}
-                    ariaLabel={`닫은 탭 ${entry.tab.title} 검색 결과 보기`}
+                    ariaLabel={t.viewClosedResult(entry.tab.title)}
                     onSelect={() => onOpenClosedSearch(query)}
                   />
                 ))}

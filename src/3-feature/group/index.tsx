@@ -126,7 +126,7 @@ function GroupMenu({
         className="group-menu"
         id="groups-menu"
         role="dialog"
-        aria-label="그룹 선택"
+        aria-label={t.selectGroup}
       >
         <div className="group-list">
           <div className="group-split-row">{specialRows.map(renderRow)}</div>
@@ -138,7 +138,7 @@ function GroupMenu({
         <ConfirmPopup
           title={t.deleteGroupTitle}
           message={t.deleteGroupMessage(groupToDelete.name)}
-          closeLabel="삭제 확인 닫기"
+          closeLabel={t.closeDeleteGroupConfirmation}
           closeTitle={t.close}
           onCancel={() => {
             setDeletingGroupId(null);

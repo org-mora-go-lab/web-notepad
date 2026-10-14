@@ -57,7 +57,7 @@ export function AdditionalTools({
         ref={triggerRef}
         type="button"
         title={t.menu}
-        aria-label="MENU"
+        aria-label={t.menu}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls="additional-tools-menu"
@@ -73,7 +73,7 @@ export function AdditionalTools({
         className="additional-tools-menu"
         id="additional-tools-menu"
         role="menu"
-        aria-label="MENU"
+        aria-label={t.menu}
         onKeyDown={(event) => {
           if (!open) return;
           if (event.key === "Escape") {
@@ -126,7 +126,7 @@ export function AdditionalTools({
           type="button"
           role="menuitem"
           aria-controls="settings-panel"
-          aria-label="설정"
+          aria-label={t.settings}
           onClick={() => {
             close();
             onOpenSettings();
@@ -153,7 +153,7 @@ export function AdditionalTools({
           type="button"
           role="menuitem"
           aria-controls="closed-panel"
-          aria-label="닫은 탭"
+          aria-label={t.closed}
           onClick={() => {
             close();
             onOpenClosed();
@@ -170,7 +170,7 @@ export function AdditionalTools({
           type="button"
           role="menuitem"
           aria-controls="global-search-panel"
-          aria-label="전체 검색"
+          aria-label={t.search}
           onClick={() => {
             close();
             onOpenSearch();

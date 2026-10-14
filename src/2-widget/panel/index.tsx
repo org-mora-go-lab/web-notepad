@@ -9,7 +9,7 @@ import {
   Setting,
   Shortcut,
 } from "@/src/3-feature";
-import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
+import { ALL_GROUP_ID, getClosedTabItems } from "@/src/4-entity/notepad";
 
 import type { PanelProps } from "./type";
 
@@ -47,6 +47,13 @@ export function Panel({
   onOpenSearchedBookmark,
   onOpenClosedSearch,
 }: PanelProps) {
+  const dashboardClosedTabs = getClosedTabItems(closedTabs, groups)
+    .filter(
+      ({ groupId }) =>
+        activeGroupId === ALL_GROUP_ID || groupId === activeGroupId,
+    )
+    .map(({ entry }) => entry);
+
   return (
     <div className="panel">
       <Bookmark
@@ -61,10 +68,7 @@ export function Panel({
       <Dashboard
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
-        closedTabs={closedTabs.filter(
-          (entry) =>
-            activeGroupId === ALL_GROUP_ID || entry.groupId === activeGroupId,
-        )}
+        closedTabs={dashboardClosedTabs}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}

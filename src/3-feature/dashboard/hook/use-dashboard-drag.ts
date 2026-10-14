@@ -15,30 +15,46 @@ export function useDashboardDrag({
   onChangeClosedStatus,
   onUnpinTab,
 }: Options) {
-  const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
+  const [draggingItem, setDraggingItem] = useState<{
+    id: string;
+    closed: boolean;
+  } | null>(null);
+  const draggingTabId = draggingItem?.id ?? null;
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
   const [pendingPinnedTabId, setPendingPinnedTabId] = useState<string | null>(
     null,
   );
   const endDrag = () => {
-    setDraggingTabId(null);
+    setDraggingItem(null);
     setOverStatus(null);
   };
-  const startDrag = (tabId: string, event: DragEvent<HTMLElement>) => {
+  const startDrag = (
+    tabId: string,
+    closed: boolean,
+    event: DragEvent<HTMLElement>,
+  ) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", tabId);
-    setDraggingTabId(tabId);
+    setDraggingItem({ id: tabId, closed });
+  };
+  const moveToStatus = (
+    itemId: string,
+    closed: boolean,
+    status: TabStatus,
+  ) => {
+    if (closed) {
+      if (status !== "done") onChangeClosedStatus(itemId, status);
+      return;
+    }
+
+    const tab = visibleTabs.find((item) => item.id === itemId);
+    if (status === "done" && tab?.pinned) setPendingPinnedTabId(itemId);
+    else onChangeStatus(itemId, status);
   };
   const drop = (status: TabStatus, event: DragEvent<HTMLElement>) => {
     event.preventDefault();
-    if (draggingTabId?.startsWith("closed-")) {
-      if (status !== "done") onChangeClosedStatus(draggingTabId, status);
-    } else if (draggingTabId) {
-      const dragged = visibleTabs.find((tab) => tab.id === draggingTabId);
-      if (status === "done" && dragged?.pinned)
-        setPendingPinnedTabId(draggingTabId);
-      else onChangeStatus(draggingTabId, status);
-    }
+    if (draggingItem)
+      moveToStatus(draggingItem.id, draggingItem.closed, status);
     endDrag();
   };
   const confirmClose = () => {
@@ -53,6 +69,7 @@ export function useDashboardDrag({
     setOverStatus,
     pendingPinnedTabId,
     startDrag,
+    moveToStatus,
     endDrag,
     drop,
     confirmClose,

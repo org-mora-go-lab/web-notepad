@@ -14,21 +14,17 @@ export function normalizePersistedState(
   persistedState: unknown,
   currentState: NotepadState,
 ): NotepadState {
-  const persisted = {
-    ...(persistedState as Partial<NotepadState> & {
-      tabs?: unknown;
-      bookmarks?: unknown;
-      activeTabId?: unknown;
-      rightTabIds?: unknown;
-      activeRightTabId?: unknown;
-      activePane?: unknown;
-      splitRatio?: unknown;
-      unsavedSnapshots?: unknown;
-      nextUnsavedNumber?: unknown;
-    }),
+  const persisted = (
+    persistedState && typeof persistedState === "object" ? persistedState : {}
+  ) as Partial<NotepadState> & {
+    tabs?: unknown;
+    bookmarks?: unknown;
+    activeTabId?: unknown;
+    rightTabIds?: unknown;
+    activeRightTabId?: unknown;
+    activePane?: unknown;
+    splitRatio?: unknown;
   };
-  delete persisted.unsavedSnapshots;
-  delete persisted.nextUnsavedNumber;
   const settings = normalizeSettings(persisted.settings);
   const hasLegacyTabs = Array.isArray(persisted.tabs);
   const legacyTabs = normalizeTabs(persisted.tabs, currentState.groups[0].tabs);
@@ -84,14 +80,6 @@ export function normalizePersistedState(
       groups.some((group) => group.id === requestedActiveGroupId))
       ? requestedActiveGroupId
       : UNGROUPED_GROUP_ID;
-  delete persisted.tabs;
-  delete persisted.bookmarks;
-  delete persisted.activeTabId;
-  delete persisted.rightTabIds;
-  delete persisted.activeRightTabId;
-  delete persisted.activePane;
-  delete persisted.splitRatio;
-
   const allGroupLayout = normalizeAllGroupLayout(
     persisted.allGroupLayout,
     groups,
@@ -99,9 +87,12 @@ export function normalizePersistedState(
 
   return {
     ...currentState,
-    ...persisted,
     groups,
     activeGroupId,
+    allGroupActiveTabId:
+      typeof persisted.allGroupActiveTabId === "string"
+        ? persisted.allGroupActiveTabId
+        : null,
     allGroupLayout,
     nextTabNumber,
     closedTabs: normalizeClosedTabs(persisted.closedTabs),

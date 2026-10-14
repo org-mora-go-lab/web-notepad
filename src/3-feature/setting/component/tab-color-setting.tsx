@@ -28,7 +28,7 @@ export function TabColorSetting() {
           className="setting-section-reset"
           type="button"
           onClick={resetTabColorCycle}
-          aria-label="탭 색상 초기화"
+          aria-label={t.resetTabColors}
           title={t.resetTabColors}
         >
           <RotateCcw size={13} />
@@ -37,7 +37,7 @@ export function TabColorSetting() {
           className="setting-section-reset"
           type="button"
           onClick={shuffleTabColorCycle}
-          aria-label="탭 색상 무작위 선택"
+          aria-label={t.shuffleTabColors}
           title={t.shuffleTabColors}
         >
           <Shuffle size={13} />

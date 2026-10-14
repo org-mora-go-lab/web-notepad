@@ -64,7 +64,7 @@ export function Header({
     <div
       className={`header ${onOpenShortcuts ? "has-menu" : ""} ${tabsCanScrollLeft ? "has-left-overflow" : ""} ${tabsCanScrollRight ? "has-right-overflow" : ""}`}
       role="tablist"
-      aria-label="메모 탭"
+      aria-label={t.noteTabs}
       onDragEnter={(event) => {
         if (!dragActive) return;
         event.preventDefault();
@@ -115,7 +115,7 @@ export function Header({
         className="add-tab"
         type="button"
         onClick={onAdd}
-        aria-label="새 탭 추가"
+        aria-label={t.newTab}
         title={t.newTab}
       >
         <Plus size={14} />

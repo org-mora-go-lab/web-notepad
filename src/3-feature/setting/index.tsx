@@ -34,14 +34,14 @@ export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
           className="side-panel-action setting-reset"
           type="button"
           onClick={() => setConfirmingReset(true)}
-          aria-label="설정 초기화"
+          aria-label={t.resetSettings}
           title={t.resetSettings}
         >
           <RotateCcw size={14} />
         </button>
       }
-      closeLabel="설정 닫기"
-      ariaLabel="설정"
+      closeLabel={t.closePanel(t.settingsTitle)}
+      ariaLabel={t.settingsTitle}
       onClose={onClose}
     >
       <div className="setting-content">
@@ -92,7 +92,7 @@ export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
         <ConfirmPopup
           title={t.resetSettings}
           message={t.resetSettingsMessage}
-          closeLabel="초기화 확인 닫기"
+          closeLabel={t.closePanel(t.resetSettings)}
           closeTitle={t.close}
           confirmLabel={t.reset}
           confirmIcon={<RotateCcw size={14} aria-hidden="true" />}

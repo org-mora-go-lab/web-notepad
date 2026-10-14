@@ -19,6 +19,14 @@ export const readStoredState = (page: Page): Promise<StoredState> =>
     STORAGE_KEY,
   );
 
+export async function waitForStoredState(page: Page) {
+  const handle = await page.waitForFunction(
+    (key) => localStorage.getItem(key) !== null,
+    STORAGE_KEY,
+  );
+  await handle.dispose();
+}
+
 export const readActiveGroup = async (page: Page): Promise<GroupEntry> => {
   const state = await readStoredState(page);
   return state.groups.find((group) => group.id === state.activeGroupId)!;

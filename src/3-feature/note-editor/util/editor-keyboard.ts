@@ -1,13 +1,12 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 
 import { insertAtSelection, isImeComposing } from "./editor-content";
+import { restoreEditorHistory } from "./editor-history";
 
 type MutableRef<T> = { current: T };
 
 type Options = {
   tabId: string;
-  undoHistoryRef: MutableRef<Map<string, string[]>>;
-  redoHistoryRef: MutableRef<Map<string, string[]>>;
   contentRef: MutableRef<string>;
   composingRef: MutableRef<boolean>;
   onChange: (content: string) => void;
@@ -21,8 +20,6 @@ export function handleEditorKeyDown(
   event: ReactKeyboardEvent<HTMLTextAreaElement>,
   {
     tabId,
-    undoHistoryRef,
-    redoHistoryRef,
     contentRef,
     composingRef,
     onChange,
@@ -44,17 +41,14 @@ export function handleEditorKeyDown(
       (!event.shiftKey && event.key.toLowerCase() === "y"));
 
   if (isUndo || isRedo) {
-    // Undo pops from the undo stack into the redo stack; redo does the reverse.
-    const [from, to] = isUndo
-      ? [undoHistoryRef.current, redoHistoryRef.current]
-      : [redoHistoryRef.current, undoHistoryRef.current];
-    const history = from.get(tabId) ?? [];
-    const restoredContent = history.at(-1);
+    const restoredContent = restoreEditorHistory(
+      tabId,
+      contentRef.current,
+      isUndo ? "undo" : "redo",
+    );
     if (restoredContent === undefined) return;
 
     event.preventDefault();
-    from.set(tabId, history.slice(0, -1));
-    to.set(tabId, [...(to.get(tabId) ?? []), contentRef.current]);
     contentRef.current = restoredContent;
     onChange(restoredContent);
     return;
@@ -83,7 +77,7 @@ export function handleEditorKeyDown(
   // Option+Tab creates a note tab in the workspace shortcut handler.
   // Do not queue the regular Tab insertion: its animation-frame callback can
   // run after the active tab changes and read the new tab's textarea value.
-  if (event.key !== "Tab" || event.altKey) return;
+  if (event.key !== "Tab" || event.altKey || event.shiftKey) return;
 
   event.preventDefault();
   const textarea = event.currentTarget;

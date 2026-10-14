@@ -3,7 +3,11 @@ import { type RefObject, useEffect, useRef } from "react";
 
 import type { NoteTab } from "@/src/4-entity/notepad";
 
-import { handleEditorKeyDown, insertAtSelection } from "../util";
+import {
+  handleEditorKeyDown,
+  insertAtSelection,
+  recordEditorHistory,
+} from "../util";
 import { useEditorCaretScroll } from "./layout";
 import { useLineSelection } from "./use-line-selection";
 
@@ -15,8 +19,6 @@ type Options = {
 
 export function useNoteEditor({ tab, composingRef, onChange }: Options) {
   const lineRailRef = useRef<HTMLDivElement>(null);
-  const undoHistoryRef = useRef(new Map<string, string[]>());
-  const redoHistoryRef = useRef(new Map<string, string[]>());
   const contentRef = useRef(tab.content);
   const pendingTabInsertionRef = useRef<HTMLTextAreaElement | null>(null);
   const followCaretOnEnter = useEditorCaretScroll(lineRailRef);
@@ -30,12 +32,7 @@ export function useNoteEditor({ tab, composingRef, onChange }: Options) {
     const previousContent = contentRef.current;
     if (content === previousContent) return;
 
-    const history = undoHistoryRef.current.get(tab.id) ?? [];
-    undoHistoryRef.current.set(tab.id, [
-      ...history.slice(-99),
-      previousContent,
-    ]);
-    redoHistoryRef.current.delete(tab.id);
+    recordEditorHistory(tab.id, previousContent);
     contentRef.current = content;
     onChange(content);
   };
@@ -70,8 +67,6 @@ export function useNoteEditor({ tab, composingRef, onChange }: Options) {
 
     handleEditorKeyDown(event, {
       tabId: tab.id,
-      undoHistoryRef,
-      redoHistoryRef,
       contentRef,
       composingRef,
       onChange,

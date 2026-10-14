@@ -39,7 +39,7 @@ export function useHomeTabActions({ editorRefs }: Options) {
       const state = useNotepadStore.getState();
       const group = getActiveGroup(state);
       const tab = group?.tabs.find((item) => item.id === tabId);
-      if (!group || !tab || tab.pinned) return;
+      if (!group || !tab || tab.pinned) return false;
 
       const content = editorOfTab(group, tabId)?.value ?? tab.content;
       if (content !== tab.content) state.updateTab(tabId, content);
@@ -52,8 +52,10 @@ export function useHomeTabActions({ editorRefs }: Options) {
         !unchangedSinceRestore
       ) {
         setPendingCloseTabId(tabId);
+        return false;
       } else {
         state.closeTab(tabId);
+        return true;
       }
     },
     [editorOfTab],
@@ -91,9 +93,10 @@ export function useHomeTabActions({ editorRefs }: Options) {
     moveToGroup,
     cancelCloseTab: () => setPendingCloseTabId(null),
     confirmCloseTab: () => {
-      if (pendingCloseTabId)
-        useNotepadStore.getState().closeTab(pendingCloseTabId);
+      if (!pendingCloseTabId) return false;
+      useNotepadStore.getState().closeTab(pendingCloseTabId);
       setPendingCloseTabId(null);
+      return true;
     },
   };
 }

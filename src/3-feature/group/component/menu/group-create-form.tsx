@@ -27,12 +27,12 @@ export function GroupCreateForm({ onCreate }: GroupCreateFormProps) {
         value={name}
         onChange={(event) => setName(event.target.value)}
         placeholder={t.groupName}
-        aria-label="새 그룹 이름"
+        aria-label={t.newGroupName}
         maxLength={60}
       />
       <button
         type="submit"
-        aria-label="그룹 생성"
+        aria-label={t.createGroup}
         title={t.createGroup}
         disabled={!name.trim()}
       >
