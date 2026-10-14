@@ -4,7 +4,7 @@ import { DESKTOP_VIEWPORT } from "../__constant__";
 import { bookmarksCommand, createGroups, groupStatusName, openPanel, switchGroup } from "../__util__";
 import { closePanelWithX, panelPinButton } from "./__util__";
 
-test("19. 고정한 패널은 X 버튼을 누르기 전까지 Escape·명령 재선택·그룹 선택·뒤로가기로 닫지 않는다", async ({ page }) => {
+test("19. 고정한 패널은 Escape·그룹 선택·뒤로가기에는 유지하고 하단 명령 재선택으로 닫는다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   // Creating a group switches to it, so the panel starts on Alpha.
@@ -16,6 +16,8 @@ test("19. 고정한 패널은 X 버튼을 누르기 전까지 Escape·명령 재
   await page.keyboard.press("Escape");
   await expect(panel).toHaveAttribute("aria-hidden", "false");
 
+  await bookmarksCommand(page).click();
+  await expect(panel).toHaveAttribute("aria-hidden", "true");
   await bookmarksCommand(page).click();
   await expect(panel).toHaveAttribute("aria-hidden", "false");
 

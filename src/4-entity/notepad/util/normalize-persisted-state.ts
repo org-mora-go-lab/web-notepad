@@ -45,6 +45,7 @@ const normalizeSettings = (value: unknown): NotepadSettings => {
     language: LANGUAGES.includes(settings.language as Language)
       ? (settings.language as Language)
       : DEFAULT_SETTINGS.language,
+    panelPosition: settings.panelPosition === "left" ? "left" : DEFAULT_SETTINGS.panelPosition,
     panelSlide:
       typeof settings.panelSlide === "boolean" ? settings.panelSlide : DEFAULT_SETTINGS.panelSlide,
   };

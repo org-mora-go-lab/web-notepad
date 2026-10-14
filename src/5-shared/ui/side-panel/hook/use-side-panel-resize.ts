@@ -33,9 +33,10 @@ export function useSidePanelResize() {
 
   return useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     event.preventDefault();
+    const left = event.currentTarget.closest("[data-panel-position]")?.getAttribute("data-panel-position") === "left";
     let width: number | null = null;
     const handleMove = (moveEvent: PointerEvent) => {
-      width = clampWidth(window.innerWidth - moveEvent.clientX);
+      width = clampWidth(left ? moveEvent.clientX : window.innerWidth - moveEvent.clientX);
       applyWidth(width);
     };
     const handleUp = () => {

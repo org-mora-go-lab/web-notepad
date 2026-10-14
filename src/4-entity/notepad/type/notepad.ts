@@ -19,6 +19,7 @@ export type NotepadSettings = {
   language: Language;
   // Right panels slide in and out; off shows and hides them in place.
   panelSlide: boolean;
+  panelPosition: "left" | "right";
 };
 
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
@@ -96,6 +97,7 @@ export type NotepadState = {
   setTabColorCycleColor: (index: number, color: TabColor) => void;
   setLanguage: (language: Language) => void;
   setPanelSlide: (panelSlide: boolean) => void;
+  setPanelPosition: (panelPosition: "left" | "right") => void;
   resetSettings: () => void;
   resetTabColorCycle: () => void;
   shuffleTabColorCycle: () => void;

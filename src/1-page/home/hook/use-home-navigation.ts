@@ -90,7 +90,7 @@ export function useHomeNavigation({ hydrated, panelPinned, addTabToPane }: Optio
 
   const toggleSidePanel = useCallback((panel: ViewPanel) => {
     if (openPanel === panel) {
-      if (!keepsPanelOpen()) closeSidePanels();
+      if (panel === "bookmarks" || panel === "dashboard" || !keepsPanelOpen()) closeSidePanels();
       return;
     }
     setOpenPanel(panel);

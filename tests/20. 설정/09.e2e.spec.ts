@@ -55,5 +55,5 @@ test("9. 고정 버튼 왼쪽의 설정 초기화 버튼은 확인 팝업에서 
   await expect(panel.getByRole("radio", { name: "Off", exact: true })).toBeChecked();
   await expect
     .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toEqual({ fontScale: 1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false });
+    .toEqual({ fontScale: 1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false, panelPosition: "right" });
 });

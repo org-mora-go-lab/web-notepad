@@ -11,6 +11,7 @@ type Props = {
   id?: string;
   groupName?: string;
   dragging: boolean;
+  active?: boolean;
   onOpen: (tabId: string) => void;
   onDragStart: (tabId: string, event: DragEvent<HTMLElement>) => void;
   onDragEnd: () => void;
@@ -23,18 +24,18 @@ const getPreview = (tab: NoteTab) => {
   return titleIndex < 0 ? "" : lines.slice(titleIndex + 1).join("\n").trim();
 };
 
-export function DashboardCard({ id, tab, groupName, dragging, onOpen, onDragStart, onDragEnd }: Props) {
+export function DashboardCard({ id, tab, groupName, dragging, active = false, onOpen, onDragStart, onDragEnd }: Props) {
   const preview = getPreview(tab);
 
   return (
     <article
-      className={`dashboard-card ${dragging ? "is-dragging" : ""}`}
+      className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""}`}
       data-tab-color={tab.tabColor}
       draggable
       onDragStart={(event) => onDragStart(id ?? tab.id, event)}
       onDragEnd={onDragEnd}
     >
-      <button className="dashboard-card-open" type="button" onClick={() => onOpen(tab.id)}>
+      <button className="dashboard-card-open" type="button" aria-current={active ? "true" : undefined} onClick={() => onOpen(tab.id)}>
         <strong>{tab.title}</strong>
         {groupName && <span className="dashboard-card-group">{groupName}</span>}
         {preview && <span className="dashboard-card-preview">{preview}</span>}

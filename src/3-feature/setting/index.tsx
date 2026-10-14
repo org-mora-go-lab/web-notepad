@@ -22,12 +22,14 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
   const colorTitleId = useId();
   const languageTitleId = useId();
   const slideTitleId = useId();
+  const positionTitleId = useId();
   const { language, t } = useI18n();
   const colorLabels = TAB_COLOR_LABELS[language];
   const settings = useNotepadStore((state) => state.settings);
   const setFontScale = useNotepadStore((state) => state.setFontScale);
   const setTabColorCycleColor = useNotepadStore((state) => state.setTabColorCycleColor);
   const setLanguage = useNotepadStore((state) => state.setLanguage);
+  const setPanelPosition = useNotepadStore((state) => state.setPanelPosition);
   const setPanelSlide = useNotepadStore((state) => state.setPanelSlide);
   const resetSettings = useNotepadStore((state) => state.resetSettings);
   const resetTabColorCycle = useNotepadStore((state) => state.resetTabColorCycle);
@@ -159,6 +161,17 @@ export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
                   onChange={() => setPanelSlide(option)}
                 />
                 <span>{option ? t.on : t.off}</span>
+              </label>
+            ))}
+          </div>
+        </section>
+        <section className="setting-section" aria-labelledby={positionTitleId}>
+          <h3 id={positionTitleId}>{t.panelPosition}</h3>
+          <div className="setting-options" role="radiogroup" aria-labelledby={positionTitleId}>
+            {(["left", "right"] as const).map((position) => (
+              <label key={position} className="setting-option">
+                <input type="radio" name={`${positionTitleId}-panel-position`} checked={settings.panelPosition === position} onChange={() => setPanelPosition(position)} />
+                <span>{position === "left" ? t.panelLeft : t.panelRight}</span>
               </label>
             ))}
           </div>

@@ -11,6 +11,7 @@ import { DashboardCard } from "./component";
 
 type Props = {
   tabs: NoteTab[];
+  activeTabId?: string;
   // Closed tabs of the shown group(s); they fill the Closed column.
   closedTabs: ClosedTabEntry[];
   groups: GroupEntry[];
@@ -32,6 +33,7 @@ type Props = {
 // the 1st, 2nd and 3rd color of the tab color cycle are Todo, WIP and Done.
 export function Dashboard({
   tabs,
+  activeTabId,
   closedTabs,
   groups,
   showGroupNames,
@@ -133,6 +135,7 @@ export function Dashboard({
                     <DashboardCard
                       key={tab.id}
                       tab={tab}
+                      active={tab.id === activeTabId}
                       groupName={
                         showGroupNames
                           ? groups.find((group) => group.tabs.some((item) => item.id === tab.id))?.name

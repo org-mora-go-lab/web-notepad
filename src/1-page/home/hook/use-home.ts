@@ -210,5 +210,6 @@ export function useHome() {
     fontScale: settings.fontScale,
     language: settings.language,
     panelSlide: settings.panelSlide,
+    panelPosition: settings.panelPosition,
   };
 }

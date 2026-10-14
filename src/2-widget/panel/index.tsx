@@ -13,6 +13,7 @@ type Props = {
   onTogglePin: () => void;
   bookmarks: BookmarkEntry[];
   activeGroupTabs: NoteTab[];
+  activeTabId?: string;
   tabColorCycle: TabColor[];
   groups: GroupEntry[];
   activeGroupId: string;
@@ -47,6 +48,7 @@ export function Panel({
   onTogglePin,
   bookmarks,
   activeGroupTabs,
+  activeTabId,
   tabColorCycle,
   groups,
   activeGroupId,
@@ -87,6 +89,7 @@ export function Panel({
       />
       <Dashboard
         tabs={activeGroupTabs}
+        activeTabId={activeTabId}
         closedTabs={closedTabs.filter((entry) => activeGroupId === ALL_GROUP_ID || entry.groupId === activeGroupId)}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
