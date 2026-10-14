@@ -24,6 +24,8 @@ export function usePaneDropArea(dragActive: boolean, onDrop: (event: ReactDragEv
   const handleDragOver = (event: ReactDragEvent<HTMLDivElement>) => {
     if (!dragActive) return;
     event.preventDefault();
+    // Native dragleave can fire as overlays replace the element under the pointer.
+    setDropAreaHovered(true);
     const rect = event.currentTarget.getBoundingClientRect();
     setPointerInLowerHalf(event.clientY - rect.top > rect.height / 2);
   };

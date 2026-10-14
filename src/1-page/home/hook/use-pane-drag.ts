@@ -40,9 +40,11 @@ export function usePaneDrag({ group, moveTabToPane }: Options) {
     const zones: PaneDropZone[] = [];
     if (draggingPane !== pane) {
       zones.push({ key: "adopt", label: "Move here", onDrop: dropTo(pane) });
+      // Moving from the right column back into an existing left editor must not split it.
+      if (getPaneColumn(draggingPane) === "right" && getPaneColumn(pane) === "left") return zones;
     }
-    // Splitting off the pane's only tab would leave the pane empty.
-    if (draggingPane === pane && countOf(pane) < 2) return zones;
+    // Splitting requires another tab to remain in the source pane, including cross-pane drops.
+    if (countOf(draggingPane) < 2) return zones;
 
     const column = getPaneColumn(pane);
     const rightTarget = pane === "left-bottom" && countOf("right") > 0 ? "right-bottom" : "right";
