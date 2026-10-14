@@ -5,6 +5,8 @@ import { RIGHT_PANEL_IDS } from "./__constant__";
 
 test("2. 우측 패널은 한 번에 하나만 열린다", async ({ page }) => {
   await page.goto("/");
+  // Wait for the initial editor focus before sending footer keyboard commands.
+  await expect(page.locator("textarea")).toBeFocused();
 
   for (const openId of RIGHT_PANEL_IDS) {
     for (const nextId of RIGHT_PANEL_IDS) {

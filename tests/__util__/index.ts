@@ -34,6 +34,7 @@ export { seedSortableGroups } from "./seed-sortable-groups";
 export {
   readActiveGroup,
   readStoredState,
+  seedStoredStateOnce,
   seedStoredStateOnLoad,
   type StoredState,
   writeStoredState,

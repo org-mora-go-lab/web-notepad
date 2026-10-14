@@ -3,9 +3,9 @@
 import { ChevronRight, Moon, Sun } from "lucide-react";
 import { useId, useState } from "react";
 
+import { useTheme } from "@/src/4-entity";
 import { useI18n } from "@/src/5-shared/hook";
 
-import { useTheme } from "./hook";
 import type { ThemeProps } from "./type";
 
 export function Theme({ onSelect }: ThemeProps) {
