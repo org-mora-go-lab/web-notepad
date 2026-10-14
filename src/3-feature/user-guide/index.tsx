@@ -6,13 +6,10 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useI18n } from "@/src/5-shared/hook";
 
 import { USER_GUIDE_STEPS } from "./constant";
-
-type Props = {
-  onClose: () => void;
-};
+import type { UserGuideProps } from "./type";
 
 // Modal walkthrough: one step at a time with Previous/Next, closed by "Stop viewing" or Escape.
-export function UserGuide({ onClose }: Props) {
+export function UserGuide({ onClose }: UserGuideProps) {
   const { language, t } = useI18n();
   const steps = USER_GUIDE_STEPS[language];
   const [index, setIndex] = useState(0);
@@ -84,7 +81,11 @@ export function UserGuide({ onClose }: Props) {
             onClick={() => (isLast ? close() : setIndex(index + 1))}
           >
             {isLast ? t.close : t.next}
-            {isLast ? <X size={14} aria-hidden="true" /> : <ChevronRight size={14} aria-hidden="true" />}
+            {isLast ? (
+              <X size={14} aria-hidden="true" />
+            ) : (
+              <ChevronRight size={14} aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>

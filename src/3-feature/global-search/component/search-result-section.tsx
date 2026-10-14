@@ -1,12 +1,10 @@
-import type { ReactNode } from "react";
+import type { SearchResultSectionProps } from "../type";
 
-type Props = {
-  title: string;
-  className: string;
-  children: ReactNode;
-};
-
-export function SearchResultSection({ title, className, children }: Props) {
+export function SearchResultSection({
+  title,
+  className,
+  children,
+}: SearchResultSectionProps) {
   return (
     <section className={`global-search-section ${className}`}>
       <h3>{title}</h3>

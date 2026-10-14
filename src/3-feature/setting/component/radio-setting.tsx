@@ -1,23 +1,14 @@
 import { useId } from "react";
 
-import type { Language } from "@/src/5-shared/type";
+import type { RadioSettingProps, RadioSettingValue } from "../type";
 
-type Value = string | number | boolean;
-type Props<T extends Value> = {
-  title: string;
-  name: string;
-  value: T;
-  options: { value: T; label: string; language?: Language }[];
-  onChange: (value: T) => void;
-};
-
-export function RadioSetting<T extends Value>({
+export function RadioSetting<T extends RadioSettingValue>({
   title,
   name,
   value,
   options,
   onChange,
-}: Props<T>) {
+}: RadioSettingProps<T>) {
   const titleId = useId();
   return (
     <section className="setting-section" aria-labelledby={titleId}>

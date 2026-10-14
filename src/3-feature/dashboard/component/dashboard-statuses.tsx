@@ -1,17 +1,12 @@
-import {
-  type DashboardColumnData,
-  getStatusColor,
-  type TabColor,
-} from "@/src/4-entity/notepad";
+import { getStatusColor } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
+
+import type { DashboardStatusesProps } from "../type";
 
 export function DashboardStatuses({
   columns,
   tabColorCycle,
-}: {
-  columns: DashboardColumnData[];
-  tabColorCycle: TabColor[];
-}) {
+}: DashboardStatusesProps) {
   const { t } = useI18n();
   const statusLabels = {
     todo: t.statusTodo,

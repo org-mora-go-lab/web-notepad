@@ -5,24 +5,22 @@ import { type FormEvent, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
-type Props = {
-  name: string;
-  active: boolean;
-  pinned: boolean;
-  // The default and virtual groups only support selecting.
-  editable: boolean;
-  muted: boolean;
-  // Pin / edit / delete appear in place of the … button once it is pressed.
-  actionsOpen: boolean;
-  onToggleActions: () => void;
-  onSelect: () => void;
-  onRename: (name: string) => void;
-  onTogglePin: () => void;
-  onDelete: (anchor: HTMLElement) => void;
-};
+import type { GroupItemProps } from "../type";
 
 // One group row: click the name to switch; pin / edit / delete are inline icon buttons.
-export function GroupItem({ name, active, pinned, editable, muted, actionsOpen, onToggleActions, onSelect, onRename, onTogglePin, onDelete }: Props) {
+export function GroupItem({
+  name,
+  active,
+  pinned,
+  editable,
+  muted,
+  actionsOpen,
+  onToggleActions,
+  onSelect,
+  onRename,
+  onTogglePin,
+  onDelete,
+}: GroupItemProps) {
   const { t } = useI18n();
   const [editingName, setEditingName] = useState<string | null>(null);
 
@@ -53,10 +51,20 @@ export function GroupItem({ name, active, pinned, editable, muted, actionsOpen, 
               }
             }}
           />
-          <button type="submit" aria-label="그룹 수정 저장" title={t.save} disabled={!editingName.trim()}>
+          <button
+            type="submit"
+            aria-label="그룹 수정 저장"
+            title={t.save}
+            disabled={!editingName.trim()}
+          >
             <Check size={14} />
           </button>
-          <button type="button" aria-label="그룹 수정 취소" title={t.cancel} onClick={() => setEditingName(null)}>
+          <button
+            type="button"
+            aria-label="그룹 수정 취소"
+            title={t.cancel}
+            onClick={() => setEditingName(null)}
+          >
             <X size={14} />
           </button>
         </form>
@@ -66,12 +74,25 @@ export function GroupItem({ name, active, pinned, editable, muted, actionsOpen, 
 
   return (
     <article className={`group-item ${active ? "is-active" : ""}`}>
-      <button className="group-select" type="button" aria-pressed={active} title={name} onClick={onSelect}>
+      <button
+        className="group-select"
+        type="button"
+        aria-pressed={active}
+        title={name}
+        onClick={onSelect}
+      >
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>
       {editable && !actionsOpen && (
         <div className="group-actions">
-          {pinned && <Pin className="group-pin-indicator" size={14} role="img" aria-label="고정된 그룹" />}
+          {pinned && (
+            <Pin
+              className="group-pin-indicator"
+              size={14}
+              role="img"
+              aria-label="고정된 그룹"
+            />
+          )}
           <button
             type="button"
             aria-label={`${name} 그룹 메뉴`}
@@ -98,10 +119,15 @@ export function GroupItem({ name, active, pinned, editable, muted, actionsOpen, 
           >
             <Pin size={14} />
           </button>
-          <button type="button" aria-label={`${name} 그룹 수정`} title={t.edit} onClick={() => {
+          <button
+            type="button"
+            aria-label={`${name} 그룹 수정`}
+            title={t.edit}
+            onClick={() => {
               onToggleActions();
               setEditingName(name);
-            }}>
+            }}
+          >
             <Pencil size={14} />
           </button>
           <button

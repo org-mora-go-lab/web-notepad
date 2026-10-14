@@ -1,22 +1,17 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Bookmark, FolderInput, Pin } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bookmark,
+  FolderInput,
+  Pin,
+} from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import type { GroupEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
-type Props = {
-  left: number;
-  top: number;
-  pinned: boolean;
-  bookmarked: boolean;
-  targetGroups: GroupEntry[];
-  onMoveToGroup: (groupId: string) => void;
-  onTogglePin: () => void;
-  onToggleBookmark: () => void;
-  onClose: () => void;
-};
+import type { TabContextMenuProps } from "../type";
 
 export function TabContextMenu({
   left,
@@ -28,7 +23,7 @@ export function TabContextMenu({
   onTogglePin,
   onToggleBookmark,
   onClose,
-}: Props) {
+}: TabContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const [choosingGroup, setChoosingGroup] = useState(false);
   const { t } = useI18n();
@@ -46,7 +41,10 @@ export function TabContextMenu({
   }, [left, top, choosingGroup, targetGroups.length]);
 
   useEffect(() => {
-    if (choosingGroup) menuRef.current?.querySelector<HTMLButtonElement>(".move-group-option")?.focus();
+    if (choosingGroup)
+      menuRef.current
+        ?.querySelector<HTMLButtonElement>(".move-group-option")
+        ?.focus();
   }, [choosingGroup]);
 
   useEffect(() => {
@@ -75,13 +73,25 @@ export function TabContextMenu({
     >
       {choosingGroup ? (
         <>
-          <button type="button" role="menuitem" aria-label="Back to tab actions" onClick={() => setChoosingGroup(false)}>
+          <button
+            type="button"
+            role="menuitem"
+            aria-label="Back to tab actions"
+            onClick={() => setChoosingGroup(false)}
+          >
             <ArrowLeft size={14} />
             <span>{t.moveGroup}</span>
           </button>
           <div className="move-group-options">
             {targetGroups.map((group) => (
-              <button className="move-group-option" key={group.id} type="button" role="menuitem" title={group.name} onClick={() => onMoveToGroup(group.id)}>
+              <button
+                className="move-group-option"
+                key={group.id}
+                type="button"
+                role="menuitem"
+                title={group.name}
+                onClick={() => onMoveToGroup(group.id)}
+              >
                 <span>{group.name}</span>
               </button>
             ))}
@@ -97,7 +107,12 @@ export function TabContextMenu({
             <Bookmark size={14} />
             <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
           </button>
-          <button type="button" role="menuitem" disabled={targetGroups.length === 0} onClick={() => setChoosingGroup(true)}>
+          <button
+            type="button"
+            role="menuitem"
+            disabled={targetGroups.length === 0}
+            onClick={() => setChoosingGroup(true)}
+          >
             <FolderInput size={14} />
             <span>{t.moveGroup}</span>
             <ArrowRight size={14} className="move-group-arrow" />

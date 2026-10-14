@@ -9,15 +9,9 @@ import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
 
 import { RadioSetting, TabColorSetting } from "./component";
+import type { SettingProps } from "./type";
 
-type Props = {
-  open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
-  onClose: () => void;
-};
-
-export function Setting({ open, pinned, onTogglePin, onClose }: Props) {
+export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
   const { language, t } = useI18n();
   const settings = useNotepadStore((state) => state.settings);
   const setFontScale = useNotepadStore((state) => state.setFontScale);

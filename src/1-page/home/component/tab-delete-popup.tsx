@@ -2,12 +2,9 @@ import { X } from "lucide-react";
 
 import { ConfirmPopup, isAltBackspace, useI18n } from "@/src/5-shared";
 
-type Props = {
-  onConfirm: () => void;
-  onCancel: () => void;
-};
+import type { TabDeletePopupProps } from "../type";
 
-export function TabDeletePopup({ onConfirm, onCancel }: Props) {
+export function TabDeletePopup({ onConfirm, onCancel }: TabDeletePopupProps) {
   const { t } = useI18n();
   return (
     <ConfirmPopup

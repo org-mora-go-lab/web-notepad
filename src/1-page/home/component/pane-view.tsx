@@ -4,10 +4,6 @@ import { Body, Header } from "@/src/2-widget";
 
 import type { PaneViewProps } from "../type";
 
-type Props = PaneViewProps & {
-  heightRatio?: number;
-};
-
 export function PaneView({
   pane,
   closedCount,
@@ -38,7 +34,7 @@ export function PaneView({
   onToggleBookmark,
   onAdd,
   onChange,
-}: Props) {
+}: PaneViewProps) {
   return (
     <div
       className="pane-slot"

@@ -3,22 +3,12 @@
 import { Bookmark as BookmarkIcon } from "lucide-react";
 import { useState } from "react";
 
-import type { BookmarkEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SearchField, SidePanel } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
 
 import { BookmarkItem } from "./component";
-
-type Props = {
-  bookmarks: BookmarkEntry[];
-  open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
-  onClose: () => void;
-  onOpen: (bookmarkId: string) => void;
-  onRemove: (bookmarkId: string) => void;
-};
+import type { BookmarkProps } from "./type";
 
 export function Bookmark({
   bookmarks,
@@ -28,7 +18,7 @@ export function Bookmark({
   onClose,
   onOpen,
   onRemove,
-}: Props) {
+}: BookmarkProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useI18n();
   const filteredBookmarks = bookmarks.filter((bookmark) =>

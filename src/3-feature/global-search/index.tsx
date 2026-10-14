@@ -1,25 +1,10 @@
 "use client";
-
-import type { ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SearchField, SidePanel } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
 
 import { SearchResult, SearchResultSection } from "./component";
-
-type Props = {
-  groups: GroupEntry[];
-  closedTabs: ClosedTabEntry[];
-  searchQuery: string;
-  onSearchQueryChange: (query: string) => void;
-  open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
-  onClose: () => void;
-  onSelectGroup: (groupId: string) => void;
-  onOpenBookmark: (groupId: string, bookmarkId: string) => void;
-  onOpenClosedSearch: (query: string) => void;
-};
+import type { GlobalSearchProps } from "./type";
 
 export function GlobalSearch({
   groups,
@@ -33,7 +18,7 @@ export function GlobalSearch({
   onSelectGroup,
   onOpenBookmark,
   onOpenClosedSearch,
-}: Props) {
+}: GlobalSearchProps) {
   const { t } = useI18n();
   const query = searchQuery.trim();
   const groupResults = query
@@ -43,7 +28,12 @@ export function GlobalSearch({
     ? groups.flatMap((group) =>
         group.bookmarks
           .filter((bookmark) =>
-            matchesSearchQuery(query, group.name, bookmark.title, bookmark.content),
+            matchesSearchQuery(
+              query,
+              group.name,
+              bookmark.title,
+              bookmark.content,
+            ),
           )
           .map((bookmark) => ({ group, bookmark })),
       )
@@ -53,10 +43,16 @@ export function GlobalSearch({
         .map((entry) => ({
           entry,
           groupName:
-            groups.find((group) => group.id === entry.groupId)?.name ?? "Ungrouped",
+            groups.find((group) => group.id === entry.groupId)?.name ??
+            "Ungrouped",
         }))
         .filter(({ entry, groupName }) =>
-          matchesSearchQuery(query, groupName, entry.tab.title, entry.tab.content),
+          matchesSearchQuery(
+            query,
+            groupName,
+            entry.tab.title,
+            entry.tab.content,
+          ),
         )
     : [];
   const resultCount =
@@ -91,7 +87,10 @@ export function GlobalSearch({
         ) : (
           <>
             {groupResults.length > 0 && (
-              <SearchResultSection title={t.groupsTitle} className="global-search-groups">
+              <SearchResultSection
+                title={t.groupsTitle}
+                className="global-search-groups"
+              >
                 {groupResults.map((group) => (
                   <SearchResult
                     key={group.id}
@@ -105,7 +104,10 @@ export function GlobalSearch({
               </SearchResultSection>
             )}
             {bookmarkResults.length > 0 && (
-              <SearchResultSection title={t.bookmarksTitle} className="global-search-bookmarks">
+              <SearchResultSection
+                title={t.bookmarksTitle}
+                className="global-search-bookmarks"
+              >
                 {bookmarkResults.map(({ group, bookmark }) => (
                   <SearchResult
                     key={`${group.id}:${bookmark.id}`}
@@ -121,7 +123,10 @@ export function GlobalSearch({
               </SearchResultSection>
             )}
             {closedResults.length > 0 && (
-              <SearchResultSection title={t.closedTitle} className="global-search-closed">
+              <SearchResultSection
+                title={t.closedTitle}
+                className="global-search-closed"
+              >
                 {closedResults.map(({ entry, groupName }) => (
                   <SearchResult
                     key={entry.id}

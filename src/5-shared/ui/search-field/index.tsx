@@ -2,19 +2,14 @@
 
 import { Search } from "lucide-react";
 
-type Props = {
-  value: string;
-  ariaLabel: string;
-  placeholder: string;
-  onChange: (value: string) => void;
-};
+import type { SearchFieldProps } from "./type";
 
 export function SearchField({
   value,
   ariaLabel,
   placeholder,
   onChange,
-}: Props) {
+}: SearchFieldProps) {
   return (
     <label className="search-field">
       <Search size={15} aria-hidden="true" />

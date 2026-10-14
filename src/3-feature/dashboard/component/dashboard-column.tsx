@@ -1,24 +1,7 @@
-import {
-  type DashboardColumnData,
-  getStatusColor,
-} from "@/src/4-entity/notepad";
+import { getStatusColor } from "@/src/4-entity/notepad";
 
-import type { useDashboardDrag } from "../hook";
-import type { DashboardProps } from "../type";
+import type { DashboardColumnProps } from "../type";
 import { DashboardCard } from "./dashboard-card";
-
-type Props = Pick<
-  DashboardProps,
-  | "activeTabId"
-  | "groups"
-  | "showGroupNames"
-  | "tabColorCycle"
-  | "onRestoreClosed"
-  | "onOpenTab"
-> & {
-  column: DashboardColumnData;
-  drag: ReturnType<typeof useDashboardDrag>;
-};
 
 export function DashboardColumn({
   column,
@@ -29,7 +12,7 @@ export function DashboardColumn({
   tabColorCycle,
   onRestoreClosed,
   onOpenTab,
-}: Props) {
+}: DashboardColumnProps) {
   const { status, tabs: columnTabs, closedTabs: columnClosed } = column;
   return (
     <section

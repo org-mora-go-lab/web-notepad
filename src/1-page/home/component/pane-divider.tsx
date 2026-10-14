@@ -1,13 +1,12 @@
 "use client";
 
-import { type DividerOrientation, usePaneResize } from "../hook";
+import { usePaneResize } from "../hook";
+import type { PaneDividerProps } from "../type";
 
-type Props = {
-  orientation?: DividerOrientation;
-  onResize: (ratio: number) => void;
-};
-
-export function PaneDivider({ orientation = "vertical", onResize }: Props) {
+export function PaneDivider({
+  orientation = "vertical",
+  onResize,
+}: PaneDividerProps) {
   const handlePointerDown = usePaneResize(onResize, orientation);
 
   return (
@@ -15,7 +14,9 @@ export function PaneDivider({ orientation = "vertical", onResize }: Props) {
       className={`pane-divider ${orientation === "horizontal" ? "is-horizontal" : ""}`}
       role="separator"
       aria-orientation={orientation}
-      aria-label={orientation === "horizontal" ? "상하 크기 조절" : "영역 크기 조절"}
+      aria-label={
+        orientation === "horizontal" ? "상하 크기 조절" : "영역 크기 조절"
+      }
       onPointerDown={handlePointerDown}
     />
   );

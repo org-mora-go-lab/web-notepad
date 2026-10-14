@@ -1,22 +1,9 @@
 "use client";
 
 import { AlertTriangle, Trash2, X } from "lucide-react";
-import type { KeyboardEvent, ReactNode } from "react";
 
 import { useConfirmDialog, useI18n } from "../../hook";
-
-type Props = {
-  title: string;
-  message: string;
-  closeLabel: string;
-  closeTitle: string;
-  // Defaults to a "Delete" action with a trash icon.
-  confirmLabel?: string;
-  confirmIcon?: ReactNode;
-  onConfirm: () => void;
-  onCancel: () => void;
-  onKeyDown?: (event: KeyboardEvent<HTMLDialogElement>, close: (action: () => void) => void) => boolean;
-};
+import type { ConfirmPopupProps } from "./type";
 
 // Confirmation dialog with Cancel focused first and a destructive confirm action (Delete by default).
 export function ConfirmPopup({
@@ -29,8 +16,11 @@ export function ConfirmPopup({
   onConfirm,
   onCancel,
   onKeyDown,
-}: Props) {
-  const { dialogProps, cancelButtonRef, popupId, close } = useConfirmDialog({ onCancel, onKeyDown });
+}: ConfirmPopupProps) {
+  const { dialogProps, cancelButtonRef, popupId, close } = useConfirmDialog({
+    onCancel,
+    onKeyDown,
+  });
   const { t } = useI18n();
 
   return (
@@ -53,11 +43,19 @@ export function ConfirmPopup({
         </div>
         <p id={`${popupId}-message`}>{message}</p>
         <div className="confirm-popup-actions">
-          <button ref={cancelButtonRef} type="button" onClick={() => close(onCancel)}>
+          <button
+            ref={cancelButtonRef}
+            type="button"
+            onClick={() => close(onCancel)}
+          >
             <X size={14} aria-hidden="true" />
             {t.cancel}
           </button>
-          <button className="confirm-popup-confirm" type="button" onClick={() => close(onConfirm)}>
+          <button
+            className="confirm-popup-confirm"
+            type="button"
+            onClick={() => close(onConfirm)}
+          >
             {confirmIcon ?? <Trash2 size={14} aria-hidden="true" />}
             {confirmLabel ?? t.delete}
           </button>

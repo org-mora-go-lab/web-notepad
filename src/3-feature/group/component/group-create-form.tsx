@@ -5,12 +5,10 @@ import { type FormEvent, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
-type Props = {
-  onCreate: (name: string) => void;
-};
+import type { GroupCreateFormProps } from "../type";
 
 // One-line "new group" row: type a name and press Enter or the + button.
-export function GroupCreateForm({ onCreate }: Props) {
+export function GroupCreateForm({ onCreate }: GroupCreateFormProps) {
   const { t } = useI18n();
   const [name, setName] = useState("");
 
@@ -32,7 +30,12 @@ export function GroupCreateForm({ onCreate }: Props) {
         aria-label="새 그룹 이름"
         maxLength={60}
       />
-      <button type="submit" aria-label="그룹 생성" title={t.createGroup} disabled={!name.trim()}>
+      <button
+        type="submit"
+        aria-label="그룹 생성"
+        title={t.createGroup}
+        disabled={!name.trim()}
+      >
         <Plus size={16} />
       </button>
     </form>

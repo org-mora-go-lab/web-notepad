@@ -50,9 +50,19 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 - Export subcomponents from the submodule's `component/index.ts` barrel, and import and use those subcomponents from the submodule's `index.tsx`.
 - `1-page/home` and other consumers must import feature and widget modules through the public `3-feature/index.ts` and `2-widget/index.ts` barrels.
 
+## Module Props Types
+
+- Apply these rules to props-bearing modules and subcomponents in every numbered layer, including pages, widgets, features, entity UI if added, and shared UI.
+- Define a module's main component props in its own `type/<module>-props.ts` file, named `<PascalCaseModuleName>Props` (for example, `dashboard/type/dashboard-props.ts` exports `DashboardProps`). Do not declare an inline `Props` alias or an anonymous props object in the component implementation.
+- Keep subcomponent props in separate `type/<subcomponent>-props.ts` files inside the owning module, named after the subcomponent (for example, `dashboard/type/dashboard-column-props.ts` exports `DashboardColumnProps`). Keep each component's props contract in its own file; do not combine unrelated component props in one file.
+- Every module's `type/` directory must have a lowercase `index.ts` barrel that exports its public types with `export type`. Module implementations, subcomponents, and hooks must import these types with `import type` through `./type` or `../type` as appropriate. Imports between files inside the same `type/` directory may remain direct.
+- Props type files must use type-only imports for their dependencies. Keep reusable domain models and hook/function option types distinct from component props; use `Pick`, `Omit`, or other type composition when a component shares part of another contract.
+- Keep props types in the module's own type barrel. The top-level feature, widget, and shared UI barrels still export only their main component implementations, not props types or subcomponents.
+- Do not introduce empty props contracts for components that accept no props, or rename entity/domain data types to props types when the module has no component props.
+
 ## Internal Directory Barrels
 
-- Every directory named `hook`, `util`, `component`, or `constant` under `src/` must include a lowercase `index.ts` barrel. Do not use `Index.ts` or `index.tsx` for these barrels.
+- Every directory named `hook`, `util`, `component`, `constant`, or `type` under `src/` must include a lowercase `index.ts` barrel. Do not use `Index.ts` or `index.tsx` for these barrels.
 - Export the directory's public APIs through its barrel. Keep JSX component implementations in separate `.tsx` files, not in the barrel.
 - Imports from outside these directories must resolve through the directory's `index.ts` barrel instead of importing individual files directly. Imports between files within the same directory may remain direct to avoid circular dependencies.
 - When adding, moving, or removing a public API, update its barrel and consumers in the same change. Keep feature and widget root implementations in `index.tsx` as specified above.

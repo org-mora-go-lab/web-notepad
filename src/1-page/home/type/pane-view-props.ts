@@ -1,15 +1,11 @@
 import type { RefObject } from "react";
 
-import type {
-  GroupEntry,
-  NoteTab,
-  PaneColumn,
-  PaneId,
-} from "@/src/4-entity/notepad";
+import type { GroupEntry, NoteTab, PaneId } from "@/src/4-entity/notepad";
 import type { PaneDropZone } from "@/src/5-shared";
 
 export type PaneViewProps = {
   pane: PaneId;
+  heightRatio?: number;
   hasMenu: boolean;
   closedCount?: number;
   onOpenClosed?: () => void;
@@ -38,14 +34,4 @@ export type PaneViewProps = {
   onToggleBookmark: (tabId: string) => void;
   onAdd: () => void;
   onChange: (content: string) => void;
-};
-
-// A left or right column with a top pane and an optional bottom pane.
-export type PaneColumnProps = {
-  column: PaneColumn;
-  panes: PaneViewProps[];
-  widthRatio?: number;
-  rowRatio: number;
-  onResize?: (ratio: number) => void;
-  onRowResize: (ratio: number) => void;
 };

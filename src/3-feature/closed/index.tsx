@@ -2,25 +2,12 @@
 
 import { Ghost } from "lucide-react";
 
-import type { ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SearchField, SidePanel } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
 
 import { ClosedItem } from "./component";
-
-type Props = {
-  closedTabs: ClosedTabEntry[];
-  groups: GroupEntry[];
-  searchQuery: string;
-  open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
-  onClose: () => void;
-  onSearchQueryChange: (query: string) => void;
-  onRestore: (entryId: string) => void;
-  onRemove: (entryId: string) => void;
-};
+import type { ClosedProps } from "./type";
 
 export function Closed({
   closedTabs,
@@ -33,15 +20,21 @@ export function Closed({
   onSearchQueryChange,
   onRestore,
   onRemove,
-}: Props) {
+}: ClosedProps) {
   const { t } = useI18n();
   // Tabs whose group was deleted are listed (and restored) under Ungrouped.
   const entries = closedTabs.map((entry) => ({
     entry,
-    groupName: groups.find((group) => group.id === entry.groupId)?.name ?? "Ungrouped",
+    groupName:
+      groups.find((group) => group.id === entry.groupId)?.name ?? "Ungrouped",
   }));
   const filteredEntries = entries.filter(({ entry, groupName }) =>
-    matchesSearchQuery(searchQuery, groupName, entry.tab.title, entry.tab.content),
+    matchesSearchQuery(
+      searchQuery,
+      groupName,
+      entry.tab.title,
+      entry.tab.content,
+    ),
   );
 
   return (

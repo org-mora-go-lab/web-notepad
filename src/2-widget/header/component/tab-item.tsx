@@ -1,28 +1,13 @@
 import { Bookmark, Pin, X } from "lucide-react";
 import type { DragEvent } from "react";
 
-import type { NoteTab } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
+
+import type { TabItemProps } from "../type";
 
 // Mobile opens the tab menu with a double tap instead of a right click.
 const isTouchLayout = () =>
   window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
-
-type Props = {
-  tab: NoteTab;
-  active: boolean;
-  draggingTabId: string | null;
-  dragActive: boolean;
-  dropTarget: boolean;
-  onSelect: (tabId: string) => void;
-  onClose: (tabId: string) => void;
-  onCycleTabColor: (tabId: string) => void;
-  onContextMenu: (tabId: string, clientX: number, clientY: number) => void;
-  onDragStateChange: (tabId: string | null) => void;
-  onDropTargetChange: (tabId: string | null) => void;
-  onDrop: (fromTabId: string, toTabId: string) => void;
-  onDragEnd: () => void;
-};
 
 export function TabItem({
   tab,
@@ -38,7 +23,7 @@ export function TabItem({
   onDropTargetChange,
   onDrop,
   onDragEnd,
-}: Props) {
+}: TabItemProps) {
   const { t } = useI18n();
   const dirty = tab.content.trim() !== "" && tab.content !== tab.savedContent;
   const markDropTarget = (event: DragEvent<HTMLDivElement>) => {
@@ -102,8 +87,16 @@ export function TabItem({
         }}
       >
         {tab.pinned && (
-          <span className="tab-pin-indicator" aria-label="고정됨" title={t.pinned}>
-            <Pin className="tab-indicator is-pin" size={13} aria-hidden="true" />
+          <span
+            className="tab-pin-indicator"
+            aria-label="고정됨"
+            title={t.pinned}
+          >
+            <Pin
+              className="tab-indicator is-pin"
+              size={13}
+              aria-hidden="true"
+            />
           </span>
         )}
         {tab.bookmarked && (
