@@ -100,7 +100,7 @@
     .dashboard-card-status-actions {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
+      gap: 15px;
       padding: 0 10px 10px;
 
       button {
