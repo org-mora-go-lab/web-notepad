@@ -22,6 +22,14 @@ export function DashboardColumn({
     "in-progress": t.statusInProgress,
     done: t.statusDone,
   }[status];
+  const cardEntries = [
+    ...columnClosed.map((entry) => ({ entry, tab: entry.tab, closed: true })),
+    ...columnTabs.map((tab) => ({ entry: null, tab, closed: false })),
+  ].sort((left, right) => {
+    const priority = (tab: typeof left.tab) =>
+      tab.pinned ? 2 : tab.bookmarked ? 1 : 0;
+    return priority(right.tab) - priority(left.tab);
+  });
   return (
     <section
       key={status}
@@ -50,47 +58,48 @@ export function DashboardColumn({
         </span>
       </h3>
       <div className="dashboard-cards">
-        {columnClosed.map((entry) => (
-          <DashboardCard
-            key={entry.id}
-            id={entry.id}
-            tab={entry.tab}
-            closed
-            groupName={
-              showGroupNames
-                ? (groups.find((group) => group.id === entry.groupId)?.name ??
-                  "Ungrouped")
-                : undefined
-            }
-            status={status}
-            dragging={drag.draggingTabId === entry.id}
-            onOpen={() => onRestoreClosed(entry.id)}
-            onDragStart={drag.startDrag}
-            onChangeStatus={drag.moveToStatus}
-            onDragEnd={drag.endDrag}
-          />
-        ))}
-        {columnTabs.map((tab) => (
-          <DashboardCard
-            key={tab.id}
-            tab={tab}
-            active={tab.id === activeTabId}
-            groupName={
-              showGroupNames
-                ? groups.find((group) =>
-                    group.tabs.some((item) => item.id === tab.id),
-                  )?.name
-                : undefined
-            }
-            status={status}
-            dragging={drag.draggingTabId === tab.id}
-            onOpen={onOpenTab}
-            onOpenContextMenu={onOpenContextMenu}
-            onDragStart={drag.startDrag}
-            onChangeStatus={drag.moveToStatus}
-            onDragEnd={drag.endDrag}
-          />
-        ))}
+        {cardEntries.map(({ entry, tab, closed }) =>
+          closed && entry ? (
+            <DashboardCard
+              key={entry.id}
+              id={entry.id}
+              tab={tab}
+              closed
+              groupName={
+                showGroupNames
+                  ? (groups.find((group) => group.id === entry.groupId)?.name ??
+                    "Ungrouped")
+                  : undefined
+              }
+              status={status}
+              dragging={drag.draggingTabId === entry.id}
+              onOpen={() => onRestoreClosed(entry.id)}
+              onDragStart={drag.startDrag}
+              onChangeStatus={drag.moveToStatus}
+              onDragEnd={drag.endDrag}
+            />
+          ) : (
+            <DashboardCard
+              key={tab.id}
+              tab={tab}
+              active={tab.id === activeTabId}
+              groupName={
+                showGroupNames
+                  ? groups.find((group) =>
+                      group.tabs.some((item) => item.id === tab.id),
+                    )?.name
+                  : undefined
+              }
+              status={status}
+              dragging={drag.draggingTabId === tab.id}
+              onOpen={onOpenTab}
+              onOpenContextMenu={onOpenContextMenu}
+              onDragStart={drag.startDrag}
+              onChangeStatus={drag.moveToStatus}
+              onDragEnd={drag.endDrag}
+            />
+          ),
+        )}
       </div>
     </section>
   );
