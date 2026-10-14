@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { seedStoredStateOnLoad } from "../../__util__";
+import { createGroupFixture, createTabFixture } from "../../../__fixture__";
+import { seedStoredStateOnLoad } from "../../../__util__";
 
 // Seeds a four-pane view with one tab per pane, named after its pane, then opens the app.
 export async function seedQuadState(page: Page, leftRowRatio = 0.5) {

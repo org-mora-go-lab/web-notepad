@@ -2,8 +2,8 @@ import type { Page } from "@playwright/test";
 
 import type { PaneLayout } from "@/src/4-entity/notepad";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { writeStoredState } from "../../__util__";
+import { createGroupFixture, createTabFixture } from "../../../__fixture__";
+import { writeStoredState } from "../../../__util__";
 
 // Seed the same view in a real group or in All Group without duplicating persisted layouts in tests.
 export async function writePaneLayoutState(

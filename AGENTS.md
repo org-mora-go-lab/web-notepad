@@ -16,7 +16,7 @@ After completing code changes, suggest a Korean commit message that matches the 
 
 Every E2E test code file (`*.e2e.spec.ts`) must contain exactly one top-level `test(...)` declaration and register exactly one test case. Do not generate multiple tests from loops or parameterized declarations in one file. Split separate scenarios into their own numbered PRD requirements and matching E2E files. Shared resource files must not declare tests.
 
-When writing E2E tests, create `__mock__/`, `__fixture__/`, `__util__/`, or `__constant__/` folders when shared test doubles, fixtures, helpers, or constants are needed. Put broadly reusable resources under `tests/`; put resources used only by one requirement title under that title's folder. Every such folder must include a barrel `index.ts`, and tests should import from the barrel when practical.
+When writing E2E tests, create `__mock__/`, `__fixture__/`, `__util__/`, or `__constant__/` folders when shared test doubles, fixtures, helpers, or constants are needed. Put broadly reusable resources under `tests/`; put resources used only by one requirement title under that title's folder. Every such folder must include a barrel `index.ts`, and tests should import from the barrel when practical. Group resource files by concern when a resource directory contains distinct responsibilities (for example, `tests/__util__/state/` and `tests/__util__/note/`). Each concern group must include an `index.ts` barrel and be re-exported from the owning resource barrel; imports from outside the group should use its barrel. Keep numbered E2E files directly in their matching PRD requirement directory.
 
 ## Specification Synchronization
 

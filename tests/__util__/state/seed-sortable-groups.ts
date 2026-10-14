@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../__fixture__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { seedStoredStateOnce } from "./stored-state";
 
 // Seeds unsorted groups once per session (reloads keep the app state), then opens the app.

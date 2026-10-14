@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../__fixture__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { type StoredState, writeStoredState } from "./stored-state";
 
 type Options = { withTarget?: boolean; splitSource?: boolean; sourceRight?: boolean; splitTarget?: boolean };

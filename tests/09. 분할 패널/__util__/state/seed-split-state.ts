@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { seedStoredStateOnLoad } from "../../__util__";
+import { createGroupFixture, createTabFixture } from "../../../__fixture__";
+import { seedStoredStateOnLoad } from "../../../__util__";
 
 // Seeds a split view with "left" and "right" tabs on every load, then opens the app.
 export async function seedSplitState(page: Page, splitRatio = 0.5) {

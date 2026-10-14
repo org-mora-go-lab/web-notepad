@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { writeStoredState } from "../../__util__";
+import { createGroupFixture, createTabFixture } from "../../../__fixture__";
+import { writeStoredState } from "../../../__util__";
 
 export const seedAllGroupState = (page: Page) => writeStoredState(page, {
   activeGroupId: "all-group",

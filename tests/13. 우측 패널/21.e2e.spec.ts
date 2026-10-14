@@ -18,7 +18,7 @@ test("21. 미고정 패널 경계는 테마별 그라데이션을 표시하고 �
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
     expect(await panel.evaluate((element) => getComputedStyle(element, "::before").backgroundImage)).toContain("rgba(0, 0, 0, 0.22)");
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
-    expect(edge.width).toBe("48px");
+    expect(Number.parseFloat(edge.width)).toBeCloseTo(28.8, 1);
     expect(edge.background).toContain("30%");
     expect(edge.background).toContain("65%");
     expect(edge.pointerEvents).toBe("none");

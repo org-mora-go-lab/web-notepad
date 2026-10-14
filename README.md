@@ -54,3 +54,7 @@ npm run test:e2e -- "tests/09. 분할 패널"
 `writeStoredState`/`seedStoredStateOnce`는 최초 문서 로드 전에 상태를 한 번 주입하며,
 새로고침 이후의 편집 내용은 유지합니다. `seedStoredStateOnLoad`는 매 로드마다 같은 상태를 주입합니다.
 상태 준비의 문서 로드는 1회이며, 브라우저 컨텍스트는 테스트마다 격리합니다.
+
+공통 유틸리티는 `tests/__util__/state`, `note`, `workspace`, `assertion`으로 구분합니다.
+분할 패널 전용 유틸리티는 `tests/09. 분할 패널/__util__/state`, `drag`로 구분합니다.
+각 그룹은 배럴을 제공하며, E2E 파일은 기존 `__util__` 배럴을 통해 가져옵니다.

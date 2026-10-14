@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
-import { bookmarksCommand } from "./panel";
-import { seedStoredStateOnLoad } from "./stored-state";
+import { seedStoredStateOnLoad } from "../state";
+import { bookmarksCommand } from "../workspace";
 
 type BookmarkMetadata = {
   tabColor?: string;
