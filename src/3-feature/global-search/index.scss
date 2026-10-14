@@ -1,4 +1,3 @@
-@use "../../5-shared/style/variable" as v;
 @use "../../5-shared/style/mixin";
 @use "./style/search-result";
 @use "./style/search-result-section";
@@ -9,27 +8,4 @@
   .side-panel-drawer {
     grid-template-rows: auto auto minmax(0, 1fr);
   }
-
-  .global-search-empty-state {
-    min-height: 280px;
-    display: grid;
-    place-content: center;
-    color: var(--color-empty);
-    text-align: center;
-
-    p {
-      max-width: 220px;
-      margin: 0;
-      font-family: v.$sans;
-      font-size: v.font(16px);
-      line-height: 1.5;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .global-search-empty-state p {
-      font-size: v.font(16px * v.$mobile-scale);
-    }
-  }
-
 }

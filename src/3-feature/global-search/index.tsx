@@ -1,7 +1,8 @@
 "use client";
+import { getClosedTabItems } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { SearchField, SidePanel } from "@/src/5-shared/ui";
-import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
+import { EmptyState, SearchField, SidePanel } from "@/src/5-shared/ui";
+import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { SearchResult, SearchResultSection } from "./component";
 import type { GlobalSearchProps } from "./type";
@@ -39,21 +40,14 @@ export function GlobalSearch({
       )
     : [];
   const closedResults = query
-    ? closedTabs
-        .map((entry) => ({
-          entry,
-          groupName:
-            groups.find((group) => group.id === entry.groupId)?.name ??
-            "Ungrouped",
-        }))
-        .filter(({ entry, groupName }) =>
-          matchesSearchQuery(
-            query,
-            groupName,
-            entry.tab.title,
-            entry.tab.content,
-          ),
-        )
+    ? getClosedTabItems(closedTabs, groups).filter(({ entry, groupName }) =>
+        matchesSearchQuery(
+          query,
+          groupName,
+          entry.tab.title,
+          entry.tab.content,
+        ),
+      )
     : [];
   const resultCount =
     groupResults.length + bookmarkResults.length + closedResults.length;
@@ -77,13 +71,15 @@ export function GlobalSearch({
       />
       <div className="global-search-list">
         {!query ? (
-          <div className="global-search-empty-state">
-            <p>{t.enterSearchTerm}</p>
-          </div>
+          <EmptyState
+            className="global-search-empty-state"
+            message={t.enterSearchTerm}
+          />
         ) : resultCount === 0 ? (
-          <div className="global-search-empty-state">
-            <p>{t.noSearchResults}</p>
-          </div>
+          <EmptyState
+            className="global-search-empty-state"
+            message={t.noSearchResults}
+          />
         ) : (
           <>
             {groupResults.length > 0 && (

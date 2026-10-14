@@ -1,0 +1,39 @@
+@use "../../style/variable" as v;
+
+.empty-state {
+  min-height: 280px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  color: var(--color-empty);
+  text-align: center;
+  p {
+    max-width: 220px;
+    margin: 0;
+    font-family: v.$sans;
+    font-size: v.font(16px);
+    line-height: 1.5;
+  }
+  &.is-search {
+    min-height: 220px;
+    color: v.$dim;
+    p {
+      max-width: none;
+      font-size: v.font(15px);
+      line-height: inherit;
+    }
+  }
+  @media (max-width: 640px) {
+    svg {
+      width: 26px * v.$mobile-scale;
+      height: 26px * v.$mobile-scale;
+    }
+    p {
+      font-size: v.font(16px * v.$mobile-scale);
+    }
+    &.is-search p {
+      font-size: v.font(15px * v.$mobile-scale);
+    }
+  }
+}

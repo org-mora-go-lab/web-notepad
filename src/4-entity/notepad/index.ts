@@ -11,6 +11,7 @@ export type { DashboardColumnData } from "./util";
 export {
   compareGroups,
   getBottomPane,
+  getClosedTabItems,
   getDashboardColumns,
   getPaneActiveTabId,
   getPaneColumn,

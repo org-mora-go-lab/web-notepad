@@ -2,6 +2,7 @@ export { compareGroups } from "./group-sort";
 export type { DashboardColumnData } from "./note";
 export {
   createNoteTab,
+  getClosedTabItems,
   getDashboardColumns,
   getNextTabNumber,
   getStatusColor,
