@@ -1,6 +1,8 @@
 @use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
 @use "./style/dashboard-card";
+@use "./style/dashboard-column";
+@use "./style/dashboard-statuses";
 
 .dashboard {
   @include mixin.side-panel-list("dashboard");
@@ -15,76 +17,9 @@
     grid-template-rows: auto minmax(0, 1fr);
   }
 
-  .dashboard-statuses {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 15px;
-    padding: 14px 14px 0;
-    padding-right: calc(14px + var(--dashboard-scrollbar-width, 0px));
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: var(--dashboard-scrollbar-width, 0px);
-      height: 48px;
-      background: linear-gradient(
-        to bottom,
-        v.$panel 0%,
-        color-mix(in srgb, v.$panel 65%, transparent) 35%,
-        color-mix(in srgb, v.$panel 25%, transparent) 70%,
-        transparent 100%
-      );
-      opacity: 0;
-      transition: opacity 180ms ease;
-      pointer-events: none;
-    }
-  }
-
-  .dashboard-content.is-scrolled .dashboard-statuses::after {
-    opacity: 1;
-  }
-
   // The board fills the panel so the area under each status title accepts drops down to the bottom.
   .dashboard-list {
     overflow-y: auto;
-  }
-
-  .dashboard-board {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 15px;
-    min-height: 100%;
-  }
-
-  .dashboard-column {
-    min-height: 0;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .dashboard-statuses {
-    h3 {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      min-width: 0;
-      margin: 0;
-      color: v.$signal;
-      font-size: v.font(14px * 1.2);
-    }
-  }
-
-  .dashboard-count {
-    color: var(--color-secondary);
-    padding-right: 10px;
-    font-size: v.font(12px * 1.2);
-    font-variant-numeric: tabular-nums;
   }
 
   // Accent of each tab color, used by the column marker and the cards.
@@ -103,37 +38,6 @@
   @each $name, $_ in v.$extra-tab-colors {
     [data-tab-color="#{$name}"] {
       --dashboard-accent: var(--color-tab-#{$name});
-    }
-  }
-
-  .dashboard-statuses h3 {
-    background: color-mix(in srgb, var(--dashboard-accent, #{v.$line}) 16%, transparent);
-    padding: 5px 0 5px 8px;
-    border-left: 3px solid var(--dashboard-accent, v.$line);
-  }
-
-  // An empty column keeps room for one card; the area under the title highlights while a card is dragged over it.
-  .dashboard-cards {
-    min-height: 72px;
-    flex: 1;
-    display: grid;
-    gap: 8px;
-    align-content: start;
-    // Reserve space for the drop outline without moving cards during a drag.
-    padding: 6px;
-    margin-inline: -6px;
-  }
-
-  .dashboard-column.is-drop-target .dashboard-cards {
-    outline: 1px dashed v.$signal;
-    outline-offset: -1px;
-    background: rgba(143, 227, 176, 0.08);
-  }
-
-  @media (max-width: 640px) {
-    .dashboard-board {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: repeat(3, auto);
     }
   }
 }

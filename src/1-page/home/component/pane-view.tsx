@@ -19,7 +19,6 @@ export function PaneView({
   groups,
   activeGroupId,
   activeTab,
-  tabStrip,
   editorRef,
   composingRef,
   autoFocus,
@@ -61,10 +60,6 @@ export function PaneView({
           groups={groups}
           activeGroupId={activeGroupId}
           activeTabId={activeTab.id}
-          tabsScrollRef={tabStrip.tabsScrollRef}
-          tabsOverflowing={tabStrip.tabsOverflowing}
-          tabsCanScrollLeft={tabStrip.tabsCanScrollLeft}
-          tabsCanScrollRight={tabStrip.tabsCanScrollRight}
           draggingTabId={draggingTabId}
           onSelect={onSelect}
           onClose={onClose}

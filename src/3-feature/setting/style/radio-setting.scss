@@ -1,0 +1,57 @@
+@use "../../../5-shared/style/variable" as v;
+
+.setting {
+  .setting-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .setting-option {
+    position: relative;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    span {
+      display: block;
+      min-width: 58px;
+      padding: 6px 10px;
+      border: 1px solid v.$line;
+      color: v.$muted;
+      font-size: v.font(14px);
+      text-align: center;
+    }
+
+    &:hover span {
+      color: v.$ink;
+    }
+
+    input:checked + span {
+      border-color: v.$hover-line;
+      background: v.$raised;
+      color: v.$ink;
+    }
+
+    input:focus-visible + span {
+      outline: 1px solid var(--color-focus);
+      outline-offset: 1px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .setting-option span {
+      min-width: 58px * v.$mobile-scale;
+      font-size: v.font(14px * v.$mobile-scale);
+    }
+  }
+}

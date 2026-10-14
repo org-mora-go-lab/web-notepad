@@ -13,7 +13,7 @@ import {
 } from "@/src/4-entity/notepad";
 import { isAltBackspace } from "@/src/5-shared";
 
-import type { PaneRefs } from "./use-pane-refs";
+import type { PaneRefs } from "../workspace";
 import { useSelectAllShortcut } from "./use-select-all-shortcut";
 
 type Options = {
@@ -54,7 +54,9 @@ export function useNotepadShortcuts({
 
       // The Korean IME swallows the first shortcut key while composing, so commit as soon as a modifier is held.
       const composingPane = PANE_IDS.find(
-        (id) => composingRefs[id].current && document.activeElement === editorRefs[id].current,
+        (id) =>
+          composingRefs[id].current &&
+          document.activeElement === editorRefs[id].current,
       );
       if (composingPane && (event.metaKey || event.altKey)) {
         const editor = editorRefs[composingPane].current;
@@ -90,7 +92,8 @@ export function useNotepadShortcuts({
         flushActiveEditor();
         onMoveTabToPane(paneActiveId, targetPane);
         window.requestAnimationFrame(() => {
-          const movedPane = getActiveGroup(useNotepadStore.getState())?.activePane ?? "left";
+          const movedPane =
+            getActiveGroup(useNotepadStore.getState())?.activePane ?? "left";
           editorRefs[movedPane].current?.focus();
         });
         return;
@@ -100,8 +103,12 @@ export function useNotepadShortcuts({
       if (isArrowUp || matchesKey(event, "ArrowDown", "Down")) {
         event.preventDefault();
         // Navigation runs down the left column and then continues down the right column.
-        const orderedTabs = PANE_IDS.flatMap((id) => getPaneTabs(activeGroup, id));
-        const currentIndex = orderedTabs.findIndex((tab) => tab.id === paneActiveId);
+        const orderedTabs = PANE_IDS.flatMap((id) =>
+          getPaneTabs(activeGroup, id),
+        );
+        const currentIndex = orderedTabs.findIndex(
+          (tab) => tab.id === paneActiveId,
+        );
         const nextTab = orderedTabs[currentIndex + (isArrowUp ? -1 : 1)];
         if (currentIndex >= 0 && nextTab) onSelectTab(nextTab.id);
       }

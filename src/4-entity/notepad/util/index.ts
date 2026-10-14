@@ -1,5 +1,6 @@
+export type { DashboardColumnData } from "./dashboard-columns";
+export { getDashboardColumns } from "./dashboard-columns";
 export { compareGroups } from "./group-sort";
-export { normalizePersistedState } from "./normalize-persisted-state";
 export {
   createNoteTab,
   getNextTabNumber,
@@ -21,3 +22,4 @@ export {
   PANE_IDS,
   setPaneActiveTabId,
 } from "./pane-layout";
+export { getPaneWorkspace } from "./pane-workspace";

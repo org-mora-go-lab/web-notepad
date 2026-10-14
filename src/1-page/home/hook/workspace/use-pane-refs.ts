@@ -13,7 +13,12 @@ export function usePaneRefs<T>(initialValue: T): PaneRefs<T> {
   const leftBottom = useRef(initialValue);
   const rightBottom = useRef(initialValue);
   return useMemo(
-    () => ({ left, right, "left-bottom": leftBottom, "right-bottom": rightBottom }),
+    () => ({
+      left,
+      right,
+      "left-bottom": leftBottom,
+      "right-bottom": rightBottom,
+    }),
     [],
   );
 }

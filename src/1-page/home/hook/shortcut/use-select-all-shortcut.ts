@@ -4,14 +4,16 @@ import { useEffect } from "react";
 
 import { PANE_IDS } from "@/src/4-entity/notepad";
 
-import type { PaneRefs } from "./use-pane-refs";
+import type { PaneRefs } from "../workspace";
 
 type Options = {
   editorRefs: PaneRefs<HTMLTextAreaElement | null>;
 };
 
 // Browsers may reset the selection after keydown, so select again on the next frame and shortly after.
-const selectAllPersistently = (target: HTMLInputElement | HTMLTextAreaElement) => {
+const selectAllPersistently = (
+  target: HTMLInputElement | HTMLTextAreaElement,
+) => {
   const selectAll = () => {
     if (document.activeElement !== target) return;
     target.setSelectionRange(0, target.value.length);
@@ -33,7 +35,9 @@ export function useSelectAllShortcut({ editorRefs }: Options) {
       }
 
       const active = document.activeElement;
-      const isEditorTarget = PANE_IDS.some((pane) => active === editorRefs[pane].current);
+      const isEditorTarget = PANE_IDS.some(
+        (pane) => active === editorRefs[pane].current,
+      );
       const isEditableTarget =
         active instanceof HTMLInputElement ||
         active instanceof HTMLTextAreaElement ||
@@ -43,9 +47,7 @@ export function useSelectAllShortcut({ editorRefs }: Options) {
         if (
           active instanceof HTMLTextAreaElement ||
           (active instanceof HTMLInputElement &&
-            ["text", "search", "tel", "url", "password"].includes(
-              active.type,
-            ))
+            ["text", "search", "tel", "url", "password"].includes(active.type))
         ) {
           event.preventDefault();
           selectAllPersistently(active);

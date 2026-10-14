@@ -33,7 +33,11 @@ function subscribe(onChange: () => void) {
 
 // Remembers whether the right panel docks beside the workspace (PC only).
 export function usePanelPin() {
-  const panelPinned = useSyncExternalStore(subscribe, currentPinned, () => false);
+  const panelPinned = useSyncExternalStore(
+    subscribe,
+    currentPinned,
+    () => false,
+  );
   const togglePanelPin = () => {
     memoryPinned = !panelPinned;
     try {

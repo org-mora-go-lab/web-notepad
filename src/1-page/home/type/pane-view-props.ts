@@ -1,8 +1,12 @@
 import type { RefObject } from "react";
 
-import type { GroupEntry, NoteTab, PaneColumn, PaneId } from "@/src/4-entity/notepad";
+import type {
+  GroupEntry,
+  NoteTab,
+  PaneColumn,
+  PaneId,
+} from "@/src/4-entity/notepad";
 import type { PaneDropZone } from "@/src/5-shared";
-import type { TabStripState } from "@/src/5-shared/hook";
 
 export type PaneViewProps = {
   pane: PaneId;
@@ -16,7 +20,6 @@ export type PaneViewProps = {
   groups: GroupEntry[];
   activeGroupId: string;
   activeTab: NoteTab;
-  tabStrip: TabStripState;
   editorRef: RefObject<HTMLTextAreaElement | null>;
   composingRef: RefObject<boolean>;
   autoFocus?: boolean;

@@ -1,0 +1,42 @@
+@use "../../../5-shared/style/variable" as v;
+
+.dashboard {
+  .dashboard-board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    min-height: 100%;
+  }
+
+  .dashboard-column {
+    min-height: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // An empty column keeps room for one card; the area under the title highlights while a card is dragged over it.
+  .dashboard-cards {
+    min-height: 72px;
+    flex: 1;
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    // Reserve space for the drop outline without moving cards during a drag.
+    padding: 6px;
+    margin-inline: -6px;
+  }
+
+  .dashboard-column.is-drop-target .dashboard-cards {
+    outline: 1px dashed v.$signal;
+    outline-offset: -1px;
+    background: rgba(143, 227, 176, 0.08);
+  }
+
+  @media (max-width: 640px) {
+    .dashboard-board {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: repeat(3, auto);
+    }
+  }
+}

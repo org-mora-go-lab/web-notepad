@@ -23,7 +23,8 @@ export function usePaneDrag({ group, moveTabToPane }: Options) {
     group && draggingTabId && group.tabs.some((tab) => tab.id === draggingTabId)
       ? getPaneOfTab(group, draggingTabId)
       : null;
-  const countOf = (pane: PaneId) => (group ? getPaneTabs(group, pane).length : 0);
+  const countOf = (pane: PaneId) =>
+    group ? getPaneTabs(group, pane).length : 0;
 
   const dropTo = (pane: PaneId) => () => {
     if (draggingTabId) moveTabToPane(draggingTabId, pane);
@@ -41,19 +42,34 @@ export function usePaneDrag({ group, moveTabToPane }: Options) {
     if (draggingPane !== pane) {
       zones.push({ key: "adopt", label: "Move here", onDrop: dropTo(pane) });
       // Moving from the right column back into an existing left editor must not split it.
-      if (getPaneColumn(draggingPane) === "right" && getPaneColumn(pane) === "left") return zones;
+      if (
+        getPaneColumn(draggingPane) === "right" &&
+        getPaneColumn(pane) === "left"
+      )
+        return zones;
     }
     // Splitting requires another tab to remain in the source pane, including cross-pane drops.
     if (countOf(draggingPane) < 2) return zones;
 
     const column = getPaneColumn(pane);
-    const rightTarget = pane === "left-bottom" && countOf("right") > 0 ? "right-bottom" : "right";
+    const rightTarget =
+      pane === "left-bottom" && countOf("right") > 0 ? "right-bottom" : "right";
     if (column === "left" && countOf(rightTarget) === 0) {
-      zones.push({ key: "split-right", label: "Split right", area: "right", onDrop: dropTo(rightTarget) });
+      zones.push({
+        key: "split-right",
+        label: "Split right",
+        area: "right",
+        onDrop: dropTo(rightTarget),
+      });
     }
     const bottom = getBottomPane(column);
     if (pane !== bottom && countOf(bottom) === 0) {
-      zones.push({ key: "split-down", label: "Split down", area: "bottom", onDrop: dropTo(bottom) });
+      zones.push({
+        key: "split-down",
+        label: "Split down",
+        area: "bottom",
+        onDrop: dropTo(bottom),
+      });
     }
     return zones;
   };

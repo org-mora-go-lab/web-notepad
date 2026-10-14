@@ -2,11 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export function useTabStrip(
-  tabCount: number,
-  activeTabId: string,
-  hydrated: boolean,
-) {
+export function useTabStrip(tabCount: number, activeTabId: string) {
   const tabsScrollRef = useRef<HTMLDivElement>(null);
   const [tabsOverflowing, setTabsOverflowing] = useState(false);
   const [tabsCanScrollLeft, setTabsCanScrollLeft] = useState(false);
@@ -33,13 +29,13 @@ export function useTabStrip(
       scroller.removeEventListener("scroll", update);
       observer.disconnect();
     };
-  }, [tabCount, hydrated]);
+  }, [tabCount]);
 
   useEffect(() => {
     tabsScrollRef.current
       ?.querySelector(".tab-item.is-active")
       ?.scrollIntoView({ block: "nearest", inline: "nearest" });
-  }, [activeTabId, hydrated]);
+  }, [activeTabId]);
 
   return {
     tabsScrollRef,
@@ -48,5 +44,3 @@ export function useTabStrip(
     tabsCanScrollRight,
   };
 }
-
-export type TabStripState = ReturnType<typeof useTabStrip>;
