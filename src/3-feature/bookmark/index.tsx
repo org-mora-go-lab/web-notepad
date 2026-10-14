@@ -3,22 +3,12 @@
 import { Bookmark as BookmarkIcon } from "lucide-react";
 import { useState } from "react";
 
-import type { BookmarkEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { SearchField, SidePanel } from "@/src/5-shared/ui";
-import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
+import { EmptyState, SearchField, SidePanel } from "@/src/5-shared/ui";
+import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { BookmarkItem } from "./component";
-
-type Props = {
-  bookmarks: BookmarkEntry[];
-  open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
-  onClose: () => void;
-  onOpen: (bookmarkId: string) => void;
-  onRemove: (bookmarkId: string) => void;
-};
+import type { BookmarkProps } from "./type";
 
 export function Bookmark({
   bookmarks,
@@ -28,7 +18,7 @@ export function Bookmark({
   onClose,
   onOpen,
   onRemove,
-}: Props) {
+}: BookmarkProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useI18n();
   const filteredBookmarks = bookmarks.filter((bookmark) =>
@@ -54,14 +44,17 @@ export function Bookmark({
       />
       <div className="bookmark-list">
         {bookmarks.length === 0 ? (
-          <div className="bookmark-empty">
-            <BookmarkIcon size={26} strokeWidth={1.4} />
-            <p>{t.emptyBookmarks}</p>
-          </div>
+          <EmptyState
+            className="bookmark-empty"
+            icon={<BookmarkIcon size={26} strokeWidth={1.4} />}
+            message={t.emptyBookmarks}
+          />
         ) : filteredBookmarks.length === 0 ? (
-          <div className="search-empty-state">
-            <p>{t.noSearchResults}</p>
-          </div>
+          <EmptyState
+            className="search-empty-state"
+            search
+            message={t.noSearchResults}
+          />
         ) : (
           filteredBookmarks.map((bookmark) => (
             <BookmarkItem

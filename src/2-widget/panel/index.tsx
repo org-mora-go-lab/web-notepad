@@ -1,45 +1,17 @@
 "use client";
 
-import type { ComponentProps } from "react";
-
-import { Bookmark, Closed, Dashboard, GlobalSearch, Group, Setting, Shortcut } from "@/src/3-feature";
-import type { BookmarkEntry, ClosedTabEntry, GroupEntry, NoteTab, TabColor } from "@/src/4-entity/notepad";
+import {
+  Bookmark,
+  Closed,
+  Dashboard,
+  GlobalSearch,
+  Group,
+  Setting,
+  Shortcut,
+} from "@/src/3-feature";
 import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
-import type { ViewPanel } from "@/src/5-shared";
 
-type Props = {
-  openPanel: ViewPanel | null;
-  pinned: boolean;
-  onTogglePin: () => void;
-  bookmarks: BookmarkEntry[];
-  activeGroupTabs: NoteTab[];
-  tabColorCycle: TabColor[];
-  groups: GroupEntry[];
-  activeGroupId: string;
-  groupMenuOpen: boolean;
-  closedTabs: ClosedTabEntry[];
-  closedSearchQuery: string;
-  globalSearchQuery: string;
-  onClose: () => void;
-  onCloseGroupMenu: () => void;
-  onClosedSearchQueryChange: (query: string) => void;
-  onGlobalSearchQueryChange: (query: string) => void;
-  onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
-  onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
-  onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
-  onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
-  onUnpinTab: ComponentProps<typeof Dashboard>["onUnpinTab"];
-  onChangeClosedTabStatus: ComponentProps<typeof Dashboard>["onChangeClosedStatus"];
-  onCreateGroup: ComponentProps<typeof Group>["onCreate"];
-  onSelectGroup: ComponentProps<typeof Group>["onSelect"];
-  onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
-  onRenameGroup: ComponentProps<typeof Group>["onRename"];
-  onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
-  onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
-  onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
-  onOpenSearchedBookmark: ComponentProps<typeof GlobalSearch>["onOpenBookmark"];
-  onOpenClosedSearch: ComponentProps<typeof GlobalSearch>["onOpenClosedSearch"];
-};
+import type { PanelProps } from "./type";
 
 export function Panel({
   openPanel,
@@ -47,6 +19,7 @@ export function Panel({
   onTogglePin,
   bookmarks,
   activeGroupTabs,
+  activeTabId,
   tabColorCycle,
   groups,
   activeGroupId,
@@ -73,7 +46,7 @@ export function Panel({
   onRemoveClosedTab,
   onOpenSearchedBookmark,
   onOpenClosedSearch,
-}: Props) {
+}: PanelProps) {
   return (
     <div className="panel">
       <Bookmark
@@ -87,7 +60,11 @@ export function Panel({
       />
       <Dashboard
         tabs={activeGroupTabs}
-        closedTabs={closedTabs.filter((entry) => activeGroupId === ALL_GROUP_ID || entry.groupId === activeGroupId)}
+        activeTabId={activeTabId}
+        closedTabs={closedTabs.filter(
+          (entry) =>
+            activeGroupId === ALL_GROUP_ID || entry.groupId === activeGroupId,
+        )}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}

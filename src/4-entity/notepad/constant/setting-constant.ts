@@ -19,6 +19,7 @@ export const DEFAULT_SETTINGS: NotepadSettings = {
   tabColorCycle: ["gray", "green", "purple"],
   language: "en",
   panelSlide: false,
+  panelPosition: "right",
 };
 
 // Dashboard columns, in display order.

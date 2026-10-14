@@ -1,5 +1,6 @@
 @use "../../5-shared/style/variable" as v;
 @use "../../5-shared/ui/confirm-popup";
+@use "../../5-shared/ui/empty-state";
 @use "../../5-shared/ui/side-panel";
 @use "../../2-widget/header";
 @use "../../2-widget/body";
@@ -14,16 +15,17 @@
 @use "../../3-feature/closed";
 @use "../../3-feature/global-search";
 @use "../../5-shared/ui/search-field";
-@use "./style/loading";
-@use "./style/search-empty-state";
-@use "./style/pane-divider";
-@use "./style/tab-delete-popup";
-@use "./style/pane-view";
-@use "./style/pane-column";
+@use "./style/feedback";
+@use "./style/pane";
 @use "../../3-feature/theme";
 @use "../../3-feature/user-guide";
 
 .home {
+  --footer-height: 48px;
+
+  @media (max-width: 640px) {
+    --footer-height: calc(76.8px + env(safe-area-inset-bottom));
+  }
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -52,10 +54,14 @@
     }
   }
 
-  // A pinned right panel docks on the right, so the workspace (with MENU and GROUP) shifts left.
+  // Dock the entire workspace, including tab strips and footer, beside a pinned drawer.
   @media (min-width: 641px) {
     &.is-panel-pinned .workspace {
       width: calc(100% - #{v.$side-panel-width});
+    }
+
+    &[data-panel-position="left"].is-panel-pinned .workspace {
+      margin-left: v.$side-panel-width;
     }
   }
 

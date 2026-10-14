@@ -8,7 +8,7 @@ import { withTabColorCycle } from "./workspace";
 
 type SettingActions = Pick<
   NotepadState,
-  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "setPanelSlide" | "resetSettings" | "resetTabColorCycle" | "shuffleTabColorCycle"
+  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "setPanelPosition" | "setPanelSlide" | "resetSettings" | "resetTabColorCycle" | "shuffleTabColorCycle"
 >;
 
 export const createSettingActions: StateCreator<
@@ -40,6 +40,8 @@ export const createSettingActions: StateCreator<
         ? { settings: { ...state.settings, language } }
         : state,
     ),
+  setPanelPosition: (panelPosition) =>
+    set((state) => ({ settings: { ...state.settings, panelPosition } })),
   setPanelSlide: (panelSlide) =>
     set((state) => ({ settings: { ...state.settings, panelSlide: Boolean(panelSlide) } })),
   resetTabColorCycle: () =>

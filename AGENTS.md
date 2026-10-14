@@ -16,7 +16,7 @@ After completing code changes, suggest a Korean commit message that matches the 
 
 Every E2E test code file (`*.e2e.spec.ts`) must contain exactly one top-level `test(...)` declaration and register exactly one test case. Do not generate multiple tests from loops or parameterized declarations in one file. Split separate scenarios into their own numbered PRD requirements and matching E2E files. Shared resource files must not declare tests.
 
-When writing E2E tests, create `__mock__/`, `__fixture__/`, `__util__/`, or `__constant__/` folders when shared test doubles, fixtures, helpers, or constants are needed. Put broadly reusable resources under `tests/`; put resources used only by one requirement title under that title's folder. Every such folder must include a barrel `index.ts`, and tests should import from the barrel when practical.
+When writing E2E tests, create `__mock__/`, `__fixture__/`, `__util__/`, or `__constant__/` folders when shared test doubles, fixtures, helpers, or constants are needed. Put broadly reusable resources under `tests/`; put resources used only by one requirement title under that title's folder. Every such folder must include a barrel `index.ts`, and tests should import from the barrel when practical. Group resource files by concern when a resource directory contains distinct responsibilities (for example, `tests/__util__/state/` and `tests/__util__/note/`). Each concern group must include an `index.ts` barrel and be re-exported from the owning resource barrel; imports from outside the group should use its barrel. Keep numbered E2E files directly in their matching PRD requirement directory.
 
 ## Specification Synchronization
 
@@ -50,9 +50,25 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 - Export subcomponents from the submodule's `component/index.ts` barrel, and import and use those subcomponents from the submodule's `index.tsx`.
 - `1-page/home` and other consumers must import feature and widget modules through the public `3-feature/index.ts` and `2-widget/index.ts` barrels.
 
+## Concern Grouping
+
+- Group related files under named concern directories when a module contains distinct responsibilities, such as `component/pane/`, `hook/layout/`, or `store/archive/`. Keep closely related files together; avoid adding a directory solely to wrap an unrelated single file.
+- Preserve module entrypoints and public layer barrels. Each TypeScript concern group must provide an `index.ts` barrel, and consumers outside that group must import through it. Files within the same group may import each other directly.
+- Mirror component concern paths in their types and styles, for example `component/pane/pane-view.tsx`, `type/pane/pane-view-props.ts`, and `style/pane/pane-view.scss`. Re-export grouped APIs from the owning directory barrel. Style groups may use `index.scss`, loaded from the module stylesheet.
+
+## Module Props Types
+
+- Apply these rules to props-bearing modules and subcomponents in every numbered layer, including pages, widgets, features, entity UI if added, and shared UI.
+- Define a module's main component props in its own `type/<module>-props.ts` file, named `<PascalCaseModuleName>Props` (for example, `dashboard/type/dashboard-props.ts` exports `DashboardProps`). Do not declare an inline `Props` alias or an anonymous props object in the component implementation.
+- Keep subcomponent props in separate `type/<subcomponent>-props.ts` or `type/<concern>/<subcomponent>-props.ts` files inside the owning module, named after the subcomponent (for example, `dashboard/type/board/dashboard-column-props.ts` exports `DashboardColumnProps`). Keep each component's props contract in its own file; do not combine unrelated component props in one file.
+- Every module's `type/` directory must have a lowercase `index.ts` barrel that exports its public types with `export type`. Module implementations, subcomponents, and hooks must import these types with `import type` through `./type` or `../type` as appropriate. Imports between files inside the same `type/` directory may remain direct.
+- Props type files must use type-only imports for their dependencies. Keep reusable domain models and hook/function option types distinct from component props; use `Pick`, `Omit`, or other type composition when a component shares part of another contract.
+- Keep props types in the module's own type barrel. The top-level feature, widget, and shared UI barrels still export only their main component implementations, not props types or subcomponents.
+- Do not introduce empty props contracts for components that accept no props, or rename entity/domain data types to props types when the module has no component props.
+
 ## Internal Directory Barrels
 
-- Every directory named `hook`, `util`, `component`, or `constant` under `src/` must include a lowercase `index.ts` barrel. Do not use `Index.ts` or `index.tsx` for these barrels.
+- Every directory named `hook`, `util`, `component`, `constant`, or `type` under `src/` must include a lowercase `index.ts` barrel. Do not use `Index.ts` or `index.tsx` for these barrels.
 - Export the directory's public APIs through its barrel. Keep JSX component implementations in separate `.tsx` files, not in the barrel.
 - Imports from outside these directories must resolve through the directory's `index.ts` barrel instead of importing individual files directly. Imports between files within the same directory may remain direct to avoid circular dependencies.
 - When adding, moving, or removing a public API, update its barrel and consumers in the same change. Keep feature and widget root implementations in `index.tsx` as specified above.
@@ -77,4 +93,4 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 
 - Each feature, widget, or page module must keep its main stylesheet in `index.scss` next to its `index.tsx`. Put optional SCSS files for subcomponents under that module's `style/` directory.
 - The top-level class selector in a module's `index.scss` must match the module directory name (for example, `.body` in `body/index.scss` or `.bookmark` in `bookmark/index.scss`). Apply these stylesheet rules equally to `src/3-feature/`, `src/2-widget/`, and `src/1-page/` modules.
-- Whenever a module adds `component/<sub-comp>.tsx`, it must add the matching `style/<sub-comp>.scss` in the same change, even if the stylesheet is initially empty. Apply this pairing rule to feature, widget, and page modules.
+- Whenever a module adds `component/<sub-comp>.tsx` or `component/<concern>/<sub-comp>.tsx`, it must add the matching `style/<sub-comp>.scss` or `style/<concern>/<sub-comp>.scss` in the same change, even if the stylesheet is initially empty. Apply this pairing rule to feature, widget, and page modules.

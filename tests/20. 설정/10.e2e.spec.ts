@@ -28,5 +28,5 @@ test("10. Tab Colors 제목 오른쪽의 색상 초기화 버튼은 팝업 없�
   await expect(fontScaleRadio(page, "110%")).toBeChecked();
   await expect
     .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toEqual({ fontScale: 1.1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false });
+    .toEqual({ fontScale: 1.1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false, panelPosition: "right" });
 });

@@ -4,17 +4,7 @@ import { Bookmark, Layers, LayoutDashboard } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
-type Props = {
-  // A linked bookmark was created or synced today.
-  hasBookmarkUpdateToday: boolean;
-  bookmarksOpen: boolean;
-  dashboardOpen: boolean;
-  activeGroupName: string;
-  groupsOpen: boolean;
-  onToggleBookmarks: () => void;
-  onToggleDashboard: () => void;
-  onToggleGroups: () => void;
-};
+import type { FooterProps } from "./type";
 
 export function Footer({
   hasBookmarkUpdateToday,
@@ -25,7 +15,7 @@ export function Footer({
   onToggleBookmarks,
   onToggleDashboard,
   onToggleGroups,
-}: Props) {
+}: FooterProps) {
   const { t } = useI18n();
   return (
     <footer className="footer">
@@ -43,7 +33,11 @@ export function Footer({
                 <span className="status-icon">
                   <Bookmark size={16} strokeWidth={1.8} />
                   {hasBookmarkUpdateToday && (
-                    <span className="status-dot" role="img" aria-label="오늘 업데이트됨" />
+                    <span
+                      className="status-dot"
+                      role="img"
+                      aria-label="오늘 업데이트됨"
+                    />
                   )}
                 </span>
                 <span className="status-label">{t.bookmark}</span>
@@ -76,7 +70,12 @@ export function Footer({
             title={activeGroupName}
           >
             <Layers size={16} strokeWidth={1.8} />
-            <span className="status-label group-select-name" title={activeGroupName}>{activeGroupName}</span>
+            <span
+              className="status-label group-select-name"
+              title={activeGroupName}
+            >
+              {activeGroupName}
+            </span>
           </button>
         </div>
       </div>

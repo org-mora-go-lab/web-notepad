@@ -1,0 +1,124 @@
+@use "../../../5-shared/style/variable" as v;
+
+.setting {
+  // Heading with a reset button right after the title.
+  .setting-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+  }
+
+  .setting-section .setting-section-heading h3 {
+    margin: 0;
+  }
+
+  .setting-section-reset {
+    width: 28.8px;
+    height: 28.8px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid v.$line;
+    background: transparent;
+    color: v.$dim;
+    cursor: pointer;
+
+    svg {
+      width: 15.6px;
+      height: 15.6px;
+    }
+
+    &:hover {
+      border-color: v.$hover-line;
+      color: v.$ink;
+    }
+  }
+
+  .setting-hint {
+    margin: 0 0 12px;
+    color: v.$muted;
+    font-size: v.font(15px);
+    line-height: 1.5;
+  }
+
+  .setting-hint-text {
+    display: block;
+    padding-bottom: 10px;
+  }
+
+  .setting-color-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  .setting-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .setting-swatch {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    appearance: none;
+    background: var(--swatch-color);
+    background-clip: content-box;
+    padding: 2px;
+    cursor: pointer;
+
+    &:checked {
+      border-color: v.$ink;
+    }
+
+    &:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+  }
+
+  // Name chip in the color order guide, filled with the tab color it names.
+  .setting-color-chip {
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: var(--swatch-color);
+    // Panel color reads on the pastel DARK accents and the deep LIGHT accents alike.
+    color: v.$panel;
+    font-weight: 500;
+  }
+
+  .setting-swatch,
+  .setting-color-chip {
+    @each $name in ("gray", "red", "green") {
+      &[data-tab-color="#{$name}"] {
+        --swatch-color: var(--color-tab-#{$name});
+      }
+    }
+
+    @each $name, $_ in v.$extra-tab-colors {
+      &[data-tab-color="#{$name}"] {
+        --swatch-color: var(--color-tab-#{$name});
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .setting-hint {
+      font-size: v.font(15px * v.$mobile-scale);
+    }
+    .setting-swatch {
+      width: 22px * v.$mobile-scale;
+      height: 22px * v.$mobile-scale;
+    }
+  }
+}

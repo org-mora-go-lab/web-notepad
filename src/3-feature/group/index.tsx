@@ -4,23 +4,17 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
-import { ALL_GROUP_ID, ALL_GROUP_NAME, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import {
+  ALL_GROUP_ID,
+  ALL_GROUP_NAME,
+  compareGroups,
+  UNGROUPED_GROUP_ID,
+} from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
 import { GroupCreateForm, GroupItem } from "./component";
-
-type Props = {
-  groups: GroupEntry[];
-  activeGroupId: string;
-  open: boolean;
-  onClose: () => void;
-  onCreate: (name: string) => void;
-  onSelect: (groupId: string) => void;
-  onRemove: (groupId: string) => void;
-  onRename: (groupId: string, name: string) => void;
-  onTogglePinGroup: (groupId: string) => void;
-};
+import type { GroupMenuProps, GroupProps } from "./type";
 
 type GroupRow = Pick<GroupEntry, "id" | "name" | "pinned">;
 
@@ -39,7 +33,7 @@ function GroupMenu({
   onRemove,
   onRename,
   onTogglePinGroup,
-}: Props) {
+}: GroupMenuProps) {
   const { t } = useI18n();
   const menuRef = useRef<HTMLDivElement>(null);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
@@ -53,10 +47,13 @@ function GroupMenu({
     { id: ALL_GROUP_ID, name: ALL_GROUP_NAME, pinned: false },
     ...groups.filter((group) => group.id === UNGROUPED_GROUP_ID),
   ];
-  const otherRows: GroupRow[] = [...groups].sort(compareGroups).filter((group) => group.id !== UNGROUPED_GROUP_ID);
+  const otherRows: GroupRow[] = [...groups]
+    .sort(compareGroups)
+    .filter((group) => group.id !== UNGROUPED_GROUP_ID);
 
   const renderRow = (group: GroupRow) => {
-    const special = group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID;
+    const special =
+      group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID;
     return (
       <GroupItem
         key={group.id}
@@ -66,7 +63,11 @@ function GroupMenu({
         editable={!special}
         muted={special}
         actionsOpen={actionsGroupId === group.id}
-        onToggleActions={() => setActionsGroupId((current) => (current === group.id ? null : group.id))}
+        onToggleActions={() =>
+          setActionsGroupId((current) =>
+            current === group.id ? null : group.id,
+          )
+        }
         onSelect={() => {
           onSelect(group.id);
           // Mobile closes the dropdown right after a group is picked.
@@ -101,7 +102,8 @@ function GroupMenu({
     const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
-      if (!menuRef.current?.contains(target) && !anchor?.contains(target)) onClose();
+      if (!menuRef.current?.contains(target) && !anchor?.contains(target))
+        onClose();
     };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
@@ -119,7 +121,13 @@ function GroupMenu({
 
   return createPortal(
     <div className="group">
-      <div ref={menuRef} className="group-menu" id="groups-menu" role="dialog" aria-label="그룹 선택">
+      <div
+        ref={menuRef}
+        className="group-menu"
+        id="groups-menu"
+        role="dialog"
+        aria-label="그룹 선택"
+      >
         <div className="group-list">
           <div className="group-split-row">{specialRows.map(renderRow)}</div>
           <GroupCreateForm onCreate={onCreate} />
@@ -148,6 +156,6 @@ function GroupMenu({
 }
 
 // The menu content mounts only while open, so row / popup state resets every time it closes.
-export function Group({ open, ...props }: Props) {
+export function Group({ open, ...props }: GroupProps) {
   return open ? <GroupMenu open={open} {...props} /> : null;
 }

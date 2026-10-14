@@ -16,7 +16,11 @@ test("1. 탭을 좌우 패널 사이로 드래그해 이동한다", async ({ pag
   await leftPane.locator("textarea").fill("extra");
   await expect(leftPane.locator(".tab-item")).toHaveCount(2);
 
-  await paneTab(leftPane, /^left$/i).dragTo(rightPane.locator(".header"));
+  const rightBody = rightPane.locator(".body");
+  const rightBox = (await rightBody.boundingBox())!;
+  await paneTab(leftPane, /^left$/i).locator(".tab-title").dragTo(rightBody, {
+    targetPosition: { x: rightBox.width * 0.25, y: rightBox.height * 0.25 },
+  });
   await expect(leftPane.locator(".tab-item")).toHaveCount(1);
   await expect(paneTab(leftPane, /^extra$/)).toHaveCount(1);
   await expect(rightPane.locator(".tab-item")).toHaveCount(2);

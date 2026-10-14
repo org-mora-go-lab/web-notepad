@@ -1,27 +1,10 @@
 "use client";
 
 import { Pin, X } from "lucide-react";
-import type { ReactNode } from "react";
 
 import { useI18n } from "../../hook";
 import { useSidePanelResize } from "./hook";
-
-type Props = {
-  // Module class added next to `side-panel` so each feature can style its own panel.
-  className: string;
-  id: string;
-  title: string;
-  open: boolean;
-  closeLabel: string;
-  ariaLabel?: string;
-  // PC only: docks the drawer to the right edge beside the workspace.
-  pinned?: boolean;
-  onTogglePin?: () => void;
-  // Extra header buttons shown before the pin and close buttons.
-  headerActions?: ReactNode;
-  onClose: () => void;
-  children: ReactNode;
-};
+import type { SidePanelProps } from "./type";
 
 // Right drawer shell: backdrop, sliding aside and a header with pin and close buttons.
 export function SidePanel({
@@ -36,7 +19,7 @@ export function SidePanel({
   headerActions,
   onClose,
   children,
-}: Props) {
+}: SidePanelProps) {
   const handleResizeStart = useSidePanelResize();
   const { t } = useI18n();
 

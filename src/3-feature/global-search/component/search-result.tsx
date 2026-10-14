@@ -1,14 +1,6 @@
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 
-type Props = {
-  category: string;
-  groupName?: string;
-  title: string;
-  description?: string;
-  query: string;
-  ariaLabel: string;
-  onSelect: () => void;
-};
+import type { SearchResultProps } from "../type";
 
 export function SearchResult({
   category,
@@ -18,7 +10,7 @@ export function SearchResult({
   query,
   ariaLabel,
   onSelect,
-}: Props) {
+}: SearchResultProps) {
   return (
     <button
       className="global-search-result"

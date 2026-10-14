@@ -40,6 +40,17 @@ test("14. PC와 모바일 하단 메뉴는 스크롤 없이 표시되고 각 패
     const target = page.locator(`#${panelId}`);
     if (panelId === "groups-menu") await expect(target).toBeVisible();
     else await expect(target).toHaveAttribute("aria-hidden", "false");
+    if (panelId !== "groups-menu") {
+      // An unpinned full-height drawer covers its footer command; close it from the panel.
+      await target.locator(".side-panel-close").click();
+      await expect(command).toHaveAttribute("aria-expanded", "false");
+      await command.click();
+      await target.getByRole("button", { name: "패널 고정", exact: true }).click();
+      await command.click();
+      await expect(target).toHaveAttribute("aria-hidden", "true");
+      await command.click();
+      await target.getByRole("button", { name: "패널 고정 해제", exact: true }).click();
+    }
     await page.keyboard.press("Escape");
     await expect(command).toHaveAttribute("aria-expanded", "false");
     if (panelId === "groups-menu") await expect(target).toHaveCount(0);

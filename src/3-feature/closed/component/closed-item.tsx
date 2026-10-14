@@ -2,20 +2,19 @@
 
 import { RotateCcw, Trash2 } from "lucide-react";
 
-import type { ClosedTabEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { formatDate } from "@/src/5-shared/util";
 
-type Props = {
-  entry: ClosedTabEntry;
-  groupName: string;
-  searchQuery: string;
-  onRestore: (entryId: string) => void;
-  onRemove: (entryId: string) => void;
-};
+import type { ClosedItemProps } from "../type";
 
-export function ClosedItem({ entry, groupName, searchQuery, onRestore, onRemove }: Props) {
+export function ClosedItem({
+  entry,
+  groupName,
+  searchQuery,
+  onRestore,
+  onRemove,
+}: ClosedItemProps) {
   const { t } = useI18n();
   return (
     <article className="closed-item">

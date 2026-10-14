@@ -2,17 +2,11 @@
 
 import { Bookmark as BookmarkIcon, Trash2 } from "lucide-react";
 
-import type { BookmarkEntry } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { formatDate } from "@/src/5-shared/util";
 
-type Props = {
-  bookmark: BookmarkEntry;
-  searchQuery: string;
-  onOpen: (bookmarkId: string) => void;
-  onRemove: (bookmarkId: string) => void;
-};
+import type { BookmarkItemProps } from "../type";
 
 // Drops the first line when the heading already shows it as the title.
 const getBodyWithoutTitle = (content: string, title: string) => {
@@ -20,10 +14,18 @@ const getBodyWithoutTitle = (content: string, title: string) => {
   const titleIndex = lines.findIndex((line) => line.trim());
   if (titleIndex < 0 || lines[titleIndex].trim() !== title) return content;
 
-  return lines.slice(titleIndex + 1).join("\n").replace(/^\s*\n/, "");
+  return lines
+    .slice(titleIndex + 1)
+    .join("\n")
+    .replace(/^\s*\n/, "");
 };
 
-export function BookmarkItem({ bookmark, searchQuery, onOpen, onRemove }: Props) {
+export function BookmarkItem({
+  bookmark,
+  searchQuery,
+  onOpen,
+  onRemove,
+}: BookmarkItemProps) {
   const { t } = useI18n();
   const body = bookmark.content
     ? getBodyWithoutTitle(bookmark.content, bookmark.title)

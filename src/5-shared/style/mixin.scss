@@ -1,42 +1,11 @@
 @use "./variable" as v;
 
-// Side panel body: `.{name}-list` and `.{name}-empty` state.
+// Side panel scrolling list; empty states use the shared EmptyState UI.
 @mixin side-panel-list($name) {
   .#{$name}-list {
     min-height: 0;
     padding: 14px;
     overflow-y: auto;
-  }
-
-  .#{$name}-empty {
-    min-height: 280px;
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: 14px;
-    color: var(--color-empty);
-    text-align: center;
-
-    p {
-      max-width: 220px;
-      margin: 0;
-      font-family: v.$sans;
-      font-size: v.font(16px);
-      line-height: 1.5;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .#{$name}-empty {
-      svg {
-        width: 26px * v.$mobile-scale;
-        height: 26px * v.$mobile-scale;
-      }
-
-      p {
-        font-size: v.font(16px * v.$mobile-scale);
-      }
-    }
   }
 }
 

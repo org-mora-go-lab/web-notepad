@@ -54,6 +54,7 @@ export function Home() {
     fontScale,
     language,
     panelSlide,
+    panelPosition,
   } = useHome();
 
   const [groupMenuOpen, setGroupMenuOpen] = useState(false);
@@ -93,6 +94,7 @@ export function Home() {
       <main
         className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
+        data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}
       >
         <section className="workspace">
@@ -119,6 +121,7 @@ export function Home() {
         </section>
 
         <Panel
+          activeTabId={activeTab?.id}
           openPanel={openPanel}
           pinned={panelPinned}
           onTogglePin={togglePanelPin}

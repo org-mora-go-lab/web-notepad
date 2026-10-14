@@ -3,17 +3,17 @@
 import { type PointerEvent as ReactPointerEvent, useCallback, useEffect } from "react";
 
 import {
+  SIDE_PANEL_MAX_WIDTH_RATIO,
   SIDE_PANEL_MIN_WIDTH,
   SIDE_PANEL_WIDTH_PROPERTY,
   SIDE_PANEL_WIDTH_STORAGE_KEY,
-  WORKSPACE_MIN_WIDTH,
 } from "../constant";
 
 const clampWidth = (width: number) =>
   Math.round(
     Math.min(
       Math.max(width, SIDE_PANEL_MIN_WIDTH),
-      Math.max(SIDE_PANEL_MIN_WIDTH, window.innerWidth - WORKSPACE_MIN_WIDTH),
+      Math.floor(window.innerWidth * SIDE_PANEL_MAX_WIDTH_RATIO),
     ),
   );
 
@@ -33,9 +33,10 @@ export function useSidePanelResize() {
 
   return useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     event.preventDefault();
+    const left = event.currentTarget.closest("[data-panel-position]")?.getAttribute("data-panel-position") === "left";
     let width: number | null = null;
     const handleMove = (moveEvent: PointerEvent) => {
-      width = clampWidth(window.innerWidth - moveEvent.clientX);
+      width = clampWidth(left ? moveEvent.clientX : window.innerWidth - moveEvent.clientX);
       applyWidth(width);
     };
     const handleUp = () => {

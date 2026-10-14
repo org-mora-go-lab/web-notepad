@@ -3,19 +3,22 @@
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel } from "@/src/5-shared/ui";
 
-type Props = {
-  open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
-  onClose: () => void;
-};
+import type { ShortcutProps } from "./type";
 
-export function Shortcut({ open, pinned, onTogglePin, onClose }: Props) {
+export function Shortcut({
+  open,
+  pinned,
+  onTogglePin,
+  onClose,
+}: ShortcutProps) {
   const { t } = useI18n();
   const shortcuts = [
     { action: t.shortcutNewTab, keys: ["Option + Tab"] },
     { action: t.shortcutCloseTab, keys: ["Option + Backspace"] },
-    { action: t.shortcutMoveTab, keys: ["Option + Arrow Up", "Option + Arrow Down"] },
+    {
+      action: t.shortcutMoveTab,
+      keys: ["Option + Arrow Up", "Option + Arrow Down"],
+    },
     { action: t.shortcutSelectAll, keys: ["Cmd + A", "Option + A"] },
     { action: t.shortcutMoveRight, keys: ["Option + F12"] },
     { action: t.shortcutMoveLeft, keys: ["Option + F11"] },

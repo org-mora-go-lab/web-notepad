@@ -1,29 +1,9 @@
-import type {
-  ChangeEvent,
-  CSSProperties,
-  KeyboardEvent,
-  RefObject,
-  UIEvent,
-} from "react";
+import type { CSSProperties } from "react";
 
-import type { NoteTab } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import { useVisualLines } from "../hook";
-
-type Props = {
-  tab: NoteTab;
-  editorRef: RefObject<HTMLTextAreaElement | null>;
-  lineRailRef: RefObject<HTMLDivElement | null>;
-  selectedLines: number[];
-  autoFocus: boolean;
-  onToggleLineSelection: (lineIndex: number, extendSelection?: boolean) => void;
-  onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
-  onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
-  onCompositionStart: () => void;
-  onCompositionEnd: () => void;
-  onScroll: (event: UIEvent<HTMLTextAreaElement>) => void;
-};
+import type { EditorProps } from "../type";
 
 export function Editor({
   tab,
@@ -37,7 +17,7 @@ export function Editor({
   onCompositionStart,
   onCompositionEnd,
   onScroll,
-}: Props) {
+}: EditorProps) {
   const { t } = useI18n();
   const visualLines = useVisualLines(tab.content, editorRef, lineRailRef);
   const selectedLineRanges: { start: number; end: number }[] = [];
@@ -69,7 +49,9 @@ export function Editor({
             tabIndex={0}
             aria-pressed={selectedLines.includes(logicalLine)}
             onMouseDown={(event) => event.preventDefault()}
-            onClick={(event) => onToggleLineSelection(logicalLine, event.shiftKey)}
+            onClick={(event) =>
+              onToggleLineSelection(logicalLine, event.shiftKey)
+            }
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();

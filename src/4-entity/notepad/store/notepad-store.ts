@@ -2,15 +2,17 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { DEFAULT_SETTINGS, UNGROUPED_GROUP_ID } from "../constant";
+import { normalizePersistedState } from "../persistence";
 import type { NotepadState } from "../type";
-import { createNoteTab, normalizePersistedState } from "../util";
-import { createBookmarkActions } from "./bookmark-actions";
-import { createClosedTabActions } from "./closed-tab-actions";
-import { createGroupActions } from "./group-actions";
-import { createPaneActions } from "./pane-actions";
+import { createNoteTab } from "../util";
+import { createBookmarkActions, createClosedTabActions } from "./archive";
 import { createSettingActions } from "./setting-actions";
-import { createTabActions } from "./tab-actions";
-import { createGroupEntry } from "./workspace";
+import { createTabActions } from "./tab";
+import {
+  createGroupActions,
+  createGroupEntry,
+  createPaneActions,
+} from "./workspace";
 
 export {
   ALL_GROUP_ID,
@@ -31,9 +33,12 @@ export const useNotepadStore = create<NotepadState>()(
       ...createSettingActions(set, get, store),
       nextTabNumber: 2,
       activeGroupId: UNGROUPED_GROUP_ID,
-      groups: [createGroupEntry(UNGROUPED_GROUP_ID, "Ungrouped", 0, createNoteTab(1))],
+      groups: [
+        createGroupEntry(UNGROUPED_GROUP_ID, "Ungrouped", 0, createNoteTab(1)),
+      ],
       closedTabs: [],
       allGroupActiveTabId: null,
+      allGroupLayout: null,
       settings: DEFAULT_SETTINGS,
     }),
     {

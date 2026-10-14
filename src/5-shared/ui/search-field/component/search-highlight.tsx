@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 
-type Props = {
-  text: string;
-  query: string;
-};
+import { normalizeSearchQuery } from "@/src/5-shared/util";
 
-export function SearchHighlight({ text, query }: Props) {
-  const normalizedQuery = query.trim().toLowerCase();
+import type { SearchHighlightProps } from "../type";
+
+export function SearchHighlight({ text, query }: SearchHighlightProps) {
+  const normalizedQuery = normalizeSearchQuery(query);
   if (!normalizedQuery) return text;
 
   const normalizedText = text.toLowerCase();

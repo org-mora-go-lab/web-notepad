@@ -1,19 +1,8 @@
 "use client";
 
-import type { RefObject } from "react";
-
-import type { NoteTab } from "@/src/4-entity/notepad";
-
 import { Editor } from "./component";
 import { useNoteEditor } from "./hook";
-
-type Props = {
-  tab: NoteTab;
-  editorRef: RefObject<HTMLTextAreaElement | null>;
-  composingRef: RefObject<boolean>;
-  autoFocus?: boolean;
-  onChange: (content: string) => void;
-};
+import type { NoteEditorProps } from "./type";
 
 export function NoteEditor({
   tab,
@@ -21,7 +10,7 @@ export function NoteEditor({
   composingRef,
   autoFocus = false,
   onChange,
-}: Props) {
+}: NoteEditorProps) {
   const {
     lineRailRef,
     selectedLines,

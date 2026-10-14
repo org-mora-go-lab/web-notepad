@@ -34,3 +34,27 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## E2E 테스트
+
+```bash
+npm run test:e2e
+# worker 수 지정
+npm run test:e2e -- --workers=8
+# 특정 요구사항 실행
+npm run test:e2e -- "tests/09. 분할 패널"
+```
+
+개발 서버(3000)를 대상으로 현재 코드를 테스트합니다. 로컬 worker 수는 논리 CPU의 100%, CI는 50%입니다.
+작업 완료 검증은 전체 E2E를 실행합니다.
+
+### 공통 테스트 준비
+
+저장 상태는 `tests/__util__` 배럴의 공통 함수로 준비합니다.
+`writeStoredState`/`seedStoredStateOnce`는 최초 문서 로드 전에 상태를 한 번 주입하며,
+새로고침 이후의 편집 내용은 유지합니다. `seedStoredStateOnLoad`는 매 로드마다 같은 상태를 주입합니다.
+상태 준비의 문서 로드는 1회이며, 브라우저 컨텍스트는 테스트마다 격리합니다.
+
+공통 유틸리티는 `tests/__util__/state`, `note`, `workspace`, `assertion`으로 구분합니다.
+분할 패널 전용 유틸리티는 `tests/09. 분할 패널/__util__/state`, `drag`로 구분합니다.
+각 그룹은 배럴을 제공하며, E2E 파일은 기존 `__util__` 배럴을 통해 가져옵니다.

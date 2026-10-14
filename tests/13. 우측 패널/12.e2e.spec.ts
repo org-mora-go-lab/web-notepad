@@ -4,7 +4,7 @@ import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../__constant__";
 import { openPanel } from "../__util__";
 import { dragPanelEdgeTo } from "./__util__";
 
-test("12. PC 우측 패널의 왼쪽 경계선을 드래그해 320px~화면 너비-400px 범위에서 너비를 조절하고 모바일에서는 경계선을 숨긴다", async ({ page }) => {
+test("12. PC 패널 너비는 최소 320px부터 화면의 70%까지 조절하고 모바일에서는 경계선을 숨긴다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   await openPanel(page, "bookmarks-panel");
@@ -26,7 +26,19 @@ test("12. PC 우측 패널의 왼쪽 경계선을 드래그해 320px~화면 너�
   await expect.poll(panelWidth).toBeCloseTo(320, 0);
 
   await dragPanelEdgeTo(page, "bookmarks-panel", 10);
-  await expect.poll(panelWidth).toBeCloseTo(DESKTOP_VIEWPORT.width - 400, 0);
+  await expect.poll(panelWidth).toBeCloseTo(DESKTOP_VIEWPORT.width * 0.7, 0);
+
+  for (const width of [641, 1024, 1920]) {
+    await page.setViewportSize({ width, height: DESKTOP_VIEWPORT.height });
+    await dragPanelEdgeTo(page, "bookmarks-panel", 0);
+    await expect.poll(panelWidth).toBe(Math.floor(width * 0.7));
+    expect(await panelWidth()).toBeLessThanOrEqual(width * 0.7);
+  }
+  await page.reload();
+  await expect(panel).toHaveAttribute("aria-hidden", "false");
+  await expect.poll(panelWidth).toBeCloseTo(1920 * 0.7, 0);
+  await page.setViewportSize({ width: 641, height: DESKTOP_VIEWPORT.height });
+  await expect.poll(panelWidth).toBeCloseTo(641 * 0.7, 1);
 
   await page.setViewportSize(MOBILE_VIEWPORT);
   await expect(handle).toBeHidden();

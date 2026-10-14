@@ -1,39 +1,14 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { type RefObject, useState } from "react";
+import { useState } from "react";
 
-import { compareGroups, type GroupEntry, type NoteTab } from "@/src/4-entity/notepad";
+import { compareGroups } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import { AdditionalTools, TabContextMenu, TabItem } from "./component";
-
-type Props = {
-  closedCount?: number;
-  onOpenClosed?: () => void;
-  onOpenSettings?: () => void;
-  onOpenShortcuts?: () => void;
-  onOpenSearch?: () => void;
-  tabs: NoteTab[];
-  groups: GroupEntry[];
-  activeGroupId: string;
-  activeTabId: string;
-  tabsScrollRef: RefObject<HTMLDivElement | null>;
-  tabsOverflowing: boolean;
-  tabsCanScrollLeft: boolean;
-  tabsCanScrollRight: boolean;
-  draggingTabId: string | null;
-  onSelect: (tabId: string) => void;
-  onClose: (tabId: string) => void;
-  onMove: (fromTabId: string, toTabId: string) => void;
-  onMoveToGroup: (tabId: string, groupId: string) => void;
-  onAdopt: (tabId: string) => void;
-  onDragStateChange: (tabId: string | null) => void;
-  onCycleTabColor: (tabId: string) => void;
-  onTogglePin: (tabId: string) => void;
-  onToggleBookmark: (tabId: string) => void;
-  onAdd: () => void;
-};
+import { useTabStrip } from "./hook";
+import type { HeaderProps } from "./type";
 
 type ContextMenuState = { tabId: string; left: number; top: number };
 
@@ -47,10 +22,6 @@ export function Header({
   groups,
   activeGroupId,
   activeTabId,
-  tabsScrollRef,
-  tabsOverflowing,
-  tabsCanScrollLeft,
-  tabsCanScrollRight,
   draggingTabId,
   onSelect,
   onClose,
@@ -62,7 +33,13 @@ export function Header({
   onTogglePin,
   onToggleBookmark,
   onAdd,
-}: Props) {
+}: HeaderProps) {
+  const {
+    tabsScrollRef,
+    tabsOverflowing,
+    tabsCanScrollLeft,
+    tabsCanScrollRight,
+  } = useTabStrip(tabs.length, activeTabId);
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
   const { t } = useI18n();
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
@@ -149,7 +126,9 @@ export function Header({
           top={contextMenu.top}
           pinned={contextTab.pinned}
           bookmarked={contextTab.bookmarked}
-          targetGroups={groups.filter((group) => group.id !== activeGroupId).sort(compareGroups)}
+          targetGroups={groups
+            .filter((group) => group.id !== activeGroupId)
+            .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);
             setContextMenu(null);
@@ -165,13 +144,15 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenClosed && onOpenSettings && onOpenSearch && <AdditionalTools
-        closedCount={closedCount}
-        onOpenClosed={onOpenClosed}
-        onOpenSettings={onOpenSettings}
-        onOpenShortcuts={onOpenShortcuts}
-        onOpenSearch={onOpenSearch}
-      />}
+      {onOpenShortcuts && onOpenClosed && onOpenSettings && onOpenSearch && (
+        <AdditionalTools
+          closedCount={closedCount}
+          onOpenClosed={onOpenClosed}
+          onOpenSettings={onOpenSettings}
+          onOpenShortcuts={onOpenShortcuts}
+          onOpenSearch={onOpenSearch}
+        />
+      )}
     </div>
   );
 }

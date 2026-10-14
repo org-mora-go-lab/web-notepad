@@ -1,25 +1,11 @@
 "use client";
-
-import type { ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
+import { getClosedTabItems } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { SearchField, SidePanel } from "@/src/5-shared/ui";
-import { matchesSearchQuery } from "@/src/5-shared/ui/search-field/util";
+import { EmptyState, SearchField, SidePanel } from "@/src/5-shared/ui";
+import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { SearchResult, SearchResultSection } from "./component";
-
-type Props = {
-  groups: GroupEntry[];
-  closedTabs: ClosedTabEntry[];
-  searchQuery: string;
-  onSearchQueryChange: (query: string) => void;
-  open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
-  onClose: () => void;
-  onSelectGroup: (groupId: string) => void;
-  onOpenBookmark: (groupId: string, bookmarkId: string) => void;
-  onOpenClosedSearch: (query: string) => void;
-};
+import type { GlobalSearchProps } from "./type";
 
 export function GlobalSearch({
   groups,
@@ -33,7 +19,7 @@ export function GlobalSearch({
   onSelectGroup,
   onOpenBookmark,
   onOpenClosedSearch,
-}: Props) {
+}: GlobalSearchProps) {
   const { t } = useI18n();
   const query = searchQuery.trim();
   const groupResults = query
@@ -43,21 +29,25 @@ export function GlobalSearch({
     ? groups.flatMap((group) =>
         group.bookmarks
           .filter((bookmark) =>
-            matchesSearchQuery(query, group.name, bookmark.title, bookmark.content),
+            matchesSearchQuery(
+              query,
+              group.name,
+              bookmark.title,
+              bookmark.content,
+            ),
           )
           .map((bookmark) => ({ group, bookmark })),
       )
     : [];
   const closedResults = query
-    ? closedTabs
-        .map((entry) => ({
-          entry,
-          groupName:
-            groups.find((group) => group.id === entry.groupId)?.name ?? "Ungrouped",
-        }))
-        .filter(({ entry, groupName }) =>
-          matchesSearchQuery(query, groupName, entry.tab.title, entry.tab.content),
-        )
+    ? getClosedTabItems(closedTabs, groups).filter(({ entry, groupName }) =>
+        matchesSearchQuery(
+          query,
+          groupName,
+          entry.tab.title,
+          entry.tab.content,
+        ),
+      )
     : [];
   const resultCount =
     groupResults.length + bookmarkResults.length + closedResults.length;
@@ -81,17 +71,22 @@ export function GlobalSearch({
       />
       <div className="global-search-list">
         {!query ? (
-          <div className="global-search-empty-state">
-            <p>{t.enterSearchTerm}</p>
-          </div>
+          <EmptyState
+            className="global-search-empty-state"
+            message={t.enterSearchTerm}
+          />
         ) : resultCount === 0 ? (
-          <div className="global-search-empty-state">
-            <p>{t.noSearchResults}</p>
-          </div>
+          <EmptyState
+            className="global-search-empty-state"
+            message={t.noSearchResults}
+          />
         ) : (
           <>
             {groupResults.length > 0 && (
-              <SearchResultSection title={t.groupsTitle} className="global-search-groups">
+              <SearchResultSection
+                title={t.groupsTitle}
+                className="global-search-groups"
+              >
                 {groupResults.map((group) => (
                   <SearchResult
                     key={group.id}
@@ -105,7 +100,10 @@ export function GlobalSearch({
               </SearchResultSection>
             )}
             {bookmarkResults.length > 0 && (
-              <SearchResultSection title={t.bookmarksTitle} className="global-search-bookmarks">
+              <SearchResultSection
+                title={t.bookmarksTitle}
+                className="global-search-bookmarks"
+              >
                 {bookmarkResults.map(({ group, bookmark }) => (
                   <SearchResult
                     key={`${group.id}:${bookmark.id}`}
@@ -121,7 +119,10 @@ export function GlobalSearch({
               </SearchResultSection>
             )}
             {closedResults.length > 0 && (
-              <SearchResultSection title={t.closedTitle} className="global-search-closed">
+              <SearchResultSection
+                title={t.closedTitle}
+                className="global-search-closed"
+              >
                 {closedResults.map(({ entry, groupName }) => (
                   <SearchResult
                     key={entry.id}
