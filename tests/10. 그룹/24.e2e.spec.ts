@@ -15,4 +15,7 @@ test("24. 그룹 목록 맨 위에 All Group을 표시하고 동작 버튼 없�
   await expect(page.locator("#groups-menu")).toBeVisible();
   await groupsCommand(page).click();
   await expect(page.locator("#groups-menu")).toHaveCount(0);
+  await expect(page.locator(".pane-slot")).toHaveCount(1);
+  await page.reload();
+  await expect(page.locator(".group-select-name")).toHaveText("All Group");
 });

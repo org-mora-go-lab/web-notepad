@@ -48,4 +48,17 @@ test("10. Split right, Split down, Move here 영역을 서로 겹치지 않는 �
   expect(moveBox.width).toBeCloseTo(rightBody.width, 0);
   expect(moveBox.y + moveBox.height).toBeLessThanOrEqual(rightDownBox.y + 1);
   await releaseMove();
+
+  // The lower-left pane can split right into the vacant lower-right pane.
+  await dragTabToZone(page, tab("b"), left, "Split down");
+  const lowerLeft = paneSlot(page, "left-bottom");
+  await lowerLeft.getByRole("button", { name: "새 탭 추가" }).click();
+  await lowerLeft.locator("textarea").fill("e");
+  const releaseLower = await hoverTabOverPane(page, tab("e"), lowerLeft, 0.25, 0.4);
+  await expect(zone("left-bottom", "Split right")).toBeVisible();
+  const lowerBody = (await lowerLeft.locator(".body").boundingBox())!;
+  const lowerRightZone = (await zone("left-bottom", "Split right").boundingBox())!;
+  expect(lowerRightZone.x).toBeCloseTo(lowerBody.x + lowerBody.width / 2, 0);
+  expect(lowerRightZone.height).toBeCloseTo(lowerBody.height, 0);
+  await releaseLower();
 });

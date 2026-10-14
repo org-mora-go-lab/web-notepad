@@ -1,4 +1,18 @@
-import type { GroupEntry, NoteTab, PaneColumn, PaneId } from "../type";
+import type { GroupEntry, NoteTab, PaneColumn, PaneId, PaneLayout } from "../type";
+
+export const getPaneLayout = (group: GroupEntry): PaneLayout => ({
+  activeTabId: group.activeTabId,
+  rightTabIds: group.rightTabIds,
+  activeRightTabId: group.activeRightTabId,
+  leftBottomTabIds: group.leftBottomTabIds,
+  activeLeftBottomTabId: group.activeLeftBottomTabId,
+  rightBottomTabIds: group.rightBottomTabIds,
+  activeRightBottomTabId: group.activeRightBottomTabId,
+  activePane: group.activePane,
+  splitRatio: group.splitRatio,
+  leftRowRatio: group.leftRowRatio,
+  rightRowRatio: group.rightRowRatio,
+});
 
 // Reading order: down the left column, then down the right column.
 export const PANE_IDS: PaneId[] = ["left", "left-bottom", "right", "right-bottom"];

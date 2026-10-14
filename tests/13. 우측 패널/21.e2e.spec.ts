@@ -18,8 +18,14 @@ test("21. 미고정 패널 경계는 테마별 그라데이션을 표시하고 �
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
     expect(await panel.evaluate((element) => getComputedStyle(element, "::before").backgroundImage)).toContain("rgba(0, 0, 0, 0.22)");
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
-    expect(edge.width).toBe("18px");
+    expect(edge.width).toBe("48px");
+    expect(edge.background).toContain("30%");
+    expect(edge.background).toContain("65%");
     expect(edge.pointerEvents).toBe("none");
+    await page.locator(".home").evaluate((element) => element.setAttribute("data-panel-position", "left"));
+    expect(await panel.evaluate((element) => getComputedStyle(element, "::before").backgroundImage)).toContain("to left");
+    expect(await panel.evaluate((element) => getComputedStyle(element, "::before").left)).toBe(`${(await panel.boundingBox())!.width - 1}px`);
+    await page.locator(".home").evaluate((element) => element.setAttribute("data-panel-position", "right"));
 
     if (viewport.width > 640) {
       await panel.locator(".side-panel-pin").click();

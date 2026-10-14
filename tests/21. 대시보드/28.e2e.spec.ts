@@ -13,6 +13,16 @@ test("28. 현재 탭을 강조하고 고정 패널에서 카드 선택 시 강�
   await expect(panel.locator(".dashboard-card.is-active")).toHaveCSS("box-shadow", "none");
   const borderColor = await panel.locator(".dashboard-card.is-active").evaluate((card) => getComputedStyle(card).borderTopColor);
   expect(borderColor).toMatch(/(?:\/\s*0\.5\s*\)|,\s*0\.5\s*\))/);
+  const background = await panel.locator(".dashboard-card.is-active").evaluate((card) => {
+    const actual = getComputedStyle(card).backgroundColor;
+    const sample = document.createElement("span");
+    sample.style.backgroundColor = "color-mix(in srgb, var(--dashboard-accent) 12%, var(--color-field))";
+    card.append(sample);
+    const expected = getComputedStyle(sample).backgroundColor;
+    sample.remove();
+    return { actual, expected };
+  });
+  expect(background.actual).toBe(background.expected);
   await panel.getByRole("button", { name: "패널 고정", exact: true }).click();
   await panel.getByRole("button", { name: "Beta task", exact: true }).click();
   await expect(panel.locator(".is-active .dashboard-card-open")).toContainText("Beta task");

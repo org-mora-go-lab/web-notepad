@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../__constant__";
 import { openPanel } from "../__util__";
-import { closePanelWithX, panelPinButton, workspaceBounds } from "./__util__";
+import { closePanelWithX, panelPinButton,workspaceBounds } from "./__util__";
 
 test("17. 고정한 패널을 X 버튼으로 닫거나 고정을 해제하면 body가 화면 전체 너비로 돌아온다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);

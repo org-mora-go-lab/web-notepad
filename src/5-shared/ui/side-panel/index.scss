@@ -3,6 +3,7 @@
 // Right drawer shell; each panel sets its own `.side-panel-drawer` grid rows.
 .side-panel {
   --panel-edge-shade: rgba(255, 255, 255, 0.16);
+  --panel-edge-direction: to right;
 
   [data-theme="light"] & {
     --panel-edge-shade: rgba(0, 0, 0, 0.22);
@@ -27,8 +28,8 @@
     right: 0;
     z-index: 20;
     width: min(462px, 100vw);
-    height: calc(100vh - var(--footer-height, 48px));
-    height: calc(100dvh - var(--footer-height, 48px));
+    height: 100vh;
+    height: 100dvh;
     display: grid;
     border-left: 1px solid var(--color-drawer-border);
     background: var(--color-drawer);
@@ -42,19 +43,26 @@
     }
   }
 
-  // A narrow fading shade makes an unpinned drawer feel lifted off the workspace.
+  // A gradual edge shade separates an unpinned drawer from the workspace.
   &:not(.is-pinned) .side-panel-drawer.is-open::before {
     content: "";
     position: absolute;
     top: 0;
     bottom: 0;
     right: 100%;
-    width: 18px;
-    background: linear-gradient(to right, transparent, var(--panel-edge-shade));
+    width: 48px;
+    background: linear-gradient(
+      var(--panel-edge-direction),
+      transparent 0%,
+      color-mix(in srgb, var(--panel-edge-shade) 25%, transparent) 30%,
+      color-mix(in srgb, var(--panel-edge-shade) 65%, transparent) 65%,
+      var(--panel-edge-shade) 100%
+    );
     pointer-events: none;
   }
 
   [data-panel-position="left"] & {
+    --panel-edge-direction: to left;
     .side-panel-drawer {
       left: 0;
       right: auto;
@@ -66,7 +74,6 @@
     .side-panel-resizer { left: auto; right: -5px; }
     &:not(.is-pinned) .side-panel-drawer.is-open::before {
       right: auto; left: 100%;
-      background: linear-gradient(to left, transparent, var(--panel-edge-shade));
     }
   }
 

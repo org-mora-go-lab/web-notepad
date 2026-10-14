@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { ClosedTabEntry, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 import { getStatusColor, getTabStatus, TAB_STATUSES } from "@/src/4-entity/notepad";
@@ -49,6 +49,32 @@ export function Dashboard({
   onChangeClosedStatus,
 }: Props) {
   const { t } = useI18n();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const content = contentRef.current;
+    const list = listRef.current;
+    const board = boardRef.current;
+    if (!content || !list || !board) return;
+
+    const updateScrollbarWidth = () => {
+      content.style.setProperty("--dashboard-scrollbar-width", `${list.offsetWidth - list.clientWidth}px`);
+      updateScrollState();
+    };
+    const updateScrollState = () => content.classList.toggle("is-scrolled", list.scrollTop > 0);
+    const observer = new ResizeObserver(updateScrollbarWidth);
+    observer.observe(list);
+    observer.observe(board);
+    updateScrollbarWidth();
+    list.addEventListener("scroll", updateScrollState, { passive: true });
+    return () => {
+      observer.disconnect();
+      list.removeEventListener("scroll", updateScrollState);
+    };
+  }, []);
+
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
   // Empty notes are not listed on the dashboard.
   const visibleTabs = tabs.filter((tab) => tab.content.trim());
@@ -77,8 +103,19 @@ export function Dashboard({
       closeLabel="대시보드 닫기"
       onClose={onClose}
     >
-      <div className="dashboard-list">
-        <div className="dashboard-board">
+      <div className="dashboard-content" ref={contentRef}>
+        <div className="dashboard-statuses">
+          {TAB_STATUSES.map((status) => (
+            <h3 key={status} id={`dashboard-status-${status}`} data-status={status} data-tab-color={getStatusColor(status, tabColorCycle)}>
+              {statusLabels[status]}
+              <span className="dashboard-count">
+                {visibleTabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status).length + (status === "done" ? visibleClosedTabs.length : 0)}
+              </span>
+            </h3>
+          ))}
+        </div>
+        <div className="dashboard-list" ref={listRef}>
+        <div className="dashboard-board" ref={boardRef}>
           {TAB_STATUSES.map((status) => {
             const columnTabs = visibleTabs.filter((tab) => getTabStatus(tab, tabColorCycle) === status);
             const columnClosed = status === "done" ? visibleClosedTabs : [];
@@ -87,6 +124,7 @@ export function Dashboard({
                 key={status}
                 className={`dashboard-column ${overStatus === status ? "is-drop-target" : ""}`}
                 data-status={status}
+                aria-labelledby={`dashboard-status-${status}`}
                 data-tab-color={getStatusColor(status, tabColorCycle)}
                 onDragOver={(event) => {
                   if (!draggingTabId) return;
@@ -110,10 +148,6 @@ export function Dashboard({
                   endDrag();
                 }}
               >
-                <h3>
-                  {statusLabels[status]}
-                  <span className="dashboard-count">{columnTabs.length + columnClosed.length}</span>
-                </h3>
                 <div className="dashboard-cards">
                   {columnClosed.map((entry) => (
                     <DashboardCard
@@ -156,6 +190,7 @@ export function Dashboard({
             );
           })}
         </div>
+      </div>
       </div>
       {pendingPinnedTabId && (
         <ConfirmPopup

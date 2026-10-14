@@ -57,7 +57,7 @@
     }
   }
 
-  // A pinned right panel docks on the right, so the workspace (with MENU and GROUP) shifts left.
+  // Dock the entire workspace, including tab strips and footer, beside a pinned drawer.
   @media (min-width: 641px) {
     &.is-panel-pinned .workspace {
       width: calc(100% - #{v.$side-panel-width});
@@ -66,11 +66,6 @@
     &[data-panel-position="left"].is-panel-pinned .workspace {
       margin-left: v.$side-panel-width;
     }
-  }
-
-  .footer {
-    position: relative;
-    z-index: 11;
   }
 
   .pane-group {

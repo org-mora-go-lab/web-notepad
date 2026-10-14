@@ -45,8 +45,9 @@ export function usePaneDrag({ group, moveTabToPane }: Options) {
     if (draggingPane === pane && countOf(pane) < 2) return zones;
 
     const column = getPaneColumn(pane);
-    if (column === "left" && countOf("right") === 0) {
-      zones.push({ key: "split-right", label: "Split right", area: "right", onDrop: dropTo("right") });
+    const rightTarget = pane === "left-bottom" && countOf("right") > 0 ? "right-bottom" : "right";
+    if (column === "left" && countOf(rightTarget) === 0) {
+      zones.push({ key: "split-right", label: "Split right", area: "right", onDrop: dropTo(rightTarget) });
     }
     const bottom = getBottomPane(column);
     if (pane !== bottom && countOf(bottom) === 0) {

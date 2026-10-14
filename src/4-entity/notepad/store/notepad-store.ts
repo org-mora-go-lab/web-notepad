@@ -34,6 +34,7 @@ export const useNotepadStore = create<NotepadState>()(
       groups: [createGroupEntry(UNGROUPED_GROUP_ID, "Ungrouped", 0, createNoteTab(1))],
       closedTabs: [],
       allGroupActiveTabId: null,
+      allGroupLayout: null,
       settings: DEFAULT_SETTINGS,
     }),
     {

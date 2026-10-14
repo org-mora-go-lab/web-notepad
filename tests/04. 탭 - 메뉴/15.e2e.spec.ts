@@ -14,7 +14,7 @@ const withDefaults = (state: StoredState) => ({
   allGroupActiveTabId: null,
   ...state,
   closedTabs: state.closedTabs ?? [],
-  settings: state.settings ?? { fontScale: 1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false },
+  settings: state.settings ?? { fontScale: 1, tabColorCycle: ["gray", "green", "purple"], language: "en", panelSlide: false, panelPosition: "right" },
 });
 
 test("15. 뒤로 가기, Escape, 바깥 클릭으로 이동 없이 그룹 목록을 닫는다", async ({ page }) => {

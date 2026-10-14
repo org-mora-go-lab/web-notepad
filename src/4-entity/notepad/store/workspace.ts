@@ -9,15 +9,18 @@ import type {
 import {
   createNoteTab,
   getNextTabNumber,
+  getPaneActiveTabId,
+  getPaneLayout,
   getPaneOfTab,
+  normalizeLayout,
   setPaneActiveTabId,
 } from "../util";
 
-// The All Group is not stored: it is built from every group's tabs, all in the left pane.
+// All Group gathers the original tabs and applies only its own independent view layout.
 const buildAllGroup = (state: NotepadState): GroupEntry => {
   const tabs = state.groups.flatMap((group) => group.tabs);
   const activeTab = tabs.find((tab) => tab.id === state.allGroupActiveTabId) ?? tabs[0];
-  return {
+  return normalizeLayout({
     id: ALL_GROUP_ID,
     name: ALL_GROUP_NAME,
     pinned: false,
@@ -26,7 +29,8 @@ const buildAllGroup = (state: NotepadState): GroupEntry => {
     bookmarks: [],
     ...EMPTY_SPLIT_LAYOUT,
     activeTabId: activeTab?.id ?? "",
-  };
+    ...state.allGroupLayout,
+  });
 };
 
 export const getActiveGroup = (state: NotepadState) =>
@@ -40,19 +44,24 @@ export const getTabGroup = (state: NotepadState, tabId: string) =>
     ? state.groups.find((group) => group.tabs.some((tab) => tab.id === tabId))
     : getActiveGroup(state);
 
-// Pane layout only exists in a real group; the All Group keeps every tab in one pane.
-export const getEditableGroup = (state: NotepadState) =>
-  state.activeGroupId === ALL_GROUP_ID ? undefined : getActiveGroup(state);
+export const getEditableGroup = getActiveGroup;
 
 export const updateGroup = (
   state: NotepadState,
   groupId: string,
   update: (group: GroupEntry) => GroupEntry,
-) => ({
-  groups: state.groups.map((group) =>
-    group.id === groupId ? update(group) : group,
-  ),
-});
+) => {
+  if (groupId === ALL_GROUP_ID) {
+    const next = normalizeLayout(update(buildAllGroup(state)));
+    return {
+      allGroupLayout: getPaneLayout(next),
+      allGroupActiveTabId: getPaneActiveTabId(next, next.activePane),
+    };
+  }
+  return {
+    groups: state.groups.map((group) => group.id === groupId ? update(group) : group),
+  };
+};
 
 const getAllTabs = (state: NotepadState) =>
   state.groups.flatMap((group) => group.tabs);

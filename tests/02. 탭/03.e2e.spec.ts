@@ -17,7 +17,7 @@ test("3. 드래그로 탭 순서를 바꿀 수 있다", async ({ page }) => {
     "second",
     "third",
   ]);
-  await tabs.nth(0).dragTo(tabs.nth(2));
+  await tabs.nth(0).locator(".tab-title").dragTo(tabs.nth(2).locator(".tab-title"));
   await expect(tabs.locator(".tab-title")).toHaveText([
     "second",
     "third",

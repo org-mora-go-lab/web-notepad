@@ -41,7 +41,6 @@ export function useHome() {
     removeClosedTab,
     updateTab,
     moveTab,
-    moveTabToPane,
     setSplitRatio,
     setRowRatio,
     cycleTabColor,
@@ -122,7 +121,7 @@ export function useHome() {
 
   const { draggingTabId, setDraggingTabId, adoptTo, dropZonesFor } = usePaneDrag({
     group: activeGroup,
-    moveTabToPane,
+    moveTabToPane: moveTabToPaneAndRecord,
   });
 
   // The MENU sits on the top pane of the rightmost column.

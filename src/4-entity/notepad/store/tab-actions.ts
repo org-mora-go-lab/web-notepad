@@ -57,9 +57,7 @@ export const createTabActions: StateCreator<
     const target = !inAllGroup && getPaneTabs(group, pane).length > 0 ? pane : "left";
     const bottom = target === "left-bottom" || target === "right-bottom";
     const rowRatioKey = getPaneColumn(target) === "right" ? "rightRowRatio" : "leftRowRatio";
-
-    set({
-      ...updateGroup(state, group.id, (current) => {
+    const changes = updateGroup(state, group.id, (current) => {
         const next = assignTabToPane({ ...current, tabs: [...current.tabs, tab] }, tab.id, target);
         return {
           ...setPaneActiveTabId(next, target, tab.id),
@@ -67,16 +65,23 @@ export const createTabActions: StateCreator<
           splitRatio: target === "right" ? 0.5 : current.splitRatio,
           [rowRatioKey]: bottom ? 0.5 : current[rowRatioKey],
         };
-      }),
+      });
+    const allGroup = inAllGroup ? getActiveGroup({ ...state, ...changes }) : null;
+    const viewPane = allGroup && getPaneTabs(allGroup, pane).length > 0 ? pane : "left";
+    set({
+      ...changes,
       nextTabNumber,
-      ...(inAllGroup ? { allGroupActiveTabId: tab.id } : {}),
+      ...(allGroup ? updateGroup({ ...state, ...changes }, ALL_GROUP_ID, (current) => {
+        const next = assignTabToPane(current, tab.id, viewPane);
+        return { ...setPaneActiveTabId(next, viewPane, tab.id), activePane: viewPane };
+      }) : {}),
     });
   },
   selectTab: (tabId) =>
     set((state) => {
       if (state.activeGroupId === ALL_GROUP_ID) {
         const exists = state.groups.some((group) => group.tabs.some((tab) => tab.id === tabId));
-        return exists ? { allGroupActiveTabId: tabId } : state;
+        return exists ? updateGroup(state, ALL_GROUP_ID, (current) => activateTab(current, tabId)) : state;
       }
       const group = getActiveGroup(state);
       if (!group || !group.tabs.some((tab) => tab.id === tabId)) return state;

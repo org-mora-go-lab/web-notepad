@@ -14,6 +14,7 @@ export {
   getBottomPane,
   getPaneActiveTabId,
   getPaneColumn,
+  getPaneLayout,
   getPaneOfTab,
   getPaneTabs,
   normalizeLayout,

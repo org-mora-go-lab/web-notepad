@@ -7,6 +7,7 @@ export type {
   NoteTab,
   PaneColumn,
   PaneId,
+  PaneLayout,
   TabColor,
   TabStatus,
 } from "./notepad";

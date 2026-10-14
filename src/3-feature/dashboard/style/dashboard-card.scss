@@ -11,7 +11,7 @@
 
     &.is-active {
       border: 1px solid color-mix(in srgb, var(--dashboard-accent, #{v.$signal}) 50%, transparent);
-      background: color-mix(in srgb, var(--dashboard-accent, #{v.$signal}) 18%, var(--color-field));
+      background: color-mix(in srgb, var(--dashboard-accent, #{v.$signal}) 12%, var(--color-field));
     }
 
     &.is-dragging {

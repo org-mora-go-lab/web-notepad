@@ -85,13 +85,16 @@ export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
 
 export type PaneColumn = "left" | "right";
 
+export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "tabs" | "bookmarks">;
+
 export type NotepadState = {
   nextTabNumber: number;
   groups: GroupEntry[];
   activeGroupId: string;
   closedTabs: ClosedTabEntry[];
-  // Selected tab of the read-only All Group view.
+  // All Group keeps its view layout separate from the tabs' owning groups.
   allGroupActiveTabId: string | null;
+  allGroupLayout: PaneLayout | null;
   settings: NotepadSettings;
   setFontScale: (fontScale: number) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;

@@ -28,8 +28,17 @@ export function Body({
   onChange,
 }: Props) {
   const dragActive = draggingTabId !== null;
-  const adoptZone = dropZones.find((zone) => zone.key === "adopt");
-  const dropArea = usePaneDropArea(dragActive, () => adoptZone?.onDrop());
+  const dropArea = usePaneDropArea(dragActive, (event) => {
+    // A fast drop can arrive on the editor before React has painted the drop overlays.
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const lowerHalf = event.clientY - bounds.top > bounds.height / 2;
+    const rightHalf = event.clientX - bounds.left > bounds.width / 2;
+    const bottomZone = dropZones.find((zone) => zone.area === "bottom");
+    const rightZone = dropZones.find((zone) => zone.area === "right");
+    const adoptZone = dropZones.find((zone) => zone.key === "adopt");
+    const target = lowerHalf && bottomZone ? bottomZone : rightHalf && rightZone ? rightZone : adoptZone;
+    target?.onDrop();
+  });
   // The bottom split zone only appears once the dragged tab passes the middle of the editor.
   const visibleZones = dropZones.filter(
     (zone) => zone.area !== "bottom" || dropArea.pointerInLowerHalf,

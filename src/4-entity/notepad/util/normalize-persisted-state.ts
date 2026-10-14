@@ -13,7 +13,7 @@ import type {
   TabColor,
 } from "../type";
 import { createNoteTab, sanitizeSelectedLines } from "./note-tab";
-import { normalizeLayout, PANE_IDS } from "./pane-layout";
+import { getPaneLayout, normalizeLayout, PANE_IDS } from "./pane-layout";
 
 const isTabColor = (value: unknown): value is TabColor =>
   TAB_COLORS.includes(value as TabColor);
@@ -248,11 +248,37 @@ export function normalizePersistedState(
   delete persisted.activePane;
   delete persisted.splitRatio;
 
+  const layout = persisted.allGroupLayout;
+  const readLayoutIds = (value: unknown): string[] => Array.isArray(value)
+    ? value.filter((id): id is string => typeof id === "string")
+    : [];
+  const readLayoutActive = (value: unknown) => typeof value === "string" ? value : null;
+  const allGroupLayout = layout && typeof layout === "object" ? getPaneLayout(normalizeLayout({
+    id: ALL_GROUP_ID,
+    name: "All Group",
+    pinned: false,
+    createdAt: 0,
+    tabs: groups.flatMap((group) => group.tabs),
+    bookmarks: [],
+    activeTabId: readLayoutActive(layout.activeTabId) ?? "",
+    rightTabIds: readLayoutIds(layout.rightTabIds),
+    activeRightTabId: readLayoutActive(layout.activeRightTabId),
+    leftBottomTabIds: readLayoutIds(layout.leftBottomTabIds),
+    activeLeftBottomTabId: readLayoutActive(layout.activeLeftBottomTabId),
+    rightBottomTabIds: readLayoutIds(layout.rightBottomTabIds),
+    activeRightBottomTabId: readLayoutActive(layout.activeRightBottomTabId),
+    activePane: PANE_IDS.includes(layout.activePane) ? layout.activePane : "left",
+    splitRatio: 0.5,
+    leftRowRatio: 0.5,
+    rightRowRatio: 0.5,
+  })) : null;
+
   return {
     ...currentState,
     ...persisted,
     groups,
     activeGroupId,
+    allGroupLayout,
     nextTabNumber,
     closedTabs: normalizeClosedTabs(persisted.closedTabs),
     settings,
