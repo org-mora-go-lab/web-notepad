@@ -12,15 +12,12 @@ export type DashboardCardProps = {
   dragging: boolean;
   active?: boolean;
   onOpen: (tabId: string) => void;
+  onOpenContextMenu?: (tabId: string, clientX: number, clientY: number) => void;
   onDragStart: (
     tabId: string,
     closed: boolean,
     event: DragEvent<HTMLElement>,
   ) => void;
-  onChangeStatus: (
-    itemId: string,
-    closed: boolean,
-    status: TabStatus,
-  ) => void;
+  onChangeStatus: (itemId: string, closed: boolean, status: TabStatus) => void;
   onDragEnd: () => void;
 };

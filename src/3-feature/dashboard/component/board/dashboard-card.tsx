@@ -1,6 +1,7 @@
 "use client";
 
 import { Bookmark, Pin } from "lucide-react";
+import { type MouseEvent, useEffect, useRef } from "react";
 
 import {
   type NoteTab,
@@ -32,10 +33,12 @@ export function DashboardCard({
   dragging,
   active = false,
   onOpen,
+  onOpenContextMenu,
   onDragStart,
   onChangeStatus,
   onDragEnd,
 }: DashboardCardProps) {
+  const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const preview = getPreview(tab);
   const { t } = useI18n();
   const statusLabels: Record<TabStatus, string> = {
@@ -44,12 +47,34 @@ export function DashboardCard({
     done: t.statusDone,
   };
   const itemId = id ?? tab.id;
+  const touchLayout = () =>
+    window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
+  const cancelPendingOpen = () => {
+    if (openTimerRef.current) clearTimeout(openTimerRef.current);
+    openTimerRef.current = null;
+  };
+  const openCard = (event: MouseEvent<HTMLButtonElement>) => {
+    if (!onOpenContextMenu || !touchLayout()) {
+      onOpen(tab.id);
+      return;
+    }
+    cancelPendingOpen();
+    if (event.detail > 1) return;
+    openTimerRef.current = setTimeout(() => onOpen(tab.id), 250);
+  };
+
+  useEffect(() => cancelPendingOpen, []);
 
   return (
     <article
       className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""}`}
       data-tab-color={tab.tabColor}
       draggable
+      onContextMenu={(event) => {
+        if (!onOpenContextMenu || touchLayout()) return;
+        event.preventDefault();
+        onOpenContextMenu(tab.id, event.clientX, event.clientY);
+      }}
       onDragStart={(event) => onDragStart(itemId, closed, event)}
       onDragEnd={onDragEnd}
     >
@@ -57,7 +82,13 @@ export function DashboardCard({
         className="dashboard-card-open"
         type="button"
         aria-current={active ? "true" : undefined}
-        onClick={() => onOpen(tab.id)}
+        onClick={openCard}
+        onDoubleClick={(event) => {
+          if (!onOpenContextMenu || !touchLayout()) return;
+          event.preventDefault();
+          cancelPendingOpen();
+          onOpenContextMenu(tab.id, event.clientX, event.clientY);
+        }}
       >
         <strong title={tab.title}>{tab.title}</strong>
         {groupName && <span className="dashboard-card-group">{groupName}</span>}

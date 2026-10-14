@@ -1,8 +1,10 @@
 "use client";
 
-import { getDashboardColumns } from "@/src/4-entity/notepad";
+import { useState } from "react";
+
+import { compareGroups, getDashboardColumns } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
+import { ConfirmPopup, SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
 import { DashboardColumn, DashboardStatuses } from "./component";
 import { useDashboardDrag, useDashboardScroll } from "./hook";
@@ -22,13 +24,25 @@ export function Dashboard({
   onOpenTab,
   onChangeStatus,
   onUnpinTab,
+  onMoveToGroup,
+  onToggleTabPin,
+  onToggleTabBookmark,
   onRestoreClosed,
   onChangeClosedStatus,
 }: DashboardProps) {
+  const [contextMenu, setContextMenu] = useState<{
+    tabId: string;
+    left: number;
+    top: number;
+  } | null>(null);
   const { t } = useI18n();
   const { contentRef, listRef, boardRef } = useDashboardScroll();
   const columns = getDashboardColumns(tabs, closedTabs, tabColorCycle);
   const visibleTabs = columns.flatMap((column) => column.tabs);
+  const contextTab = visibleTabs.find((tab) => tab.id === contextMenu?.tabId);
+  const contextGroup = groups.find((group) =>
+    group.tabs.some((tab) => tab.id === contextMenu?.tabId),
+  );
   const drag = useDashboardDrag({
     visibleTabs,
     onChangeStatus,
@@ -62,6 +76,9 @@ export function Dashboard({
                 tabColorCycle={tabColorCycle}
                 onRestoreClosed={onRestoreClosed}
                 onOpenTab={onOpenTab}
+                onOpenContextMenu={(tabId, left, top) =>
+                  setContextMenu({ tabId, left, top })
+                }
               />
             ))}
           </div>
@@ -76,6 +93,30 @@ export function Dashboard({
           confirmLabel={t.unpinAndClose}
           onConfirm={drag.confirmClose}
           onCancel={drag.cancelClose}
+        />
+      )}
+      {contextMenu && contextTab && (
+        <TabContextMenu
+          left={contextMenu.left}
+          top={contextMenu.top}
+          pinned={contextTab.pinned}
+          bookmarked={contextTab.bookmarked}
+          targetGroups={groups
+            .filter((group) => group.id !== contextGroup?.id)
+            .sort(compareGroups)}
+          onMoveToGroup={(groupId) => {
+            onMoveToGroup(contextTab.id, groupId);
+            setContextMenu(null);
+          }}
+          onTogglePin={() => {
+            onToggleTabPin(contextTab.id);
+            setContextMenu(null);
+          }}
+          onToggleBookmark={() => {
+            onToggleTabBookmark(contextTab.id);
+            setContextMenu(null);
+          }}
+          onClose={() => setContextMenu(null)}
         />
       )}
     </SidePanel>

@@ -39,6 +39,8 @@ export function Home() {
     tabColorCycle,
     setTabStatus,
     togglePin,
+    toggleBookmark,
+    moveToGroup,
     moveClosedTabToStatus,
     groups,
     activeGroupName,
@@ -143,6 +145,9 @@ export function Home() {
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
           onUnpinTab={togglePin}
+          onMoveDashboardTabToGroup={moveToGroup}
+          onToggleDashboardTabPin={togglePin}
+          onToggleDashboardTabBookmark={toggleBookmark}
           onChangeClosedTabStatus={moveClosedTabToStatus}
           onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}

@@ -8,10 +8,10 @@ import {
   Pin,
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
-import { useI18n } from "@/src/5-shared/hook";
-
-import type { TabContextMenuProps } from "../../type";
+import { useI18n } from "../../hook";
+import type { TabContextMenuProps } from "./type";
 
 export function TabContextMenu({
   left,
@@ -62,7 +62,7 @@ export function TabContextMenu({
     };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
       ref={menuRef}
       className="tab-context-menu"
@@ -119,6 +119,7 @@ export function TabContextMenu({
           </button>
         </>
       )}
-    </div>
+    </div>,
+    document.body,
   );
 }

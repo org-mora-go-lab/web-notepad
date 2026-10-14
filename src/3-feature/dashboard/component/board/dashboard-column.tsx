@@ -13,6 +13,7 @@ export function DashboardColumn({
   tabColorCycle,
   onRestoreClosed,
   onOpenTab,
+  onOpenContextMenu,
 }: DashboardColumnProps) {
   const { status, tabs: columnTabs, closedTabs: columnClosed } = column;
   const { t } = useI18n();
@@ -84,6 +85,7 @@ export function DashboardColumn({
             status={status}
             dragging={drag.draggingTabId === tab.id}
             onOpen={onOpenTab}
+            onOpenContextMenu={onOpenContextMenu}
             onDragStart={drag.startDrag}
             onChangeStatus={drag.moveToStatus}
             onDragEnd={drag.endDrag}

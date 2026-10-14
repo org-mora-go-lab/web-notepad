@@ -36,6 +36,9 @@ export function Panel({
   onOpenDashboardTab,
   onChangeTabStatus,
   onUnpinTab,
+  onMoveDashboardTabToGroup,
+  onToggleDashboardTabPin,
+  onToggleDashboardTabBookmark,
   onChangeClosedTabStatus,
   onCreateGroup,
   onSelectGroup,
@@ -79,6 +82,9 @@ export function Panel({
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
         onUnpinTab={onUnpinTab}
+        onMoveToGroup={onMoveDashboardTabToGroup}
+        onToggleTabPin={onToggleDashboardTabPin}
+        onToggleTabBookmark={onToggleDashboardTabBookmark}
         onRestoreClosed={onRestoreClosedTab}
         onChangeClosedStatus={onChangeClosedTabStatus}
       />

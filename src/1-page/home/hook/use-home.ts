@@ -205,6 +205,8 @@ export function useHome() {
     tabColorCycle: settings.tabColorCycle,
     setTabStatus,
     togglePin,
+    toggleBookmark,
+    moveToGroup,
     moveClosedTabToStatus,
     removeBookmark,
     createGroup,

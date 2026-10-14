@@ -5,8 +5,9 @@ import { useState } from "react";
 
 import { compareGroups } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
+import { TabContextMenu } from "@/src/5-shared/ui";
 
-import { AdditionalTools, TabContextMenu, TabItem } from "./component";
+import { AdditionalTools, TabItem } from "./component";
 import { useTabStrip } from "./hook";
 import type { HeaderProps } from "./type";
 

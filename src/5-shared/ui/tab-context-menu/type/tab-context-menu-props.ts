@@ -1,11 +1,11 @@
-import type { GroupEntry } from "@/src/4-entity/notepad";
+export type TabContextMenuTargetGroup = { id: string; name: string };
 
 export type TabContextMenuProps = {
   left: number;
   top: number;
   pinned: boolean;
   bookmarked: boolean;
-  targetGroups: GroupEntry[];
+  targetGroups: TabContextMenuTargetGroup[];
   onMoveToGroup: (groupId: string) => void;
   onTogglePin: () => void;
   onToggleBookmark: () => void;

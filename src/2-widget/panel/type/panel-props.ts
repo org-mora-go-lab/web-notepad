@@ -39,6 +39,11 @@ export type PanelProps = {
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
   onUnpinTab: ComponentProps<typeof Dashboard>["onUnpinTab"];
+  onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
+  onToggleDashboardTabPin: ComponentProps<typeof Dashboard>["onToggleTabPin"];
+  onToggleDashboardTabBookmark: ComponentProps<
+    typeof Dashboard
+  >["onToggleTabBookmark"];
   onChangeClosedTabStatus: ComponentProps<
     typeof Dashboard
   >["onChangeClosedStatus"];
