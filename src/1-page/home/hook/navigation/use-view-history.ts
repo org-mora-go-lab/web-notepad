@@ -65,5 +65,15 @@ export function useViewHistory(
     snapshotRef.current = snapshot;
   }, []);
 
-  return { pushView };
+  const replaceView = useCallback((snapshot: ViewSnapshot) => {
+    if (!initialized.current) return;
+    window.history.replaceState(
+      makeHistoryState(snapshot),
+      "",
+      getViewHref(snapshot),
+    );
+    snapshotRef.current = snapshot;
+  }, []);
+
+  return { pushView, replaceView };
 }

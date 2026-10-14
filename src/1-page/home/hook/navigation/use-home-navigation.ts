@@ -94,10 +94,15 @@ export function useHomeNavigation({
     );
   }, []);
 
-  const { pushView } = useViewHistory(
+  const { pushView, replaceView } = useViewHistory(
     hydrated,
     getCurrentView(null),
     restoreView,
+  );
+
+  const replaceCurrentView = useCallback(
+    () => replaceView(getCurrentView()),
+    [getCurrentView, replaceView],
   );
 
   const closeSidePanels = useCallback(() => {
@@ -160,6 +165,7 @@ export function useHomeNavigation({
     setGlobalSearchQuery,
     closeSidePanels,
     toggleSidePanel,
+    replaceCurrentView,
     ...actions,
   };
 }

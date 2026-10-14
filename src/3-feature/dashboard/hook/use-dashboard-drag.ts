@@ -15,24 +15,32 @@ export function useDashboardDrag({
   onChangeClosedStatus,
   onUnpinTab,
 }: Options) {
-  const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
+  const [draggingItem, setDraggingItem] = useState<{
+    id: string;
+    closed: boolean;
+  } | null>(null);
+  const draggingTabId = draggingItem?.id ?? null;
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
   const [pendingPinnedTabId, setPendingPinnedTabId] = useState<string | null>(
     null,
   );
   const endDrag = () => {
-    setDraggingTabId(null);
+    setDraggingItem(null);
     setOverStatus(null);
   };
-  const startDrag = (tabId: string, event: DragEvent<HTMLElement>) => {
+  const startDrag = (
+    tabId: string,
+    closed: boolean,
+    event: DragEvent<HTMLElement>,
+  ) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", tabId);
-    setDraggingTabId(tabId);
+    setDraggingItem({ id: tabId, closed });
   };
   const drop = (status: TabStatus, event: DragEvent<HTMLElement>) => {
     event.preventDefault();
-    if (draggingTabId?.startsWith("closed-")) {
-      if (status !== "done") onChangeClosedStatus(draggingTabId, status);
+    if (draggingItem?.closed) {
+      if (status !== "done") onChangeClosedStatus(draggingItem.id, status);
     } else if (draggingTabId) {
       const dragged = visibleTabs.find((tab) => tab.id === draggingTabId);
       if (status === "done" && dragged?.pinned)

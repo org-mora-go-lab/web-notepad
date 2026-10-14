@@ -2,7 +2,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { DEFAULT_SETTINGS, UNGROUPED_GROUP_ID } from "../constant";
-import { normalizePersistedState } from "../persistence";
+import {
+  createSafeJsonStorage,
+  normalizePersistedState,
+} from "../persistence";
 import type { NotepadState } from "../type";
 import { createNoteTab } from "../util";
 import { createBookmarkActions, createClosedTabActions } from "./archive";
@@ -44,6 +47,7 @@ export const useNotepadStore = create<NotepadState>()(
     {
       name: "web-notepad-storage",
       skipHydration: true,
+      storage: createSafeJsonStorage<NotepadState>(),
       merge: normalizePersistedState,
     },
   ),

@@ -21,6 +21,7 @@ const getPreview = (tab: NoteTab) => {
 export function DashboardCard({
   id,
   tab,
+  closed = false,
   groupName,
   dragging,
   active = false,
@@ -35,7 +36,7 @@ export function DashboardCard({
       className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""}`}
       data-tab-color={tab.tabColor}
       draggable
-      onDragStart={(event) => onDragStart(id ?? tab.id, event)}
+      onDragStart={(event) => onDragStart(id ?? tab.id, closed, event)}
       onDragEnd={onDragEnd}
     >
       <button

@@ -20,8 +20,8 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
         savedContent:
           typeof tab.savedContent === "string" ? tab.savedContent : "",
         tabColor,
-        pinned: Boolean(tab.pinned),
-        bookmarked: Boolean(tab.bookmarked),
+        pinned: tab.pinned === true,
+        bookmarked: tab.bookmarked === true,
         restoredContent:
           typeof tab.restoredContent === "string"
             ? tab.restoredContent

@@ -41,6 +41,7 @@ export function DashboardColumn({
             key={entry.id}
             id={entry.id}
             tab={entry.tab}
+            closed
             groupName={
               showGroupNames
                 ? (groups.find((group) => group.id === entry.groupId)?.name ??

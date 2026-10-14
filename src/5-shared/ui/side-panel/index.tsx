@@ -35,6 +35,7 @@ export function SidePanel({
         className={`side-panel-drawer ${open ? "is-open" : ""}`}
         aria-hidden={!open}
         aria-label={ariaLabel}
+        inert={!open}
       >
         <div
           className="side-panel-resizer"

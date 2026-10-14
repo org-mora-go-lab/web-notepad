@@ -39,7 +39,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 전체 요구사항 색인은 `PRD.md`에서 확인합니다. 상세 요구사항은 `prd/` 아래에서 앱 기반, 노트 편집, 그룹과 기록, 패널과 검색, 화면과 설정, 데이터 복원으로 나누어 관리합니다.
 
-각 `prd/<기능군>.md`의 `## <번호>. <제목>`은 `tests/<기능군>/<번호>. <제목>/`과 일대일로 대응합니다.
+각 `prd/<기능군>.md`의 `## <번호>. <제목>`은 `tests/<기능군>/<번호>. <제목>/`과 일대일로 대응합니다. 상세 타이틀은 한 가지 관심사를 다루며, 타이틀마다 요구사항과 E2E 테스트를 최대 10개까지 둡니다.
 
 ## E2E 테스트
 
@@ -48,7 +48,7 @@ npm run test:e2e
 # worker 수 지정
 npm run test:e2e -- --workers=8
 # 특정 요구사항 실행
-npm run test:e2e -- "tests/02. 노트 편집/08. 분할 패널"
+npm run test:e2e -- "tests/02. 노트 편집/12. 분할 패널 - 기본 동작"
 ```
 
 개발 서버(3000)를 대상으로 현재 코드를 테스트합니다. 로컬 worker 수는 논리 CPU의 100%, CI는 50%입니다.
@@ -62,5 +62,5 @@ npm run test:e2e -- "tests/02. 노트 편집/08. 분할 패널"
 상태 준비의 문서 로드는 1회이며, 브라우저 컨텍스트는 테스트마다 격리합니다.
 
 공통 유틸리티는 `tests/__util__/state`, `note`, `workspace`, `assertion`으로 구분합니다.
-분할 패널 전용 유틸리티는 `tests/02. 노트 편집/08. 분할 패널/__util__/state`, `drag`로 구분합니다.
+분할 패널 전용 유틸리티는 `tests/02. 노트 편집/__util__/split-panel/state`, `drag`로 구분합니다.
 각 그룹은 배럴을 제공하며, E2E 파일은 기존 `__util__` 배럴을 통해 가져옵니다.

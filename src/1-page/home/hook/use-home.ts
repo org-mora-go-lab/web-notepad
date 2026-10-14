@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import {
   getActiveGroup,
@@ -73,11 +73,11 @@ export function useHome() {
 
   const {
     pendingCloseTabId,
-    requestCloseTab,
+    requestCloseTab: requestCloseTabAction,
     addTabToPane,
     moveToGroup,
     cancelCloseTab,
-    confirmCloseTab,
+    confirmCloseTab: confirmCloseTabAction,
   } = useHomeTabActions({ editorRefs });
 
   const navigation = useHomeNavigation({ hydrated, panelPinned, addTabToPane });
@@ -87,7 +87,18 @@ export function useHome() {
     activatePaneWithHistory,
     addTabAndRecord,
     moveTabToPaneAndRecord,
+    replaceCurrentView,
   } = navigation;
+
+  const requestCloseTab = useCallback(
+    (tabId: string) => {
+      if (requestCloseTabAction(tabId)) replaceCurrentView();
+    },
+    [replaceCurrentView, requestCloseTabAction],
+  );
+  const confirmCloseTab = useCallback(() => {
+    if (confirmCloseTabAction()) replaceCurrentView();
+  }, [confirmCloseTabAction, replaceCurrentView]);
 
   useNotepadShortcuts({
     editorRefs,
