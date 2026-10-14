@@ -1,15 +1,15 @@
-export type { DashboardColumnData } from "./dashboard-columns";
-export { getDashboardColumns } from "./dashboard-columns";
 export { compareGroups } from "./group-sort";
+export type { DashboardColumnData } from "./note";
 export {
   createNoteTab,
+  getDashboardColumns,
   getNextTabNumber,
   getStatusColor,
   getTabStatus,
   getTitleFromContent,
   isSubstantialContent,
   sanitizeSelectedLines,
-} from "./note-tab";
+} from "./note";
 export {
   assignTabToPane,
   getBottomPane,
@@ -18,8 +18,8 @@ export {
   getPaneLayout,
   getPaneOfTab,
   getPaneTabs,
+  getPaneWorkspace,
   normalizeLayout,
   PANE_IDS,
   setPaneActiveTabId,
-} from "./pane-layout";
-export { getPaneWorkspace } from "./pane-workspace";
+} from "./pane";

@@ -4,7 +4,7 @@ import { type RefObject, useEffect, useRef } from "react";
 import type { NoteTab } from "@/src/4-entity/notepad";
 
 import { handleEditorKeyDown, insertAtSelection } from "../util";
-import { useEditorCaretScroll } from "./use-editor-caret-scroll";
+import { useEditorCaretScroll } from "./layout";
 import { useLineSelection } from "./use-line-selection";
 
 type Options = {

@@ -5,13 +5,14 @@ import { DEFAULT_SETTINGS, UNGROUPED_GROUP_ID } from "../constant";
 import { normalizePersistedState } from "../persistence";
 import type { NotepadState } from "../type";
 import { createNoteTab } from "../util";
-import { createBookmarkActions } from "./bookmark-actions";
-import { createClosedTabActions } from "./closed-tab-actions";
-import { createGroupActions } from "./group-actions";
-import { createPaneActions } from "./pane-actions";
+import { createBookmarkActions, createClosedTabActions } from "./archive";
 import { createSettingActions } from "./setting-actions";
 import { createTabActions } from "./tab";
-import { createGroupEntry } from "./workspace";
+import {
+  createGroupActions,
+  createGroupEntry,
+  createPaneActions,
+} from "./workspace";
 
 export {
   ALL_GROUP_ID,

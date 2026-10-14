@@ -1,8 +1,6 @@
 @use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
-@use "./style/dashboard-card";
-@use "./style/dashboard-column";
-@use "./style/dashboard-statuses";
+@use "./style/board";
 
 .dashboard {
   @include mixin.side-panel-list("dashboard");

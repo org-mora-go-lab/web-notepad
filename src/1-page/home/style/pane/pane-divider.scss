@@ -1,0 +1,46 @@
+@use "../../../../5-shared/style/variable" as v;
+
+.home .pane-divider {
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  flex: 0 0 10px;
+  cursor: col-resize;
+  touch-action: none;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: v.$line;
+    content: "";
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  &:hover::before {
+    background: v.$hover-line;
+  }
+
+  // Splits a column into top and bottom panes. The 2px line sits flush on the bottom pane's tabs,
+  // and the rest of the 10px drag area overlaps the bottom of the top pane.
+  &.is-horizontal {
+    width: auto;
+    height: 10px;
+    flex: 0 0 10px;
+    margin-top: -8px;
+    cursor: row-resize;
+
+    &::before {
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: auto;
+      height: 2px;
+      transform: none;
+    }
+  }
+}

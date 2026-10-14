@@ -1,15 +1,14 @@
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState, NoteTab } from "../type";
 import { createNoteTab } from "../util";
-import { normalizeAllGroupLayout } from "./normalize-all-group-layout";
-import { normalizeGroups } from "./normalize-groups";
+import { finiteNumberOr } from "./read-value";
 import {
   normalizeBookmarks,
   normalizeClosedTabs,
+  normalizeGroups,
   normalizeTabs,
-} from "./normalize-records";
-import { normalizeSettings } from "./normalize-settings";
-import { finiteNumberOr } from "./read-value";
+} from "./record";
+import { normalizeAllGroupLayout, normalizeSettings } from "./view";
 
 export function normalizePersistedState(
   persistedState: unknown,
@@ -37,9 +36,12 @@ export function normalizePersistedState(
     persisted.bookmarks,
     currentState.groups[0].bookmarks,
   );
-  const sourceGroups = Array.isArray(persisted.groups)
-    ? persisted.groups
-    : currentState.groups;
+  const sourceGroups = (
+    Array.isArray(persisted.groups) ? persisted.groups : currentState.groups
+  ).filter(
+    (group) =>
+      group && typeof group === "object" && typeof group.id === "string",
+  );
   let nextTabNumber = finiteNumberOr(
     persisted.nextTabNumber,
     currentState.nextTabNumber,
@@ -47,13 +49,13 @@ export function normalizePersistedState(
   const reservedTabIds = new Set([
     ...legacyTabs.map((tab) => tab.id),
     ...legacyBookmarks.map((bookmark) => bookmark.sourceTabId),
-    ...sourceGroups.flatMap((group) =>
-      Array.isArray(group.tabs)
-        ? group.tabs
-            .filter((tab) => tab && typeof tab.id === "string")
-            .map((tab) => tab.id)
-        : [],
-    ),
+    // A recovered blank tab must not take the identity of a bookmark in any group.
+    ...sourceGroups.flatMap((group) => [
+      ...normalizeTabs(group.tabs, []).map((tab) => tab.id),
+      ...normalizeBookmarks(group.bookmarks, []).map(
+        (bookmark) => bookmark.sourceTabId,
+      ),
+    ]),
   ]);
   while (reservedTabIds.has(`tab-${nextTabNumber}`)) nextTabNumber += 1;
 

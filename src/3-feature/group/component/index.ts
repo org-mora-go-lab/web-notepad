@@ -1,2 +1,1 @@
-export { GroupCreateForm } from "./group-create-form";
-export { GroupItem } from "./group-item";
+export { GroupCreateForm, GroupItem } from "./menu";

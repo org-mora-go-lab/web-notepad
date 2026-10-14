@@ -1,6 +1,5 @@
 @use "../../5-shared/style/variable" as v;
-@use "./style/group-create-form";
-@use "./style/group-item";
+@use "./style/menu";
 
 // Matches the tab context menu: raised surface, 39px rows, 15px labels.
 .group {

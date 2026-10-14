@@ -14,12 +14,8 @@
 @use "../../3-feature/closed";
 @use "../../3-feature/global-search";
 @use "../../5-shared/ui/search-field";
-@use "./style/loading";
-@use "./style/search-empty-state";
-@use "./style/pane-divider";
-@use "./style/tab-delete-popup";
-@use "./style/pane-view";
-@use "./style/pane-column";
+@use "./style/feedback";
+@use "./style/pane";
 @use "../../3-feature/theme";
 @use "../../3-feature/user-guide";
 

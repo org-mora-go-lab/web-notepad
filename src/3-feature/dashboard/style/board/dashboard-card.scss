@@ -1,0 +1,91 @@
+@use "../../../../5-shared/style/variable" as v;
+
+.dashboard {
+  .dashboard-card {
+    position: relative;
+    min-width: 0;
+    border: 1px solid v.$line;
+    border-radius: 6px;
+    background: var(--color-field);
+    cursor: grab;
+
+    &.is-active {
+      border: 1px solid
+        color-mix(
+          in srgb,
+          var(--dashboard-accent, #{v.$signal}) 50%,
+          transparent
+        );
+      background: color-mix(
+        in srgb,
+        var(--dashboard-accent, #{v.$signal}) 12%,
+        var(--color-field)
+      );
+    }
+
+    &.is-dragging {
+      opacity: 0.4;
+    }
+  }
+
+  .dashboard-card-open {
+    width: 100%;
+    display: grid;
+    gap: 4px;
+    padding: 10px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: inherit;
+
+    strong {
+      overflow: hidden;
+      color: v.$signal;
+      font-size: v.font(14px * 1.2);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // Pinned and bookmarked tabs line up their icons (pin left of bookmark) in the card's top-right corner.
+  .dashboard-card-indicators {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    color: var(--dashboard-accent, #{v.$saved});
+    pointer-events: none;
+  }
+
+  .dashboard-card-pin,
+  .dashboard-card-bookmark {
+    display: flex;
+  }
+
+  .dashboard-card-open strong {
+    padding-right: 40px;
+  }
+
+  .dashboard-card-group {
+    overflow: hidden;
+    color: var(--color-secondary);
+    font-size: v.font(12px * 1.2);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-card-preview {
+    display: -webkit-box;
+    overflow: hidden;
+    color: v.$saved;
+    font-family: v.$sans;
+    font-size: v.font(13px * 1.2);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
