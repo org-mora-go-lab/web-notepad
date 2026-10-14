@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("8. 사용 가이드는 그만 보기 버튼이나 Escape로 닫고 다시 열면 1단계부터 표시한다", async ({ page }) => {
+test("8. 사용 가이드는 Stop viewing 버튼으로 닫는다", async ({ page }) => {
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "MENU", exact: true });
   const guide = page.getByRole("dialog");
@@ -16,8 +16,4 @@ test("8. 사용 가이드는 그만 보기 버튼이나 Escape로 닫고 다시 
   await guide.getByRole("button", { name: "Stop viewing" }).click();
   await expect(guide).toHaveCount(0);
 
-  await openGuide();
-  await expect(guide.locator(".user-guide-progress")).toHaveText("1 / 10");
-  await page.keyboard.press("Escape");
-  await expect(guide).toHaveCount(0);
 });

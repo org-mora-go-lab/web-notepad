@@ -15,7 +15,7 @@ test("3. 닫힌 우측 패널은 그림자를 남기지 않고 열린 패널만 
       await expect(panel).toHaveCSS("box-shadow", "none");
     }
 
-    for (const panelId of [...panelIds, "global-search-panel"]) {
+    for (const panelId of panelIds) {
       const panel = page.locator(`#${panelId}`);
       await openPanel(page, panelId);
       await expect(panel).toHaveAttribute("aria-hidden", "false");

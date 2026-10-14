@@ -37,16 +37,24 @@ export function useDashboardDrag({
     event.dataTransfer.setData("text/plain", tabId);
     setDraggingItem({ id: tabId, closed });
   };
+  const moveToStatus = (
+    itemId: string,
+    closed: boolean,
+    status: TabStatus,
+  ) => {
+    if (closed) {
+      if (status !== "done") onChangeClosedStatus(itemId, status);
+      return;
+    }
+
+    const tab = visibleTabs.find((item) => item.id === itemId);
+    if (status === "done" && tab?.pinned) setPendingPinnedTabId(itemId);
+    else onChangeStatus(itemId, status);
+  };
   const drop = (status: TabStatus, event: DragEvent<HTMLElement>) => {
     event.preventDefault();
-    if (draggingItem?.closed) {
-      if (status !== "done") onChangeClosedStatus(draggingItem.id, status);
-    } else if (draggingTabId) {
-      const dragged = visibleTabs.find((tab) => tab.id === draggingTabId);
-      if (status === "done" && dragged?.pinned)
-        setPendingPinnedTabId(draggingTabId);
-      else onChangeStatus(draggingTabId, status);
-    }
+    if (draggingItem)
+      moveToStatus(draggingItem.id, draggingItem.closed, status);
     endDrag();
   };
   const confirmClose = () => {
@@ -61,6 +69,7 @@ export function useDashboardDrag({
     setOverStatus,
     pendingPinnedTabId,
     startDrag,
+    moveToStatus,
     endDrag,
     drop,
     confirmClose,

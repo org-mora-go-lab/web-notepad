@@ -1,18 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-import { cycleActiveTabColor, openPanel } from "../../__util__";
+import { MOBILE_VIEWPORT } from "../../__constant__";
+import { openPanel } from "../../__util__";
 import { dashboardColumn, seedDashboardTabs } from "../__util__";
 
-test("8. 탭에서 색상을 변경하면 대시보드의 컬럼도 함께 바뀐다", async ({ page }) => {
+test("8. 모바일 빈 컬럼은 남는 높이를 늘리지 않고 다음 상태 제목을 바로 이어 표시한다", async ({ page }) => {
+  await page.setViewportSize(MOBILE_VIEWPORT);
   await seedDashboardTabs(page);
-  // tab-1 is gray (Todo): gray -> green -> purple.
-  await cycleActiveTabColor(page, 1);
   await openPanel(page, "dashboard-panel");
-  await expect(dashboardColumn(page, "in-progress")).toContainText("Alpha task");
-
-  await page.keyboard.press("Escape");
-  await cycleActiveTabColor(page, 1);
-  await openPanel(page, "dashboard-panel");
-  await expect(dashboardColumn(page, "done")).toContainText("Alpha task");
-  await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(0);
+  await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "done"));
+  const empty = (await dashboardColumn(page, "todo").locator(".dashboard-cards").boundingBox())!;
+  const nextTitle = (await dashboardColumn(page, "in-progress").locator(".dashboard-column-status").boundingBox())!;
+  expect(empty.height).toBeLessThanOrEqual(80);
+  expect(nextTitle.y).toBeGreaterThanOrEqual(empty.y + empty.height);
 });

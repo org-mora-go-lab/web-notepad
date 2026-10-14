@@ -1,38 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-import { addTabButton } from "../../__util__";
-import { hoverTabOverPane, paneSlot, seedQuadState, seedSplitState } from "../__util__";
+import { paneSlot, seedQuadState } from "../__util__";
 
-test("4. 탭이 하나뿐인 패널은 그 탭으로 분할하지 않고 4분할 상태에서는 분할 영역을 표시하지 않는다", async ({ page }) => {
-  await page.goto("/");
-  const onlyTab = page.locator(".tab-item").first();
-  const left = paneSlot(page, "left");
-
-  // A pane with a single tab cannot be split by that tab.
-  const releaseSingle = await hoverTabOverPane(page, onlyTab, left, 0.25, 0.75);
-  await expect(left.locator(".note-pane-drop", { hasText: /Split/ })).toHaveCount(0);
-  await releaseSingle();
-  await expect(page.locator(".pane-slot")).toHaveCount(1);
-
-  // Once the pane has another tab, the same drag offers both split zones.
-  await addTabButton(page).click();
-  const releaseMulti = await hoverTabOverPane(page, onlyTab, left, 0.25, 0.75);
-  await expect(left.locator(".note-pane-drop", { hasText: /Split/ })).toHaveText(["Split right", "Split down"]);
-  await releaseMulti();
-  await expect(page.locator(".pane-slot")).toHaveCount(1);
-
-  // Moving a pane's final tab to another existing editor offers adoption only.
-  await seedSplitState(page);
-  const releaseLast = await hoverTabOverPane(page, paneSlot(page, "left").locator(".tab-item"), paneSlot(page, "right"), 0.5, 0.75);
-  await expect(paneSlot(page, "right").locator(".note-pane-drop")).toHaveText(["Move here"]);
-  await releaseLast();
-
-  // With four panes open there is nowhere left to split.
+test("4. 상하 분할 비율은 앱 재접속 시 중앙으로 초기화한다", async ({ page }) => {
   await seedQuadState(page);
-  const tab = page.locator(".tab-item").filter({ hasText: /^left-top$/ });
-  const target = paneSlot(page, "right-bottom");
-  const release = await hoverTabOverPane(page, tab, target, 0.5, 0.75);
-  await expect(target.locator(".note-pane-drop")).toHaveText(["Move here"]);
-  await release();
-  await expect(page.locator(".pane-slot")).toHaveCount(4);
+  const column = page.locator('.pane-column[data-column="left"]');
+  const divider = column.getByRole("separator", { name: "Resize pane heights" });
+  const columnBox = (await column.boundingBox())!;
+  const dividerBox = (await divider.boundingBox())!;
+  await page.mouse.move(dividerBox.x + dividerBox.width / 2, dividerBox.y + dividerBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(dividerBox.x + dividerBox.width / 2, columnBox.y + columnBox.height * 0.65, { steps: 5 });
+  await page.mouse.up();
+  await page.reload();
+
+  const ratio = (await paneSlot(page, "left").boundingBox())!.height / (await column.boundingBox())!.height;
+  expect(ratio).toBeCloseTo(0.5, 1);
 });

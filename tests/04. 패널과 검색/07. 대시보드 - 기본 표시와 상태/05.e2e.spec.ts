@@ -1,13 +1,24 @@
 import { expect, test } from "@playwright/test";
 
+import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openPanel } from "../../__util__";
-import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../__util__";
+import { dashboardPanel, seedDashboardTabs } from "../__util__";
 
-test("5. 카드를 누르면 해당 탭을 활성화하고 패널을 닫는다", async ({ page }) => {
+test("5. PC는 세 상태 제목과 카드 컬럼을 가로로 나란히 표시한다", async ({ page }) => {
+  await page.setViewportSize(DESKTOP_VIEWPORT);
   await seedDashboardTabs(page);
-  await expect(page.locator("textarea")).toHaveValue("Alpha task\nalpha body");
   await openPanel(page, "dashboard-panel");
-  await dashboardColumn(page, "done").locator(".dashboard-card-open").click();
-  await expect(page.locator("textarea")).toHaveValue("Gamma task");
-  await expect(dashboardPanel(page)).toHaveAttribute("aria-hidden", "true");
+  const panel = dashboardPanel(page);
+  const columns = panel.locator(".dashboard-column");
+  const titles = panel.locator(".dashboard-statuses h3");
+  const boxes = await Promise.all((await columns.all()).map((column) => column.boundingBox()));
+  const titleBoxes = await Promise.all((await titles.all()).map((title) => title.boundingBox()));
+  expect(boxes[0]!.y).toBeCloseTo(boxes[1]!.y, 0);
+  expect(boxes[1]!.x).toBeGreaterThan(boxes[0]!.x);
+  expect(boxes[2]!.x).toBeGreaterThan(boxes[1]!.x);
+  for (let index = 0; index < 3; index++) {
+    expect(titleBoxes[index]!.x).toBeCloseTo(boxes[index]!.x, 0);
+    expect(titleBoxes[index]!.width).toBeCloseTo(boxes[index]!.width, 0);
+  }
+  await expect(panel.locator(".dashboard-column-status").first()).toBeHidden();
 });

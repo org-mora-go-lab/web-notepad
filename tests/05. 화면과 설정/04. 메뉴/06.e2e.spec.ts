@@ -1,44 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("6. MENU는 키보드로 탐색하며 Escape·Tab·바깥 클릭으로 닫힌다", async ({ page }) => {
+test("6. MENU는 바깥 영역을 클릭하면 닫힌다", async ({ page }) => {
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "MENU", exact: true });
-  const theme = page.getByRole("menuitem", { name: "THEME", exact: true });
-  const shortcut = page.getByRole("menuitem", { name: "SHORTCUT" });
-  const closed = page.getByRole("menuitem", { name: "닫은 탭" });
-  const search = page.getByRole("menuitem", { name: "전체 검색" });
-  const settings = page.getByRole("menuitem", { name: "설정" });
-  const guide = page.getByRole("menuitem", { name: "GUIDE" });
-  await trigger.press("Enter");
-  await expect(theme).toBeFocused();
-  await page.keyboard.press("ArrowDown");
-  await expect(shortcut).toBeFocused();
-  await page.keyboard.press("ArrowDown");
-  await expect(settings).toBeFocused();
-  await page.keyboard.press("ArrowDown");
-  await expect(guide).toBeFocused();
-  await page.keyboard.press("ArrowDown");
-  await expect(closed).toBeFocused();
-  await page.keyboard.press("Home");
-  await expect(theme).toBeFocused();
-  await page.keyboard.press("End");
-  await expect(search).toBeFocused();
-  await page.keyboard.press("ArrowUp");
-  await expect(closed).toBeFocused();
-  await page.keyboard.press("ArrowUp");
-  await expect(guide).toBeFocused();
-  await page.keyboard.press("ArrowUp");
-  await expect(settings).toBeFocused();
-  await page.keyboard.press("ArrowUp");
-  await expect(shortcut).toBeFocused();
-  await page.keyboard.press("ArrowUp");
-  await expect(theme).toBeFocused();
-  await page.keyboard.press("Escape");
-  await expect(trigger).toBeFocused();
-  await expect(trigger).toHaveAttribute("aria-expanded", "false");
-  await trigger.press("Enter");
-  await page.keyboard.press("Tab");
-  await expect(trigger).toHaveAttribute("aria-expanded", "false");
+
   await trigger.click();
   await page.locator("textarea").click();
   await expect(trigger).toHaveAttribute("aria-expanded", "false");

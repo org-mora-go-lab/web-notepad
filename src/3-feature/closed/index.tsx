@@ -42,12 +42,13 @@ export function Closed({
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
-      closeLabel="닫은 탭 패널 닫기"
+      closeLabel={t.closePanel(t.closedTitle)}
+      ariaLabel={t.closedTitle}
       onClose={onClose}
     >
       <SearchField
         value={searchQuery}
-        ariaLabel="닫은 탭 검색"
+        ariaLabel={t.searchClosed}
         placeholder={t.searchClosed}
         onChange={onSearchQueryChange}
       />

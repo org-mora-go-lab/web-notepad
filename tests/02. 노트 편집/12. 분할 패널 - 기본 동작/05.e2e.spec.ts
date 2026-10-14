@@ -2,23 +2,22 @@ import { expect, test } from "@playwright/test";
 
 import { seedSplitState } from "../__util__";
 
-test("5. 오른쪽 패널의 탭을 모두 옮기거나 닫으면 분할 화면이 해제된다", async ({ page }) => {
+test("5. 각 패널은 자체 탭 목록과 활성 탭을 가진다", async ({ page }) => {
   await seedSplitState(page);
   const leftPane = page.locator(".pane-slot").nth(0);
   const rightPane = page.locator(".pane-slot").nth(1);
-  await expect(page.locator(".body")).toHaveCount(2);
-  await rightPane.locator(".tab-item").first().dragTo(leftPane.locator(".header"));
-  await expect(page.locator(".body")).toHaveCount(1);
-  await expect(page.locator(".tab-title")).toHaveText([/^left$/i, /^right$/i]);
+  await expect(leftPane.locator(".tab-title")).toHaveText([/^left$/i]);
+  await expect(rightPane.locator(".tab-title")).toHaveText([/^right$/i]);
 
-  await page.locator(".tab-item").filter({ hasText: /^right$/i }).locator('[role="tab"]').click();
-  await page.locator("textarea").press("Alt+F12");
-  await expect(page.locator(".body")).toHaveCount(2);
-  await rightPane.getByRole("button", { name: "새 탭 추가" }).click();
-  await expect(rightPane.locator(".tab-item")).toHaveCount(2);
-  await rightPane.locator(".tab-item").nth(1).locator(".tab-close").click();
-  await expect(rightPane.locator(".tab-item")).toHaveCount(1);
-  // "right" is 10 characters or fewer, so it closes without the delete popup.
-  await rightPane.locator(".tab-close").click();
-  await expect(page.locator(".body")).toHaveCount(1);
+  await rightPane.getByRole("button", { name: "New tab" }).click();
+  await rightPane.locator("textarea").fill("right two");
+  await expect(rightPane.locator(".tab-title")).toHaveText([/^right$/i, "right two"]);
+  await expect(leftPane.locator(".tab-title")).toHaveText([/^left$/i]);
+  await expect(leftPane.locator("textarea")).toHaveValue("left");
+
+  await rightPane.locator('[role="tab"]').first().click();
+  await expect(rightPane.locator("textarea")).toHaveValue("right");
+  await expect(rightPane.locator(".tab-item.is-active .tab-title")).toHaveText(/^right$/i);
+  await expect(leftPane.locator(".tab-item.is-active .tab-title")).toHaveText(/^left$/i);
+  await expect(leftPane.locator("textarea")).toHaveValue("left");
 });

@@ -67,7 +67,7 @@ export function TabContextMenu({
       ref={menuRef}
       className="tab-context-menu"
       role="menu"
-      aria-label={choosingGroup ? "Move Group" : "Tab actions"}
+      aria-label={choosingGroup ? t.moveGroup : t.tabActions}
       style={{ left, top }}
       onContextMenu={(event) => event.preventDefault()}
     >
@@ -76,7 +76,7 @@ export function TabContextMenu({
           <button
             type="button"
             role="menuitem"
-            aria-label="Back to tab actions"
+            aria-label={t.backToTabActions}
             onClick={() => setChoosingGroup(false)}
           >
             <ArrowLeft size={14} />

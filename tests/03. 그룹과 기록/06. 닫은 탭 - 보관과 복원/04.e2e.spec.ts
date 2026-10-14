@@ -1,33 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  activeTabItem,
-  closeActiveTabWithContent,
-  createGroups,
-  cycleActiveTabColor,
-  expectSelectedLines,
-  groupStatusName,
-  lineButtons,
-  openClosedPanel,
-  restoreFirstClosedTab,
-  switchGroup,
-} from "../../__util__";
+import { BOTH_VIEWPORTS } from "../../__constant__";
+import { closeActiveTabWithContent, closedCommand } from "../../__util__";
 
-test("4. 복원하면 닫을 당시의 그룹에서 내용·색상·줄 선택을 유지한 활성 탭으로 되돌린다", async ({ page }) => {
+test("4. 상태 표시줄에는 CLOSED를 표시하지 않는다", async ({ page }) => {
   await page.goto("/");
-  await createGroups(page, "Work");
-  await page.locator("textarea").fill("restore me\nsecond\nthird");
-  await cycleActiveTabColor(page, 2);
-  await lineButtons(page).nth(1).click();
-  await closeActiveTabWithContent(page, "restore me\nsecond\nthird");
-  await switchGroup(page, "Ungrouped");
+  await closeActiveTabWithContent(page, "closed note");
 
-  await openClosedPanel(page);
-  await restoreFirstClosedTab(page);
-
-  await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "true");
-  await expect(groupStatusName(page)).toHaveText("Work");
-  await expect(page.locator("textarea")).toHaveValue("restore me\nsecond\nthird");
-  await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "purple");
-  await expectSelectedLines(page, [false, true, false]);
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    await page.getByRole("button", { name: "MENU", exact: true }).click();
+    await closedCommand(page).click();
+    await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "false");
+    await expect(page.locator('.footer [aria-controls="closed-panel"]')).toHaveCount(0);
+    await page.keyboard.press("Escape");
+  }
 });

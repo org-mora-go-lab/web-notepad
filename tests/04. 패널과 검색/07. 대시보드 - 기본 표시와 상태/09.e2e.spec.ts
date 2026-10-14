@@ -1,19 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel } from "../../__util__";
-import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../__util__";
+import { cycleActiveTabColor, openPanel } from "../../__util__";
+import { dashboardColumn, seedDashboardTabs } from "../__util__";
 
-test("9. 대시보드 내부 글자를 1.2배로 표시하고 개수의 오른쪽 padding을 10px로 둔다", async ({ page }) => {
+test("9. 탭에서 색상을 변경하면 대시보드의 컬럼도 함께 바뀐다", async ({ page }) => {
   await seedDashboardTabs(page);
+  // tab-1 is gray (Todo): gray -> green -> purple.
+  await cycleActiveTabColor(page, 1);
   await openPanel(page, "dashboard-panel");
-  const panel = dashboardPanel(page);
-  const card = dashboardColumn(page, "todo").locator(".dashboard-card");
+  await expect(dashboardColumn(page, "in-progress")).toContainText("Alpha task");
 
-  await expect(panel.locator(".dashboard-statuses h3").first()).toHaveCSS("font-size", "16.8px");
-  await expect(card.locator("strong")).toHaveCSS("font-size", "16.8px");
-  await expect(card.locator(".dashboard-card-preview")).toHaveCSS("font-size", "15.6px");
-  await expect(panel.locator(".dashboard-count").first()).toHaveCSS("font-size", "14.4px");
-  await expect(panel.locator(".dashboard-count").first()).toHaveCSS("padding-right", "10px");
-  await expect(panel.locator(".dashboard-statuses h3").first()).toHaveCSS("padding-top", "5px");
-  await expect(panel.locator(".dashboard-statuses h3").first()).toHaveCSS("padding-bottom", "5px");
+  await page.keyboard.press("Escape");
+  await cycleActiveTabColor(page, 1);
+  await openPanel(page, "dashboard-panel");
+  await expect(dashboardColumn(page, "done")).toContainText("Alpha task");
+  await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(0);
 });

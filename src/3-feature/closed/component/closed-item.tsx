@@ -38,7 +38,7 @@ export function ClosedItem({
           className="remove-closed"
           type="button"
           onClick={() => onRemove(entry.id)}
-          aria-label={`${entry.tab.title} 닫힌 탭 삭제`}
+          aria-label={t.deleteClosedTabFor(entry.tab.title)}
           title={t.deleteClosedTab}
         >
           <Trash2 size={14} />

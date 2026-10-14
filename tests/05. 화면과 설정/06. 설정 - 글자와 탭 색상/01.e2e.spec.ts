@@ -6,7 +6,7 @@ test("1. MENU의 SETTINGS를 선택하면 드롭다운을 닫고 우측 패널 �
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "MENU", exact: true });
   await trigger.click();
-  const settings = page.getByRole("menuitem", { name: "설정" });
+  const settings = page.getByRole("menuitem", { name: "SETTINGS" });
   await expect(settings).toContainText("SETTINGS");
   await expect(settings.locator("svg")).toHaveClass(/lucide-settings/);
   await settings.click();

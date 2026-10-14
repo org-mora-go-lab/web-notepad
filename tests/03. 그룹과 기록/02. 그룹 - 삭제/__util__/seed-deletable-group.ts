@@ -10,7 +10,7 @@ export async function seedDeletableGroup(page: Page) {
   await bookmarkActiveTab(page, "archived note");
   return {
     toggle: groupsCommand(page),
-    menuButton: page.getByRole("button", { name: "Archive 그룹 삭제", exact: true }),
+    menuButton: page.getByRole("button", { name: "Delete Archive group", exact: true }),
     openDelete: () => chooseGroupAction(page, "Archive", "삭제"),
     popup: page.getByRole("alertdialog", { name: "Delete group" }),
   };

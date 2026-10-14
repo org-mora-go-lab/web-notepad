@@ -1,25 +1,45 @@
-import { expect, type Locator, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { MOBILE_VIEWPORT } from "../../__constant__";
-import { addTabButton } from "../../__util__";
+import { BOTH_VIEWPORTS } from "../../__constant__";
+import { addTabButton, chooseTabMenuItem } from "../../__util__";
 
-test("2. 모바일에서 탭과 탭 조작 버튼의 기본 파란 터치 강조 효과를 숨긴다", async ({ page }) => {
-  await page.setViewportSize(MOBILE_VIEWPORT);
+test("2. 인접한 일반·고정 탭 사이에 탭 전체 높이의 1px 그레이 구분선을 표시하고 탭 너비를 유지한다", async ({ page }) => {
   await page.goto("/");
+  await page.locator("textarea").fill("pinned note");
+  const pinnedTab = page.locator(".tab-item").first();
+  await chooseTabMenuItem(page, "Pin");
+  await addTabButton(page).click();
+  await addTabButton(page).click();
+  await expect(pinnedTab).toHaveClass(/is-pinned/);
 
-  const addButton = addTabButton(page);
-  const expectNoTapHighlight = (locator: Locator) =>
-    expect(locator).toHaveCSS("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
-  await expectNoTapHighlight(addButton);
-  await addButton.click();
-  await expect(page.getByRole("tab")).toHaveCount(2);
-  await expectNoTapHighlight(addButton);
-
-  const tabItems = page.locator(".tab-item");
-  for (let index = 0; index < 2; index += 1) {
-    await expectNoTapHighlight(tabItems.nth(index).getByRole("tab"));
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    const tabs = page.locator(".tab-item");
+    await expect(tabs).toHaveCount(3);
+    const separators = await tabs.evaluateAll(elements => elements.slice(1).map(element => {
+      const style = getComputedStyle(element, "::before");
+      return {
+        content: style.content,
+        width: style.width,
+        height: style.height,
+        background: style.backgroundColor,
+        tabHeight: getComputedStyle(element).height,
+        top: style.top,
+        bottom: style.bottom,
+        pointerEvents: style.pointerEvents,
+      };
+    }));
+    for (const separator of separators) {
+      expect(separator.content).toBe('""');
+      expect(separator.width).toBe("1px");
+      expect(separator.top).toBe("0px");
+      expect(separator.bottom).toBe("0px");
+      expect(separator.height).toBe(separator.tabHeight);
+      expect(separator.background).toBe("rgb(48, 48, 45)");
+      expect(separator.pointerEvents).toBe("none");
+    }
+    for (const tab of await tabs.all()) {
+      await expect(tab).toHaveCSS("min-width", viewport.width <= 640 ? "137.287px" : "130.485px");
+    }
   }
-  await tabItems.first().getByRole("tab").click();
-  await expectNoTapHighlight(tabItems.first().getByRole("tab"));
-  await expectNoTapHighlight(tabItems.first().locator(".tab-close"));
 });

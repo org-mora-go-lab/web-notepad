@@ -39,7 +39,7 @@ export function Editor({
       <div
         className={`line-rail ${selectedLines.includes(0) ? "has-first-line-selected" : ""}`}
         ref={lineRailRef}
-        aria-label="라인 번호"
+        aria-label={t.lineNumbers}
       >
         {visualLines.map((logicalLine, index) => (
           <span
@@ -76,7 +76,7 @@ export function Editor({
         placeholder={t.notePlaceholder}
         autoFocus={autoFocus}
         spellCheck={false}
-        aria-label={`${tab.title} 메모 내용`}
+        aria-label={t.noteContent(tab.title)}
         style={
           {
             backgroundImage: selectedLineRanges

@@ -1,29 +1,26 @@
 import { expect, test } from "@playwright/test";
 
-test("3. 편집기에 포커스가 있을 때 Cmd+A 또는 Alt+A로 편집기 내용 전체를 선택한다", async ({ page }) => {
+import { addTabButton, readActiveGroup } from "../../__util__";
+
+test("3. 분할 상태의 Alt+위아래 화살표는 패널 경계를 넘어 이동한다", async ({ page }) => {
   await page.goto("/");
-
   const editor = page.locator("textarea");
-  const readSelection = () =>
-    editor.evaluate((element) => [
-      (element as HTMLTextAreaElement).selectionStart,
-      (element as HTMLTextAreaElement).selectionEnd,
-    ]);
-  const collapseSelection = () =>
-    editor.evaluate((element) =>
-      (element as HTMLTextAreaElement).setSelectionRange(0, 0),
-    );
+  await editor.fill("first note");
+  await addTabButton(page).click();
+  await editor.fill("right note");
+  await editor.press("Alt+F12");
 
-  await editor.fill("select me");
-  await collapseSelection();
-  await page.keyboard.press("Meta+a");
-  await expect.poll(readSelection).toEqual([0, 9]);
-
-  // The shortcut re-applies the selection once more after 50ms; wait it out before collapsing.
-  await page.waitForTimeout(100);
-  await collapseSelection();
-  await expect.poll(readSelection).toEqual([0, 0]);
-  await page.keyboard.press("Alt+a");
-  await expect.poll(readSelection).toEqual([0, 9]);
-  await expect(editor).toHaveValue("select me");
+  const readActive = async () => {
+    const group = await readActiveGroup(page);
+    const activeId = group.activePane === "right" ? group.activeRightTabId : group.activeTabId;
+    return {
+      pane: group.activePane,
+      content: group.tabs.find((tab) => tab.id === activeId)!.content,
+    };
+  };
+  await expect.poll(readActive).toEqual({ pane: "right", content: "right note" });
+  await page.keyboard.press("Alt+ArrowUp");
+  await expect.poll(readActive).toEqual({ pane: "left", content: "first note" });
+  await page.keyboard.press("Alt+ArrowDown");
+  await expect.poll(readActive).toEqual({ pane: "right", content: "right note" });
 });

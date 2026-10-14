@@ -1,33 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  bookmarksCommand,
-  chooseTabMenuItem,
-  cycleActiveTabColor,
-  lineButtons,
-  readStoredState,
-} from "../../__util__";
+import { bookmarkActiveTab, bookmarksCommand } from "../../__util__";
 
-test("1. 북마크에 제목과 내용과 생성 시각 및 탭 색상과 선택한 줄을 저장한다", async ({
-  page,
-}) => {
+test("1. 북마크 패널에서 북마크를 제거할 수 있다", async ({ page }) => {
   await page.goto("/");
-  const content = "bookmark content\nsecond\nthird";
-  await page.locator("textarea").fill(content);
-  await cycleActiveTabColor(page, 2);
-  const lines = lineButtons(page);
-  await lines.nth(1).click();
-  await lines.nth(2).click();
-  await chooseTabMenuItem(page, "Bookmark");
-  expect((await readStoredState(page)).groups[0].bookmarks[0]).toMatchObject({
-    title: "bookmark content",
-    content,
-    createdAt: expect.any(Number),
-    tabColor: "purple",
-    selectedLines: [1, 2],
-  });
+  await bookmarkActiveTab(page, "bookmark to remove");
   await bookmarksCommand(page).click();
-  await expect(page.locator(".bookmark-item")).toContainText(
-    "bookmark content",
-  );
+  await page.locator(".bookmark-item .remove-bookmark").click();
+  await expect(page.locator(".bookmark-item")).toHaveCount(0);
 });

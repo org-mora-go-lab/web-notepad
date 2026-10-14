@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
 
-test("2. LIGHT는 밝은 중립 배경과 짙은 글자로 편집기·하단 메뉴·패널·검색을 일관되게 표시한다", async ({ page }) => {
+test("2. LIGHT는 작업 영역·편집기·하단 메뉴·그룹 메뉴를 일관된 밝은 색으로 표시한다", async ({ page }) => {
   await page.goto("/");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);

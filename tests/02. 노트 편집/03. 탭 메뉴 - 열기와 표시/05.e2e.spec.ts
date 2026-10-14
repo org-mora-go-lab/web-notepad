@@ -1,22 +1,21 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { createPinnedAndBookmarkedTabs } from "../../__util__";
+import { addTabButton } from "../../__util__";
 
-test("5. 모바일에서 핀·북마크 아이콘을 더블탭하면 해당 탭의 메뉴를 연다", async ({ page }) => {
-  await page.goto("/");
-  const menuItem = (name: string) => page.getByRole("menuitem", { name, exact: true });
-  const { pinnedTab, bookmarkedTab } = await createPinnedAndBookmarkedTabs(page);
+test.use({ hasTouch: true });
 
+test("5. 모바일 탭 제목을 더블탭해 북마크 상태를 전환한다", async ({ page }) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
-  await pinnedTab.locator('[role="tab"]').click();
-  await pinnedTab.locator(".tab-pin-indicator").dblclick();
-  await expect(menuItem("Unpin")).toBeVisible();
-  await expect(menuItem("Bookmark")).toBeVisible();
-  await page.keyboard.press("Escape");
+  await page.goto("/");
+  await addTabButton(page).tap();
+  const tab = page.locator(".tab-item").first();
+  const button = tab.getByRole("tab");
 
-  await bookmarkedTab.locator('[role="tab"]').click();
-  await bookmarkedTab.locator(".tab-bookmark-indicator").dblclick();
-  await expect(menuItem("Pin")).toBeVisible();
-  await expect(menuItem("Remove bookmark")).toBeVisible();
+  await button.dblclick();
+  await page.getByRole("menuitem", { name: "Bookmark", exact: true }).tap();
+  await expect(tab).toHaveClass(/is-bookmarked/);
+  await button.dblclick();
+  await page.getByRole("menuitem", { name: "Remove bookmark", exact: true }).tap();
+  await expect(tab).not.toHaveClass(/is-bookmarked/);
 });

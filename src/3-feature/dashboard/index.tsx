@@ -43,7 +43,8 @@ export function Dashboard({
       open={open}
       pinned={pinned}
       onTogglePin={onTogglePin}
-      closeLabel="대시보드 닫기"
+      closeLabel={t.closePanel(t.dashboardTitle)}
+      ariaLabel={t.dashboardTitle}
       onClose={onClose}
     >
       <div className="dashboard-content" ref={contentRef}>
@@ -70,7 +71,7 @@ export function Dashboard({
         <ConfirmPopup
           title={t.closePinnedTabTitle}
           message={t.closePinnedTabMessage}
-          closeLabel="Close confirmation"
+          closeLabel={t.closePanel(t.closePinnedTabTitle)}
           closeTitle={t.close}
           confirmLabel={t.unpinAndClose}
           onConfirm={drag.confirmClose}

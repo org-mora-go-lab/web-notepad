@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 
-export const divider = (page: Page) => page.getByRole("separator", { name: "영역 크기 조절" });
+export const divider = (page: Page) =>
+  page.getByRole("separator", { name: "Resize pane widths" });
 
 // Drags the split divider horizontally to the absolute x coordinate.
 export async function dragDividerTo(page: Page, x: number) {

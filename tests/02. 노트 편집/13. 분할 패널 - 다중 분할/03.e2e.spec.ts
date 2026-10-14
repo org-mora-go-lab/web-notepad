@@ -1,24 +1,21 @@
 import { expect, test } from "@playwright/test";
 
-import { addTabButton } from "../../__util__";
-import { hoverTabOverPane, moveOverPane, paneSlot } from "../__util__";
+import { paneSlot, seedQuadState } from "../__util__";
 
-test("3. Split down 영역은 드래그한 탭이 편집기 높이의 중앙보다 아래에 있을 때만 표시한다", async ({ page }) => {
-  await page.goto("/");
-  await page.locator("textarea").fill("a");
-  await addTabButton(page).click();
-  await page.locator("textarea").fill("b");
-  const tab = page.locator(".tab-item").filter({ hasText: /^b$/ });
-  const left = paneSlot(page, "left");
-  const splitDown = left.locator(".note-pane-drop", { hasText: "Split down" });
+test("3. 왼쪽과 오른쪽 열의 상하 분할 비율을 독립적으로 관리한다", async ({ page }) => {
+  await seedQuadState(page);
+  const leftColumn = page.locator('.pane-column[data-column="left"]');
+  const rightColumn = page.locator('.pane-column[data-column="right"]');
+  const divider = leftColumn.getByRole("separator", { name: "Resize pane heights" });
+  const columnBox = (await leftColumn.boundingBox())!;
+  const dividerBox = (await divider.boundingBox())!;
+  await page.mouse.move(dividerBox.x + dividerBox.width / 2, dividerBox.y + dividerBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(dividerBox.x + dividerBox.width / 2, columnBox.y + columnBox.height * 0.65, { steps: 5 });
+  await page.mouse.up();
 
-  const release = await hoverTabOverPane(page, tab, left, 0.25, 0.4);
-  await expect(left.locator(".note-pane-drop", { hasText: "Split right" })).toBeVisible();
-  await expect(splitDown).toHaveCount(0);
-  await moveOverPane(page, left, 0.25, 0.6);
-  await expect(splitDown).toBeVisible();
-  await moveOverPane(page, left, 0.25, 0.4);
-  await expect(splitDown).toHaveCount(0);
-  await release();
-  await expect(page.locator(".pane-slot")).toHaveCount(1);
+  const leftRatio = (await paneSlot(page, "left").boundingBox())!.height / (await leftColumn.boundingBox())!.height;
+  const rightRatio = (await paneSlot(page, "right").boundingBox())!.height / (await rightColumn.boundingBox())!.height;
+  expect(leftRatio).toBeCloseTo(0.65, 1);
+  expect(rightRatio).toBeCloseTo(0.5, 1);
 });

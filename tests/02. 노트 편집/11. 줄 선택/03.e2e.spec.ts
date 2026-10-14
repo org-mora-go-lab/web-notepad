@@ -14,6 +14,14 @@ test("3. 클릭과 키보드로 선택한 줄 번호를 활성 탭 색상으로 
   const lines = lineButtons(page);
 
   await expect(lines.first()).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await expect(page.locator(".line-rail")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
+  await expect(page.locator(".workspace")).toHaveCSS(
+    "background-color",
+    "rgb(17, 17, 16)",
+  );
   await lines.first().click();
   await expect(lines.first()).toHaveAttribute("aria-pressed", "true");
   await lines.first().click();

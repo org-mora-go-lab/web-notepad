@@ -28,7 +28,16 @@ test("1. 닫은 시각은 그룹명 길이와 무관하게 고정된 우측 영�
       const time = heading.locator("time");
       await expect(time).toHaveCSS("flex-shrink", "0");
       await expect(time).toHaveCSS("height", width <= 640 ? "38px" : "32px");
+      const twelveCh = await time.evaluate((element) => {
+        const probe = document.createElement("span");
+        probe.style.cssText = "display:inline-block;width:12ch;padding:0;border:0";
+        element.appendChild(probe);
+        const probeWidth = probe.getBoundingClientRect().width;
+        probe.remove();
+        return probeWidth;
+      });
       const timeBounds = (await time.boundingBox())!;
+      expect(timeBounds.width).toBeCloseTo(twelveCh, 0);
       const titleBounds = (await heading.locator("strong").boundingBox())!;
       expect(titleBounds.x + titleBounds.width).toBeLessThanOrEqual(timeBounds.x);
       const headingBounds = (await heading.boundingBox())!;

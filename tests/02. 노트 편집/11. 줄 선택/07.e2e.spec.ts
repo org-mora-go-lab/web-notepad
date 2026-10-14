@@ -1,32 +1,20 @@
 import { test } from "@playwright/test";
 
-import {
-  addTabButton,
-  createGroup,
-  expectSelectedLines,
-  groupsCommand,
-  lineButtons,
-  switchGroup,
-} from "../../__util__";
+import { addTabButton, expectSelectedLines, lineButtons } from "../../__util__";
 
-test("7. 그룹 전환과 분할 패널 이동 후에도 선택한 줄을 복원한다", async ({ page }) => {
+test("7. 줄 선택을 노트별로 저장하고 탭 전환 후 각각 복원한다", async ({ page }) => {
   await page.goto("/");
-  await page.locator("textarea").fill("one\ntwo\nthree");
+  const editor = page.locator("textarea");
   const lines = lineButtons(page);
+  await editor.fill("one\ntwo\nthree");
   await lines.nth(1).click();
   await lines.nth(2).click();
-  await groupsCommand(page).click();
-  await createGroup(page, "Work");
-  await expectSelectedLines(page, [false]);
-  await page.keyboard.press("Escape");
-  await switchGroup(page, "Ungrouped");
-  await expectSelectedLines(page, [false, true, true]);
-
   await addTabButton(page).click();
+  await editor.fill("other\nnote");
+  await expectSelectedLines(page, [false]);
+  await lines.first().click();
   await page.locator('[role="tab"]').first().click();
-  await page.locator("textarea").press("Alt+F12");
-  const rightPane = page.locator(".pane-slot").nth(1);
-  await expectSelectedLines(rightPane, [false, true, true]);
-  await page.reload();
-  await expectSelectedLines(rightPane, [false, true, true]);
+  await expectSelectedLines(page, [false, true, true]);
+  await page.locator('[role="tab"]').nth(1).click();
+  await expectSelectedLines(page, [true, false]);
 });

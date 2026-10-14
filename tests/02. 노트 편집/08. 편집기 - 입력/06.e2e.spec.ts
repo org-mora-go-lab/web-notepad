@@ -27,6 +27,14 @@ test("6. 자동 줄바꿈된 긴 원본 줄의 커서를 편집기와 줄 번호
     .poll(() => editor.evaluate((element) => element.scrollTop))
     .toBeGreaterThan(0);
   await expect
+    .poll(() =>
+      editor.evaluate(
+        (element) =>
+          element.scrollTop + element.clientHeight >= element.scrollHeight - 1,
+      ),
+    )
+    .toBe(true);
+  await expect
     .poll(async () => {
       const [editorScrollTop, railScrollTop] = await Promise.all([
         editor.evaluate((element) => element.scrollTop),

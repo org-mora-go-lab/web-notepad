@@ -6,5 +6,6 @@ export {
   seedStoredStateOnce,
   seedStoredStateOnLoad,
   type StoredState,
+  waitForStoredState,
   writeStoredState,
 } from "./stored-state";

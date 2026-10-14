@@ -1,21 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-import { chooseGroupAction, createGroup, groupsCommand } from "../../__util__";
+import { openPanel } from "../../__util__";
+import { RIGHT_PANEL_VIEWPORTS } from "../__constant__";
 
-test("5. 그룹 삭제 확인 팝업이 열린 상태의 Escape는 팝업 취소를 우선하고 그룹 드롭다운을 유지한다", async ({ page }) => {
+test("5. 브라우저 뒤로가기로 열린 우측 패널을 닫는다", async ({ page }) => {
   await page.goto("/");
-  const panel = page.locator("#groups-menu");
-  await groupsCommand(page).click();
-  await createGroup(page, "Archive");
-
-  const popup = page.getByRole("alertdialog", { name: "Delete group" });
-  await chooseGroupAction(page, "Archive", "삭제");
-  await expect(popup).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(popup).toHaveCount(0);
-  await expect(panel).toBeVisible();
-  await expect(panel.locator(".group-item")).toContainText(["Archive"]);
-
-  await page.keyboard.press("Escape");
-  await expect(panel).toHaveCount(0);
+  for (const { viewport, panelIds } of RIGHT_PANEL_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    for (const panelId of panelIds) {
+      const panel = page.locator(`#${panelId}`);
+      await openPanel(page, panelId);
+      await expect(panel).toHaveAttribute("aria-hidden", "false");
+      await page.goBack();
+      await expect(panel).toHaveAttribute("aria-hidden", "true");
+    }
+  }
 });

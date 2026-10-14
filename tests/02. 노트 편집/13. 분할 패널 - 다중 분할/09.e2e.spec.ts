@@ -1,17 +1,25 @@
 import { expect, test } from "@playwright/test";
 
-import { addTabButton } from "../../__util__";
+import { paneSlot, seedQuadState } from "../__util__";
 
-test("9. 탭 제목에서 편집기 하단으로 직접 드래그해 상하 분할한다", async ({ page }) => {
-  await page.goto("/");
-  await page.locator("textarea").fill("first");
-  await addTabButton(page).click();
-  await page.locator("textarea").fill("second");
-  const body = page.locator(".body");
-  const box = (await body.boundingBox())!;
-  await page.locator(".tab-title").filter({ hasText: "first" }).dragTo(body, {
-    targetPosition: { x: box.width * 0.25, y: box.height * 0.75 },
-  });
-  await expect(page.locator(".pane-slot")).toHaveCount(2);
-  await expect(page.locator('[data-pane="left-bottom"] textarea')).toHaveValue("first");
+test("9. Alt+화살표는 좌상·좌하·우상·우하 순서로 패널 경계를 이동한다", async ({ page }) => {
+  await seedQuadState(page);
+  const panes = ["left", "left-bottom", "right", "right-bottom"];
+  const expectFocusedPane = async (pane: string) => {
+    for (const id of panes) {
+      const notePane = paneSlot(page, id).locator(".note-pane");
+      if (id === pane) await expect(notePane).not.toHaveClass(/is-unfocused/);
+      else await expect(notePane).toHaveClass(/is-unfocused/);
+    }
+  };
+  await paneSlot(page, "left").locator("textarea").click();
+  await expectFocusedPane("left");
+  for (const pane of panes.slice(1)) {
+    await page.keyboard.press("Alt+ArrowDown");
+    await expectFocusedPane(pane);
+  }
+  for (const pane of [...panes].reverse().slice(1)) {
+    await page.keyboard.press("Alt+ArrowUp");
+    await expectFocusedPane(pane);
+  }
 });

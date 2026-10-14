@@ -1,29 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel } from "../../__util__";
-import { RIGHT_PANEL_IDS } from "../__constant__";
+import { openClosedPanel, openPanel, openSettingsPanel, openShortcutsPanel } from "../../__util__";
 
-test("2. 우측 패널은 한 번에 하나만 열린다", async ({ page }) => {
+test("2. MENU의 SHORTCUT·CLOSED·SETTINGS·SEARCH 명령으로 각 패널을 열고 SHORTCUT은 PC에서만 표시한다", async ({ page }) => {
   await page.goto("/");
-  // Wait for the initial editor focus before sending footer keyboard commands.
-  await expect(page.locator("textarea")).toBeFocused();
+  await expect(page.locator('.footer [aria-controls="shortcuts-panel"]')).toHaveCount(0);
 
-  for (const openId of RIGHT_PANEL_IDS) {
-    for (const nextId of RIGHT_PANEL_IDS) {
-      if (nextId === openId) continue;
-      await openPanel(page, openId);
-      await expect(page.locator(`#${openId}`)).toHaveAttribute("aria-hidden", "false");
-      await page.keyboard.press("Escape");
-      await expect(page.locator(`#${openId}`)).toHaveAttribute("aria-hidden", "true");
-      await openPanel(page, nextId);
-      for (const panelId of RIGHT_PANEL_IDS) {
-        await expect(page.locator(`#${panelId}`)).toHaveAttribute(
-          "aria-hidden",
-          panelId === nextId ? "false" : "true",
-        );
-      }
-      await page.keyboard.press("Escape");
-      await expect(page.locator(`#${nextId}`)).toHaveAttribute("aria-hidden", "true");
-    }
-  }
+  await openShortcutsPanel(page);
+  await expect(page.locator("#shortcuts-panel")).toHaveAttribute("aria-hidden", "false");
+  await page.getByRole("button", { name: "Close Shortcut (mac)" }).click();
+  await openClosedPanel(page);
+  await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "false");
+  await page.getByRole("button", { name: "Close Closed" }).click();
+  await openSettingsPanel(page);
+  await expect(page.locator("#settings-panel")).toHaveAttribute("aria-hidden", "false");
+  await page.getByRole("button", { name: "Close Settings" }).click();
+  await openPanel(page, "global-search-panel");
+  await expect(page.locator("#global-search-panel")).toHaveAttribute("aria-hidden", "false");
 });

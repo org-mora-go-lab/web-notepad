@@ -37,6 +37,7 @@
     .dashboard-board {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: repeat(3, auto);
+      align-content: start;
     }
   }
 }

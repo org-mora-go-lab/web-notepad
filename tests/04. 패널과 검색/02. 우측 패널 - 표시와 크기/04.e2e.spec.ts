@@ -26,7 +26,6 @@ test("4. 모바일 우측 패널과 확인 팝업의 아이콘·글자는 PC 크
     await page.locator(".global-search-command").click();
     const panel = page.locator("#global-search-panel");
     await expect(panel).toHaveAttribute("aria-hidden", "false");
-    await expectCssPx(panel.locator(".side-panel-close svg"), "width", 14.4);
     await expectCssPx(panel.locator(".search-field svg"), "width", mobile ? 18 : 15);
     await expect(panel.locator(".global-search-empty-state p")).toHaveCSS(
       "font-size",

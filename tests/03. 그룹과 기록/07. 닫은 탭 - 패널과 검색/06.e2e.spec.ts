@@ -1,15 +1,25 @@
 import { expect, test } from "@playwright/test";
 
-import { closeActiveTabWithContent, closedContents, openClosedPanel } from "../../__util__";
+import {
+  closeActiveTabWithContent,
+  closedContents,
+  createGroups,
+  openClosedPanel,
+} from "../../__util__";
 
-test("6. 닫은 탭을 삭제해도 Closed 패널은 열린 상태로 유지하고 다른 항목은 그대로 둔다", async ({ page }) => {
+test("6. 그룹 이름과 탭 제목 및 내용을 대소문자 구분 없이 부분 검색한다", async ({ page }) => {
   await page.goto("/");
-  await closeActiveTabWithContent(page, "keep this note");
-  await closeActiveTabWithContent(page, "delete this note");
+  await closeActiveTabWithContent(page, "Alpha title\nneedle body");
+  await createGroups(page, "Work");
+  await closeActiveTabWithContent(page, "Beta title\nother body");
   await openClosedPanel(page);
-  await expect(closedContents(page)).toHaveText(["delete this note", "keep this note"]);
 
-  await page.locator(".closed-item").first().locator(".remove-closed").click();
-  await expect(closedContents(page)).toHaveText("keep this note");
-  await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "false");
+  const search = page.getByRole("searchbox", { name: "Search closed" });
+  const contents = closedContents(page);
+  await search.fill("ALPHA");
+  await expect(contents).toHaveText(["Alpha title\nneedle body"]);
+  await search.fill("need");
+  await expect(contents).toHaveText(["Alpha title\nneedle body"]);
+  await search.fill("wor");
+  await expect(contents).toHaveText(["Beta title\nother body"]);
 });

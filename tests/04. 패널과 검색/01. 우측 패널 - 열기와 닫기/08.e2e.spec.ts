@@ -1,47 +1,27 @@
 import { expect, test } from "@playwright/test";
 
 import { openPanel } from "../../__util__";
+import { RIGHT_PANEL_VIEWPORTS } from "../__constant__";
 
-test("8. 닫힌 우측 패널의 컨트롤은 Tab 순서와 접근성 탐색에서 제외한다", async ({ page }) => {
+test("8. Escape로 우측 패널을 닫은 뒤에도 다시 열기와 브라우저 뒤로가기가 동작한다", async ({ page }) => {
   await page.goto("/");
 
-  const panels = page.locator(".side-panel-drawer");
-  await expect(panels).toHaveCount(6);
-  expect(
-    await panels.evaluateAll((elements) =>
-      elements.every(
-        (element) =>
-          element.getAttribute("aria-hidden") === "true" &&
-          element.hasAttribute("inert"),
-      ),
-    ),
-  ).toBe(true);
+  for (const { viewport, panelIds } of RIGHT_PANEL_VIEWPORTS) {
+    await page.setViewportSize(viewport);
 
-  const dashboardCommand = page
-    .locator('button[aria-controls="dashboard-panel"]:visible')
-    .first();
-  await dashboardCommand.focus();
-  await page.keyboard.press("Tab");
-  expect(
-    await page.evaluate(
-      () => document.activeElement?.closest(".side-panel-drawer") === null,
-    ),
-  ).toBe(true);
-
-  await openPanel(page, "bookmarks-panel");
-  const bookmarks = page.locator("#bookmarks-panel");
-  await expect(bookmarks).not.toHaveAttribute("inert", "");
-  const search = bookmarks.locator('input[type="search"]');
-  await search.focus();
-  await expect(search).toBeFocused();
-
-  await bookmarks.getByRole("button", { name: "북마크 닫기" }).click();
-  await expect(bookmarks).toHaveAttribute("aria-hidden", "true");
-  await expect(bookmarks).toHaveAttribute("inert", "");
-  expect(
-    await search.evaluate((element) => {
-      element.focus();
-      return document.activeElement === element;
-    }),
-  ).toBe(false);
+    for (const panelId of panelIds) {
+      const panel = page.locator(`#${panelId}`);
+      await openPanel(page, panelId);
+      await expect(panel).toHaveAttribute("aria-hidden", "false");
+      await page.keyboard.press("Escape");
+      await expect(panel).toHaveAttribute("aria-hidden", "true");
+      await openPanel(page, panelId);
+      await expect(panel).toHaveAttribute("aria-hidden", "false");
+      await page.goBack();
+      await expect(panel).toHaveAttribute("aria-hidden", "true");
+    }
+  }
+  const url = new URL(page.url());
+  expect(url.searchParams.get("panel")).toBeNull();
+  expect(url.searchParams.get("group")).toBe("ungrouped");
 });

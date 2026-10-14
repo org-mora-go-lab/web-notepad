@@ -36,7 +36,7 @@ export function Footer({
                     <span
                       className="status-dot"
                       role="img"
-                      aria-label="오늘 업데이트됨"
+                      aria-label={t.updatedToday}
                     />
                   )}
                 </span>
@@ -66,7 +66,7 @@ export function Footer({
             aria-expanded={groupsOpen}
             aria-haspopup="dialog"
             aria-controls="groups-menu"
-            aria-label={`그룹 선택: ${activeGroupName}`}
+            aria-label={t.selectGroupNamed(activeGroupName)}
             title={activeGroupName}
           >
             <Layers size={16} strokeWidth={1.8} />

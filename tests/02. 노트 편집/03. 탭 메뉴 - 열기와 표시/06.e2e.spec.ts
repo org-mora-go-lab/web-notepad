@@ -1,24 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-import { BOTH_VIEWPORTS } from "../../__constant__";
-import { expectCssPx, openTabMenu } from "../../__util__";
+import { MOBILE_VIEWPORT } from "../../__constant__";
+import { addTabButton } from "../../__util__";
 
-test("6. 탭 메뉴의 Pin과 Bookmark 글자 크기를 PC 15px·모바일 18px, 아이콘을 PC 14px·모바일 16.8px로 표시한다", async ({ page }) => {
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    await page.goto("/");
-    const tab = page.getByRole("tab").first();
-    const mobile = viewport.width <= 640;
+test.use({ hasTouch: true });
 
-    for (const name of ["Pin", "Bookmark", "Unpin", "Remove bookmark"]) {
-      await openTabMenu(tab, viewport);
-      const item = page.getByRole("menuitem", { name, exact: true });
-      await expect(item).toBeVisible();
-      await expect(item).toHaveCSS("font-size", mobile ? "18px" : "15px");
-      await expect(item.locator("span")).toHaveCSS("font-size", mobile ? "18px" : "15px");
-      await expectCssPx(item.locator("svg"), "width", mobile ? 16.8 : 14);
-      await expectCssPx(item.locator("svg"), "height", mobile ? 16.8 : 14);
-      await item.click();
-    }
-  }
+test("6. 모바일 탭 제목을 한 번 탭해도 메뉴를 열지 않는다", async ({ page }) => {
+  await page.setViewportSize(MOBILE_VIEWPORT);
+  await page.goto("/");
+  await addTabButton(page).tap();
+  const button = page.locator(".tab-item").first().getByRole("tab");
+  await button.tap();
+  await expect(button).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("menu")).toHaveCount(0);
 });

@@ -1,16 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-import { dividerDistanceFromCenter, dragDividerBy } from "../../__util__";
+import { confirmTabDelete, deleteTabPopup } from "../../__util__";
 import { seedSplitState } from "../__util__";
 
-test("8. 오른쪽 패널에 새 탭을 추가하면 분할선을 중앙으로 조정한다", async ({ page }) => {
+test("8. 오른쪽 패널의 내용이 11자 이상인 탭은 삭제 확인 후에만 닫는다", async ({ page }) => {
   await seedSplitState(page);
   const rightPane = page.locator(".pane-slot").nth(1);
-
-  await dragDividerBy(page, 70);
-  await expect.poll(() => dividerDistanceFromCenter(page)).toBeGreaterThan(50);
-
-  await rightPane.getByRole("button", { name: "새 탭 추가" }).click();
-  await expect(rightPane.getByRole("tab")).toHaveCount(2);
-  await expect.poll(() => dividerDistanceFromCenter(page)).toBeLessThan(10);
+  await expect(rightPane.locator("textarea")).toHaveValue("right");
+  await rightPane.locator("textarea").press("End");
+  await rightPane.locator("textarea").pressSequentially(" pane note");
+  await expect(rightPane.locator("textarea")).toHaveValue("right pane note");
+  await rightPane.locator(".tab-close").click();
+  await expect(deleteTabPopup(page)).toBeVisible();
+  await expect(page.locator(".body")).toHaveCount(2);
+  await expect(rightPane.locator("textarea")).toHaveValue("right pane note");
+  await confirmTabDelete(page);
+  await expect(page.locator(".body")).toHaveCount(1);
+  await expect(page.locator(".tab-title")).toHaveText([/^left$/i]);
 });

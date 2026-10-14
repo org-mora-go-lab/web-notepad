@@ -1,18 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel } from "../../__util__";
-import { RIGHT_PANEL_VIEWPORTS } from "../__constant__";
+import { groupMenu, groupsCommand } from "../../__util__";
 
-test("3. 브라우저 뒤로가기로 열린 우측 패널을 닫는다", async ({ page }) => {
+test("3. 그룹 선택 버튼은 우측 패널 대신 그룹 드롭다운을 연다", async ({ page }) => {
   await page.goto("/");
-  for (const { viewport, panelIds } of RIGHT_PANEL_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    for (const panelId of panelIds) {
-      const panel = page.locator(`#${panelId}`);
-      await openPanel(page, panelId);
-      await expect(panel).toHaveAttribute("aria-hidden", "false");
-      await page.goBack();
-      await expect(panel).toHaveAttribute("aria-hidden", "true");
-    }
-  }
+  await groupsCommand(page).click();
+
+  await expect(groupMenu(page)).toBeVisible();
+  await expect(page.locator('.side-panel[aria-hidden="false"]')).toHaveCount(0);
 });

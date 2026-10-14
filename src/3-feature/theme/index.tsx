@@ -32,7 +32,7 @@ export function Theme({ onSelect }: ThemeProps) {
           className="theme-options"
           id={optionsId}
           role="menu"
-          aria-label="THEME"
+          aria-label={t.theme}
         >
           {(["dark", "light"] as const).map((option) => (
             <button

@@ -1,6 +1,6 @@
 import type { DragEvent } from "react";
 
-import type { NoteTab } from "@/src/4-entity/notepad";
+import type { NoteTab, TabStatus } from "@/src/4-entity/notepad";
 
 export type DashboardCardProps = {
   tab: NoteTab;
@@ -8,6 +8,7 @@ export type DashboardCardProps = {
   id?: string;
   closed?: boolean;
   groupName?: string;
+  status: TabStatus;
   dragging: boolean;
   active?: boolean;
   onOpen: (tabId: string) => void;
@@ -15,6 +16,11 @@ export type DashboardCardProps = {
     tabId: string,
     closed: boolean,
     event: DragEvent<HTMLElement>,
+  ) => void;
+  onChangeStatus: (
+    itemId: string,
+    closed: boolean,
+    status: TabStatus,
   ) => void;
   onDragEnd: () => void;
 };

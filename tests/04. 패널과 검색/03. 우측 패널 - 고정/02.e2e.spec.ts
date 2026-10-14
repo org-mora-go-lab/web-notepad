@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { groupSelectCommand, openPanel } from "../../__util__";
-import { panelPinButton,workspaceBounds } from "../__util__";
+import { panelPinButton, workspaceBounds } from "../__util__";
 
 test("2. 패널을 고정하면 우측에 배치되고 헤더·푸터를 포함한 작업 영역이 패널 왼쪽으로 이동한다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
@@ -11,7 +11,7 @@ test("2. 패널을 고정하면 우측에 배치되고 헤더·푸터를 포함�
   const panel = page.locator("#bookmarks-panel");
   await panelPinButton(page, "bookmarks-panel").click();
   await expect(panelPinButton(page, "bookmarks-panel")).toHaveAttribute("aria-pressed", "true");
-  await expect(panelPinButton(page, "bookmarks-panel")).toHaveAttribute("aria-label", "패널 고정 해제");
+  await expect(panelPinButton(page, "bookmarks-panel")).toHaveAttribute("aria-label", "Unpin panel");
 
   await expect(panel).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
   const panelBounds = (await panel.boundingBox())!;

@@ -1,47 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  createClosedTabFixture,
-  createGroupFixture,
-  createTabFixture,
-} from "../../__fixture__";
-import { openPanel, readStoredState, writeStoredState } from "../../__util__";
-import { dashboardColumn, dashboardPanel } from "../__util__";
+import { openPanel, readStoredState } from "../../__util__";
+import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../__util__";
 
-test("5. 닫은 탭 ID 형식과 관계없이 Closed 카드를 대상 상태로 한 번 복원한다", async ({ page }) => {
-  await writeStoredState(page, {
-    activeGroupId: "ungrouped",
-    groups: [
-      createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-1", "Open note", { tabColor: "gray" }),
-      ]),
-    ],
-    closedTabs: [
-      createClosedTabFixture(
-        "archived-entry-1",
-        "ungrouped",
-        createTabFixture("tab-2", "Legacy archived note", {
-          tabColor: "purple",
-        }),
-      ),
-    ],
-    nextTabNumber: 3,
-  });
+test("5. 열린 카드를 원래 컬럼에 다시 드롭해도 카드·탭을 중복 생성하지 않는다", async ({ page }) => {
+  await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
-
-  await dashboardColumn(page, "done")
-    .locator(".dashboard-card", { hasText: "Legacy archived note" })
-    .dragTo(dashboardColumn(page, "in-progress"));
-
-  await expect(dashboardColumn(page, "in-progress")).toContainText(
-    "Legacy archived note",
-  );
-  await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(2);
-  const stored = await readStoredState(page);
-  expect(stored.closedTabs).toHaveLength(0);
-  const restored = stored.groups
-    .find((group) => group.id === "ungrouped")
-    ?.tabs.filter((tab) => tab.id === "tab-2");
-  expect(restored).toHaveLength(1);
-  expect(restored?.[0].tabColor).toBe("green");
+  const source = dashboardColumn(page, "todo").locator(".dashboard-card");
+  const before = await readStoredState(page);
+  await source.dragTo(dashboardColumn(page, "todo"));
+  await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(1);
+  await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(3);
+  await expect(source).toHaveAttribute("data-tab-color", "gray");
+  await expect(page.locator(".tab-item", { hasText: "Alpha task" })).toHaveCount(1);
+  const after = await readStoredState(page);
+  expect(after.groups).toEqual(before.groups);
+  expect(after.closedTabs).toEqual(before.closedTabs);
+  await expect(dashboardPanel(page).locator(".is-drop-target, .is-dragging")).toHaveCount(0);
 });

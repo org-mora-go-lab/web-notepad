@@ -4,7 +4,7 @@ import { STORAGE_KEY } from "../../__constant__";
 import { openSettingsPanel } from "../../__util__";
 import { settingsPanel, tabColorRadio } from "../__util__";
 
-test("6. 앞 순번에서 선택된 색상은 뒤 순번에서 흐리게 표시하고 선택할 수 없게 비활성화한다", async ({ page }) => {
+test("6. 앞 순번의 색상은 뒤 순번에서 25%로 흐리게 표시하고 클릭으로 선택할 수 없다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
   await expect(settingsPanel(page)).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");

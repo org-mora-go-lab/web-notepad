@@ -1,18 +1,24 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel, readStoredState } from "../../__util__";
-import { beginDashboardDrag, dashboardColumn, dashboardPanel, seedDashboardTabs } from "../__util__";
+import { addTabButton, openPanel } from "../../__util__";
+import { dashboardColumn, seedDashboardTabs } from "../__util__";
 
-test("5. 드롭 없이 드래그를 취소하면 강조·카드 흐림을 해제하고 저장 데이터를 유지한다", async ({ page }) => {
+test("5. 새 탭은 내용을 입력하면 첫 색상의 Todo 카드로 표시된다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
-  const source = dashboardColumn(page, "todo").locator(".dashboard-card");
-  const before = await readStoredState(page);
-  const dataTransfer = await beginDashboardDrag(page, source);
-  await dashboardColumn(page, "in-progress").dispatchEvent("dragover", { dataTransfer });
-  await expect(source).toHaveClass(/is-dragging/);
-  await source.dispatchEvent("dragend", { dataTransfer });
-  await expect(dashboardPanel(page).locator(".is-drop-target, .is-dragging")).toHaveCount(0);
-  expect(await readStoredState(page)).toEqual(before);
-  await expect(dashboardColumn(page, "todo")).toContainText("Alpha task");
+  await page.keyboard.press("Escape");
+  await addTabButton(page).click();
+  await openPanel(page, "dashboard-panel");
+  // The new tab is empty, so it is not listed until it has content.
+  await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(1);
+  await page.keyboard.press("Escape");
+  await page.locator(".note-area").fill("Fresh note");
+  await openPanel(page, "dashboard-panel");
+  await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(2);
+  await expect(dashboardColumn(page, "todo")).toContainText("Fresh note");
+  await expect(
+    dashboardColumn(page, "todo").locator(".dashboard-card", {
+      hasText: "Fresh note",
+    }),
+  ).toHaveAttribute("data-tab-color", "gray");
 });

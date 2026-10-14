@@ -3,31 +3,14 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { addTabButton } from "../../__util__";
 
-test("4. DARK·LIGHT에 맞는 구분선 색상을 불투명도 60%로 옅게 표시한다", async ({ page }) => {
+test("4. 첫 탭의 바깥쪽과 새 탭 추가 버튼에는 좌우 테두리를 표시하지 않는다", async ({ page }) => {
   await page.goto("/");
   await addTabButton(page).click();
-  await addTabButton(page).click();
-
-  for (const theme of ["DARK", "LIGHT"]) {
-    await page.getByRole("button", { name: "MENU", exact: true }).click();
-    await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-    await page.getByRole("menuitemradio", { name: theme, exact: true }).click();
-    for (const viewport of BOTH_VIEWPORTS) {
-      await page.setViewportSize(viewport);
-      const tabs = page.locator(".tab-item");
-      await expect(tabs).toHaveCount(3);
-      const separators = await tabs.evaluateAll(elements => elements.slice(1).map(element => {
-        const style = getComputedStyle(element, "::before");
-        return {
-          background: style.backgroundColor,
-          opacity: style.opacity,
-          lineColor: getComputedStyle(element.closest(".header")!).borderBottomColor,
-        };
-      }));
-      for (const separator of separators) {
-        expect(separator.background).toBe(separator.lineColor);
-        expect(separator.opacity).toBe("0.6");
-      }
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    for (const item of await page.locator(".tab-item, .add-tab").all()) {
+      await expect(item).toHaveCSS("border-left-width", "0px");
+      await expect(item).toHaveCSS("border-right-width", "0px");
     }
   }
 });

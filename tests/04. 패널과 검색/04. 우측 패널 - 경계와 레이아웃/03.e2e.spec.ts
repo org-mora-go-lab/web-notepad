@@ -1,20 +1,25 @@
 import { expect, test } from "@playwright/test";
 
 import { openPanel } from "../../__util__";
-import { panelPinButton } from "../__util__";
+import { dragPanelEdgeTo } from "../__util__";
 
-test("3. 고정 패널은 배경 덮개·그림자·경계 음영 없이 편집기를 계속 사용할 수 있다", async ({ page }) => {
+test("3. 경계 음영은 카드 클릭과 패널 크기 조절을 막지 않는다", async ({ page }) => {
   await page.goto("/");
-  await openPanel(page, "bookmarks-panel");
-  const panel = page.locator("#bookmarks-panel");
-  await panelPinButton(page, "bookmarks-panel").click();
-  await expect(panel).toHaveCSS("box-shadow", "none");
-  expect(await panel.evaluate((element) => getComputedStyle(element, "::before").content)).toBe("none");
-  // The workspace stays usable: no backdrop covers it while the panel is pinned.
-  await expect(page.locator(".bookmark .side-panel-backdrop")).toBeHidden();
-  await page.locator(".note-area").click();
-  await page.keyboard.type("typed while pinned");
-  await expect(page.locator(".note-area")).toHaveValue("typed while pinned");
-  await expect(panel).toHaveAttribute("aria-hidden", "false");
+  await page.locator("textarea").fill("Clickable dashboard card");
+  await openPanel(page, "dashboard-panel");
+  const panel = page.locator("#dashboard-panel");
 
+  expect(await panel.evaluate((element) => getComputedStyle(element, "::before").pointerEvents)).toBe("none");
+  await expect(panel.locator(".side-panel-resizer")).toHaveCSS("pointer-events", "auto");
+  await panel
+    .getByRole("button", { name: "Clickable dashboard card", exact: true })
+    .click();
+  await expect(panel).toHaveAttribute("aria-hidden", "true");
+
+  await openPanel(page, "dashboard-panel");
+  const before = (await panel.boundingBox())!.width;
+  await dragPanelEdgeTo(page, "dashboard-panel", 700);
+  await expect
+    .poll(async () => (await panel.boundingBox())!.width)
+    .not.toBeCloseTo(before, 0);
 });

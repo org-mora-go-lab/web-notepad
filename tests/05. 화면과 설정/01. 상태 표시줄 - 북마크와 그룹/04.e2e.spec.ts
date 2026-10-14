@@ -12,7 +12,7 @@ test("4. 맨 왼쪽 그룹 선택 버튼은 아이콘과 그룹 이름을 표시
     await page.setViewportSize(viewport);
     await expect(groupIcon.locator("svg")).toHaveCount(1);
     await expect(groupIcon.locator(".status-label")).toHaveText("Ungrouped");
-    await expect(groupIcon).toHaveAttribute("aria-label", "그룹 선택: Ungrouped");
+    await expect(groupIcon).toHaveAttribute("aria-label", "Select group: Ungrouped");
 
     const commands = await page.locator(".status-meta .status-command:visible").all();
     const iconBox = (await groupIcon.boundingBox())!;
@@ -24,6 +24,9 @@ test("4. 맨 왼쪽 그룹 선택 버튼은 아이콘과 그룹 이름을 표시
       await command.click();
       await expect(groupsMenu).toBeVisible();
       await expect(command).toHaveAttribute("aria-expanded", "true");
+      const commandBounds = (await command.boundingBox())!;
+      const menuBounds = (await groupsMenu.boundingBox())!;
+      expect(menuBounds.y + menuBounds.height).toBeLessThanOrEqual(commandBounds.y + 1);
       await page.keyboard.press("Escape");
       await expect(groupsMenu).toHaveCount(0);
     }

@@ -6,7 +6,7 @@ test("3. 검색어 지우기 아이콘을 패널 닫기 버튼과 같은 옅은 
   await page.goto("/");
   await bookmarksCommand(page).click();
 
-  const search = page.getByRole("searchbox", { name: "북마크 검색" });
+  const search = page.getByRole("searchbox", { name: "Search bookmarks" });
   await search.fill("검색어");
 
   await expect

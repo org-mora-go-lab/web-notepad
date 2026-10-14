@@ -11,6 +11,6 @@ export async function selectTabColorSetting(page: Page, order: number, color: st
     .getByRole("radio", { name: color, exact: true });
   await radio.check();
   await expect(radio).toBeChecked();
-  await page.getByRole("button", { name: "설정 닫기" }).click();
+  await page.getByRole("button", { name: "Close Settings" }).click();
   await expect(panel).toHaveAttribute("aria-hidden", "true");
 }

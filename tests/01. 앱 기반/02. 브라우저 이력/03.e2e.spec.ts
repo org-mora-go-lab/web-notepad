@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { seedStoredStateOnLoad } from "../../__util__";
 
-test("3. 분할 화면의 활성 pane 전환을 뒤로가기·앞으로가기로 복원한다", async ({ page }) => {
+test("3. 분할 화면의 활성 pane과 실제 편집기 포커스를 뒤로가기·앞으로가기로 복원한다", async ({ page }) => {
   const group = createGroupFixture(
     "ungrouped",
     "Ungrouped",
@@ -20,14 +20,18 @@ test("3. 분할 화면의 활성 pane 전환을 뒤로가기·앞으로가기로
     nextTabNumber: 3,
   });
 
-  const panes = page.locator(".note-pane");
-  await expect(panes.nth(0)).not.toHaveClass(/is-unfocused/);
-  await page.locator(".pane-slot").nth(1).locator("textarea").click();
-  await expect(page.locator(".note-pane").nth(1)).not.toHaveClass(/is-unfocused/);
-  await expect(new URL(page.url()).searchParams.get("pane")).toBe("right");
+  const leftEditor = page.locator('.pane-slot[data-pane="left"] textarea');
+  const rightEditor = page.locator('.pane-slot[data-pane="right"] textarea');
+  await leftEditor.click();
+  await expect(leftEditor).toBeFocused();
+  await rightEditor.click();
+  await expect(rightEditor).toBeFocused();
+  await expect.poll(() => new URL(page.url()).searchParams.get("pane")).toBe("right");
 
   await page.goBack();
-  await expect(page.locator(".note-pane").nth(0)).not.toHaveClass(/is-unfocused/);
+  await expect(leftEditor).toBeFocused();
+  await expect(page.locator('[data-pane="left"] .note-pane')).not.toHaveClass(/is-unfocused/);
   await page.goForward();
-  await expect(page.locator(".note-pane").nth(1)).not.toHaveClass(/is-unfocused/);
+  await expect(rightEditor).toBeFocused();
+  await expect(page.locator('[data-pane="right"] .note-pane')).not.toHaveClass(/is-unfocused/);
 });

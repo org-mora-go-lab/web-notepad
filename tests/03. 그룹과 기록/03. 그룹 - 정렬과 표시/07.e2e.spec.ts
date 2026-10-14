@@ -8,11 +8,11 @@ test("7. 그룹 드롭다운의 그룹 이름과 입력란의 글자 크기·높
   await groupsCommand(page).click();
 
   const menu = groupMenu(page);
-  const createInput = menu.locator('input[aria-label="새 그룹 이름"]');
+  const createInput = menu.locator('input[aria-label="New group name"]');
   await createGroup(page, "Alpha");
 
   await chooseGroupAction(page, "Alpha", "수정");
-  const editInput = menu.locator('input[aria-label="Alpha 그룹 이름 수정"]');
+  const editInput = menu.locator('input[aria-label="Edit Alpha group name"]');
   await expect(editInput).toHaveCSS("font-size", "15px");
   await expect(editInput).toHaveCSS("height", "30px");
   await editInput.press("Escape");

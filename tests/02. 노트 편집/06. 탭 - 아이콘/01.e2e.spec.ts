@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-import { activeTabItem, addTabButton } from "../../__util__";
+import {
+  activeTabItem,
+  addTabButton,
+  readStoredState,
+  writeStoredState,
+} from "../../__util__";
 
 test("1. 새 탭의 기본 색상은 설정한 1번째 탭 색상이며 기본값은 그레이다", async ({ page }) => {
   await page.goto("/");
@@ -16,6 +21,15 @@ test("1. 새 탭의 기본 색상은 설정한 1번째 탭 색상이며 기본�
 
   await tab.locator(".dirty-dot").click();
   await expect(tab).toHaveAttribute("data-tab-color", "green");
+
+  const state = await readStoredState(page);
+  await writeStoredState(page, {
+    ...state,
+    settings: {
+      ...state.settings,
+      tabColorCycle: ["purple", "gray", "green"],
+    },
+  });
   await addTabButton(page).click();
-  await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "gray");
+  await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "purple");
 });

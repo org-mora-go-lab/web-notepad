@@ -5,7 +5,7 @@ import { bookmarksCommand, restoreStoredBookmark } from "../../__util__";
 test("1. 북마크 패널은 제목과 내용을 대소문자 구분 없이 부분 검색하며 placeholder는 Search bookmarks다", async ({ page }) => {
   await restoreStoredBookmark(page, {});
   await bookmarksCommand(page).click();
-  const search = page.getByRole("searchbox", { name: "북마크 검색" });
+  const search = page.getByRole("searchbox", { name: "Search bookmarks" });
   const items = page.locator(".bookmark-item");
   await expect(search).toHaveAttribute("placeholder", "Search bookmarks");
   await expect(items).toHaveCount(1);

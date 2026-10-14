@@ -1,27 +1,53 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel } from "../../__util__";
-import { RIGHT_PANEL_VIEWPORTS } from "../__constant__";
+import { BOTH_VIEWPORTS, DESKTOP_VIEWPORT } from "../../__constant__";
+import {
+  bookmarkActiveTab,
+  bookmarksCommand,
+  createGroups,
+  openShortcutsPanel,
+  readStoredState,
+} from "../../__util__";
 
-test("6. Escape로 우측 패널을 닫은 뒤에도 다시 열기와 브라우저 뒤로가기가 동작한다", async ({ page }) => {
+test("6. PC와 모바일에서 Escape로 우측 패널을 닫고 메모·그룹·북마크 데이터를 유지한다", async ({ page }) => {
   await page.goto("/");
+  const note = "Preserve this note";
+  await createGroups(page, "Work");
+  await bookmarkActiveTab(page, note);
+  const editor = page.locator("textarea");
+  const bookmarksPanel = page.locator("#bookmarks-panel");
+  const bookmarkSearch = bookmarksPanel.getByPlaceholder("Search bookmarks");
+  const shortcutsPanel = page.locator("#shortcuts-panel");
 
-  for (const { viewport, panelIds } of RIGHT_PANEL_VIEWPORTS) {
+  for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
 
-    for (const panelId of panelIds) {
-      const panel = page.locator(`#${panelId}`);
-      await openPanel(page, panelId);
-      await expect(panel).toHaveAttribute("aria-hidden", "false");
+    await bookmarksCommand(page).click();
+    await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "false");
+    await bookmarkSearch.fill("Preserve");
+    await expect(bookmarkSearch).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "true");
+    await expect(editor).toHaveValue(note);
+
+    if (viewport === DESKTOP_VIEWPORT) {
+      await openShortcutsPanel(page);
+      await expect(shortcutsPanel).toHaveAttribute("aria-hidden", "false");
       await page.keyboard.press("Escape");
-      await expect(panel).toHaveAttribute("aria-hidden", "true");
-      await openPanel(page, panelId);
-      await expect(panel).toHaveAttribute("aria-hidden", "false");
-      await page.goBack();
-      await expect(panel).toHaveAttribute("aria-hidden", "true");
+      await expect(shortcutsPanel).toHaveAttribute("aria-hidden", "true");
+      await expect(editor).toHaveValue(note);
     }
   }
-  const url = new URL(page.url());
-  expect(url.searchParams.get("panel")).toBeNull();
-  expect(url.searchParams.get("group")).toBe("ungrouped");
+
+  const { groups } = await readStoredState(page);
+  const work = groups.find((group) => group.name === "Work")!;
+  expect({
+    groups: groups.map((group) => group.name),
+    content: work.tabs[0].content,
+    bookmarks: work.bookmarks.map((bookmark) => bookmark.content),
+  }).toEqual({
+    groups: ["Ungrouped", "Work"],
+    content: note,
+    bookmarks: [note],
+  });
 });

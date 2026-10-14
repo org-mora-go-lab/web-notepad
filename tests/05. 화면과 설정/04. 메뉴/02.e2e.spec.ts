@@ -16,7 +16,7 @@ test("2. PC MENU 버튼과 드롭다운은 지정된 크기·모서리와 CLOSED
   const menu = page.getByRole("menu", { name: "MENU", exact: true });
   await expect(menu).toHaveCSS("width", "208px");
   await expect(menu).toHaveCSS("border-radius", "6px");
-  const closed = page.getByRole("menuitem", { name: "닫은 탭" });
+  const closed = page.getByRole("menuitem", { name: "CLOSED" });
   await expect(closed).toBeVisible();
   expect(await closed.evaluate(element => getComputedStyle(element).borderTopStyle)).not.toBe("none");
   expect(await page.getByRole("menuitem", { name: "SHORTCUT" })

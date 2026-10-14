@@ -57,7 +57,7 @@ export function BookmarkItem({
           className="remove-bookmark"
           type="button"
           onClick={() => onRemove(bookmark.id)}
-          aria-label={`${bookmark.title} 북마크 제거`}
+          aria-label={t.removeBookmarkFor(bookmark.title)}
           title={t.removeBookmark}
         >
           <Trash2 size={14} />

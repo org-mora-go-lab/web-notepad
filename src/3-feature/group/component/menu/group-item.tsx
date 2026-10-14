@@ -40,7 +40,7 @@ export function GroupItem({
             type="text"
             value={editingName}
             onChange={(event) => setEditingName(event.target.value)}
-            aria-label={`${name} 그룹 이름 수정`}
+            aria-label={t.editGroupName(name)}
             maxLength={60}
             autoFocus
             onKeyDown={(event) => {
@@ -53,7 +53,7 @@ export function GroupItem({
           />
           <button
             type="submit"
-            aria-label="그룹 수정 저장"
+            aria-label={t.saveGroupEdit}
             title={t.save}
             disabled={!editingName.trim()}
           >
@@ -61,7 +61,7 @@ export function GroupItem({
           </button>
           <button
             type="button"
-            aria-label="그룹 수정 취소"
+            aria-label={t.cancelGroupEdit}
             title={t.cancel}
             onClick={() => setEditingName(null)}
           >
@@ -90,12 +90,12 @@ export function GroupItem({
               className="group-pin-indicator"
               size={14}
               role="img"
-              aria-label="고정된 그룹"
+              aria-label={t.pinnedGroup}
             />
           )}
           <button
             type="button"
-            aria-label={`${name} 그룹 메뉴`}
+            aria-label={t.groupActionsFor(name)}
             aria-expanded={false}
             title={t.groupActions}
             onClick={onToggleActions}
@@ -109,7 +109,7 @@ export function GroupItem({
           <button
             className={`group-pin ${pinned ? "is-pinned" : ""}`}
             type="button"
-            aria-label={`${name} 그룹 ${pinned ? "고정 해제" : "고정"}`}
+            aria-label={pinned ? t.unpinGroup(name) : t.pinGroup(name)}
             aria-pressed={pinned}
             title={pinned ? t.unpin : t.pin}
             onClick={() => {
@@ -121,7 +121,7 @@ export function GroupItem({
           </button>
           <button
             type="button"
-            aria-label={`${name} 그룹 수정`}
+            aria-label={t.editGroupFor(name)}
             title={t.edit}
             onClick={() => {
               onToggleActions();
@@ -132,7 +132,7 @@ export function GroupItem({
           </button>
           <button
             type="button"
-            aria-label={`${name} 그룹 삭제`}
+            aria-label={t.deleteGroupFor(name)}
             title={t.delete}
             onClick={(event) => onDelete(event.currentTarget)}
           >

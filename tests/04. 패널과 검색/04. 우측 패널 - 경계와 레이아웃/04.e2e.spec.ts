@@ -1,21 +1,20 @@
 import { expect, test } from "@playwright/test";
 
+import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openPanel } from "../../__util__";
-import { closePanelWithX, panelPinButton } from "../__util__";
+import { panelPinButton } from "../__util__";
 
-test("4. 고정 패널은 열기·닫기·다시 열기를 슬라이드 없이 즉시 처리한다", async ({ page }) => {
+test("4. 경계 그라데이션은 패널을 고정하거나 닫으면 제거하고 고정을 해제하면 복원한다", async ({ page }) => {
+  await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   await openPanel(page, "bookmarks-panel");
   const panel = page.locator("#bookmarks-panel");
+  const content = () => panel.evaluate((element) => getComputedStyle(element, "::before").content);
+  await expect.poll(content).not.toBe("none");
   await panelPinButton(page, "bookmarks-panel").click();
-  await expect(panel).toHaveCSS("transition-duration", "0s");
-  await expect(panel).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
-  // Closing and reopening a pinned panel happens in place, without sliding.
-  await closePanelWithX(page, "bookmarks-panel");
-  await expect(panel).toHaveAttribute("aria-hidden", "true");
-  await expect(panel).toHaveCSS("transition-duration", "0s");
-  await openPanel(page, "bookmarks-panel");
-  // Measured right after opening: without a slide the drawer is already in place.
-  const offsetRight = await panel.evaluate((element) => window.innerWidth - element.getBoundingClientRect().right);
-  expect(offsetRight).toBeCloseTo(0, 0);
+  await expect.poll(content).toBe("none");
+  await panelPinButton(page, "bookmarks-panel").click();
+  await expect.poll(content).not.toBe("none");
+  await panel.locator(".side-panel-close").click();
+  await expect.poll(content).toBe("none");
 });

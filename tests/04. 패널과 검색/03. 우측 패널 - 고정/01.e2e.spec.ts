@@ -12,7 +12,7 @@ test("1. PC 우측 패널 헤더의 닫기 버튼 왼쪽에 고정 버튼을 표
     await expect(page.locator(`#${panelId}`)).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
     const pin = panelPinButton(page, panelId);
     await expect(pin).toBeVisible();
-    await expect(pin).toHaveAttribute("aria-label", "패널 고정");
+    await expect(pin).toHaveAttribute("aria-label", "Pin panel");
     await expect(pin).toHaveAttribute("aria-pressed", "false");
     const pinBounds = (await pin.boundingBox())!;
     const closeBounds = (await page.locator(`#${panelId} .side-panel-close`).boundingBox())!;

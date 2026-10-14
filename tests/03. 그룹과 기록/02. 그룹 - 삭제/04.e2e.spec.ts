@@ -1,18 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-import { groupStatusName, readStoredState } from "../../__util__";
+import { readStoredState } from "../../__util__";
 import { seedDeletableGroup } from "./__util__";
 
-test("4. 그룹 삭제를 확인하면 그룹의 노트와 북마크를 Ungrouped로 옮긴다", async ({ page }) => {
-  const { toggle, menuButton, openDelete, popup } = await seedDeletableGroup(page);
+test("4. Escape로 삭제 팝업을 닫으면 그룹과 노트·북마크를 유지한다", async ({ page }) => {
+  const { toggle, openDelete, popup } = await seedDeletableGroup(page);
   await toggle.click();
   await openDelete();
-  await popup.getByRole("button", { name: "Delete", exact: true }).click();
+  await page.keyboard.press("Escape");
 
-  await expect(menuButton).toHaveCount(0);
-  await expect(groupStatusName(page)).toHaveText("Ungrouped");
-  await expect(page.locator("textarea")).toHaveValue("archived note");
-  const movedBookmarks = (await readStoredState(page)).groups[0].bookmarks;
-  expect(movedBookmarks).toHaveLength(1);
-  expect(movedBookmarks[0].content).toBe("archived note");
+  await expect(popup).toHaveCount(0);
+  const group = (await readStoredState(page)).groups.find((item) => item.name === "Archive")!;
+  expect(group.tabs[0].content).toBe("archived note");
+  expect(group.bookmarks[0].content).toBe("archived note");
 });
