@@ -20,6 +20,8 @@ test("1. PC 상태 hover 시 개수 왼쪽의 수정 아이콘으로 표시 이�
     status.locator(".dashboard-count").boundingBox(),
   ]);
   expect(editBox!.x).toBeLessThan(countBox!.x);
+  await edit.focus();
+  await expect(edit).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   await edit.click();
   const input = status.getByRole("textbox", { name: "Edit Todo status name" });
   await input.fill("Backlog");
