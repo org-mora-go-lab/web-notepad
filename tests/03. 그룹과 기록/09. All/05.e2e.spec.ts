@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { readStoredState } from "../../__util__";
 import { seedAllGroupOriginTabs } from "./__fixture__";
 
-test("5. All에서 기존 탭을 닫으면 원래 소속 그룹에 반영한다", async ({ page }) => {
+test("5. All에서 탭을 닫으면 원래 그룹에 숨긴 상태로 유지한다", async ({ page }) => {
   await seedAllGroupOriginTabs(page);
   const workTab = page.locator(".tab-item").filter({ hasText: "Work only task" });
   await workTab.getByRole("tab").click();
@@ -11,5 +11,6 @@ test("5. All에서 기존 탭을 닫으면 원래 소속 그룹에 반영한다"
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
 
   const work = (await readStoredState(page)).groups.find((group) => group.id === "work")!;
-  expect(work.tabs.some((tab) => tab.id === "work-tab")).toBe(false);
+  expect(work.tabs.find((tab) => tab.id === "work-tab")?.open).toBe(false);
+  expect((await readStoredState(page)).closedTabs).toEqual([]);
 });

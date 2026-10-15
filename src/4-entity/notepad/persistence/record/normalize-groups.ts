@@ -41,12 +41,16 @@ export function normalizeGroups(
           ? legacy.tabs
           : [createLegacyGroupTab()];
       if (tabs.length === 0) tabs = [createLegacyGroupTab()];
+      if (!tabs.some((tab) => tab.open)) {
+        tabs = [...tabs, createLegacyGroupTab()];
+      }
       const bookmarks = hasWorkspace
         ? normalizeBookmarks(group.bookmarks, [])
         : id === UNGROUPED_GROUP_ID
           ? legacy.bookmarks
           : [];
-      const tabIds = new Set(tabs.map((tab) => tab.id));
+      const openTabs = tabs.filter((tab) => tab.open);
+      const tabIds = new Set(openTabs.map((tab) => tab.id));
       const readTabIds = (value: unknown) =>
         Array.isArray(value)
           ? value.filter(
@@ -61,7 +65,7 @@ export function normalizeGroups(
       const activeTabId =
         typeof sourceActiveTabId === "string" && tabIds.has(sourceActiveTabId)
           ? sourceActiveTabId
-          : (tabs[0]?.id ?? "");
+          : (openTabs[0]?.id ?? "");
       const sourceActivePane = fromSource("activePane", "left");
       const createdAt = finiteNumberOr(group.createdAt, Date.now());
       return normalizeLayout({

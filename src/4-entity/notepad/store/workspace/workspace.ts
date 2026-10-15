@@ -19,8 +19,9 @@ import {
 // All gathers the original tabs and applies only its own independent view layout.
 const buildAllGroup = (state: NotepadState): GroupEntry => {
   const tabs = state.groups.flatMap((group) => group.tabs);
+  const openTabs = tabs.filter((tab) => tab.open);
   const activeTab =
-    tabs.find((tab) => tab.id === state.allGroupActiveTabId) ?? tabs[0];
+    openTabs.find((tab) => tab.id === state.allGroupActiveTabId) ?? openTabs[0];
   return normalizeLayout({
     id: ALL_GROUP_ID,
     name: ALL_GROUP_NAME,

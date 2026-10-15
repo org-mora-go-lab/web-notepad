@@ -72,9 +72,15 @@ export const createBookmarkActions: StateCreator<
     const sourceTab = group.tabs.find((tab) => tab.id === bookmark.sourceTabId);
     if (sourceTab) {
       set(
-        updateGroup(state, group.id, (current) =>
-          activateTab(current, sourceTab.id),
-        ),
+        updateGroup(state, group.id, (current) => {
+          const reopened = {
+            ...current,
+            tabs: current.tabs.map((tab) =>
+              tab.id === sourceTab.id ? { ...tab, open: true } : tab,
+            ),
+          };
+          return activateTab(reopened, sourceTab.id);
+        }),
       );
       return;
     }

@@ -29,6 +29,8 @@ export type TabStatus = "todo" | "in-progress" | "done";
 
 export type NoteTab = {
   id: string;
+  // Closed editor tabs remain in their dashboard status until reopened.
+  open: boolean;
   title: string;
   content: string;
   savedContent: string;

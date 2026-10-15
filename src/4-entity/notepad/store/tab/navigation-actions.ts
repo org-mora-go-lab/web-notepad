@@ -66,21 +66,37 @@ export const createTabNavigationActions: StateCreator<
   },
   selectTab: (tabId) =>
     set((state) => {
+      const owner = state.groups.find((group) =>
+        group.tabs.some((tab) => tab.id === tabId),
+      );
+      if (!owner) return state;
+
       if (state.activeGroupId === ALL_GROUP_ID) {
-        const exists = state.groups.some((group) =>
-          group.tabs.some((tab) => tab.id === tabId),
-        );
-        return exists
-          ? updateGroup(state, ALL_GROUP_ID, (current) =>
-              activateTab(current, tabId),
-            )
-          : state;
+        const reopened = updateGroup(state, owner.id, (current) => ({
+          ...current,
+          tabs: current.tabs.map((tab) =>
+            tab.id === tabId ? { ...tab, open: true } : tab,
+          ),
+        }));
+        const nextState = { ...state, ...reopened };
+        return {
+          ...reopened,
+          ...updateGroup(nextState, ALL_GROUP_ID, (current) =>
+            activateTab(current, tabId),
+          ),
+        };
       }
       const group = getActiveGroup(state);
       if (!group || !group.tabs.some((tab) => tab.id === tabId)) return state;
-      return updateGroup(state, group.id, (current) =>
-        activateTab(current, tabId),
-      );
+      return updateGroup(state, group.id, (current) => {
+        const reopened = {
+          ...current,
+          tabs: current.tabs.map((tab) =>
+            tab.id === tabId ? { ...tab, open: true } : tab,
+          ),
+        };
+        return activateTab(reopened, tabId);
+      });
     }),
   moveTab: (fromTabId, toTabId) =>
     set((state) => {

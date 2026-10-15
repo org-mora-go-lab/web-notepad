@@ -18,6 +18,7 @@ export const createNoteTab = (
   tabColor: TabColor = DEFAULT_SETTINGS.tabColorCycle[0],
 ): NoteTab => ({
   id: `tab-${number}`,
+  open: true,
   title: "-",
   content: "",
   savedContent: "",

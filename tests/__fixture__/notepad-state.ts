@@ -7,6 +7,7 @@ export const createTabFixture = (
   overrides: Partial<NoteTab> = {},
 ): NoteTab => ({
   id,
+  open: true,
   title: content.split("\n")[0],
   content,
   savedContent: content,

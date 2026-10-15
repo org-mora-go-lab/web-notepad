@@ -14,6 +14,7 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
 
       return {
         ...tabData,
+        open: tab.open !== false,
         title: typeof tab.title === "string" ? tab.title : "Untitled",
         content,
         selectedLines,
@@ -61,7 +62,7 @@ export const normalizeClosedTabs = (value: unknown): ClosedTabEntry[] =>
       {
         id: entry.id,
         groupId: entry.groupId,
-        tab: { ...tab, pinned: false },
+        tab: { ...tab, open: false, pinned: false },
         closedAt: finiteNumberOr(entry.closedAt, Date.now()),
       },
     ];
