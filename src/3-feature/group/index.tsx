@@ -42,7 +42,7 @@ function GroupMenu({
   // The delete button that opened the popup, focused again when the popup is cancelled.
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
-  // All Group and Ungrouped share the first row (two halves); the create row follows, then the other groups (pinned first).
+  // All and Ungrouped share the first row (two halves); the create row follows, then the other groups (pinned first).
   const specialRows: GroupRow[] = [
     { id: ALL_GROUP_ID, name: ALL_GROUP_NAME, pinned: false },
     ...groups.filter((group) => group.id === UNGROUPED_GROUP_ID),

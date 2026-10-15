@@ -21,7 +21,7 @@ export const createTabNavigationActions: StateCreator<
 > = (set, get) => ({
   addTab: (pane = "left") => {
     const state = get();
-    // The All Group adds new tabs to Ungrouped.
+    // The All adds new tabs to Ungrouped.
     const inAllGroup = state.activeGroupId === ALL_GROUP_ID;
     const group = inAllGroup
       ? state.groups.find((item) => item.id === UNGROUPED_GROUP_ID)

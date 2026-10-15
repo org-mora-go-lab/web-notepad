@@ -8,7 +8,7 @@ import {
 import { groupsCommand, openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("4. All Group의 Done 컬럼은 모든 그룹의 열린 Done 탭과 닫은 탭을 개수에 포함한다", async ({ page }) => {
+test("4. All의 Done 컬럼은 모든 그룹의 열린 Done 탭과 닫은 탭을 개수에 포함한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -34,7 +34,7 @@ test("4. All Group의 Done 컬럼은 모든 그룹의 열린 Done 탭과 닫은 
     nextTabNumber: 5,
   });
   await groupsCommand(page).click();
-  await page.getByRole("button", { name: "All Group", exact: true }).click();
+  await page.getByRole("button", { name: "All", exact: true }).click();
   await groupsCommand(page).click();
   await openPanel(page, "dashboard-panel");
 

@@ -8,7 +8,7 @@ test("3. 새로고침 후에도 이름 있는 그룹에 같은 정렬을 적용�
   await groupsCommand(page).click();
 
   await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "All Group",
+    "All",
     "Ungrouped",
     "가방",
     "나무",
