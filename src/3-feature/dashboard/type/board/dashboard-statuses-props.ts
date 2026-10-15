@@ -1,6 +1,10 @@
-import type { DashboardColumnData, TabColor } from "@/src/4-entity/notepad";
+import type { DashboardColumnData } from "@/src/4-entity/notepad";
 
-export type DashboardStatusesProps = {
+import type { DashboardProps } from "..";
+
+export type DashboardStatusesProps = Pick<
+  DashboardProps,
+  "tabColorCycle" | "statusNames" | "onRenameStatus"
+> & {
   columns: DashboardColumnData[];
-  tabColorCycle: TabColor[];
 };

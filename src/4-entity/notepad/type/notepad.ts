@@ -20,6 +20,8 @@ export type NotepadSettings = {
   // Right panels slide in and out; off shows and hides them in place.
   panelSlide: boolean;
   panelPosition: "left" | "right";
+  // Optional display-only labels for dashboard statuses.
+  dashboardStatusNames: Partial<Record<TabStatus, string>>;
 };
 
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
@@ -101,6 +103,7 @@ export type NotepadState = {
   setLanguage: (language: Language) => void;
   setPanelSlide: (panelSlide: boolean) => void;
   setPanelPosition: (panelPosition: "left" | "right") => void;
+  setDashboardStatusName: (status: TabStatus, name: string) => void;
   resetSettings: () => void;
   resetTabColorCycle: () => void;
   shuffleTabColorCycle: () => void;

@@ -9,7 +9,9 @@ export type DashboardColumnProps = Pick<
   | "groups"
   | "showGroupNames"
   | "tabColorCycle"
+  | "statusNames"
   | "onOpenTab"
+  | "onRenameStatus"
 > & {
   column: DashboardColumnData;
   drag: ReturnType<typeof useDashboardDrag>;

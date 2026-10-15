@@ -3,6 +3,7 @@ import { useI18n } from "@/src/5-shared/hook";
 
 import type { DashboardColumnProps } from "../../type";
 import { DashboardCard } from "./dashboard-card";
+import { DashboardStatus } from "./dashboard-status";
 
 export function DashboardColumn({
   column,
@@ -11,8 +12,10 @@ export function DashboardColumn({
   groups,
   showGroupNames,
   tabColorCycle,
+  statusNames,
   contextMenuTabId,
   onOpenTab,
+  onRenameStatus,
   onOpenContextMenu,
 }: DashboardColumnProps) {
   const { status, tabs: columnTabs } = column;
@@ -50,12 +53,14 @@ export function DashboardColumn({
       }}
       onDrop={(event) => drag.drop(status, event)}
     >
-      <h3 className="dashboard-column-status" data-status={status}>
-        {statusLabel}
-        <span className="dashboard-count">
-          {columnTabs.length}
-        </span>
-      </h3>
+      <DashboardStatus
+        className="dashboard-column-status"
+        status={status}
+        label={statusNames[status] ?? statusLabel}
+        count={columnTabs.length}
+        tabColor={getStatusColor(status, tabColorCycle)}
+        onRename={onRenameStatus}
+      />
       <div className="dashboard-cards">
         {cardEntries.map((tab) => (
           <DashboardCard

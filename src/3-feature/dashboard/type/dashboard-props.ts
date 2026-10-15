@@ -7,12 +7,14 @@ export type DashboardProps = {
   // All: cards show the group they belong to.
   showGroupNames: boolean;
   tabColorCycle: TabColor[];
+  statusNames: Partial<Record<TabStatus, string>>;
   open: boolean;
   pinned: boolean;
   onTogglePin: () => void;
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
+  onRenameStatus: (status: TabStatus, name: string) => void;
   onMoveToGroup: (tabId: string, groupId: string) => void;
   onToggleTabPin: (tabId: string) => void;
   onToggleTabBookmark: (tabId: string) => void;

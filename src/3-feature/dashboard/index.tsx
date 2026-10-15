@@ -21,12 +21,14 @@ export function Dashboard({
   groups,
   showGroupNames,
   tabColorCycle,
+  statusNames,
   open,
   pinned,
   onTogglePin,
   onClose,
   onOpenTab,
   onChangeStatus,
+  onRenameStatus,
   onMoveToGroup,
   onToggleTabPin,
   onToggleTabBookmark,
@@ -73,7 +75,12 @@ export function Dashboard({
       onClose={onClose}
     >
       <div className="dashboard-content" ref={contentRef}>
-        <DashboardStatuses columns={columns} tabColorCycle={tabColorCycle} />
+        <DashboardStatuses
+          columns={columns}
+          tabColorCycle={tabColorCycle}
+          statusNames={statusNames}
+          onRenameStatus={onRenameStatus}
+        />
         <div className="dashboard-list" ref={listRef}>
           <div className="dashboard-board" ref={boardRef}>
             {columns.map((column) => (
@@ -85,8 +92,10 @@ export function Dashboard({
                 groups={groups}
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
+                statusNames={statusNames}
                 contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
+                onRenameStatus={onRenameStatus}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
