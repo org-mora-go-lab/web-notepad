@@ -11,7 +11,7 @@ export const en = {
   dashboard: "DASHBOARD",
   dashboardTitle: "Dashboard",
   statusTodo: "Todo",
-  statusInProgress: "WIP",
+  statusInProgress: "Doing",
   statusDone: "Done",
   group: "GROUP",
   selectGroup: "Select group",

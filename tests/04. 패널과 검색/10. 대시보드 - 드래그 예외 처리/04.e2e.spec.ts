@@ -8,7 +8,7 @@ import {
 import { openPanel, readStoredState, writeStoredState } from "../../__util__";
 import { dashboardColumn, dashboardPanel } from "../__util__";
 
-test("4. 일반적이지 않은 닫은 탭 ID의 카드를 WIP으로 옮겨도 닫힌 상태를 유지한다", async ({ page }) => {
+test("4. 일반적이지 않은 닫은 탭 ID의 카드를 Doing으로 옮겨도 닫힌 상태를 유지한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [

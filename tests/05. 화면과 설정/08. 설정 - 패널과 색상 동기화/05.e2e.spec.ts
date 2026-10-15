@@ -20,6 +20,6 @@ test("5. 탭 색상 초기화는 열린 탭·북마크·닫은 탭을 기본 순
 
   await openPanel(page, "dashboard-panel");
   await expect(dashboardColumn(page, "todo")).toContainText("Todo cycle note");
-  await expect(dashboardColumn(page, "in-progress")).toContainText("WIP cycle note");
+  await expect(dashboardColumn(page, "in-progress")).toContainText("Doing cycle note");
   await expect(dashboardColumn(page, "done")).toContainText("Done cycle note");
 });
