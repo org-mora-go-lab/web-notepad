@@ -17,7 +17,6 @@ export function Closed({
   onTogglePin,
   onClose,
   onRestore,
-  onMoveToTodo,
   onRemove,
 }: ClosedProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,7 +63,6 @@ export function Closed({
               entry={entry}
               searchQuery={searchQuery}
               onRestore={onRestore}
-              onMoveToTodo={onMoveToTodo}
               onRemove={onRemove}
             />
           ))

@@ -112,6 +112,12 @@ export function TabContextMenu({
             <Bookmark size={14} />
             <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
           </button>
+          {onCloseTab && (
+            <button type="button" role="menuitem" onClick={onCloseTab}>
+              <Archive size={14} />
+              <span>{t.closedTitle}</span>
+            </button>
+          )}
           <button
             type="button"
             role="menuitem"
@@ -122,12 +128,6 @@ export function TabContextMenu({
             <span>{t.moveGroup}</span>
             <ArrowRight size={14} className="move-group-arrow" />
           </button>
-          {onCloseTab && (
-            <button type="button" role="menuitem" onClick={onCloseTab}>
-              <Archive size={14} />
-              <span>{t.closedTitle}</span>
-            </button>
-          )}
         </>
       )}
     </div>,

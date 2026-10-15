@@ -35,9 +35,6 @@ export function Home() {
     togglePin,
     toggleBookmark,
     moveToGroup,
-    moveClosedTabToStatus,
-    moveClosedTabToGroup,
-    toggleClosedTabBookmark,
     archiveDashboardTab,
     removeClosedTab,
     groups,
@@ -139,9 +136,6 @@ export function Home() {
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
           onArchiveDashboardTab={archiveDashboardTab}
-          onChangeClosedTabStatus={moveClosedTabToStatus}
-          onMoveClosedTabToGroup={moveClosedTabToGroup}
-          onToggleClosedTabBookmark={toggleClosedTabBookmark}
           onRemoveClosedTab={removeClosedTab}
           onOpenClosed={() => {
             if (openPanel !== "closed") toggleSidePanel("closed");

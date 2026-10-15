@@ -4,52 +4,32 @@ import type { NoteTab, TabStatus } from "@/src/4-entity/notepad";
 
 import type { DashboardProps } from "../type";
 
-type Options = Pick<
-  DashboardProps,
-  "onChangeStatus" | "onChangeClosedStatus"
-> & { visibleTabs: NoteTab[] };
+type Options = Pick<DashboardProps, "onChangeStatus"> & {
+  visibleTabs: NoteTab[];
+};
 
 export function useDashboardDrag({
   visibleTabs,
   onChangeStatus,
-  onChangeClosedStatus,
 }: Options) {
-  const [draggingItem, setDraggingItem] = useState<{
-    id: string;
-    closed: boolean;
-  } | null>(null);
-  const draggingTabId = draggingItem?.id ?? null;
+  const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
   const endDrag = () => {
-    setDraggingItem(null);
+    setDraggingTabId(null);
     setOverStatus(null);
   };
-  const startDrag = (
-    tabId: string,
-    closed: boolean,
-    event: DragEvent<HTMLElement>,
-  ) => {
+  const startDrag = (tabId: string, event: DragEvent<HTMLElement>) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", tabId);
-    setDraggingItem({ id: tabId, closed });
+    setDraggingTabId(tabId);
   };
-  const moveToStatus = (
-    itemId: string,
-    closed: boolean,
-    status: TabStatus,
-  ) => {
-    if (closed) {
-      if (status !== "done") onChangeClosedStatus(itemId, status);
-      return;
-    }
-
+  const moveToStatus = (itemId: string, status: TabStatus) => {
     if (visibleTabs.some((item) => item.id === itemId))
       onChangeStatus(itemId, status);
   };
   const drop = (status: TabStatus, event: DragEvent<HTMLElement>) => {
     event.preventDefault();
-    if (draggingItem)
-      moveToStatus(draggingItem.id, draggingItem.closed, status);
+    if (draggingTabId) moveToStatus(draggingTabId, status);
     endDrag();
   };
   return {

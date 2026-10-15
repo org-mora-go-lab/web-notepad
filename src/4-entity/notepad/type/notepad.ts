@@ -49,7 +49,7 @@ export type BookmarkEntry = {
   updatedAt: number;
 };
 
-// A tab hidden from the editor and shown in the dashboard with its status color.
+// A tab hidden from the editor and available from the Closed panel.
 export type ClosedTabEntry = {
   id: string;
   groupId: string;

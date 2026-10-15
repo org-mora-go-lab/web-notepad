@@ -1,6 +1,6 @@
 "use client";
 
-import { ArchiveRestore, ListTodo, Trash2 } from "lucide-react";
+import { ArchiveRestore, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -14,7 +14,6 @@ export function ClosedItem({
   entry,
   searchQuery,
   onRestore,
-  onMoveToTodo,
   onRemove,
 }: ClosedItemProps) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -38,15 +37,7 @@ export function ClosedItem({
         <div className="closed-primary-actions">
           <button type="button" onClick={() => onRestore(entry.id)}>
             <ArchiveRestore size={14} />
-            {t.restore}
-          </button>
-          <button
-            type="button"
-            onClick={() => onMoveToTodo(entry.id)}
-            aria-label={t.moveClosedToTodoFor(tab.title)}
-          >
-            <ListTodo size={14} />
-            {t.moveToTodo}
+            {t.reopen}
           </button>
         </div>
         <button

@@ -9,7 +9,6 @@ export type DashboardColumnProps = Pick<
   | "groups"
   | "showGroupNames"
   | "tabColorCycle"
-  | "onRestoreClosed"
   | "onOpenTab"
 > & {
   column: DashboardColumnData;
@@ -18,6 +17,5 @@ export type DashboardColumnProps = Pick<
     itemId: string,
     clientX: number,
     clientY: number,
-    closed: boolean,
   ) => void;
 };

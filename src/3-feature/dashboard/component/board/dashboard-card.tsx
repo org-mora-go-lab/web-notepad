@@ -21,9 +21,7 @@ const getPreview = (tab: NoteTab) => {
 };
 
 export function DashboardCard({
-  id,
   tab,
-  closed = false,
   groupName,
   dragging,
   active = false,
@@ -35,7 +33,6 @@ export function DashboardCard({
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const preview = getPreview(tab);
   const { t } = useI18n();
-  const itemId = id ?? tab.id;
   const touchLayout = () =>
     window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
   const cancelPendingOpen = () => {
@@ -64,7 +61,7 @@ export function DashboardCard({
         event.preventDefault();
         onOpenContextMenu(tab.id, event.clientX, event.clientY);
       }}
-      onDragStart={(event) => onDragStart(itemId, closed, event)}
+      onDragStart={(event) => onDragStart(tab.id, event)}
       onDragEnd={onDragEnd}
     >
       <button

@@ -7,6 +7,5 @@ export type ClosedProps = {
   onTogglePin: () => void;
   onClose: () => void;
   onRestore: (entryId: string) => void;
-  onMoveToTodo: (entryId: string) => void;
   onRemove: (entryId: string) => void;
 };

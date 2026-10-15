@@ -1,16 +1,8 @@
-import type {
-  ClosedTabEntry,
-  GroupEntry,
-  NoteTab,
-  TabColor,
-  TabStatus,
-} from "@/src/4-entity/notepad";
+import type { GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 
 export type DashboardProps = {
   tabs: NoteTab[];
   activeTabId?: string;
-  // Closed tabs of the shown group(s); they fill the Done column.
-  closedTabs: ClosedTabEntry[];
   groups: GroupEntry[];
   // All: cards show the group they belong to.
   showGroupNames: boolean;
@@ -25,8 +17,4 @@ export type DashboardProps = {
   onToggleTabPin: (tabId: string) => void;
   onToggleTabBookmark: (tabId: string) => void;
   onArchiveTab: (tabId: string) => void;
-  onRestoreClosed: (entryId: string) => void;
-  onChangeClosedStatus: (entryId: string, status: TabStatus) => void;
-  onMoveClosedToGroup: (entryId: string, groupId: string) => void;
-  onToggleClosedBookmark: (entryId: string) => void;
 };

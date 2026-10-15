@@ -42,13 +42,6 @@ export type PanelProps = {
     typeof Dashboard
   >["onToggleTabBookmark"];
   onArchiveDashboardTab: ComponentProps<typeof Dashboard>["onArchiveTab"];
-  onChangeClosedTabStatus: ComponentProps<
-    typeof Dashboard
-  >["onChangeClosedStatus"];
-  onMoveClosedTabToGroup: ComponentProps<typeof Dashboard>["onMoveClosedToGroup"];
-  onToggleClosedTabBookmark: ComponentProps<
-    typeof Dashboard
-  >["onToggleClosedBookmark"];
   onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
   onOpenClosed: ComponentProps<typeof Group>["onOpenClosed"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
@@ -56,6 +49,6 @@ export type PanelProps = {
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
-  onRestoreClosedTab: ComponentProps<typeof Dashboard>["onRestoreClosed"];
+  onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
   onOpenSearchedBookmark: ComponentProps<typeof GlobalSearch>["onOpenBookmark"];
 };

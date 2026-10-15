@@ -37,9 +37,6 @@ export function Panel({
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
   onArchiveDashboardTab,
-  onChangeClosedTabStatus,
-  onMoveClosedTabToGroup,
-  onToggleClosedTabBookmark,
   onRemoveClosedTab,
   onOpenClosed,
   onCreateGroup,
@@ -71,7 +68,6 @@ export function Panel({
       <Dashboard
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
-        closedTabs={visibleClosedTabs}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
@@ -85,10 +81,6 @@ export function Panel({
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
         onArchiveTab={onArchiveDashboardTab}
-        onRestoreClosed={onRestoreClosedTab}
-        onChangeClosedStatus={onChangeClosedTabStatus}
-        onMoveClosedToGroup={onMoveClosedTabToGroup}
-        onToggleClosedBookmark={onToggleClosedTabBookmark}
       />
       <Closed
         entries={visibleClosedTabs}
@@ -97,7 +89,6 @@ export function Panel({
         onTogglePin={onTogglePin}
         onClose={onClose}
         onRestore={onRestoreClosedTab}
-        onMoveToTodo={(entryId) => onChangeClosedTabStatus(entryId, "todo")}
         onRemove={onRemoveClosedTab}
       />
       <Group

@@ -15,7 +15,7 @@ export function DashboardStatuses({
   };
   return (
     <div className="dashboard-statuses">
-      {columns.map(({ status, tabs, closedTabs }) => (
+      {columns.map(({ status, tabs }) => (
         <h3
           key={status}
           id={`dashboard-status-${status}`}
@@ -23,9 +23,7 @@ export function DashboardStatuses({
           data-tab-color={getStatusColor(status, tabColorCycle)}
         >
           {statusLabels[status]}
-          <span className="dashboard-count">
-            {tabs.length + closedTabs.length}
-          </span>
+          <span className="dashboard-count">{tabs.length}</span>
         </h3>
       ))}
     </div>
