@@ -12,13 +12,16 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
 
   const column = dashboardColumn(page, "in-progress");
   await expect(column).toHaveCSS("border-left-width", "3px");
+  const title = column.locator(".dashboard-column-status");
+  await expect(title).toHaveCSS("padding-top", "7px");
+  await expect(title).toHaveCSS("padding-bottom", "7px");
   const borderColor = await column.evaluate(
     (element) => getComputedStyle(element).borderLeftColor,
   );
   expect(borderColor).toMatch(/(?:0\.7|70%)/);
 
   const columnBox = (await column.boundingBox())!;
-  const titleBox = (await column.locator(".dashboard-column-status").boundingBox())!;
+  const titleBox = (await title.boundingBox())!;
   const cardBox = (await column.locator(".dashboard-card").first().boundingBox())!;
   expect(columnBox.y).toBeCloseTo(titleBox.y, 0);
   expect(columnBox.y + columnBox.height).toBeGreaterThanOrEqual(
