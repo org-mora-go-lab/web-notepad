@@ -1,15 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-import { switchGroup } from "../../__util__";
 import { paneSlot } from "../__util__";
 import { createAllGroupQuad } from "./__util__";
 
-test("5. 그룹을 전환했다 돌아와도 All Group의 활성 탭과 편집기를 유지한다", async ({ page }) => {
-  await createAllGroupQuad(page);
-  await page.getByRole("tab", { name: "d", exact: true }).click();
-  await switchGroup(page, "Work");
-  await switchGroup(page, "All Group");
-
-  await expect(paneSlot(page, "left-bottom").locator(".note-pane")).not.toHaveClass(/is-unfocused/);
-  await expect(paneSlot(page, "left-bottom").locator("textarea")).toHaveValue("d");
+test("5. All Group의 분할 편집기 사이로 탭을 옮기고 활성 상태를 저장한다", async ({ page }) => {
+  const tab = await createAllGroupQuad(page);
+  await tab("b").locator(".tab-title").dragTo(paneSlot(page, "left").locator(".header"));
+  await expect(page.locator(".pane-slot")).toHaveCount(3);
+  await expect(paneSlot(page, "left").getByRole("tab", { name: "b", exact: true })).toHaveAttribute("aria-selected", "true");
+  await page.reload();
+  await expect(paneSlot(page, "left").locator("textarea")).toHaveValue("b");
 });

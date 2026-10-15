@@ -4,19 +4,11 @@ import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openPanel } from "../../__util__";
 import { panelPinButton } from "../__util__";
 
-test("2. 고정한 Dashboard 패널에서 DASHBOARD 명령을 다시 선택하면 패널을 닫는다", async ({ page }) => {
+test("2. Escape를 눌러도 고정 패널을 닫지 않는다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
-  await openPanel(page, "dashboard-panel");
-  await panelPinButton(page, "dashboard-panel").click();
-
-  await page
-    .locator('button[aria-controls="dashboard-panel"]:visible')
-    .first()
-    .click();
-
-  await expect(page.locator("#dashboard-panel")).toHaveAttribute(
-    "aria-hidden",
-    "true",
-  );
+  await openPanel(page, "bookmarks-panel");
+  await panelPinButton(page, "bookmarks-panel").click();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
 });

@@ -2,6 +2,6 @@ import { test } from "@playwright/test";
 
 import { expectLowerTabSplitRight } from "./__util__";
 
-test("2. All Group의 하단 탭도 기존 우상단을 유지하고 우하단으로 이동한다", async ({ page }) => {
-  await expectLowerTabSplitRight(page, { allGroup: true, hasRightTop: true });
+test("2. 일반 그룹에 오른쪽 열이 없으면 하단 탭을 새 우상단으로 이동한다", async ({ page }) => {
+  await expectLowerTabSplitRight(page, { allGroup: false, hasRightTop: false });
 });

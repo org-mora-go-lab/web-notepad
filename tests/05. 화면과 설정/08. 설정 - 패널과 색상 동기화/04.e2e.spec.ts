@@ -1,21 +1,21 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel, openSettingsPanel } from "../../__util__";
+import { STORAGE_KEY } from "../../__constant__";
+import { openSettingsPanel } from "../../__util__";
+import { settingsPanel } from "../__util__";
 
-test("4. Panel Position의 기본 Right와 Left 선택을 모든 사이드 패널에 즉시 적용한다", async ({ page }) => {
+test("4. Panel Slide 선택을 저장하고 새로고침 후 복원한다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
-  const settings = page.locator("#settings-panel");
-  await expect(settings.getByRole("radio", { name: "Right", exact: true })).toBeChecked();
-  await expect(settings.locator(".setting-section h3").last()).toHaveText("Panel Position");
-  await settings.getByRole("radio", { name: "Left", exact: true }).check();
-  await expect(page.locator(".home")).toHaveAttribute("data-panel-position", "left");
-  expect((await settings.boundingBox())!.x).toBe(0);
-  await settings.getByRole("button", { name: "Close Settings", exact: true }).click();
+  const panel = settingsPanel(page);
+  const on = panel.getByRole("radio", { name: "On", exact: true });
+  await on.check();
+  await expect
+    .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings.panelSlide, STORAGE_KEY))
+    .toBe(true);
 
-  for (const id of ["bookmarks-panel", "dashboard-panel", "global-search-panel"]) {
-    await openPanel(page, id);
-    expect((await page.locator(`#${id}`).boundingBox())!.x).toBe(0);
-    await page.keyboard.press("Escape");
-  }
+  await page.reload();
+  await expect(page.locator(".home")).toHaveAttribute("data-panel-slide", "on");
+  await expect(panel).toHaveAttribute("aria-hidden", "false");
+  await expect(on).toBeChecked();
 });

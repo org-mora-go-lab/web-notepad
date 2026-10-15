@@ -1,24 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-import { DESKTOP_VIEWPORT } from "../../__constant__";
-import { openPanel } from "../../__util__";
-import { dashboardPanel, seedDashboardTabs } from "../__util__";
+import { cycleActiveTabColor, openPanel } from "../../__util__";
+import { dashboardColumn, seedDashboardTabs } from "../__util__";
 
-test("5. PC는 세 상태 제목과 카드 컬럼을 가로로 나란히 표시한다", async ({ page }) => {
-  await page.setViewportSize(DESKTOP_VIEWPORT);
+test("5. 탭에서 색상을 변경하면 대시보드의 컬럼도 함께 바뀐다", async ({ page }) => {
   await seedDashboardTabs(page);
+  // tab-1 is gray (Todo): gray -> green -> purple.
+  await cycleActiveTabColor(page, 1);
   await openPanel(page, "dashboard-panel");
-  const panel = dashboardPanel(page);
-  const columns = panel.locator(".dashboard-column");
-  const titles = panel.locator(".dashboard-statuses h3");
-  const boxes = await Promise.all((await columns.all()).map((column) => column.boundingBox()));
-  const titleBoxes = await Promise.all((await titles.all()).map((title) => title.boundingBox()));
-  expect(boxes[0]!.y).toBeCloseTo(boxes[1]!.y, 0);
-  expect(boxes[1]!.x).toBeGreaterThan(boxes[0]!.x);
-  expect(boxes[2]!.x).toBeGreaterThan(boxes[1]!.x);
-  for (let index = 0; index < 3; index++) {
-    expect(titleBoxes[index]!.x).toBeCloseTo(boxes[index]!.x, 0);
-    expect(titleBoxes[index]!.width).toBeCloseTo(boxes[index]!.width, 0);
-  }
-  await expect(panel.locator(".dashboard-column-status").first()).toBeHidden();
+  await expect(dashboardColumn(page, "in-progress")).toContainText("Alpha task");
+
+  await page.keyboard.press("Escape");
+  await cycleActiveTabColor(page, 1);
+  await openPanel(page, "dashboard-panel");
+  await expect(dashboardColumn(page, "done")).toContainText("Alpha task");
+  await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toHaveCount(0);
 });

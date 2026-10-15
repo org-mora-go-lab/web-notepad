@@ -1,23 +1,26 @@
 import { expect, test } from "@playwright/test";
 
-import { BOTH_VIEWPORTS } from "../../__constant__";
+import { STORAGE_KEY } from "../../__constant__";
 import { groupsCommand, openGlobalSearchPanel } from "../../__util__";
 
-test("4. PC와 모바일의 에디터·검색창·그룹 입력 커서는 그레이다", async ({ page }) => {
+test("4. 마우스 입력 기기는 전체 폰트 설정에 따른 입력란 크기를 적용한다", async ({ page }) => {
+  await page.addInitScript((key) => {
+    localStorage.setItem(key, JSON.stringify({ state: { settings: { fontScale: 0.8 } }, version: 0 }));
+  }, STORAGE_KEY);
   await page.goto("/");
-  const editor = page.locator("textarea");
-  await expect(editor).toBeVisible();
-  const gray = "rgb(184, 184, 176)";
+  expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(false);
 
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    await editor.focus();
-    await expect(editor).toHaveCSS("caret-color", gray);
-    await openGlobalSearchPanel(page);
-    await expect(page.locator("#global-search-panel input")).toHaveCSS("caret-color", gray);
-    await page.keyboard.press("Escape");
-    await groupsCommand(page).click();
-    await expect(page.locator(".group-create-form input")).toHaveCSS("caret-color", gray);
-    await page.keyboard.press("Escape");
-  }
+  const expectBelowTouchMinimum = async (selector: string) => {
+    const size = await page.locator(selector).first().evaluate(
+      (element) => parseFloat(getComputedStyle(element).fontSize),
+    );
+    expect(size).toBeLessThan(16);
+  };
+
+  await expectBelowTouchMinimum(".note-area");
+  await openGlobalSearchPanel(page);
+  await expectBelowTouchMinimum("#global-search-panel input");
+  await page.keyboard.press("Escape");
+  await groupsCommand(page).click();
+  await expectBelowTouchMinimum(".group-create-form input");
 });

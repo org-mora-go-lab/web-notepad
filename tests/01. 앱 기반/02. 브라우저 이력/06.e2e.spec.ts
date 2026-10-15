@@ -1,19 +1,40 @@
 import { expect, test } from "@playwright/test";
 
-import { bookmarksCommand } from "../../__util__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { seedStoredStateOnLoad } from "../../__util__";
 
-test("6. 우측 패널을 닫은 이력으로 열림과 닫힘 상태를 복원한다", async ({ page }) => {
-  await page.goto("/");
-  const panel = page.locator("#bookmarks-panel");
-  await bookmarksCommand(page).click();
-  await expect(panel).toHaveAttribute("aria-hidden", "false");
+test("6. 오른쪽 탭 선택을 URL 이력으로 기록하고 탭과 pane 포커스를 복원한다", async ({ page }) => {
+  const group = createGroupFixture(
+    "ungrouped",
+    "Ungrouped",
+    [
+      createTabFixture("left", "Left"),
+      createTabFixture("right-a", "Right A"),
+      createTabFixture("right-b", "Right B"),
+    ],
+    {
+      rightTabIds: ["right-a", "right-b"],
+      activeRightTabId: "right-a",
+      activePane: "right",
+    },
+  );
+  await seedStoredStateOnLoad(page, {
+    activeGroupId: group.id,
+    groups: [group],
+    nextTabNumber: 4,
+  });
 
-  await panel.getByRole("button", { name: "Close Bookmarks" }).click();
-  await expect(panel).toHaveAttribute("aria-hidden", "true");
-  await expect.poll(() => new URL(page.url()).searchParams.get("panel")).toBeNull();
+  const rightPane = page.locator('.pane-slot[data-pane="right"]');
+  const editor = rightPane.locator("textarea");
+  await rightPane.getByRole("tab", { name: "Right B" }).click();
+  await expect(editor).toHaveValue("Right B");
+  await expect(editor).toBeFocused();
+  await expect.poll(() => new URL(page.url()).searchParams.get("rightTab")).toBe("right-b");
 
   await page.goBack();
-  await expect(panel).toHaveAttribute("aria-hidden", "false");
+  await expect(editor).toHaveValue("Right A");
+  await expect(editor).toBeFocused();
   await page.goForward();
-  await expect(panel).toHaveAttribute("aria-hidden", "true");
+  await expect(editor).toHaveValue("Right B");
+  await expect(editor).toBeFocused();
 });

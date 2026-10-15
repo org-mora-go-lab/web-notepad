@@ -1,16 +1,31 @@
 import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { openPanel, readStoredState, writeStoredState } from "../../__util__";
+import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("4. 짧은 일반 탭을 Done으로 옮겨도 편집기에 열린 상태를 유지한다", async ({ page }) => {
-  const tab = createTabFixture("tab-short", "short", { tabColor: "gray" });
-  await writeStoredState(page, { groups: [createGroupFixture("ungrouped", "Ungrouped", [tab])], activeGroupId: "ungrouped" });
+test("4. 고정 탭을 Done으로 옮기면 확인 없이 고정과 열린 상태를 유지한다", async ({ page }) => {
+  await writeStoredState(page, {
+    activeGroupId: "ungrouped",
+    groups: [
+      createGroupFixture("ungrouped", "Ungrouped", [
+        createTabFixture("tab-1", "Pinned task", {
+          tabColor: "gray",
+          pinned: true,
+        }),
+        createTabFixture("tab-2", "Other task", { tabColor: "gray" }),
+      ]),
+    ],
+    nextTabNumber: 3,
+  });
   await openPanel(page, "dashboard-panel");
-  await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "done"));
+  const card = dashboardColumn(page, "todo").locator(".dashboard-card", {
+    hasText: "Pinned task",
+  });
 
+  await card.dragTo(dashboardColumn(page, "done"));
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
-  expect((await readStoredState(page)).closedTabs).toEqual([]);
-  await expect(page.locator(".tab-item", { hasText: "short" })).toHaveCount(1);
+  await expect(page.locator(".tab-item", { hasText: "Pinned task" })).toHaveCount(1);
+  await expect(dashboardColumn(page, "done")).toContainText("Pinned task");
+  await expect(page.locator(".tab-item", { hasText: "Pinned task" })).toHaveClass(/is-pinned/);
 });

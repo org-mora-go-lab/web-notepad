@@ -1,9 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import { createPinnedAndBookmarkedTabs } from "../../__util__";
+import { addTabButton, readStoredState } from "../../__util__";
 
-test("3. 고정 탭에는 일반 닫기 버튼을 표시하지 않는다", async ({ page }) => {
-  const { pinnedTab: tab } = await createPinnedAndBookmarkedTabs(page);
-  await expect(tab).toHaveClass(/is-pinned/);
-  await expect(tab.locator(".tab-close")).toHaveCount(0);
+test("3. 내용이 있는 탭도 닫기 버튼으로 확인 없이 바로 닫는다", async ({ page }) => {
+  await page.goto("/");
+  const tabs = page.locator(".tab-item");
+  await page.locator("textarea").fill("12345678901");
+  await addTabButton(page).click();
+
+  await tabs.first().locator(".tab-close").click();
+  await expect(tabs).toHaveCount(1);
+  await expect(page.getByRole("alertdialog")).toHaveCount(0);
+  await expect.poll(async () => (await readStoredState(page)).closedTabs?.[0].tab.content).toBe("12345678901");
 });

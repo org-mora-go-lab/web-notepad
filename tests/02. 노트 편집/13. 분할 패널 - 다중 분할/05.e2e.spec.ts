@@ -1,14 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { paneSlot, seedQuadState } from "../__util__";
+import { dragTabToZone, paneSlot, seedQuadState } from "../__util__";
 
-test("5. 하단 패널의 마지막 탭을 닫으면 해당 열의 상하 분할을 해제한다", async ({ page }) => {
+test("5. 상단 패널이 비면 같은 열의 하단 패널을 상단으로 올린다", async ({ page }) => {
   await seedQuadState(page);
-  await expect(page.locator(".pane-slot")).toHaveCount(4);
+  const rightTopTab = paneSlot(page, "right").locator(".tab-item");
+  await dragTabToZone(page, rightTopTab, paneSlot(page, "left"), "Move here");
 
-  await paneSlot(page, "left-bottom").getByRole("button", { name: "Close left-bottom" }).click();
-  await expect(page.locator(".pane-slot")).toHaveCount(3);
-  await expect(paneSlot(page, "left-bottom")).toHaveCount(0);
-  await expect(page.locator('.pane-column[data-column="left"] .pane-slot')).toHaveCount(1);
-
+  await expect(paneSlot(page, "right").locator("textarea")).toHaveValue("right-bottom");
+  await expect(paneSlot(page, "right-bottom")).toHaveCount(0);
 });

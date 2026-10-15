@@ -1,13 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { chooseTabMenuItem, lineButtons, readStoredState } from "../../__util__";
+import { bookmarkActiveTab, cycleActiveTabColor, readStoredState } from "../../__util__";
 
-test("5. 북마크를 추가하면 선택한 줄 번호를 보관한다", async ({ page }) => {
+test("5. 원본 탭의 색상이 바뀌면 연결된 북마크의 탭 색상을 갱신한다", async ({ page }) => {
   await page.goto("/");
-  await page.locator("textarea").fill("first\nsecond\nthird");
-  await lineButtons(page).nth(1).click();
-  await lineButtons(page).nth(2).click();
-  await chooseTabMenuItem(page, "Bookmark");
+  await bookmarkActiveTab(page, "bookmark color");
+  await cycleActiveTabColor(page, 2);
 
-  expect((await readStoredState(page)).groups[0].bookmarks[0].selectedLines).toEqual([1, 2]);
+  await expect.poll(async () => (await readStoredState(page)).groups[0].bookmarks[0].tabColor)
+    .toBe("purple");
 });

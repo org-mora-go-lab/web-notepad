@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-import { prepareMarkedWorkspace, switchWorkspaceToKorean } from "../__util__";
+import { switchWorkspaceToKorean } from "../__util__";
 
-test("2. 언어 변경은 대시보드 패널의 이름과 닫기 조작 접근성 이름을 바꾼다", async ({ page }) => {
-  await prepareMarkedWorkspace(page);
+test("2. 언어 변경은 전체 검색 패널과 검색 입력·닫기 조작의 접근성 이름을 바꾼다", async ({ page }) => {
+  await page.goto("/");
   const settings = await switchWorkspaceToKorean(page);
   await settings.getByRole("button", { name: "설정 닫기", exact: true }).click();
-  await page.locator(".dashboard-command").click();
-  const dashboard = page.locator("#dashboard-panel");
-  await expect(dashboard).toHaveAttribute("aria-label", "대시보드");
-  await expect(dashboard.getByRole("button", { name: "대시보드 닫기", exact: true })).toBeVisible();
+  await page.locator('.footer button[aria-controls="global-search-panel"]').click();
+  await expect(page.locator("#global-search-panel")).toHaveAttribute("aria-label", "검색");
+  await expect(page.getByRole("searchbox", { name: "전체 검색" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "검색 닫기", exact: true })).toBeVisible();
 });

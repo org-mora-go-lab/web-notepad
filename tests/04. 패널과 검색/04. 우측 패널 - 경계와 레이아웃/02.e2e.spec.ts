@@ -1,27 +1,25 @@
 import { expect, test } from "@playwright/test";
 
 import { openPanel } from "../../__util__";
+import { dragPanelEdgeTo } from "../__util__";
 
-test("2. 패널 경계 그라데이션은 좌우 배치에 맞춰 방향과 위치를 반전한다", async ({ page }) => {
+test("2. 경계 음영은 카드 클릭과 패널 크기 조절을 막지 않는다", async ({ page }) => {
   await page.goto("/");
-  await openPanel(page, "bookmarks-panel");
-  const home = page.locator(".home");
-  const panel = page.locator("#bookmarks-panel");
-  await home.evaluate((element) => element.setAttribute("data-panel-position", "left"));
-  const background = () =>
-    panel.evaluate(
-      (element) => getComputedStyle(element, "::before").backgroundImage,
-    );
-  await expect.poll(background).toContain("to left");
-  const gradient = await background();
-  expect(gradient).toContain("0%");
-  expect(gradient).toContain("30%");
-  expect(gradient).toContain("65%");
-  expect(gradient).toContain("100%");
-  expect(gradient).toContain("0.04");
-  expect(gradient).toContain("0.104");
-  expect(await panel.evaluate((element) => getComputedStyle(element, "::before").left)).toBe(`${(await panel.boundingBox())!.width - 1}px`);
+  await page.locator("textarea").fill("Clickable dashboard card");
+  await openPanel(page, "dashboard-panel");
+  const panel = page.locator("#dashboard-panel");
 
-  await home.evaluate((element) => element.setAttribute("data-panel-position", "right"));
-  await expect.poll(background).toContain("to right");
+  expect(await panel.evaluate((element) => getComputedStyle(element, "::before").pointerEvents)).toBe("none");
+  await expect(panel.locator(".side-panel-resizer")).toHaveCSS("pointer-events", "auto");
+  await panel
+    .getByRole("button", { name: "Clickable dashboard card", exact: true })
+    .click();
+  await expect(panel).toHaveAttribute("aria-hidden", "true");
+
+  await openPanel(page, "dashboard-panel");
+  const before = (await panel.boundingBox())!.width;
+  await dragPanelEdgeTo(page, "dashboard-panel", 700);
+  await expect
+    .poll(async () => (await panel.boundingBox())!.width)
+    .not.toBeCloseTo(before, 0);
 });

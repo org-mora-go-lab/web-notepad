@@ -1,15 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { chooseGroupAction, createGroups, groupsCommand, groupStatusName } from "../../__util__";
+import { readActiveGroup } from "../../__util__";
+import { renameWorkGroup } from "./__util__";
 
-test("4. 이름 수정 입력에서 Escape를 누르면 편집을 취소한다", async ({ page }) => {
-  await page.goto("/");
-  await createGroups(page, "Work");
-  await groupsCommand(page).click();
-  await chooseGroupAction(page, "Work", "수정");
-  const input = page.getByRole("textbox", { name: "Edit Work group name" });
-  await input.fill("Escaped");
-  await input.press("Escape");
-  await expect(input).toHaveCount(0);
-  await expect(groupStatusName(page)).toHaveText("Work");
+test("4. 그룹 이름을 바꿔도 그룹의 북마크를 유지하고 새로고침 후 복원한다", async ({ page }) => {
+  await renameWorkGroup(page);
+
+  expect((await readActiveGroup(page)).bookmarks[0].content).toBe("private note");
+  await page.reload();
+  expect((await readActiveGroup(page)).bookmarks[0].content).toBe("private note");
 });

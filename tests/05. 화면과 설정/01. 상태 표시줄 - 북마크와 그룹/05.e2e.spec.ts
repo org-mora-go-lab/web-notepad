@@ -1,16 +1,29 @@
 import { expect, test } from "@playwright/test";
 
-import { BOTH_VIEWPORTS } from "../../__constant__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { bookmarksCommand, seedStoredStateOnLoad } from "../../__util__";
 
-test("5. PC와 모바일에 CLOSED를 표시하지 않고 SHORTCUT은 PC MENU에만 표시한다", async ({ page }) => {
-  await page.goto("/");
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    await expect(page.locator('.footer [aria-controls="shortcuts-panel"], .footer [aria-controls="closed-panel"]')).toHaveCount(0);
-    await page.getByRole("button", { name: "MENU", exact: true }).click();
-    await expect(page.getByRole("menuitem", { name: "CLOSED" })).toHaveCount(0);
-    if (viewport.width <= 640) await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeHidden();
-    else await expect(page.getByRole("menuitem", { name: "SHORTCUT" })).toBeVisible();
-    await page.keyboard.press("Escape");
-  }
+test("5. 오래된 북마크와 연결된 탭 색상을 바꾸면 BOOKMARK 붉은 점을 표시한다", async ({ page }) => {
+  const yesterday = Date.now() - 24 * 60 * 60 * 1000;
+  const tab = createTabFixture("tab-old", "Old note", { bookmarked: true });
+  await seedStoredStateOnLoad(page, {
+    activeGroupId: "ungrouped",
+    groups: [createGroupFixture("ungrouped", "Ungrouped", [tab], {
+      bookmarks: [{
+        id: "bookmark-tab-old",
+        sourceTabId: tab.id,
+        title: tab.title,
+        content: tab.content,
+        tabColor: tab.tabColor,
+        selectedLines: [],
+        createdAt: yesterday,
+        updatedAt: yesterday,
+      }],
+    })],
+  });
+
+  const dot = bookmarksCommand(page).locator(".status-dot");
+  await expect(dot).toHaveCount(0);
+  await page.locator(".tab-item.is-active .dirty-dot").click();
+  await expect(dot).toBeVisible();
 });

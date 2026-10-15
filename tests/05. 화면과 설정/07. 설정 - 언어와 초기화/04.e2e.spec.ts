@@ -1,30 +1,30 @@
 import { expect, test } from "@playwright/test";
 
-import { STORAGE_KEY } from "../../__constant__";
 import { openSettingsPanel } from "../../__util__";
-import { settingsPanel, tabColorRadio } from "../__util__";
+import { fontScaleRadio, languageRadio, settingsPanel, tabColorRadio } from "../__util__";
 
-test("4. Tab Colors 제목 오른쪽의 색상 초기화 버튼은 팝업 없이 탭 색상 순서만 기본값으로 되돌린다", async ({ page }) => {
+test("4. Reset은 모든 설정을 기본값으로 되돌린다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
   const panel = settingsPanel(page);
-  await expect(panel).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
-  const title = panel.locator(".setting-section-heading h3", { hasText: "Tab Colors" });
-  const reset = panel.getByRole("button", { name: "Reset tab colors", exact: true });
-  const titleBounds = (await title.boundingBox())!;
-  const resetBounds = (await reset.boundingBox())!;
-  expect(resetBounds.x).toBeGreaterThanOrEqual(titleBounds.x + titleBounds.width);
-  expect(resetBounds.y + resetBounds.height / 2).toBeCloseTo(titleBounds.y + titleBounds.height / 2, 0);
-
+  await fontScaleRadio(page, "120%").check();
   await tabColorRadio(page, 1, "Pink").check();
-  await tabColorRadio(page, 3, "Teal").check();
+  await panel.getByRole("radio", { name: "On", exact: true }).check();
+  await panel.getByRole("radio", { name: "Left", exact: true }).check();
+  await languageRadio(page, "한국어").check();
 
-  await reset.click();
-  await expect(page.getByRole("alertdialog")).toHaveCount(0);
+  await panel.locator(".setting-reset").click();
+  await page
+    .getByRole("alertdialog", { name: "설정 초기화" })
+    .getByRole("button", { name: "초기화", exact: true })
+    .click();
+
+  await expect(panel.locator("h2")).toHaveText("Settings");
+  await expect(fontScaleRadio(page, "100%")).toBeChecked();
   await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
   await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
   await expect(tabColorRadio(page, 3, "Purple")).toBeChecked();
-  await expect
-    .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toMatchObject({ tabColorCycle: ["gray", "green", "purple"] });
+  await expect(languageRadio(page, "English")).toBeChecked();
+  await expect(panel.getByRole("radio", { name: "Off", exact: true })).toBeChecked();
+  await expect(panel.getByRole("radio", { name: "Right", exact: true })).toBeChecked();
 });

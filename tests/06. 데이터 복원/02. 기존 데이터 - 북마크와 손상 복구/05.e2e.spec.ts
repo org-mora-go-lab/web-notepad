@@ -1,25 +1,23 @@
 import { expect, test } from "@playwright/test";
 
-import { readStoredState } from "../../__util__";
-import { seedRecoveryCollision } from "./__util__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { seedStoredStateOnLoad } from "../../__util__";
 
-test("5. 빈 그룹 복구 탭 ID는 다른 그룹 탭과 북마크 원본 ID를 재사용하지 않는다", async ({ page }) => {
-  await seedRecoveryCollision(page);
-  await page.locator("textarea").fill("Recovered workspace");
-  await expect
-    .poll(async () => {
-      const tab = (await readStoredState(page)).groups.find(
-        (group) => group.id === "ungrouped",
-      )?.tabs[0];
-      return tab?.content === "Recovered workspace" && !["tab-1", "tab-2", "tab-3"].includes(tab.id);
-    })
-    .toBe(true);
+test("5. 손상된 액션 이름 필드를 제거한 뒤 노트 편집이 동작한다", async ({ page }) => {
+  await seedStoredStateOnLoad(page, {
+    activeGroupId: "ungrouped",
+    groups: [
+      createGroupFixture("ungrouped", "Ungrouped", [
+        createTabFixture("tab-1", "Protected note"),
+      ]),
+    ],
+    nextTabNumber: 2,
+    updateTab: "corrupted update action",
+    addTab: null,
+    createGroup: { corrupted: true },
+  });
 
-  const state = await readStoredState(page);
-  const tabs = state.groups.flatMap((group) => group.tabs);
-  const reservedIds = new Set([
-    ...tabs.map((tab) => tab.id),
-    ...state.groups.flatMap((group) => group.bookmarks.map((bookmark) => bookmark.sourceTabId)),
-  ]);
-  expect(reservedIds.size).toBe(tabs.length + state.groups.flatMap((group) => group.bookmarks).length);
+  const editor = page.locator("textarea");
+  await editor.fill("Protected note edited");
+  await expect(editor).toHaveValue("Protected note edited");
 });

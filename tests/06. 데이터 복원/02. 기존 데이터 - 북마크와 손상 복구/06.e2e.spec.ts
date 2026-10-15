@@ -1,26 +1,12 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { readStoredState, seedStoredStateOnLoad } from "../../__util__";
+import { restoreStoredBookmark } from "../../__util__";
+import { expectRestoredBookmark } from "./__util__";
 
-test("6. 저장된 임의 필드와 스토어 액션 이름 필드를 복원 상태에서 제외한다", async ({ page }) => {
-  await seedStoredStateOnLoad(page, {
-    activeGroupId: "ungrouped",
-    groups: [
-      createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-1", "Protected note"),
-      ]),
-    ],
-    nextTabNumber: 2,
-    updateTab: "corrupted update action",
-    addTab: null,
-    createGroup: { corrupted: true },
-    arbitraryField: "must not enter the store",
+test("6. 북마크 선택 줄의 중복·범위 초과·잘못된 인덱스를 제거한다", async ({ page }) => {
+  await restoreStoredBookmark(page, {
+    tabColor: "green",
+    selectedLines: [2, 1, 1, -1, 3, 0.5, "0"],
   });
-
-  await expect.poll(async () => {
-    const stored = (await readStoredState(page)) as unknown as Record<string, unknown>;
-    return ["updateTab", "addTab", "createGroup", "arbitraryField"]
-      .filter((key) => Object.hasOwn(stored, key));
-  }).toEqual([]);
+  await expectRestoredBookmark(page, { tabColor: "green", pressedLines: [false, true, true] });
 });

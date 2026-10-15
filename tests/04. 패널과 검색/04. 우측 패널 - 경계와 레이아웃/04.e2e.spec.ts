@@ -1,20 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openPanel } from "../../__util__";
 import { panelPinButton } from "../__util__";
 
-test("4. 경계 그라데이션은 패널을 고정하거나 닫으면 제거하고 고정을 해제하면 복원한다", async ({ page }) => {
-  await page.setViewportSize(DESKTOP_VIEWPORT);
+test("4. 고정 패널은 배경 덮개·그림자·경계 음영 없이 편집기를 계속 사용할 수 있다", async ({ page }) => {
   await page.goto("/");
   await openPanel(page, "bookmarks-panel");
   const panel = page.locator("#bookmarks-panel");
-  const content = () => panel.evaluate((element) => getComputedStyle(element, "::before").content);
-  await expect.poll(content).not.toBe("none");
   await panelPinButton(page, "bookmarks-panel").click();
-  await expect.poll(content).toBe("none");
-  await panelPinButton(page, "bookmarks-panel").click();
-  await expect.poll(content).not.toBe("none");
-  await panel.locator(".side-panel-close").click();
-  await expect.poll(content).toBe("none");
+  await expect(panel).toHaveCSS("box-shadow", "none");
+  expect(await panel.evaluate((element) => getComputedStyle(element, "::before").content)).toBe("none");
+  // The workspace stays usable: no backdrop covers it while the panel is pinned.
+  await expect(page.locator(".bookmark .side-panel-backdrop")).toBeHidden();
+  await page.locator(".note-area").click();
+  await page.keyboard.type("typed while pinned");
+  await expect(page.locator(".note-area")).toHaveValue("typed while pinned");
+  await expect(panel).toHaveAttribute("aria-hidden", "false");
+
 });

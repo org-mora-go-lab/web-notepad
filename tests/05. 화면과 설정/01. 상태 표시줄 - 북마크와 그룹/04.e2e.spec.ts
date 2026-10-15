@@ -1,34 +1,35 @@
 import { expect, test } from "@playwright/test";
 
-import { BOTH_VIEWPORTS } from "../../__constant__";
-import { groupsCommand, groupSelectCommand } from "../../__util__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { bookmarksCommand, seedStoredStateOnLoad } from "../../__util__";
 
-test("4. 맨 왼쪽 그룹 선택 버튼은 아이콘과 그룹 이름을 표시하고 그룹 드롭다운을 연다", async ({ page }) => {
-  await page.goto("/");
-  const groupName = groupsCommand(page);
-  const groupIcon = groupSelectCommand(page);
-  const groupsMenu = page.locator("#groups-menu");
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    await expect(groupIcon.locator("svg")).toHaveCount(1);
-    await expect(groupIcon.locator(".status-label")).toHaveText("Ungrouped");
-    await expect(groupIcon).toHaveAttribute("aria-label", "Select group: Ungrouped");
+test("4. 오늘 생성·갱신된 북마크가 없으면 붉은 점을 숨기고, 연결된 탭을 오늘 수정하면 다시 표시한다", async ({ page }) => {
+  const yesterday = Date.now() - 24 * 60 * 60 * 1000;
+  const tab = createTabFixture("tab-old", "Old note", { bookmarked: true });
+  await seedStoredStateOnLoad(page, {
+    activeGroupId: "ungrouped",
+    groups: [createGroupFixture("ungrouped", "Ungrouped", [tab], {
+      bookmarks: [{
+        id: "bookmark-tab-old",
+        sourceTabId: tab.id,
+        title: tab.title,
+        content: tab.content,
+        tabColor: tab.tabColor,
+        selectedLines: [],
+        createdAt: yesterday,
+        updatedAt: yesterday,
+      }],
+    })],
+  });
 
-    const commands = await page.locator(".status-meta .status-command:visible").all();
-    const iconBox = (await groupIcon.boundingBox())!;
-    for (const command of commands) {
-      expect((await command.boundingBox())!.x).toBeGreaterThanOrEqual(iconBox.x);
-    }
+  const dot = bookmarksCommand(page).locator(".status-dot");
+  await expect(bookmarksCommand(page).locator(".status-label")).toBeVisible();
+  await expect(dot).toHaveCount(0);
 
-    for (const command of [groupName]) {
-      await command.click();
-      await expect(groupsMenu).toBeVisible();
-      await expect(command).toHaveAttribute("aria-expanded", "true");
-      const commandBounds = (await command.boundingBox())!;
-      const menuBounds = (await groupsMenu.boundingBox())!;
-      expect(menuBounds.y + menuBounds.height).toBeLessThanOrEqual(commandBounds.y + 1);
-      await page.keyboard.press("Escape");
-      await expect(groupsMenu).toHaveCount(0);
-    }
-  }
+  const editor = page.locator(".note-area");
+  await editor.focus();
+  await page.keyboard.press("End");
+  await page.keyboard.type(" updated");
+  await expect(editor).toHaveValue("Old note updated");
+  await expect(dot).toBeVisible();
 });

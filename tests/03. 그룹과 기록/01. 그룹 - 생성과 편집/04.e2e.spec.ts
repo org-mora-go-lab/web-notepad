@@ -1,13 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-import { MOBILE_VIEWPORT } from "../../__constant__";
-import { groupsCommand } from "../../__util__";
+import { chooseGroupAction, createGroup, groupActionsButton, groupsCommand } from "../../__util__";
 
-test("4. 모바일에서는 그룹 전용 우측 패널과 그룹 검색을 표시하지 않는다", async ({ page }) => {
-  await page.setViewportSize(MOBILE_VIEWPORT);
+test("4. 기본 Ungrouped 그룹은 삭제할 수 없다", async ({ page }) => {
   await page.goto("/");
   await groupsCommand(page).click();
+  await createGroup(page, "Work");
 
-  await expect(page.locator('.side-panel[id*="group"]')).toHaveCount(0);
-  await expect(page.getByRole("searchbox", { name: /group/i })).toHaveCount(0);
+  await groupActionsButton(page, "Work").click();
+  await expect(page.getByRole("button", { name: "Delete Work group", exact: true })).toBeVisible();
+  await expect(groupActionsButton(page, "Ungrouped")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Delete Ungrouped group" })).toHaveCount(0);
+  await expect(page.locator(".group-item").filter({ hasText: "Ungrouped" }).locator("button:not(.group-select)")).toHaveCount(0);
+  await chooseGroupAction(page, "Work", "고정");
 });

@@ -1,18 +1,20 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 
-import { lineButtons } from "../../__util__";
+import { addTabButton, expectSelectedLines, lineButtons } from "../../__util__";
 
-test("4. 첫 줄 선택 배경은 편집기 상단 여백까지 이어진다", async ({ page }) => {
+test("4. 줄 선택을 노트별로 저장하고 탭 전환 후 각각 복원한다", async ({ page }) => {
   await page.goto("/");
   const editor = page.locator("textarea");
-  const rail = page.locator(".line-rail");
   const lines = lineButtons(page);
-  await editor.fill("first\nsecond\nthird");
+  await editor.fill("one\ntwo\nthree");
+  await lines.nth(1).click();
+  await lines.nth(2).click();
+  await addTabButton(page).click();
+  await editor.fill("other\nnote");
+  await expectSelectedLines(page, [false]);
   await lines.first().click();
-
-  await expect(lines.first()).toHaveAttribute("aria-pressed", "true");
-  await expect(rail).toHaveCSS("background-image", /rgba\(184, 184, 176, 0\.2\)/);
-  await expect(rail).toHaveCSS("background-size", "100% 10px");
-  await expect(editor).toHaveCSS("background-position", /0px 0px/);
-  await expect(editor).toHaveCSS("background-size", "100% 45px");
+  await page.locator('[role="tab"]').first().click();
+  await expectSelectedLines(page, [false, true, true]);
+  await page.locator('[role="tab"]').nth(1).click();
+  await expectSelectedLines(page, [true, false]);
 });

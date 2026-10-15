@@ -1,9 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-test("3. PC에서는 더블클릭으로 탭 메뉴를 열지 않는다", async ({ page }) => {
+import { MOBILE_VIEWPORT } from "../../__constant__";
+import { addTabButton } from "../../__util__";
+
+test.use({ hasTouch: true });
+
+test("3. 모바일 탭 제목 더블탭 메뉴에 Pin·Unpin을 표시하지 않는다", async ({ page }) => {
+  await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
+  await addTabButton(page).tap();
   const tab = page.locator(".tab-item").first();
-  await tab.locator('[role="tab"]').dblclick();
-  await expect(page.getByRole("menu")).toHaveCount(0);
-  await expect(tab).not.toHaveClass(/is-pinned|is-bookmarked/);
+  const button = tab.getByRole("tab");
+
+  await button.dblclick();
+  await expect(page.getByRole("menuitem", { name: "Pin", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("menuitem", { name: "Unpin", exact: true })).toHaveCount(0);
 });

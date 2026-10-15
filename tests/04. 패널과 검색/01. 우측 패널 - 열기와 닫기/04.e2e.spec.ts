@@ -1,19 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 import { openPanel } from "../../__util__";
-import { RIGHT_PANEL_IDS } from "../__constant__";
+import { RIGHT_PANEL_VIEWPORTS } from "../__constant__";
 
-test("4. 우측 패널은 한 번에 하나만 열린다", async ({ page }) => {
+test("4. 브라우저 뒤로가기로 열린 우측 패널을 닫는다", async ({ page }) => {
   await page.goto("/");
-  for (const openId of RIGHT_PANEL_IDS) {
-    await openPanel(page, openId);
-    for (const panelId of RIGHT_PANEL_IDS) {
-      await expect(page.locator(`#${panelId}`)).toHaveAttribute(
-        "aria-hidden",
-        panelId === openId ? "false" : "true",
-      );
+  for (const { viewport, panelIds } of RIGHT_PANEL_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    for (const panelId of panelIds) {
+      const panel = page.locator(`#${panelId}`);
+      await openPanel(page, panelId);
+      await expect(panel).toHaveAttribute("aria-hidden", "false");
+      await page.goBack();
+      await expect(panel).toHaveAttribute("aria-hidden", "true");
     }
-    await page.keyboard.press("Escape");
-    await expect(page.locator(`#${openId}`)).toHaveAttribute("aria-hidden", "true");
   }
 });

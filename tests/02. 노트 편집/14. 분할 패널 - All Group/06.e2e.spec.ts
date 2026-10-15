@@ -1,15 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-import { switchGroup } from "../../__util__";
-import { paneSlot } from "../__util__";
-import { createAllGroupQuad } from "./__util__";
+import { dragTabToZone, paneSlot, seedAllGroupState } from "../__util__";
 
-test("6. 그룹을 전환했다 돌아오면 All Group의 4분할 배치를 복원한다", async ({ page }) => {
-  await createAllGroupQuad(page);
-  await switchGroup(page, "Work");
-  await switchGroup(page, "All Group");
+test("6. All Group 분할 편집기의 새 탭은 현재 패널에 표시하고 Ungrouped 소속으로 저장한다", async ({ page }) => {
+  await seedAllGroupState(page);
+  const tab = page.getByRole("tab", { name: "d", exact: true }).locator("..");
+  await dragTabToZone(page, tab, paneSlot(page, "left"), "Split right");
+  const right = paneSlot(page, "right");
+  await right.getByRole("button", { name: "New tab" }).click();
+  await right.locator("textarea").fill("new");
 
-  await expect(page.locator(".pane-slot")).toHaveCount(4);
-  await expect(paneSlot(page, "left-bottom").locator("textarea")).toHaveValue("d");
-  await expect(paneSlot(page, "right-bottom").locator("textarea")).toHaveValue("b");
+  await expect(right.getByRole("tab", { name: "new", exact: true })).toHaveAttribute("aria-selected", "true");
+  const owner = await page.evaluate(() => {
+    const groups = JSON.parse(localStorage.getItem("web-notepad-storage")!).state.groups;
+    return groups.find((group: { tabs: { content: string }[] }) => group.tabs.some((item) => item.content === "new")).id;
+  });
+  expect(owner).toBe("ungrouped");
 });
