@@ -41,4 +41,12 @@ test("6. 검색 목록과 우측 미리보기를 표시하고 스크롤 상단�
       ),
     )
     .toBe("1");
+  const paneBox = (await results.boundingBox())!;
+  const gradientTop = await results.evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element, "::after").top),
+  );
+  expect(paneBox.y + gradientTop).toBeCloseTo(
+    searchBox.y + searchBox.height,
+    0,
+  );
 });
