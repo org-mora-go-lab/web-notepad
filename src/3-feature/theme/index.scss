@@ -2,13 +2,35 @@
 @use "./style/palette";
 
 .theme {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+
+  .theme-label {
+    min-height: 38px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: v.$muted;
+    font-size: v.font(15px);
+
+    > svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--color-focus);
+      outline-offset: -2px;
+    }
+  }
+
   .theme-options {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
-    margin: 0 4px 4px 20px;
-    padding: 6px;
-    border-left: 1px solid v.$line;
+    display: flex;
+    gap: 3px;
+    padding-right: 8px;
   }
 
   .theme-option {
@@ -27,14 +49,15 @@
     }
 
     span {
-      min-height: 32px;
+      width: 24px;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid v.$line;
-      border-radius: 3px;
+      border-radius: 50%;
       color: v.$muted;
-      font-size: v.font(13px);
+      font-size: v.font(11px);
     }
 
     &:hover span,
@@ -50,7 +73,22 @@
     }
   }
 
-  @media (min-width: 641px) {
-    .theme-options { margin: 2px 2px 6px 18px; }
+  @media (max-width: 640px) {
+    .theme-label {
+      min-height: 38px * v.$mobile-scale;
+      font-size: v.font(15px * v.$mobile-scale);
+
+      > svg {
+        width: 18px * v.$mobile-scale;
+        height: 18px * v.$mobile-scale;
+        flex-basis: 18px * v.$mobile-scale;
+      }
+    }
+
+    .theme-option span {
+      width: 24px * v.$mobile-scale;
+      height: 24px * v.$mobile-scale;
+      font-size: v.font(11px * v.$mobile-scale);
+    }
   }
 }

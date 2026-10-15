@@ -1,7 +1,7 @@
 "use client";
 
-import { ChevronRight, Moon, Sun } from "lucide-react";
-import { useId, useState } from "react";
+import { Moon, Sun } from "lucide-react";
+import { useId } from "react";
 
 import { useTheme } from "@/src/4-entity";
 import { useI18n } from "@/src/5-shared/hook";
@@ -9,51 +9,46 @@ import { useI18n } from "@/src/5-shared/hook";
 import type { ThemeProps } from "./type";
 
 export function Theme({ onSelect }: ThemeProps) {
-  const [open, setOpen] = useState(false);
   const optionsId = useId();
   const { theme, setTheme } = useTheme();
   const { t } = useI18n();
 
   return (
     <div className="theme">
-      <button
-        type="button"
+      <div
+        className="theme-label"
         role="menuitem"
-        aria-expanded={open}
-        aria-controls={optionsId}
-        onClick={() => setOpen(!open)}
+        tabIndex={0}
       >
         {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
         <span>{t.theme}</span>
-        <ChevronRight className={open ? "is-expanded" : ""} size={14} />
-      </button>
-      {open && (
-        <div
-          className="theme-options"
-          id={optionsId}
-          role="menu"
-          aria-label={t.theme}
-        >
-          {(["dark", "light"] as const).map((option) => (
-            <label
-              key={option}
-              className="theme-option"
-            >
-              <input
-                type="radio"
-                name={optionsId}
-                value={option}
-                checked={theme === option}
-                onChange={() => {
-                  setTheme(option);
-                  onSelect();
-                }}
-              />
-              <span>{t[option]}</span>
-            </label>
-          ))}
-        </div>
-      )}
+      </div>
+      <div
+        className="theme-options"
+        id={optionsId}
+        role="radiogroup"
+        aria-label={t.theme}
+      >
+        {(["dark", "light"] as const).map((option) => (
+          <label
+            key={option}
+            className="theme-option"
+          >
+            <input
+              type="radio"
+              name={optionsId}
+              value={option}
+              aria-label={t[option]}
+              checked={theme === option}
+              onChange={() => {
+                setTheme(option);
+                onSelect();
+              }}
+            />
+            <span aria-hidden="true">{t[option].slice(0, 1)}</span>
+          </label>
+        ))}
+      </div>
     </div>
   );
 }
