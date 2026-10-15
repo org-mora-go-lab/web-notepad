@@ -84,6 +84,9 @@ export function Dashboard({
           columns={columns}
           tabColorCycle={tabColorCycle}
           statusNames={statusNames}
+          iceboxVisible={iceboxVisible}
+          closedVisible={closedVisible}
+          closedCount={closedEntries.length}
           onRenameStatus={onRenameStatus}
         />
         <div className="dashboard-list" ref={listRef}>

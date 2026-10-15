@@ -30,6 +30,25 @@
     }
   }
 
+  .dashboard-statuses.has-icebox,
+  .dashboard-statuses.has-closed {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .dashboard-statuses.has-icebox.has-closed {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .dashboard-statuses h3.dashboard-icebox-status {
+    --dashboard-accent: color-mix(in srgb, #{v.$saved} 42%, white);
+    color: var(--dashboard-accent);
+  }
+
+  .dashboard-statuses h3.dashboard-closed-status {
+    --dashboard-accent: color-mix(in srgb, var(--color-tab-purple) 68%, #000);
+    color: var(--dashboard-accent);
+  }
+
   .dashboard-content.is-scrolled .dashboard-statuses::after {
     opacity: 1;
   }
