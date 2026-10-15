@@ -102,6 +102,8 @@ export const en = {
   shortcutCloseTab: "Close the active tab",
   shortcutMoveTab: "Move between tabs",
   shortcutSelectAll: "Select all content",
+  shortcutUndo: "Undo edit",
+  shortcutRedo: "Redo edit",
   shortcutMoveRight: "Move to the right pane",
   shortcutMoveLeft: "Move to the left pane",
   shortcutInsertTab: "Insert a tab character",

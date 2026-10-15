@@ -105,6 +105,8 @@ export const ko: Messages = {
   shortcutCloseTab: "활성 탭 닫기",
   shortcutMoveTab: "탭 간 이동",
   shortcutSelectAll: "내용 전체 선택",
+  shortcutUndo: "편집 실행 취소",
+  shortcutRedo: "편집 다시 실행",
   shortcutMoveRight: "오른쪽 패널로 이동",
   shortcutMoveLeft: "왼쪽 패널로 이동",
   shortcutInsertTab: "탭 문자 삽입",
