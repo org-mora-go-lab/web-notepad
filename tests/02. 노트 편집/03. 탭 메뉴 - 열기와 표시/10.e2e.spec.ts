@@ -10,6 +10,6 @@ test("10. 모바일 북마크 아이콘을 더블탭하면 해당 탭 메뉴를 
   const { bookmarkedTab } = await createPinnedAndBookmarkedTabs(page);
   await bookmarkedTab.getByRole("tab").click();
   await bookmarkedTab.locator(".tab-bookmark-indicator").dblclick();
-  await expect(page.getByRole("menuitem", { name: "Pin", exact: true })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Pin", exact: true })).toHaveCount(0);
   await expect(page.getByRole("menuitem", { name: "Remove bookmark", exact: true })).toBeVisible();
 });

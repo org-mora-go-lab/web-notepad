@@ -124,6 +124,7 @@ export function Header({
           left={contextMenu.left}
           top={contextMenu.top}
           pinned={contextTab.pinned}
+          showPin={false}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter((group) => group.id !== activeGroupId)
