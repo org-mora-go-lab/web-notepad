@@ -4,6 +4,7 @@ import { Search, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 
 import {
+  useDialogHorizontalResize,
   useI18n,
   useModalDialog,
   useScrollableListLayout,
@@ -13,7 +14,7 @@ import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { SearchPreview, SearchResult, SearchResultSection } from "./component";
-import { useDebouncedSearchQuery, useGlobalSearchResize } from "./hook";
+import { useDebouncedSearchQuery } from "./hook";
 import type { GlobalSearchProps } from "./type";
 
 export function GlobalSearch({
@@ -30,7 +31,7 @@ export function GlobalSearch({
   const [selectedBookmarkId, setSelectedBookmarkId] = useState<string | null>(
     null,
   );
-  const handleResizeStart = useGlobalSearchResize(dialogRef);
+  const handleResizeStart = useDialogHorizontalResize(dialogRef);
   const bodyRef = useRef<HTMLDivElement>(null);
   const handleSplitResizeStart = useSplitPaneResize(
     bodyRef,

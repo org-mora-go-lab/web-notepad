@@ -4,6 +4,7 @@ import { Archive, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 
 import {
+  useDialogHorizontalResize,
   useI18n,
   useModalDialog,
   useScrollableListLayout,
@@ -26,6 +27,7 @@ export function Closed({
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const { t } = useI18n();
   const dialogRef = useModalDialog(open, 'input[type="search"]');
+  const handleResizeStart = useDialogHorizontalResize(dialogRef);
   const titleId = useId();
   const filteredEntries = entries.filter((entry) =>
     matchesSearchQuery(searchQuery, entry.tab.title, entry.tab.content),
@@ -131,6 +133,13 @@ export function Closed({
           )}
         </div>
       </div>
+      <div
+        className="closed-resizer"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize closed popup"
+        onPointerDown={handleResizeStart}
+      />
     </dialog>
   );
 }

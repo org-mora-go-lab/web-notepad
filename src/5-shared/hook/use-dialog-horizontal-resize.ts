@@ -9,7 +9,7 @@ import {
 const MIN_WIDTH = 640;
 const VIEWPORT_MARGIN = 32;
 
-export function useGlobalSearchResize(
+export function useDialogHorizontalResize(
   dialogRef: RefObject<HTMLDialogElement | null>,
 ) {
   return useCallback(

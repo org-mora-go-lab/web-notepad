@@ -3,7 +3,10 @@
 @use "./style";
 
 .closed {
+  position: relative;
   width: min(912px, calc(100vw - 32px));
+  min-width: min(640px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
   height: min(640px, calc(100dvh - 32px));
   margin: auto;
   padding: 0;
@@ -132,6 +135,10 @@
     align-self: center;
   }
 
+  .closed-resizer {
+    @include mixin.dialog-horizontal-resizer;
+  }
+
   @include mixin.side-panel-list("closed");
 
   .closed-list {
@@ -142,6 +149,8 @@
 @media (max-width: 640px) {
   .closed {
     width: calc(100vw - 24px);
+    min-width: 0;
+    max-width: none;
     height: calc(100dvh - 24px);
 
     .closed-body {
@@ -155,6 +164,10 @@
     }
 
     .closed-split-resizer {
+      display: none;
+    }
+
+    .closed-resizer {
       display: none;
     }
 
