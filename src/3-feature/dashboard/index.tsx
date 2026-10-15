@@ -110,6 +110,7 @@ export function Dashboard({
           top={contextMenu.top}
           pinned={contextTab.pinned}
           showPin={false}
+          moveGroupFirst
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id)

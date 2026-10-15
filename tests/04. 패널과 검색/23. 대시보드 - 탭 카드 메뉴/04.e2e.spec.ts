@@ -4,7 +4,7 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("4. Done 카드 메뉴는 Bookmark 바로 아래에 Closed를 표시한다", async ({ page }) => {
+test("4. Done 카드 메뉴는 Move Group을 맨 위에 표시한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -21,8 +21,8 @@ test("4. Done 카드 메뉴는 Bookmark 바로 아래에 Closed를 표시한다"
     .click({ button: "right" });
 
   await expect(page.getByRole("menu").getByRole("menuitem")).toHaveText([
+    "Move Group",
     "Bookmark",
     "Closed",
-    "Move Group",
   ]);
 });

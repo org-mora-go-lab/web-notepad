@@ -5,6 +5,7 @@ export type TabContextMenuProps = {
   top: number;
   pinned: boolean;
   showPin?: boolean;
+  moveGroupFirst?: boolean;
   bookmarked: boolean;
   targetGroups: TabContextMenuTargetGroup[];
   onMoveToGroup: (groupId: string) => void;

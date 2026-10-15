@@ -19,6 +19,7 @@ export function TabContextMenu({
   top,
   pinned,
   showPin = true,
+  moveGroupFirst = false,
   bookmarked,
   targetGroups,
   onMoveToGroup,
@@ -30,6 +31,18 @@ export function TabContextMenu({
   const menuRef = useRef<HTMLDivElement>(null);
   const [choosingGroup, setChoosingGroup] = useState(false);
   const { t } = useI18n();
+  const moveGroupButton = (
+    <button
+      type="button"
+      role="menuitem"
+      disabled={targetGroups.length === 0}
+      onClick={() => setChoosingGroup(true)}
+    >
+      <FolderInput size={14} />
+      <span>{t.moveGroup}</span>
+      <ArrowRight size={14} className="move-group-arrow" />
+    </button>
+  );
 
   useLayoutEffect(() => {
     const positionMenu = () => {
@@ -102,6 +115,7 @@ export function TabContextMenu({
         </>
       ) : (
         <>
+          {moveGroupFirst && moveGroupButton}
           {showPin && (
             <button type="button" role="menuitem" onClick={onTogglePin}>
               <Pin size={14} />
@@ -118,16 +132,7 @@ export function TabContextMenu({
               <span>{t.closedTitle}</span>
             </button>
           )}
-          <button
-            type="button"
-            role="menuitem"
-            disabled={targetGroups.length === 0}
-            onClick={() => setChoosingGroup(true)}
-          >
-            <FolderInput size={14} />
-            <span>{t.moveGroup}</span>
-            <ArrowRight size={14} className="move-group-arrow" />
-          </button>
+          {!moveGroupFirst && moveGroupButton}
         </>
       )}
     </div>,
