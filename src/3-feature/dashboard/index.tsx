@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, Maximize2, Minimize2, Snowflake } from "lucide-react";
+import { Ghost, Maximize2, Minimize2, Snowflake } from "lucide-react";
 import { useState } from "react";
 
 import { compareGroups, getDashboardColumns, getTabStatus } from "@/src/4-entity/notepad";
@@ -169,7 +169,7 @@ export function Dashboard({
           aria-pressed={closedVisible}
           onClick={() => setClosedVisible((current) => !current)}
         >
-          <Archive size={24} strokeWidth={1.8} />
+          <Ghost size={24} strokeWidth={1.8} />
           <span>{t.closed}</span>
         </button>
       </div>

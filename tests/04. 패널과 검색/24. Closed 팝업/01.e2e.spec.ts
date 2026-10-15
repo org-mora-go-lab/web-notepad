@@ -8,6 +8,7 @@ test("1. Icebox와 Closed 명령으로 각 대시보드 상태를 표시하고 �
   await openPanel(page, "dashboard-panel");
   const iceboxCommand = page.locator(".dashboard-icebox-command");
   const closedCommand = page.locator(".dashboard-closed-command");
+  await expect(closedCommand.locator("svg")).toHaveClass(/lucide-ghost/);
   await expect(iceboxCommand).toHaveAttribute("aria-pressed", "false");
   await expect(closedCommand).toHaveAttribute("aria-pressed", "false");
   await iceboxCommand.click();
