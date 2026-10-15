@@ -10,12 +10,14 @@ type TabActions = Pick<
   | "addTab"
   | "selectTab"
   | "moveTab"
+  | "moveTabs"
   | "updateTab"
   | "setTabSelectedLines"
   | "cycleTabColor"
   | "togglePin"
   | "setTabStatus"
   | "closeTab"
+  | "archiveTab"
 >;
 
 export const createTabActions: StateCreator<

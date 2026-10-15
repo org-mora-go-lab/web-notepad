@@ -13,13 +13,14 @@ export function TabItem({
   tab,
   active,
   draggingTabId,
+  selected,
   dragActive,
   dropTarget,
   onSelect,
   onClose,
   onCycleTabColor,
   onContextMenu,
-  onDragStateChange,
+  onDragStart,
   onDropTargetChange,
   onDrop,
   onDragEnd,
@@ -36,7 +37,7 @@ export function TabItem({
     <div
       className={`tab-item ${active ? "is-active" : ""} ${dirty ? "is-dirty" : ""} ${
         draggingTabId === tab.id ? "is-dragging" : ""
-      } ${dropTarget ? "is-drop-target" : ""} ${tab.pinned ? "is-pinned" : ""} ${
+      } ${selected ? "is-range-selected" : ""} ${dropTarget ? "is-drop-target" : ""} ${tab.pinned ? "is-pinned" : ""} ${
         tab.bookmarked ? "is-bookmarked" : ""
       }`}
       data-tab-color={tab.tabColor}
@@ -53,7 +54,7 @@ export function TabItem({
       }}
       onDragStart={(event) => {
         event.dataTransfer.setData("text/plain", tab.id);
-        onDragStateChange(tab.id);
+        onDragStart(tab.id);
       }}
       onDragOver={markDropTarget}
       onDragEnter={markDropTarget}
@@ -79,7 +80,7 @@ export function TabItem({
         role="tab"
         aria-label={tab.title}
         aria-selected={active}
-        onClick={() => onSelect(tab.id)}
+        onClick={(event) => onSelect(tab.id, event.shiftKey)}
         onDoubleClick={(event) => {
           if (!isTouchLayout()) return;
           event.preventDefault();

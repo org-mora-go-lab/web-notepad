@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Archive,
   ArrowLeft,
   ArrowRight,
   Bookmark,
@@ -23,6 +24,7 @@ export function TabContextMenu({
   onMoveToGroup,
   onTogglePin,
   onToggleBookmark,
+  onCloseTab,
   onClose,
 }: TabContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -120,6 +122,12 @@ export function TabContextMenu({
             <span>{t.moveGroup}</span>
             <ArrowRight size={14} className="move-group-arrow" />
           </button>
+          {onCloseTab && (
+            <button type="button" role="menuitem" onClick={onCloseTab}>
+              <Archive size={14} />
+              <span>{t.closedTitle}</span>
+            </button>
+          )}
         </>
       )}
     </div>,

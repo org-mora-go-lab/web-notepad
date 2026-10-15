@@ -109,8 +109,10 @@ export function useViewActions({
   );
 
   const moveTabToPaneAndRecord = useCallback(
-    (tabId: string, pane: PaneId) => {
-      useNotepadStore.getState().moveTabToPane(tabId, pane);
+    (tabId: string | string[], pane: PaneId) => {
+      const state = useNotepadStore.getState();
+      if (Array.isArray(tabId)) state.moveTabsToPane(tabId, pane);
+      else state.moveTabToPane(tabId, pane);
       pushView(getCurrentView());
     },
     [getCurrentView, pushView],

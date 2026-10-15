@@ -18,7 +18,7 @@ import {
   updateGroup,
 } from "../workspace";
 
-type Actions = Pick<NotepadState, "setTabStatus" | "closeTab">;
+type Actions = Pick<NotepadState, "setTabStatus" | "closeTab" | "archiveTab">;
 
 export const createTabLifecycleActions: StateCreator<
   NotepadState,
@@ -45,17 +45,19 @@ export const createTabLifecycleActions: StateCreator<
     });
   },
   closeTab: (tabId) => closeTabEntry(set, get, tabId),
+  archiveTab: (tabId) => closeTabEntry(set, get, tabId, true),
 });
 
 const closeTabEntry = (
   set: (partial: Partial<NotepadState>) => void,
   get: () => NotepadState,
   tabId: string,
+  allowPinned = false,
 ) => {
   const state = get();
   const group = getTabGroup(state, tabId);
   const tab = group?.tabs.find((item) => item.id === tabId);
-  if (!group || !tab || tab.pinned) return;
+  if (!group || !tab || (tab.pinned && !allowPinned)) return;
   set({
     closedTabs: [
       {

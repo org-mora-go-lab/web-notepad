@@ -14,7 +14,11 @@ import { getActiveGroup, getEditableGroup, updateGroup } from "./workspace";
 
 type PaneActions = Pick<
   NotepadState,
-  "moveTabToPane" | "setActivePane" | "setSplitRatio" | "setRowRatio"
+  | "moveTabToPane"
+  | "moveTabsToPane"
+  | "setActivePane"
+  | "setSplitRatio"
+  | "setRowRatio"
 >;
 
 const clampRatio = (ratio: number) =>
@@ -44,6 +48,37 @@ export const createPaneActions: StateCreator<
           );
         }
         next = setPaneActiveTabId(next, pane, tabId);
+        return normalizeLayout({ ...next, activePane: pane });
+      });
+    }),
+  moveTabsToPane: (tabIds, pane) =>
+    set((state) => {
+      const group = getEditableGroup(state);
+      if (!group) return state;
+      const selected = new Set(tabIds);
+      const movedIds = group.tabs
+        .filter((tab) => selected.has(tab.id))
+        .map((tab) => tab.id);
+      if (movedIds.length === 0) return state;
+      const sourcePanes = new Set(
+        movedIds.map((tabId) => getPaneOfTab(group, tabId)),
+      );
+      if (sourcePanes.size === 1 && sourcePanes.has(pane)) return state;
+
+      return updateGroup(state, group.id, (current) => {
+        let next = current;
+        for (const tabId of movedIds) next = assignTabToPane(next, tabId, pane);
+        for (const sourcePane of sourcePanes) {
+          const activeId = getPaneActiveTabId(current, sourcePane);
+          if (!activeId || !selected.has(activeId)) continue;
+          const remaining = getPaneTabs(next, sourcePane);
+          next = setPaneActiveTabId(
+            next,
+            sourcePane,
+            remaining[remaining.length - 1]?.id ?? null,
+          );
+        }
+        next = setPaneActiveTabId(next, pane, movedIds[movedIds.length - 1]);
         return normalizeLayout({ ...next, activePane: pane });
       });
     }),

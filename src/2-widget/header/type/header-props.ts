@@ -8,12 +8,15 @@ export type HeaderProps = {
   activeGroupId: string;
   activeTabId: string;
   draggingTabId: string | null;
-  onSelect: (tabId: string) => void;
+  draggingTabIds: string[];
+  selectedTabIds: string[];
+  onSelect: (tabId: string, extendSelection: boolean) => void;
   onClose: (tabId: string) => void;
-  onMove: (fromTabId: string, toTabId: string) => void;
+  onMove: (tabIds: string[], toTabId: string) => void;
   onMoveToGroup: (tabId: string, groupId: string) => void;
   onAdopt: (tabId: string) => void;
-  onDragStateChange: (tabId: string | null) => void;
+  onDragStart: (tabId: string) => void;
+  onDragEnd: () => void;
   onCycleTabColor: (tabId: string) => void;
   onTogglePin: (tabId: string) => void;
   onToggleBookmark: (tabId: string) => void;

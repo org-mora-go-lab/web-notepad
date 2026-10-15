@@ -15,6 +15,7 @@ export function SidePanel({
   closeLabel,
   ariaLabel,
   pinned = false,
+  expanded = false,
   onTogglePin,
   headerActions,
   onClose,
@@ -24,7 +25,9 @@ export function SidePanel({
   const { t } = useI18n();
 
   return (
-    <div className={`side-panel ${className} ${pinned ? "is-pinned" : ""}`}>
+    <div
+      className={`side-panel ${className} ${pinned ? "is-pinned" : ""} ${expanded ? "is-expanded" : ""}`}
+    >
       <div
         className={`side-panel-backdrop ${open ? "is-visible" : ""}`}
         onClick={onClose}

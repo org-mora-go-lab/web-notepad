@@ -15,6 +15,11 @@
     grid-template-rows: auto minmax(0, 1fr);
   }
 
+  .dashboard-expand[aria-pressed="true"] {
+    border-color: v.$hover-line;
+    color: v.$signal;
+  }
+
   // The board fills the panel so the area under each status title accepts drops down to the bottom.
   .dashboard-list {
     overflow-y: auto;
@@ -31,6 +36,12 @@
 
   [data-tab-color="green"] {
     --dashboard-accent: #{v.$signal};
+  }
+
+  @media (max-width: 640px) {
+    .dashboard-expand {
+      display: none;
+    }
   }
 
   @each $name, $_ in v.$extra-tab-colors {

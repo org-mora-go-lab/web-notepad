@@ -10,5 +10,6 @@ export type TabContextMenuProps = {
   onMoveToGroup: (groupId: string) => void;
   onTogglePin: () => void;
   onToggleBookmark: () => void;
+  onCloseTab?: () => void;
   onClose: () => void;
 };

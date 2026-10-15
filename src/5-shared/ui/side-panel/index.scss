@@ -195,6 +195,30 @@
     }
   }
 
+  // Page-level expansion fills the viewport but does not request browser fullscreen.
+  &.is-expanded {
+    .side-panel-backdrop {
+      display: none;
+    }
+
+    .side-panel-drawer,
+    .side-panel-drawer.is-open {
+      inset: 0;
+      width: 100vw;
+      max-width: none;
+      height: 100vh;
+      height: 100dvh;
+      border: 0;
+      box-shadow: none;
+      transform: translateX(0);
+      transition: none;
+    }
+
+    .side-panel-resizer {
+      display: none;
+    }
+  }
+
   @media (max-width: 640px) {
     .side-panel-resizer {
       display: none;

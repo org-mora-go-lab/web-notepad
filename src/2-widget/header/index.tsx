@@ -21,12 +21,15 @@ export function Header({
   activeGroupId,
   activeTabId,
   draggingTabId,
+  draggingTabIds,
+  selectedTabIds,
   onSelect,
   onClose,
   onMove,
   onMoveToGroup,
   onAdopt,
-  onDragStateChange,
+  onDragStart,
+  onDragEnd,
   onCycleTabColor,
   onTogglePin,
   onToggleBookmark,
@@ -51,7 +54,7 @@ export function Header({
 
   const endDrag = () => {
     setDropTargetId(null);
-    onDragStateChange(null);
+    onDragEnd();
   };
 
   const applyDrop = (fromTabId: string, toTabId?: string) => {
@@ -60,7 +63,11 @@ export function Header({
       onAdopt(fromTabId);
       return;
     }
-    if (toTabId && fromTabId !== toTabId) onMove(fromTabId, toTabId);
+    if (toTabId && !draggingTabIds.includes(toTabId))
+      onMove(
+        draggingTabIds.includes(fromTabId) ? draggingTabIds : [fromTabId],
+        toTabId,
+      );
   };
 
   return (
@@ -91,6 +98,7 @@ export function Header({
             tab={tab}
             active={tab.id === activeTabId}
             draggingTabId={draggingTabId}
+            selected={selectedTabIds.includes(tab.id)}
             dragActive={dragActive}
             dropTarget={dropTargetId === tab.id}
             onSelect={onSelect}
@@ -103,7 +111,7 @@ export function Header({
                 top: Math.max(8, Math.min(clientY, window.innerHeight - 104)),
               })
             }
-            onDragStateChange={onDragStateChange}
+            onDragStart={onDragStart}
             onDropTargetChange={(tabId) =>
               setDropTargetId((current) =>
                 tabId === null && current !== tab.id ? current : tabId,

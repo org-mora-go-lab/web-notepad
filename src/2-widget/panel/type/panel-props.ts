@@ -2,6 +2,7 @@ import type { ComponentProps } from "react";
 
 import type {
   Bookmark,
+  Closed,
   Dashboard,
   GlobalSearch,
   Group,
@@ -40,6 +41,7 @@ export type PanelProps = {
   onToggleDashboardTabBookmark: ComponentProps<
     typeof Dashboard
   >["onToggleTabBookmark"];
+  onArchiveDashboardTab: ComponentProps<typeof Dashboard>["onArchiveTab"];
   onChangeClosedTabStatus: ComponentProps<
     typeof Dashboard
   >["onChangeClosedStatus"];
@@ -47,6 +49,8 @@ export type PanelProps = {
   onToggleClosedTabBookmark: ComponentProps<
     typeof Dashboard
   >["onToggleClosedBookmark"];
+  onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
+  onOpenClosed: ComponentProps<typeof Group>["onOpenClosed"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];

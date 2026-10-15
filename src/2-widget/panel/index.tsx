@@ -2,6 +2,7 @@
 
 import {
   Bookmark,
+  Closed,
   Dashboard,
   GlobalSearch,
   Group,
@@ -35,9 +36,12 @@ export function Panel({
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
+  onArchiveDashboardTab,
   onChangeClosedTabStatus,
   onMoveClosedTabToGroup,
   onToggleClosedTabBookmark,
+  onRemoveClosedTab,
+  onOpenClosed,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
@@ -46,7 +50,7 @@ export function Panel({
   onRestoreClosedTab,
   onOpenSearchedBookmark,
 }: PanelProps) {
-  const dashboardClosedTabs = getClosedTabItems(closedTabs, groups)
+  const visibleClosedTabs = getClosedTabItems(closedTabs, groups)
     .filter(
       ({ groupId }) =>
         activeGroupId === ALL_GROUP_ID || groupId === activeGroupId,
@@ -67,7 +71,7 @@ export function Panel({
       <Dashboard
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
-        closedTabs={dashboardClosedTabs}
+        closedTabs={visibleClosedTabs}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
@@ -80,10 +84,21 @@ export function Panel({
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
+        onArchiveTab={onArchiveDashboardTab}
         onRestoreClosed={onRestoreClosedTab}
         onChangeClosedStatus={onChangeClosedTabStatus}
         onMoveClosedToGroup={onMoveClosedTabToGroup}
         onToggleClosedBookmark={onToggleClosedTabBookmark}
+      />
+      <Closed
+        entries={visibleClosedTabs}
+        open={openPanel === "closed"}
+        pinned={pinned}
+        onTogglePin={onTogglePin}
+        onClose={onClose}
+        onRestore={onRestoreClosedTab}
+        onMoveToTodo={(entryId) => onChangeClosedTabStatus(entryId, "todo")}
+        onRemove={onRemoveClosedTab}
       />
       <Group
         groups={groups}
@@ -95,6 +110,7 @@ export function Panel({
         onRemove={onRemoveGroup}
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
+        onOpenClosed={onOpenClosed}
       />
       <GlobalSearch
         groups={groups}

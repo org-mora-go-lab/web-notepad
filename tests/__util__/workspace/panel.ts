@@ -15,11 +15,22 @@ export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
 export async function openPanel(page: Page, panelId: string) {
+  if (panelId === "closed-panel") {
+    await groupsCommand(page).click();
+    await page
+      .locator("#groups-menu")
+      .getByRole("button", { name: "Closed", exact: true })
+      .click();
+    await expect(page.locator("#closed-panel")).toHaveAttribute(
+      "aria-hidden",
+      "false",
+    );
+    return;
+  }
   const command = page
     .locator(`button[aria-controls="${panelId}"]:visible`)
     .first();
   if (
-    panelId === "closed-panel" ||
     panelId === "shortcuts-panel" ||
     panelId === "settings-panel"
   ) {

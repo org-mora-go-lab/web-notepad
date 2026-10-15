@@ -217,3 +217,100 @@
     }
   }
 }
+
+// A wide pinned panel can leave a desktop workspace as narrow as a phone.
+// Switch by the workspace width instead of the browser viewport in that case.
+@container workspace (max-width: 640px) {
+  .footer {
+    min-height: calc(112.8px + env(safe-area-inset-bottom));
+    padding: 0;
+    display: grid;
+    grid-template-rows: 36px calc(76.8px + env(safe-area-inset-bottom));
+    align-items: stretch;
+    font-size: v.font(12px);
+
+    .current-group-panel {
+      min-width: 0;
+      padding: 0 21px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid v.$line;
+      font-size: v.font(17px);
+    }
+
+    .current-group-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-meta {
+      padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .status-command {
+      width: 100%;
+      height: 61.2px;
+      gap: 8px;
+
+      svg {
+        width: 28.8px;
+        height: 28.8px;
+        flex-basis: 28.8px;
+      }
+
+      .status-icon {
+        height: 28.8px;
+        grid-template-columns: 28.8px;
+      }
+    }
+
+    .group-select-command,
+    .global-search-command,
+    .bookmark-command,
+    .dashboard-command {
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+
+      &.status-command > span.status-label {
+        font-size: v.font(10px);
+        line-height: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+    }
+
+    .global-search-command {
+      margin-left: 0;
+      grid-column: 2;
+    }
+
+    .group-select-command {
+      grid-column: 1;
+    }
+
+    .bookmark-command {
+      grid-column: 3;
+    }
+
+    .dashboard-command {
+      grid-column: 4;
+    }
+
+    .status-command > span.group-select-name {
+      display: none;
+    }
+
+    .status-command > span.group-command-label {
+      display: block;
+      font-size: v.font(10px);
+      line-height: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+  }
+}

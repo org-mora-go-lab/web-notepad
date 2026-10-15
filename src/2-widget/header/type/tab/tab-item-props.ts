@@ -4,13 +4,14 @@ export type TabItemProps = {
   tab: NoteTab;
   active: boolean;
   draggingTabId: string | null;
+  selected: boolean;
   dragActive: boolean;
   dropTarget: boolean;
-  onSelect: (tabId: string) => void;
+  onSelect: (tabId: string, extendSelection: boolean) => void;
   onClose: (tabId: string) => void;
   onCycleTabColor: (tabId: string) => void;
   onContextMenu: (tabId: string, clientX: number, clientY: number) => void;
-  onDragStateChange: (tabId: string | null) => void;
+  onDragStart: (tabId: string) => void;
   onDropTargetChange: (tabId: string | null) => void;
   onDrop: (fromTabId: string, toTabId: string) => void;
   onDragEnd: () => void;

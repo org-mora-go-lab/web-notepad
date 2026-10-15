@@ -8,7 +8,7 @@
     overflow-y: auto;
   }
 
-  // All and Ungrouped sit side by side as two halves.
+  // All, Ungrouped and Closed share the first row.
   .group-split-row {
     display: flex;
     gap: 4px;
