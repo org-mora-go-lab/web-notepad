@@ -34,6 +34,8 @@ export const en = {
   pinPanel: "Pin panel",
   unpinPanel: "Unpin panel",
   resizePanel: "Resize panel",
+  expandDashboard: "Expand dashboard",
+  collapseDashboard: "Collapse dashboard",
   resizeVerticalPanes: "Resize pane widths",
   resizeHorizontalPanes: "Resize pane heights",
   closePanel: (title: string) => `Close ${title}`,

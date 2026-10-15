@@ -1,5 +1,6 @@
 "use client";
 
+import { Maximize2, Minimize2 } from "lucide-react";
 import { useState } from "react";
 
 import { compareGroups, getDashboardColumns } from "@/src/4-entity/notepad";
@@ -31,6 +32,7 @@ export function Dashboard({
   onMoveClosedToGroup,
   onToggleClosedBookmark,
 }: DashboardProps) {
+  const [expanded, setExpanded] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
     closed: boolean;
@@ -64,7 +66,20 @@ export function Dashboard({
       title={t.dashboardTitle}
       open={open}
       pinned={pinned}
+      expanded={open && expanded}
       onTogglePin={onTogglePin}
+      headerActions={
+        <button
+          className="side-panel-action dashboard-expand"
+          type="button"
+          onClick={() => setExpanded((current) => !current)}
+          aria-pressed={expanded}
+          aria-label={expanded ? t.collapseDashboard : t.expandDashboard}
+          title={expanded ? t.collapseDashboard : t.expandDashboard}
+        >
+          {expanded ? <Minimize2 /> : <Maximize2 />}
+        </button>
+      }
       closeLabel={t.closePanel(t.dashboardTitle)}
       ariaLabel={t.dashboardTitle}
       onClose={onClose}
