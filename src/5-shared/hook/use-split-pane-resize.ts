@@ -14,7 +14,7 @@ export function useSplitPaneResize(
   return useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
       const container = containerRef.current;
-      if (!container || window.matchMedia("(max-width: 640px)").matches) return;
+      if (!container || window.matchMedia("(max-width: 512px)").matches) return;
       event.preventDefault();
       const bounds = container.getBoundingClientRect();
       const handleMove = (moveEvent: PointerEvent) => {

@@ -48,7 +48,7 @@
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .setting-section h3 {
       font-size: v.font(16px * v.$mobile-scale);
     }

@@ -15,7 +15,7 @@ test("3. 모바일 그룹 버튼은 GROUP을 표시하고 별도 영역에 현�
     await expect(page.locator(".group-status-command")).toHaveCount(0);
     await expect(command).toHaveAttribute("aria-label", "Select group: Ungrouped");
 
-    if (viewport.width <= 640) {
+    if (viewport.width <= 512) {
       await expect(command).toHaveCSS("gap", "4px");
       await expect(command.locator(".group-command-label")).toHaveText("GROUP");
       await expect(command.locator(".group-select-name")).toBeHidden();

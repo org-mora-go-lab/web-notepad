@@ -15,7 +15,7 @@ import { useGroupMenuResize } from "./hook";
 import type { GroupMenuProps, GroupProps } from "./type";
 
 const ANCHOR_SELECTOR = ".group-select-command";
-const MOBILE_QUERY = "(max-width: 640px)";
+const MOBILE_QUERY = "(max-width: 512px)";
 
 // Group switcher dropdown that opens above the bottom bar's group button, styled like the tab context menu.
 // Pick a group, or pin / rename / delete / create one right in the list.

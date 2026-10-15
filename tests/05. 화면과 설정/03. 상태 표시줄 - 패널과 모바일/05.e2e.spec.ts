@@ -14,8 +14,8 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 푸터를 모바�
   await page.goto("/");
   await openPanel(page, "bookmarks-panel");
   await panelPinButton(page, "bookmarks-panel").click();
-  await dragPanelEdgeTo(page, "bookmarks-panel", 250);
-  await expect.poll(async () => (await workspaceBounds(page)).width).toBeLessThanOrEqual(640);
+  await dragPanelEdgeTo(page, "bookmarks-panel", 120);
+  await expect.poll(async () => (await workspaceBounds(page)).width).toBeLessThanOrEqual(512);
 
   const footer = page.locator(".footer");
   const commands = footer.locator(".status-command");
@@ -35,7 +35,7 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 푸터를 모바�
   expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThanOrEqual(1);
 
   await dragPanelEdgeTo(page, "bookmarks-panel", 700);
-  await expect.poll(async () => (await workspaceBounds(page)).width).toBeGreaterThan(640);
+  await expect.poll(async () => (await workspaceBounds(page)).width).toBeGreaterThan(512);
   await expect(footer.locator(".current-group-panel")).toBeHidden();
   for (const command of await commands.all())
     expect((await command.boundingBox())!.height).toBeCloseTo(35, 1);

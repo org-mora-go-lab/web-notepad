@@ -126,7 +126,7 @@
     color: v.$muted;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     width: min(420px * v.$mobile-scale, calc(100vw - 32px));
 
     h3 {

@@ -9,7 +9,7 @@
   --selected-line-background: rgba(184, 184, 176, 0.2);
   --selected-line-color: #{v.$saved};
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     --editor-line-height: #{v.font(39px)};
   }
 
@@ -35,7 +35,7 @@
   grid-template-columns: 39px minmax(0, 1fr);
   overflow: hidden;
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     grid-template-columns: 41px minmax(0, 1fr);
   }
 

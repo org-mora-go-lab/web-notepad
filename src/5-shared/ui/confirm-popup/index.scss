@@ -106,7 +106,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 512px) {
   .confirm-popup {
     width: min(380px * v.$mobile-scale, calc(100vw - 32px));
 

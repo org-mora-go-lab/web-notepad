@@ -11,7 +11,7 @@
   border-bottom: 1px solid v.$line;
   background: v.$strip;
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     height: 45px;
     min-height: 45px;
   }
@@ -86,7 +86,7 @@
     min-width: 33px;
     height: 39px;
 
-    @media (max-width: 640px) {
+    @media (max-width: 512px) {
       width: 33px * v.$mobile-scale;
       min-width: 33px * v.$mobile-scale;
       height: 45px;

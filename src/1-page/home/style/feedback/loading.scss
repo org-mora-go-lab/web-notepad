@@ -8,7 +8,7 @@
     color: v.$signal;
     font-size: 14px;
 
-    @media (max-width: 640px) {
+    @media (max-width: 512px) {
       font-size: 14px * v.$mobile-scale;
     }
   }

@@ -40,7 +40,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
 
-      @media (max-width: 640px) {
+      @media (max-width: 512px) {
         font-size: v.font(11px * v.$mobile-scale);
       }
     }

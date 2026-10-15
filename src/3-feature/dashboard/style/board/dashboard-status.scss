@@ -69,7 +69,7 @@
     pointer-events: auto;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .dashboard-column-status.is-actions-visible .dashboard-status-edit,
     .dashboard-column-status:focus-within .dashboard-status-edit {
       opacity: 1;

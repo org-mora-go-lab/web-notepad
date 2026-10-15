@@ -76,7 +76,7 @@
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .#{$name}-item-heading {
       strong {
         font-size: v.font(15px * v.$mobile-scale);

@@ -16,7 +16,7 @@ test("1. MENU 드롭다운은 PC와 모바일에서 지정된 항목 순서로 �
       ),
     );
     expect(labels).toEqual(
-      viewport.width <= 640
+      viewport.width <= 512
         ? ["THEME", "SETTINGS", "GUIDE", "All Group", "Ungrouped"]
         : ["THEME", "SHORTCUT", "SETTINGS", "GUIDE", "All Group", "Ungrouped"],
     );

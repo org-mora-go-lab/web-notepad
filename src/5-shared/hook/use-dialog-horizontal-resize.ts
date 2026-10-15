@@ -15,7 +15,7 @@ export function useDialogHorizontalResize(
   return useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
       const dialog = dialogRef.current;
-      if (!dialog || window.matchMedia("(max-width: 640px)").matches) return;
+      if (!dialog || window.matchMedia("(max-width: 512px)").matches) return;
       event.preventDefault();
       const startX = event.clientX;
       const startWidth = dialog.getBoundingClientRect().width;

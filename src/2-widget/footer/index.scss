@@ -121,7 +121,7 @@
     white-space: nowrap;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     min-height: calc(112.8px + env(safe-area-inset-bottom));
     padding: 0;
     display: grid;
@@ -213,7 +213,7 @@
 
 // A wide pinned panel can leave a desktop workspace as narrow as a phone.
 // Switch by the workspace width instead of the browser viewport in that case.
-@container workspace (max-width: 640px) {
+@container workspace (max-width: 512px) {
   .footer {
     min-height: calc(112.8px + env(safe-area-inset-bottom));
     padding: 0;

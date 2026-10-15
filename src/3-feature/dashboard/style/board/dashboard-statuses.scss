@@ -71,7 +71,7 @@
     border-left: 3px solid var(--dashboard-accent, v.$line);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .dashboard-statuses {
       display: block;
       height: 0;

@@ -33,7 +33,7 @@
     background: rgba(143, 227, 176, 0.08);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .dashboard-board {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: repeat(3, auto);

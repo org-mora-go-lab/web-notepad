@@ -73,7 +73,7 @@
 
 }
 
-@media (max-width: 640px) {
+@media (max-width: 512px) {
   .closed {
     .closed-item-content {
       font-size: v.font(16px * v.$mobile-scale);

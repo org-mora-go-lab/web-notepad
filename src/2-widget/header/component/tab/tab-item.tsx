@@ -7,7 +7,7 @@ import type { TabItemProps } from "../../type";
 
 // Mobile opens the tab menu with a double tap instead of a right click.
 const isTouchLayout = () =>
-  window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
+  window.matchMedia("(max-width: 512px), (pointer: coarse)").matches;
 
 export function TabItem({
   tab,
