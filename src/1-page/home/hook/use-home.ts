@@ -43,9 +43,6 @@ export function useHome() {
     togglePin,
     toggleBookmark,
     setTabStatus,
-    moveClosedTabToStatus,
-    moveClosedTabToGroup,
-    toggleClosedTabBookmark,
     archiveTab,
     removeClosedTab,
     removeBookmark,
@@ -53,6 +50,7 @@ export function useHome() {
     renameGroup,
     toggleGroupPin,
     removeGroup,
+    setDashboardStatusName,
     settings,
   } = store;
 
@@ -63,6 +61,7 @@ export function useHome() {
   const hasBookmarkUpdateToday = bookmarks.some((bookmark) =>
     isToday(bookmark.updatedAt),
   );
+  const hasGroupUpdateToday = groups.some((group) => isToday(group.updatedAt));
   const { panelPinned, togglePanelPin } = usePanelPin();
 
   const {
@@ -214,18 +213,18 @@ export function useHome() {
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
+    hasGroupUpdateToday,
     panelPinned,
     togglePanelPin,
     columns,
     activeGroupTabs,
     tabColorCycle: settings.tabColorCycle,
+    dashboardStatusNames: settings.dashboardStatusNames,
+    setDashboardStatusName,
     setTabStatus,
     togglePin,
     toggleBookmark,
     moveToGroup,
-    moveClosedTabToStatus,
-    moveClosedTabToGroup,
-    toggleClosedTabBookmark,
     archiveDashboardTab,
     removeClosedTab,
     removeBookmark,

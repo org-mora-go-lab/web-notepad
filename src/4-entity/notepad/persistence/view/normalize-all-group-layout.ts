@@ -19,6 +19,7 @@ export function normalizeAllGroupLayout(
           name: ALL_GROUP_NAME,
           pinned: false,
           createdAt: 0,
+          updatedAt: 0,
           tabs: groups.flatMap((group) => group.tabs),
           bookmarks: [],
           activeTabId: readLayoutActive(layout.activeTabId) ?? "",

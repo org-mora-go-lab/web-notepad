@@ -8,7 +8,7 @@ export function createGlobalSearchState() {
       id: "work-bookmark",
       sourceTabId: "work-tab",
       title: "Work plan",
-      content: "Quarterly goals",
+      content: "Work quarterly goals",
       tabColor: "green",
       selectedLines: [],
       createdAt: 1,

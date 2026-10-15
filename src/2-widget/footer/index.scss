@@ -82,7 +82,7 @@
       }
     }
 
-    // Red dot on the icon's top-right corner when a bookmark changed today.
+    // Red dot on the icon's top-right corner when a bookmark or group changed today.
     .status-dot {
       position: absolute;
       top: -3px;
@@ -102,6 +102,7 @@
   // Group select sits on the left; SEARCH, BOOKMARK and DASHBOARD are pushed to the right.
   .group-select-command {
     order: -1;
+    gap: 9px;
   }
 
   .global-search-command {

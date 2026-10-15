@@ -5,7 +5,6 @@ export const RIGHT_PANEL_IDS = [
   "dashboard-panel",
   "shortcuts-panel",
   "settings-panel",
-  "global-search-panel",
 ];
 
 // The SHORTCUT command is hidden on mobile; the other panel commands remain available.
@@ -17,7 +16,6 @@ export const RIGHT_PANEL_VIEWPORTS = [
       "bookmarks-panel",
       "dashboard-panel",
       "settings-panel",
-      "global-search-panel",
     ],
   },
 ];

@@ -4,7 +4,6 @@ import type {
   Bookmark,
   Closed,
   Dashboard,
-  GlobalSearch,
   Group,
 } from "@/src/3-feature";
 import type {
@@ -24,6 +23,7 @@ export type PanelProps = {
   activeGroupTabs: NoteTab[];
   activeTabId?: string;
   tabColorCycle: TabColor[];
+  dashboardStatusNames: ComponentProps<typeof Dashboard>["statusNames"];
   groups: GroupEntry[];
   activeGroupId: string;
   groupMenuOpen: boolean;
@@ -36,19 +36,13 @@ export type PanelProps = {
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
+  onRenameDashboardStatus: ComponentProps<typeof Dashboard>["onRenameStatus"];
   onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
   onToggleDashboardTabPin: ComponentProps<typeof Dashboard>["onToggleTabPin"];
   onToggleDashboardTabBookmark: ComponentProps<
     typeof Dashboard
   >["onToggleTabBookmark"];
   onArchiveDashboardTab: ComponentProps<typeof Dashboard>["onArchiveTab"];
-  onChangeClosedTabStatus: ComponentProps<
-    typeof Dashboard
-  >["onChangeClosedStatus"];
-  onMoveClosedTabToGroup: ComponentProps<typeof Dashboard>["onMoveClosedToGroup"];
-  onToggleClosedTabBookmark: ComponentProps<
-    typeof Dashboard
-  >["onToggleClosedBookmark"];
   onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
   onOpenClosed: ComponentProps<typeof Group>["onOpenClosed"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
@@ -56,6 +50,5 @@ export type PanelProps = {
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
-  onRestoreClosedTab: ComponentProps<typeof Dashboard>["onRestoreClosed"];
-  onOpenSearchedBookmark: ComponentProps<typeof GlobalSearch>["onOpenBookmark"];
+  onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
 };

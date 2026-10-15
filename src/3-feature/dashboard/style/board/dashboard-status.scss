@@ -1,0 +1,70 @@
+@use "../../../../5-shared/style/variable" as v;
+
+.dashboard {
+  .dashboard-status-label,
+  .dashboard-status-input {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .dashboard-status-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-status-input {
+    width: 100%;
+    min-width: 0;
+    padding: 1px 4px;
+    border: 1px solid var(--dashboard-accent, #{v.$signal});
+    border-radius: 3px;
+    outline: 0;
+    background: var(--color-field);
+    color: v.$ink;
+    font: inherit;
+  }
+
+  .dashboard-status-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dashboard-status-edit {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--color-secondary);
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    transition: opacity 300ms ease;
+
+    &:hover,
+    &:focus-visible {
+      background: v.$raised;
+      color: v.$ink;
+    }
+  }
+
+  .dashboard-statuses h3:hover .dashboard-status-edit,
+  .dashboard-statuses h3:focus-within .dashboard-status-edit {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 640px) {
+    .dashboard-column-status.is-actions-visible .dashboard-status-edit,
+    .dashboard-column-status:focus-within .dashboard-status-edit {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}

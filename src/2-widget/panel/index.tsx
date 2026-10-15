@@ -21,6 +21,7 @@ export function Panel({
   activeGroupTabs,
   activeTabId,
   tabColorCycle,
+  dashboardStatusNames,
   groups,
   activeGroupId,
   groupMenuOpen,
@@ -33,13 +34,11 @@ export function Panel({
   onRemoveBookmark,
   onOpenDashboardTab,
   onChangeTabStatus,
+  onRenameDashboardStatus,
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
   onArchiveDashboardTab,
-  onChangeClosedTabStatus,
-  onMoveClosedTabToGroup,
-  onToggleClosedTabBookmark,
   onRemoveClosedTab,
   onOpenClosed,
   onCreateGroup,
@@ -48,7 +47,6 @@ export function Panel({
   onRenameGroup,
   onToggleGroupPin,
   onRestoreClosedTab,
-  onOpenSearchedBookmark,
 }: PanelProps) {
   const visibleClosedTabs = getClosedTabItems(closedTabs, groups)
     .filter(
@@ -71,33 +69,27 @@ export function Panel({
       <Dashboard
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
-        closedTabs={visibleClosedTabs}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
+        statusNames={dashboardStatusNames}
         open={openPanel === "dashboard"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
+        onRenameStatus={onRenameDashboardStatus}
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
         onArchiveTab={onArchiveDashboardTab}
-        onRestoreClosed={onRestoreClosedTab}
-        onChangeClosedStatus={onChangeClosedTabStatus}
-        onMoveClosedToGroup={onMoveClosedTabToGroup}
-        onToggleClosedBookmark={onToggleClosedTabBookmark}
       />
       <Closed
         entries={visibleClosedTabs}
         open={openPanel === "closed"}
-        pinned={pinned}
-        onTogglePin={onTogglePin}
         onClose={onClose}
         onRestore={onRestoreClosedTab}
-        onMoveToTodo={(entryId) => onChangeClosedTabStatus(entryId, "todo")}
         onRemove={onRemoveClosedTab}
       />
       <Group
@@ -117,11 +109,8 @@ export function Panel({
         searchQuery={globalSearchQuery}
         onSearchQueryChange={onGlobalSearchQueryChange}
         open={openPanel === "global-search"}
-        pinned={pinned}
-        onTogglePin={onTogglePin}
         onClose={onClose}
         onSelectGroup={onSelectGroup}
-        onOpenBookmark={onOpenSearchedBookmark}
       />
       <Shortcut
         open={openPanel === "shortcuts"}

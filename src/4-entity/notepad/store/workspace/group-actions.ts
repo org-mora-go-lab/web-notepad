@@ -41,6 +41,7 @@ export const createGroupActions: StateCreator<
       const linkedBookmarks = source.bookmarks.filter(
         (bookmark) => bookmark.sourceTabId === tabId,
       );
+      const updatedAt = Date.now();
 
       return {
         nextTabNumber,
@@ -54,6 +55,7 @@ export const createGroupActions: StateCreator<
                   bookmarks: group.bookmarks.filter(
                     (bookmark) => bookmark.sourceTabId !== tabId,
                   ),
+                  updatedAt,
                 },
                 tabId,
                 null,
@@ -67,6 +69,7 @@ export const createGroupActions: StateCreator<
               bookmarks: [...group.bookmarks, ...linkedBookmarks],
               activeTabId: tabId,
               activePane: "left",
+              updatedAt,
             };
           }
           return group;
@@ -95,7 +98,9 @@ export const createGroupActions: StateCreator<
       if (groupId === UNGROUPED_GROUP_ID || !trimmedName) return state;
       return {
         groups: state.groups.map((group) =>
-          group.id === groupId ? { ...group, name: trimmedName } : group,
+          group.id === groupId
+            ? { ...group, name: trimmedName, updatedAt: Date.now() }
+            : group,
         ),
       };
     }),
@@ -104,7 +109,9 @@ export const createGroupActions: StateCreator<
       if (groupId === UNGROUPED_GROUP_ID) return state;
       return {
         groups: state.groups.map((group) =>
-          group.id === groupId ? { ...group, pinned: !group.pinned } : group,
+          group.id === groupId
+            ? { ...group, pinned: !group.pinned, updatedAt: Date.now() }
+            : group,
         ),
       };
     }),
@@ -129,6 +136,7 @@ export const createGroupActions: StateCreator<
           state.activeGroupId === groupId
             ? ("left" as const)
             : ungrouped.activePane,
+        updatedAt: Date.now(),
       };
       return {
         groups: state.groups

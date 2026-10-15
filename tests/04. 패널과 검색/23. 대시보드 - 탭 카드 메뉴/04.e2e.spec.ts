@@ -1,32 +1,28 @@
 import { expect, test } from "@playwright/test";
 
-import { createClosedTabFixture, createGroupFixture, createTabFixture } from "../../__fixture__";
-import { openPanel, readStoredState, writeStoredState } from "../../__util__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("4. Done의 닫힌 탭 카드 메뉴로 그룹을 옮겨도 닫힌 상태를 유지한다", async ({ page }) => {
+test("4. Done 카드 메뉴는 Move Group을 맨 위에 표시한다", async ({ page }) => {
   await writeStoredState(page, {
+    activeGroupId: "ungrouped",
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("open-1", "Open task"),
+        createTabFixture("tab-1", "Done task", { tabColor: "purple" }),
       ]),
-      createGroupFixture("work", "Work", [
-        createTabFixture("open-2", "Work task"),
-      ]),
+      createGroupFixture("work", "Work", [createTabFixture("tab-2", "Work task")]),
     ],
-    closedTabs: [createClosedTabFixture("closed-1", "ungrouped", createTabFixture("tab-1", "Archived task", { tabColor: "purple" }))],
+    nextTabNumber: 3,
   });
   await openPanel(page, "dashboard-panel");
-  const card = dashboardColumn(page, "done").locator(".dashboard-card", {
-    hasText: "Archived task",
-  });
+  await dashboardColumn(page, "done")
+    .locator(".dashboard-card", { hasText: "Done task" })
+    .click({ button: "right" });
 
-  await card.click({ button: "right" });
-  await page.getByRole("menuitem", { name: "Move Group", exact: true }).click();
-  await page.getByRole("menuitem", { name: "Work", exact: true }).click();
-
-  await expect(card).toHaveCount(0);
-  const state = await readStoredState(page);
-  expect(state.closedTabs).toHaveLength(1);
-  expect(state.closedTabs?.[0].groupId).toBe("work");
+  await expect(page.getByRole("menu").getByRole("menuitem")).toHaveText([
+    "Move Group",
+    "Bookmark",
+    "Closed",
+  ]);
 });

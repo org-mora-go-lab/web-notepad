@@ -8,6 +8,7 @@ import type { FooterProps } from "./type";
 
 export function Footer({
   hasBookmarkUpdateToday,
+  hasGroupUpdateToday,
   bookmarksOpen,
   searchOpen,
   dashboardOpen,
@@ -35,7 +36,8 @@ export function Footer({
                 type="button"
                 onClick={onToggleSearch}
                 aria-expanded={searchOpen}
-                aria-controls="global-search-panel"
+                aria-controls="global-search-popup"
+                aria-haspopup="dialog"
                 aria-label={t.search}
               >
                 <span className="status-icon">
@@ -89,7 +91,16 @@ export function Footer({
             aria-label={t.selectGroupNamed(activeGroupName)}
             title={activeGroupName}
           >
-            <Layers size={16} strokeWidth={1.8} />
+            <span className="status-icon">
+              <Layers size={16} strokeWidth={1.8} />
+              {hasGroupUpdateToday && (
+                <span
+                  className="status-dot"
+                  role="img"
+                  aria-label={t.updatedToday}
+                />
+              )}
+            </span>
             <span
               className="status-label group-select-name"
               title={activeGroupName}

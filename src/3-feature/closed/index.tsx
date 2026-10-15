@@ -1,10 +1,10 @@
 "use client";
 
-import { Archive } from "lucide-react";
-import { useState } from "react";
+import { Archive, X } from "lucide-react";
+import { useId, useState } from "react";
 
-import { useI18n } from "@/src/5-shared/hook";
-import { EmptyState, SearchField, SidePanel } from "@/src/5-shared/ui";
+import { useI18n, useModalDialog } from "@/src/5-shared/hook";
+import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { ClosedItem } from "./component";
@@ -13,31 +13,46 @@ import type { ClosedProps } from "./type";
 export function Closed({
   entries,
   open,
-  pinned,
-  onTogglePin,
   onClose,
   onRestore,
-  onMoveToTodo,
   onRemove,
 }: ClosedProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useI18n();
+  const dialogRef = useModalDialog(open, 'input[type="search"]');
+  const titleId = useId();
   const filteredEntries = entries.filter((entry) =>
     matchesSearchQuery(searchQuery, entry.tab.title, entry.tab.content),
   );
 
   return (
-    <SidePanel
+    <dialog
+      ref={dialogRef}
       className="closed"
-      id="closed-panel"
-      title={t.closedTitle}
-      open={open}
-      pinned={pinned}
-      onTogglePin={onTogglePin}
-      closeLabel={t.closePanel(t.closedTitle)}
-      ariaLabel={t.closedTitle}
-      onClose={onClose}
+      id="closed-popup"
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
     >
+      <div className="closed-header">
+        <div className="closed-heading">
+          <Archive size={20} aria-hidden="true" />
+          <h2 id={titleId}>{t.closedTitle}</h2>
+        </div>
+        <button
+          className="closed-close"
+          type="button"
+          aria-label={t.closePanel(t.closedTitle)}
+          onClick={onClose}
+        >
+          <X size={18} />
+        </button>
+      </div>
       <SearchField
         value={searchQuery}
         ariaLabel={t.searchClosed}
@@ -64,12 +79,11 @@ export function Closed({
               entry={entry}
               searchQuery={searchQuery}
               onRestore={onRestore}
-              onMoveToTodo={onMoveToTodo}
               onRemove={onRemove}
             />
           ))
         )}
       </div>
-    </SidePanel>
+    </dialog>
   );
 }

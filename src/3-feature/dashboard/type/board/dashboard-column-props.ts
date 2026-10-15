@@ -9,15 +9,16 @@ export type DashboardColumnProps = Pick<
   | "groups"
   | "showGroupNames"
   | "tabColorCycle"
-  | "onRestoreClosed"
+  | "statusNames"
   | "onOpenTab"
+  | "onRenameStatus"
 > & {
   column: DashboardColumnData;
   drag: ReturnType<typeof useDashboardDrag>;
+  contextMenuTabId?: string;
   onOpenContextMenu: (
     itemId: string,
     clientX: number,
     clientY: number,
-    closed: boolean,
   ) => void;
 };

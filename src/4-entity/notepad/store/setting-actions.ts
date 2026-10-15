@@ -8,7 +8,7 @@ import { withTabColorCycle } from "./workspace";
 
 type SettingActions = Pick<
   NotepadState,
-  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "setPanelPosition" | "setPanelSlide" | "resetSettings" | "resetTabColorCycle" | "shuffleTabColorCycle"
+  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "setPanelPosition" | "setPanelSlide" | "setDashboardStatusName" | "resetSettings" | "resetTabColorCycle" | "shuffleTabColorCycle"
 >;
 
 export const createSettingActions: StateCreator<
@@ -44,6 +44,20 @@ export const createSettingActions: StateCreator<
     set((state) => ({ settings: { ...state.settings, panelPosition } })),
   setPanelSlide: (panelSlide) =>
     set((state) => ({ settings: { ...state.settings, panelSlide: Boolean(panelSlide) } })),
+  setDashboardStatusName: (status, name) =>
+    set((state) => {
+      const trimmedName = name.trim().slice(0, 30);
+      if (!trimmedName) return state;
+      return {
+        settings: {
+          ...state.settings,
+          dashboardStatusNames: {
+            ...state.settings.dashboardStatusNames,
+            [status]: trimmedName,
+          },
+        },
+      };
+    }),
   resetTabColorCycle: () =>
     set((state) => withTabColorCycle(state, [...DEFAULT_SETTINGS.tabColorCycle])),
   // Picks distinct random colors for every slot, never repeating the current order.

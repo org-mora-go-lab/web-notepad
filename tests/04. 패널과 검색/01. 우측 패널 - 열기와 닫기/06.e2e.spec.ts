@@ -1,9 +1,13 @@
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, type Locator, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
 import { bookmarksCommand, groupsCommand } from "../../__util__";
 
-async function expectIconCentered(button: Locator) {
+async function expectIconCentered(button: Locator, withoutPadding = false) {
+  if (withoutPadding) {
+    await expect(button).toHaveCSS("padding-left", "0px");
+    await expect(button).toHaveCSS("padding-right", "0px");
+  }
   const buttonBox = (await button.boundingBox())!;
   const iconBox = (await button.locator(":scope > svg:only-child").boundingBox())!;
 
@@ -28,8 +32,14 @@ test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중
   await groupsCommand(page).click();
   const createInput = page.getByRole("textbox", { name: "New group name" });
   await createInput.fill("Work");
-  await expectIconCentered(page.getByRole("button", { name: "Create group" }));
+  await expectIconCentered(
+    page.getByRole("button", { name: "Create group" }),
+    true,
+  );
   await page.getByRole("button", { name: "Create group" }).click();
   await page.getByRole("button", { name: "Work group actions" }).click();
-  await expectIconCentered(page.getByRole("button", { name: "Delete Work group" }));
+  await expectIconCentered(
+    page.getByRole("button", { name: "Delete Work group" }),
+    true,
+  );
 });

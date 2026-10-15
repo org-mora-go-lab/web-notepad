@@ -95,6 +95,7 @@
     background: transparent;
     color: v.$ink;
     font-size: v.font(13px);
+    line-height: 1;
     cursor: pointer;
 
     &:hover:not(:disabled) {
@@ -109,6 +110,12 @@
     &:focus-visible {
       outline: 2px solid v.$saved;
       outline-offset: 2px;
+    }
+
+    > span,
+    > svg {
+      display: block;
+      flex: 0 0 auto;
     }
   }
 

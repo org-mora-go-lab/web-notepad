@@ -20,6 +20,7 @@ export const DEFAULT_SETTINGS: NotepadSettings = {
   language: "en",
   panelSlide: false,
   panelPosition: "right",
+  dashboardStatusNames: {},
 };
 
 // Dashboard columns, in display order.

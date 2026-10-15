@@ -18,52 +18,37 @@ import type { DashboardProps } from "./type";
 export function Dashboard({
   tabs,
   activeTabId,
-  closedTabs,
   groups,
   showGroupNames,
   tabColorCycle,
+  statusNames,
   open,
   pinned,
   onTogglePin,
   onClose,
   onOpenTab,
   onChangeStatus,
+  onRenameStatus,
   onMoveToGroup,
   onToggleTabPin,
   onToggleTabBookmark,
   onArchiveTab,
-  onRestoreClosed,
-  onChangeClosedStatus,
-  onMoveClosedToGroup,
-  onToggleClosedBookmark,
 }: DashboardProps) {
   const [expanded, setExpanded] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
-    closed: boolean;
     left: number;
     top: number;
   } | null>(null);
   const { t } = useI18n();
   const { contentRef, listRef, boardRef } = useDashboardScroll();
-  const columns = getDashboardColumns(tabs, closedTabs, tabColorCycle);
+  const columns = getDashboardColumns(tabs, tabColorCycle);
   const visibleTabs = columns.flatMap((column) => column.tabs);
-  const contextClosed = closedTabs.find(
-    (entry) => contextMenu?.closed && entry.id === contextMenu.itemId,
-  );
-  const contextTab = contextClosed?.tab ?? visibleTabs.find(
-    (tab) => !contextMenu?.closed && tab.id === contextMenu?.itemId,
-  );
+  const contextTab = visibleTabs.find((tab) => tab.id === contextMenu?.itemId);
   const contextGroup = groups.find((group) =>
-    contextClosed
-      ? group.id === contextClosed.groupId
-      : group.tabs.some((tab) => tab.id === contextMenu?.itemId),
+    group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
-  const drag = useDashboardDrag({
-    visibleTabs,
-    onChangeStatus,
-    onChangeClosedStatus,
-  });
+  const drag = useDashboardDrag({ visibleTabs, onChangeStatus });
   return (
     <SidePanel
       className="dashboard"
@@ -90,7 +75,12 @@ export function Dashboard({
       onClose={onClose}
     >
       <div className="dashboard-content" ref={contentRef}>
-        <DashboardStatuses columns={columns} tabColorCycle={tabColorCycle} />
+        <DashboardStatuses
+          columns={columns}
+          tabColorCycle={tabColorCycle}
+          statusNames={statusNames}
+          onRenameStatus={onRenameStatus}
+        />
         <div className="dashboard-list" ref={listRef}>
           <div className="dashboard-board" ref={boardRef}>
             {columns.map((column) => (
@@ -102,10 +92,12 @@ export function Dashboard({
                 groups={groups}
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
-                onRestoreClosed={onRestoreClosed}
+                statusNames={statusNames}
+                contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
-                onOpenContextMenu={(itemId, left, top, closed) =>
-                  setContextMenu({ itemId, left, top, closed })
+                onRenameStatus={onRenameStatus}
+                onOpenContextMenu={(itemId, left, top) =>
+                  setContextMenu({ itemId, left, top })
                 }
               />
             ))}
@@ -118,13 +110,13 @@ export function Dashboard({
           top={contextMenu.top}
           pinned={contextTab.pinned}
           showPin={false}
+          moveGroupFirst
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id)
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
-            if (contextClosed) onMoveClosedToGroup(contextClosed.id, groupId);
-            else onMoveToGroup(contextTab.id, groupId);
+            onMoveToGroup(contextTab.id, groupId);
             setContextMenu(null);
           }}
           onTogglePin={() => {
@@ -132,12 +124,10 @@ export function Dashboard({
             setContextMenu(null);
           }}
           onToggleBookmark={() => {
-            if (contextClosed) onToggleClosedBookmark(contextClosed.id);
-            else onToggleTabBookmark(contextTab.id);
+            onToggleTabBookmark(contextTab.id);
             setContextMenu(null);
           }}
           onCloseTab={
-            !contextClosed &&
             getTabStatus(contextTab, tabColorCycle) === "done"
               ? () => {
                   onArchiveTab(contextTab.id);

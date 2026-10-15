@@ -46,6 +46,9 @@ export function UserGuide({ onClose }: UserGuideProps) {
         event.preventDefault();
         close();
       }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) close();
+      }}
     >
       <div className="user-guide-header">
         <div className="user-guide-heading">
@@ -77,7 +80,7 @@ export function UserGuide({ onClose }: UserGuideProps) {
             onClick={() => setIndex(index - 1)}
           >
             <ChevronLeft size={14} aria-hidden="true" />
-            {t.previous}
+            <span>{t.previous}</span>
           </button>
           {/* The last step turns Next into Close in the same spot, keeping focus. */}
           <button
@@ -86,7 +89,7 @@ export function UserGuide({ onClose }: UserGuideProps) {
             type="button"
             onClick={() => (isLast ? close() : setIndex(index + 1))}
           >
-            {isLast ? t.close : t.next}
+            <span>{isLast ? t.close : t.next}</span>
             {isLast ? (
               <X size={14} aria-hidden="true" />
             ) : (

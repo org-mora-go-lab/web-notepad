@@ -16,6 +16,12 @@
     .group-item {
       min-width: 0;
       flex: 1;
+      padding: 0;
+    }
+
+    .group-select {
+      justify-content: center;
+      text-align: center;
     }
   }
 
@@ -80,6 +86,7 @@
       height: 28px;
       display: grid;
       place-items: center;
+      padding: 0;
       border: 0;
       background: transparent;
       color: v.$dim;

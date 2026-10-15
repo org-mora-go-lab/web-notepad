@@ -16,10 +16,12 @@ test("3. 모바일 그룹 버튼은 GROUP을 표시하고 별도 영역에 현�
     await expect(command).toHaveAttribute("aria-label", "Select group: Ungrouped");
 
     if (viewport.width <= 640) {
+      await expect(command).toHaveCSS("gap", "4px");
       await expect(command.locator(".group-command-label")).toHaveText("GROUP");
       await expect(command.locator(".group-select-name")).toBeHidden();
       await expect(page.locator(".current-group-panel")).toBeVisible();
     } else {
+      await expect(command).toHaveCSS("gap", "9px");
       await expect(command.locator(".group-select-name")).toBeVisible();
       await expect(command.locator(".group-command-label")).toBeHidden();
       await expect(page.locator(".current-group-panel")).toBeHidden();

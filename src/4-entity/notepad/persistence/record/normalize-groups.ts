@@ -63,11 +63,13 @@ export function normalizeGroups(
           ? sourceActiveTabId
           : (tabs[0]?.id ?? "");
       const sourceActivePane = fromSource("activePane", "left");
+      const createdAt = finiteNumberOr(group.createdAt, Date.now());
       return normalizeLayout({
         id,
         name: typeof group.name === "string" ? group.name : "Untitled Group",
         pinned: id !== UNGROUPED_GROUP_ID && group.pinned === true,
-        createdAt: finiteNumberOr(group.createdAt, Date.now()),
+        createdAt,
+        updatedAt: finiteNumberOr(group.updatedAt, createdAt),
         tabs,
         bookmarks,
         activeTabId,

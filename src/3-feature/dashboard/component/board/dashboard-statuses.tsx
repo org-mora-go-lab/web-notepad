@@ -2,10 +2,13 @@ import { getStatusColor } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { DashboardStatusesProps } from "../../type";
+import { DashboardStatus } from "./dashboard-status";
 
 export function DashboardStatuses({
   columns,
   tabColorCycle,
+  statusNames,
+  onRenameStatus,
 }: DashboardStatusesProps) {
   const { t } = useI18n();
   const statusLabels = {
@@ -15,18 +18,16 @@ export function DashboardStatuses({
   };
   return (
     <div className="dashboard-statuses">
-      {columns.map(({ status, tabs, closedTabs }) => (
-        <h3
+      {columns.map(({ status, tabs }) => (
+        <DashboardStatus
           key={status}
           id={`dashboard-status-${status}`}
-          data-status={status}
-          data-tab-color={getStatusColor(status, tabColorCycle)}
-        >
-          {statusLabels[status]}
-          <span className="dashboard-count">
-            {tabs.length + closedTabs.length}
-          </span>
-        </h3>
+          status={status}
+          label={statusNames[status] ?? statusLabels[status]}
+          count={tabs.length}
+          tabColor={getStatusColor(status, tabColorCycle)}
+          onRename={onRenameStatus}
+        />
       ))}
     </div>
   );

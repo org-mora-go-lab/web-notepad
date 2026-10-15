@@ -29,6 +29,7 @@ export const createGroupFixture = (
   name,
   pinned: false,
   createdAt: 1,
+  updatedAt: 1,
   tabs,
   bookmarks: [],
   activeTabId: tabs[0].id,

@@ -23,6 +23,14 @@
       );
     }
 
+    &.is-context-menu-target {
+      border-color: color-mix(
+        in srgb,
+        var(--dashboard-accent, #{v.$signal}) 50%,
+        transparent
+      );
+    }
+
     &.is-dragging {
       opacity: 0.4;
     }

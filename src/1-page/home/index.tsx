@@ -22,7 +22,6 @@ export function Home() {
     closeSidePanels,
     activeGroupId,
     selectGroupAndClosePanel,
-    openBookmarkAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,
     restoreClosedTabAndClosePanel,
@@ -31,18 +30,18 @@ export function Home() {
     bookmarks,
     activeGroupTabs,
     tabColorCycle,
+    dashboardStatusNames,
+    setDashboardStatusName,
     setTabStatus,
     togglePin,
     toggleBookmark,
     moveToGroup,
-    moveClosedTabToStatus,
-    moveClosedTabToGroup,
-    toggleClosedTabBookmark,
     archiveDashboardTab,
     removeClosedTab,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
+    hasGroupUpdateToday,
     panelPinned,
     togglePanelPin,
     columns,
@@ -85,7 +84,7 @@ export function Home() {
   return (
     <I18nContext value={language}>
       <main
-        className={`home ${panelPinned && openPanel ? "is-panel-pinned" : ""}`}
+        className={`home ${panelPinned && openPanel && openPanel !== "global-search" && openPanel !== "closed" ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}
@@ -103,6 +102,7 @@ export function Home() {
 
           <Footer
             hasBookmarkUpdateToday={hasBookmarkUpdateToday}
+            hasGroupUpdateToday={hasGroupUpdateToday}
             bookmarksOpen={openPanel === "bookmarks"}
             searchOpen={openPanel === "global-search"}
             dashboardOpen={openPanel === "dashboard"}
@@ -123,6 +123,7 @@ export function Home() {
           bookmarks={bookmarks}
           activeGroupTabs={activeGroupTabs}
           tabColorCycle={tabColorCycle}
+          dashboardStatusNames={dashboardStatusNames}
           groups={groups}
           activeGroupId={activeGroupId}
           groupMenuOpen={groupMenuOpen}
@@ -135,13 +136,11 @@ export function Home() {
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
+          onRenameDashboardStatus={setDashboardStatusName}
           onMoveDashboardTabToGroup={moveToGroup}
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
           onArchiveDashboardTab={archiveDashboardTab}
-          onChangeClosedTabStatus={moveClosedTabToStatus}
-          onMoveClosedTabToGroup={moveClosedTabToGroup}
-          onToggleClosedTabBookmark={toggleClosedTabBookmark}
           onRemoveClosedTab={removeClosedTab}
           onOpenClosed={() => {
             if (openPanel !== "closed") toggleSidePanel("closed");
@@ -152,7 +151,6 @@ export function Home() {
           onRenameGroup={renameGroup}
           onToggleGroupPin={toggleGroupPin}
           onRestoreClosedTab={restoreClosedTabAndClosePanel}
-          onOpenSearchedBookmark={openBookmarkAndClosePanel}
         />
       </main>
     </I18nContext>

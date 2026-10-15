@@ -25,7 +25,7 @@ test("3. 터치 기기의 에디터·검색창·그룹 이름 입력란은 최�
   expect(await fontSize(".note-area")).toBeGreaterThanOrEqual(16);
 
   await openGlobalSearchPanel(page);
-  expect(await fontSize("#global-search-panel input")).toBeGreaterThanOrEqual(16);
+  expect(await fontSize("#global-search-popup input")).toBeGreaterThanOrEqual(16);
   await page.keyboard.press("Escape");
 
   await groupsCommand(page).click();

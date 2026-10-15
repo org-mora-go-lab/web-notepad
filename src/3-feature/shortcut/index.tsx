@@ -20,6 +20,8 @@ export function Shortcut({
       keys: ["Option + Arrow Up", "Option + Arrow Down"],
     },
     { action: t.shortcutSelectAll, keys: ["Cmd + A", "Option + A"] },
+    { action: t.shortcutUndo, keys: ["Cmd + Z"] },
+    { action: t.shortcutRedo, keys: ["Cmd + Shift + Z"] },
     { action: t.shortcutMoveRight, keys: ["Option + F12"] },
     { action: t.shortcutMoveLeft, keys: ["Option + F11"] },
     { action: t.shortcutInsertTab, keys: ["Tab"] },

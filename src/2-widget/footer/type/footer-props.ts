@@ -1,6 +1,8 @@
 export type FooterProps = {
   // A linked bookmark was created or synced today.
   hasBookmarkUpdateToday: boolean;
+  // A group was created or changed today.
+  hasGroupUpdateToday: boolean;
   bookmarksOpen: boolean;
   searchOpen: boolean;
   dashboardOpen: boolean;
