@@ -63,6 +63,10 @@
     }
   }
 
+  .dashboard-closed-command[aria-pressed="true"] svg {
+    fill: none;
+  }
+
   // The board fills the panel so the area under each status title accepts drops down to the bottom.
   .dashboard-list {
     overflow-y: auto;
