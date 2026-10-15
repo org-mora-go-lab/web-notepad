@@ -42,6 +42,10 @@
     .dashboard-expand {
       display: none;
     }
+
+    .dashboard-list {
+      padding-top: 0;
+    }
   }
 
   @each $name, $_ in v.$extra-tab-colors {
