@@ -102,6 +102,7 @@
   // Group select sits on the left; SEARCH, BOOKMARK and DASHBOARD are pushed to the right.
   .group-select-command {
     order: -1;
+    gap: 9px;
   }
 
   .global-search-command {
