@@ -5,6 +5,7 @@ import { openSettingsPanel, writeStoredState } from "../../__util__";
 import { settingsPanel } from "../__util__";
 
 test("6. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우고 기본 작업공간을 연다", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await writeStoredState(page, {
     activeGroupId: "work",
     groups: [
@@ -28,8 +29,13 @@ test("6. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우�
   await expect(popup).toContainText(
     "All notes, groups, bookmarks, closed tabs, and settings will be permanently deleted. Are you sure?",
   );
-  await expect(popup.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
-  await popup.getByRole("button", { name: "Delete all", exact: true }).click();
+  const cancelButton = popup.getByRole("button", { name: "Cancel", exact: true });
+  await expect(cancelButton).toBeFocused();
+  await expect(cancelButton).toHaveCSS("display", "flex");
+  const deleteAllButton = popup.getByRole("button", { name: "Delete all", exact: true });
+  await expect(deleteAllButton).toHaveCSS("display", "flex");
+  await expect(deleteAllButton).toHaveCSS("white-space", "nowrap");
+  await deleteAllButton.click();
 
   await expect(page.locator("textarea")).toHaveValue("");
   await expect(page.locator(".current-group-name:visible, .group-select-name:visible")).toHaveText(

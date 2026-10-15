@@ -91,12 +91,18 @@
     display: flex;
     justify-content: flex-end;
     gap: 8px;
+
+    > button {
+      display: flex;
+      line-height: normal;
+    }
   }
 
   .confirm-popup-confirm {
     border-color: v.$tab-red;
     background: v.$tab-red;
     color: v.$pit;
+    white-space: nowrap;
   }
 }
 
