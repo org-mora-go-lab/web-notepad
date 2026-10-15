@@ -158,6 +158,7 @@ export function GlobalSearch({
             <SearchPreview
               groupName={selectedBookmark.group.name}
               bookmark={selectedBookmark.bookmark}
+              query={query}
             />
           ) : (
             <EmptyState

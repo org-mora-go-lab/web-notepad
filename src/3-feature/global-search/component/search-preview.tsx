@@ -1,10 +1,15 @@
 import { FileText } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
+import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 
 import type { SearchPreviewProps } from "../type";
 
-export function SearchPreview({ groupName, bookmark }: SearchPreviewProps) {
+export function SearchPreview({
+  groupName,
+  bookmark,
+  query,
+}: SearchPreviewProps) {
   const { t } = useI18n();
 
   return (
@@ -12,11 +17,17 @@ export function SearchPreview({ groupName, bookmark }: SearchPreviewProps) {
       <header>
         <FileText size={16} aria-hidden="true" />
         <div>
-          <strong>{bookmark.title}</strong>
-          <span>{groupName}</span>
+          <strong>
+            <SearchHighlight text={bookmark.title} query={query} />
+          </strong>
+          <span>
+            <SearchHighlight text={groupName} query={query} />
+          </span>
         </div>
       </header>
-      <pre>{bookmark.content}</pre>
+      <pre>
+        <SearchHighlight text={bookmark.content} query={query} />
+      </pre>
     </section>
   );
 }
