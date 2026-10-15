@@ -7,36 +7,31 @@ import {
   workspaceBounds,
 } from "../../04. 패널과 검색/__util__";
 
-test("5. 넓은 고정 패널로 작업 영역이 좁아지면 푸터를 모바일 아이콘 구성으로 전환한다", async ({
+test("5. 넓은 고정 패널로 작업 영역이 좁아지면 북마크와 대시보드 라벨만 숨긴다", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 844 });
   await page.goto("/");
-  await openPanel(page, "bookmarks-panel");
-  await panelPinButton(page, "bookmarks-panel").click();
-  await dragPanelEdgeTo(page, "bookmarks-panel", 120);
+  await openPanel(page, "dashboard-panel");
+  await panelPinButton(page, "dashboard-panel").click();
+  await dragPanelEdgeTo(page, "dashboard-panel", 120);
   await expect.poll(async () => (await workspaceBounds(page)).width).toBeLessThanOrEqual(512);
 
   const footer = page.locator(".footer");
   const commands = footer.locator(".status-command");
-  await expect(footer.locator(".current-group-panel")).toBeVisible();
+  await expect(footer.locator(".current-group-panel")).toBeHidden();
+  await expect(footer.locator(".group-select-name")).toBeVisible();
+  await expect(footer.locator(".bookmark-command > .status-label")).toBeHidden();
+  await expect(footer.locator(".dashboard-command > .status-label")).toBeHidden();
   for (const command of await commands.all())
-    expect((await command.boundingBox())!.height).toBeCloseTo(61.2, 1);
-  const centers = await Promise.all(
-    (await commands.all()).map(async (command) => {
-      const bounds = (await command.boundingBox())!;
-      return bounds.x + bounds.width / 2;
-    }),
-  );
-  const sortedCenters = centers.sort((left, right) => left - right);
-  const gaps = sortedCenters
-    .slice(1)
-    .map((center, index) => center - sortedCenters[index]);
-  expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThanOrEqual(1);
+    expect((await command.boundingBox())!.height).toBeCloseTo(35, 1);
 
-  await dragPanelEdgeTo(page, "bookmarks-panel", 700);
+  await dragPanelEdgeTo(page, "dashboard-panel", 700);
   await expect.poll(async () => (await workspaceBounds(page)).width).toBeGreaterThan(512);
   await expect(footer.locator(".current-group-panel")).toBeHidden();
+  await expect(footer.locator(".group-select-name")).toBeVisible();
+  await expect(footer.locator(".bookmark-command > .status-label")).toBeVisible();
+  await expect(footer.locator(".dashboard-command > .status-label")).toBeVisible();
   for (const command of await commands.all())
     expect((await command.boundingBox())!.height).toBeCloseTo(35, 1);
 });
