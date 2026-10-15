@@ -13,7 +13,7 @@ import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { SearchPreview, SearchResult, SearchResultSection } from "./component";
-import { useGlobalSearchResize } from "./hook";
+import { useDebouncedSearchQuery, useGlobalSearchResize } from "./hook";
 import type { GlobalSearchProps } from "./type";
 
 export function GlobalSearch({
@@ -39,7 +39,7 @@ export function GlobalSearch({
   const { containerRef, listRef } = useScrollableListLayout(
     "--global-search-scrollbar-width",
   );
-  const query = searchQuery.trim();
+  const query = useDebouncedSearchQuery(searchQuery).trim();
   const groupResults = query
     ? groups.filter((group) => matchesSearchQuery(query, group.name))
     : [];
