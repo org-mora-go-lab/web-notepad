@@ -1,4 +1,10 @@
-export { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS, TAB_STATUSES } from "./setting-constant";
+export {
+  DASHBOARD_STATUSES,
+  DEFAULT_SETTINGS,
+  FONT_SCALES,
+  TAB_COLORS,
+  TAB_STATUSES,
+} from "./setting-constant";
 export {
   ALL_GROUP_ID,
   ALL_GROUP_NAME,

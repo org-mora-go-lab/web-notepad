@@ -27,10 +27,15 @@ export function DashboardStatuses({
       className={`dashboard-statuses ${iceboxVisible ? "has-icebox" : ""} ${closedVisible ? "has-closed" : ""}`}
     >
       {iceboxVisible && (
-        <h3 className="dashboard-icebox-status">
-          <span className="dashboard-status-label">{t.icebox}</span>
-          <span className="dashboard-count">{iceboxCount}</span>
-        </h3>
+        <DashboardStatus
+          id="dashboard-status-icebox"
+          className="dashboard-icebox-status"
+          status="icebox"
+          label={statusNames.icebox ?? t.icebox}
+          count={iceboxCount}
+          tabColor="gray"
+          onRename={onRenameStatus}
+        />
       )}
       {columns.map(({ status, tabs }) => (
         <DashboardStatus
@@ -44,10 +49,15 @@ export function DashboardStatuses({
         />
       ))}
       {closedVisible && (
-        <h3 className="dashboard-closed-status">
-          <span className="dashboard-status-label">{t.closedTitle}</span>
-          <span className="dashboard-count">{closedCount}</span>
-        </h3>
+        <DashboardStatus
+          id="dashboard-status-closed"
+          className="dashboard-closed-status"
+          status="closed"
+          label={statusNames.closed ?? t.closedTitle}
+          count={closedCount}
+          tabColor="purple"
+          onRename={onRenameStatus}
+        />
       )}
     </div>
   );

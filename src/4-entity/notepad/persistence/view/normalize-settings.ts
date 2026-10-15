@@ -1,7 +1,11 @@
 import { LANGUAGES } from "@/src/5-shared/constant";
 import type { Language } from "@/src/5-shared/type";
 
-import { DEFAULT_SETTINGS, FONT_SCALES, TAB_STATUSES } from "../../constant";
+import {
+  DASHBOARD_STATUSES,
+  DEFAULT_SETTINGS,
+  FONT_SCALES,
+} from "../../constant";
 import type { NotepadSettings, TabStatus } from "../../type";
 import { isTabColor } from "../read-value";
 
@@ -21,7 +25,7 @@ export const normalizeSettings = (value: unknown): NotepadSettings => {
       ? (settings.dashboardStatusNames as Partial<Record<TabStatus, unknown>>)
       : {};
   const dashboardStatusNames = Object.fromEntries(
-    TAB_STATUSES.flatMap((status) => {
+    DASHBOARD_STATUSES.flatMap((status) => {
       const name = sourceStatusNames[status];
       return typeof name === "string" && name.trim()
         ? [[status, name.trim().slice(0, 30)]]
