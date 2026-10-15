@@ -25,6 +25,7 @@ export function DashboardCard({
   groupName,
   dragging,
   active = false,
+  contextMenuTarget = false,
   onOpen,
   onOpenContextMenu,
   onDragStart,
@@ -53,7 +54,7 @@ export function DashboardCard({
 
   return (
     <article
-      className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""}`}
+      className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""} ${contextMenuTarget ? "is-context-menu-target" : ""}`}
       data-tab-color={tab.tabColor}
       draggable
       onContextMenu={(event) => {

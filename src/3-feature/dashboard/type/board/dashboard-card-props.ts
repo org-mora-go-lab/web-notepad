@@ -7,6 +7,7 @@ export type DashboardCardProps = {
   groupName?: string;
   dragging: boolean;
   active?: boolean;
+  contextMenuTarget?: boolean;
   onOpen: (tabId: string) => void;
   onOpenContextMenu?: (tabId: string, clientX: number, clientY: number) => void;
   onDragStart: (tabId: string, event: DragEvent<HTMLElement>) => void;

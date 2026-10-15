@@ -11,6 +11,7 @@ export function DashboardColumn({
   groups,
   showGroupNames,
   tabColorCycle,
+  contextMenuTabId,
   onOpenTab,
   onOpenContextMenu,
 }: DashboardColumnProps) {
@@ -61,6 +62,7 @@ export function DashboardColumn({
             key={tab.id}
             tab={tab}
             active={tab.id === activeTabId}
+            contextMenuTarget={tab.id === contextMenuTabId}
             groupName={
               showGroupNames
                 ? groups.find((group) =>

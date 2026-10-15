@@ -85,6 +85,7 @@ export function Dashboard({
                 groups={groups}
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
+                contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
