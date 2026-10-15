@@ -10,7 +10,7 @@ export const bookmarksCommand = (page: Page) =>
 export const closedCommand = (page: Page) =>
   page.locator('button[aria-controls="closed-panel"]');
 export const groupStatusName = (page: Page) =>
-  page.locator(".group-select-name");
+  page.locator(".group-select-name:visible, .current-group-name:visible");
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
