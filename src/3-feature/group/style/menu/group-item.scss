@@ -8,23 +8,6 @@
     overflow-y: auto;
   }
 
-  // All, Ungrouped and Closed share the first row.
-  .group-split-row {
-    display: flex;
-    gap: 4px;
-
-    .group-item {
-      min-width: 0;
-      flex: 1;
-      padding: 0;
-    }
-
-    .group-select {
-      justify-content: center;
-      text-align: center;
-    }
-  }
-
   .group-item {
     min-height: 39px;
     display: flex;
@@ -110,6 +93,15 @@
         opacity: 0.45;
         cursor: default;
       }
+    }
+  }
+
+  .group-closed-item {
+    padding-right: 10px;
+
+    .group-select {
+      justify-content: center;
+      text-align: center;
     }
   }
 

@@ -2,12 +2,12 @@ import { expect, test } from "@playwright/test";
 
 import { groupsCommand } from "../../__util__";
 
-test("5. All, Ungrouped, Closed 텍스트를 각 버튼의 가로 중앙에 정렬한다", async ({ page }) => {
+test("5. 그룹 패널의 Closed 텍스트를 버튼 가로 중앙에 정렬한다", async ({ page }) => {
   await page.goto("/");
   await groupsCommand(page).click();
 
-  const buttons = page.locator(".group-split-row .group-select");
-  await expect(buttons).toHaveCount(3);
+  const buttons = page.locator(".group-closed-item .group-select");
+  await expect(buttons).toHaveCount(1);
 
   for (const button of await buttons.all()) {
     const buttonBox = await button.boundingBox();

@@ -11,10 +11,10 @@ test("3. 모바일에서 그룹을 선택하면 드롭다운을 바로 닫는다
 
   await groupMenu(page)
     .locator(".group-item")
-    .filter({ hasText: "Ungrouped" })
-    .getByRole("button", { name: "Ungrouped", exact: true })
+    .filter({ hasText: "Work" })
+    .getByRole("button", { name: "Work", exact: true })
     .click();
 
-  await expect(groupStatusName(page)).toHaveText("Ungrouped");
+  await expect(groupStatusName(page)).toHaveText("Work");
   await expect(groupMenu(page)).toHaveCount(0);
 });

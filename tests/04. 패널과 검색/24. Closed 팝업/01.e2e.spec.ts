@@ -7,9 +7,9 @@ test("1. Closed는 현재 그룹 목록과 선택한 탭의 우측 미리보기�
   await seedClosedPanelState(page);
   await groupsCommand(page).click();
 
-  const specialButtons = page.locator("#groups-menu .group-split-row .group-select");
-  await expect(specialButtons).toHaveText(["All", "Ungrouped", "Closed"]);
-  await specialButtons.filter({ hasText: "Closed" }).click();
+  const closedButton = page.locator("#groups-menu .group-closed-item .group-select");
+  await expect(closedButton).toHaveText("Closed");
+  await closedButton.click();
 
   const popup = page.locator("#closed-popup");
   await expect(popup).toHaveAttribute("open", "");

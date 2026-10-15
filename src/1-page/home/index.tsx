@@ -74,6 +74,7 @@ export function Home() {
           onOpenShortcuts: () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           },
+          onSelectGroup: selectGroupAndClosePanel,
         }
       : pane;
 

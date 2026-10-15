@@ -73,6 +73,11 @@ export async function createGroups(page: Page, ...names: string[]) {
 
 // Opens the group dropdown, selects the group with the exact name and closes the dropdown.
 export async function switchGroup(page: Page, name: string) {
+  if (name === "All Group" || name === "Ungrouped") {
+    await page.getByRole("button", { name: "MENU", exact: true }).click();
+    await page.getByRole("menuitem", { name, exact: true }).click();
+    return;
+  }
   await groupsCommand(page).click();
   await page
     .locator(".group-item")

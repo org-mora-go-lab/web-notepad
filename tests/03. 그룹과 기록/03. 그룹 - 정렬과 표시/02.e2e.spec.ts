@@ -7,8 +7,6 @@ test("2. 이름 있는 그룹은 한글 이름을 먼저 배치하고 한국어 
   await groupsCommand(page).click();
 
   await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "All",
-    "Ungrouped",
     "Closed",
     "가방",
     "나무",

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { dragTabToZone, paneSlot, seedAllGroupState } from "../__util__";
 
-test("6. All 분할 편집기의 새 탭은 현재 패널에 표시하고 Ungrouped 소속으로 저장한다", async ({ page }) => {
+test("6. All Group 새 탭은 현재 패널과 Ungrouped에 저장한다", async ({ page }) => {
   await seedAllGroupState(page);
   const tab = page.getByRole("tab", { name: "d", exact: true }).locator("..");
   await dragTabToZone(page, tab, paneSlot(page, "left"), "Split right");

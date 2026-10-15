@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { seedTwoGroupAllView } from "./__util__";
 
-test("3. All 분할은 탭 소속과 소속 그룹의 분할 배치를 바꾸지 않는다", async ({ page }) => {
+test("3. All Group 분할은 탭 소속과 소속 그룹 배치를 바꾸지 않는다", async ({ page }) => {
   await seedTwoGroupAllView(page);
   const body = page.locator(".body");
   const box = (await body.boundingBox())!;

@@ -83,6 +83,12 @@
       font-size: v.font(12px);
       line-height: 18px;
     }
+
+    .additional-tools-divider {
+      height: 1px;
+      margin: 4px 6px;
+      background: v.$line;
+    }
   }
 
   &.has-menu { padding-right: 140px; }
