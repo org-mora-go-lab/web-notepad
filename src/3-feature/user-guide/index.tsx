@@ -46,6 +46,9 @@ export function UserGuide({ onClose }: UserGuideProps) {
         event.preventDefault();
         close();
       }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) close();
+      }}
     >
       <div className="user-guide-header">
         <div className="user-guide-heading">
