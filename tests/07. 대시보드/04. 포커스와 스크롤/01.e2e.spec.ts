@@ -23,8 +23,28 @@ test("1. 현재 탭 카드는 상태 색상의 옅은 배경·테두리와 접�
   });
   expect(colors.actual).toBe(colors.expected);
 
+  await page.locator(".dashboard-icebox-command").click();
+  await active.dragTo(dashboardColumn(page, "icebox"));
+  const iceboxActive = dashboardColumn(page, "icebox").locator(
+    ".dashboard-card.is-active",
+  );
+  const iceboxColors = await iceboxActive.evaluate((card) => {
+    const column = card.closest<HTMLElement>(".dashboard-icebox-column")!;
+    const sample = document.createElement("span");
+    sample.style.backgroundColor =
+      "color-mix(in srgb, var(--dashboard-accent) 12%, var(--color-field))";
+    column.append(sample);
+    const result = {
+      actual: getComputedStyle(card).backgroundColor,
+      expected: getComputedStyle(sample).backgroundColor,
+    };
+    sample.remove();
+    return result;
+  });
+  expect(iceboxColors.actual).toBe(iceboxColors.expected);
+
   await page.locator(".dashboard-closed-command").click();
-  await active.dragTo(dashboardColumn(page, "closed"));
+  await iceboxActive.dragTo(dashboardColumn(page, "closed"));
   const closedActive = dashboardColumn(page, "closed").locator(
     ".dashboard-card.is-active",
   );

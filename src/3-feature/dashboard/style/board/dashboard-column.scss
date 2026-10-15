@@ -19,6 +19,7 @@
 
   .dashboard-column.dashboard-icebox-column {
     --dashboard-accent: color-mix(in srgb, #{v.$saved} 42%, white);
+    --dashboard-focus-accent: var(--dashboard-accent);
 
     .dashboard-column-status {
       color: var(--dashboard-accent);
