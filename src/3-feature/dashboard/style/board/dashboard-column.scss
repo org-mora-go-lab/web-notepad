@@ -17,12 +17,16 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  .dashboard-icebox-column {
+  .dashboard-column.dashboard-icebox-column {
     --dashboard-accent: color-mix(in srgb, #{v.$saved} 42%, white);
 
     .dashboard-column-status {
       color: var(--dashboard-accent);
     }
+  }
+
+  .dashboard-column.dashboard-closed-column {
+    --dashboard-accent: color-mix(in srgb, var(--color-tab-purple) 68%, #000);
   }
 
   .dashboard-column {

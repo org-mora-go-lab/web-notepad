@@ -76,10 +76,17 @@ export const getTitleFromContent = (content: unknown, fallback: string) => {
 export const getTabStatus = (
   tab: NoteTab,
   tabColorCycle: TabColor[],
-): TabStatus =>
-  TAB_STATUSES[Math.max(0, tabColorCycle.indexOf(tab.tabColor))] ?? "todo";
+): TabStatus => {
+  if (tab.dashboardStatus === "icebox" || tab.dashboardStatus === "closed")
+    return tab.dashboardStatus;
+  return TAB_STATUSES[Math.max(0, tabColorCycle.indexOf(tab.tabColor))] ?? "todo";
+};
 
 export const getStatusColor = (
   status: TabStatus,
   tabColorCycle: TabColor[],
-): TabColor => tabColorCycle[TAB_STATUSES.indexOf(status)];
+): TabColor => {
+  if (status === "icebox") return "gray";
+  if (status === "closed") return "purple";
+  return tabColorCycle[TAB_STATUSES.indexOf(status)];
+};

@@ -15,7 +15,7 @@ test("1. Icebox와 Closed 명령으로 각 대시보드 상태를 표시하고 �
   await expect(page.locator(".dashboard-icebox-column")).toBeVisible();
   await closedCommand.click();
   await expect(closedCommand).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator(".dashboard-closed-card")).toContainText("Archived note");
+  await expect(page.locator(".dashboard-closed-column .dashboard-card")).toContainText("Archived note");
   await expect(page.locator("#closed-popup")).toHaveCount(0);
   await iceboxCommand.click();
   await expect(page.locator(".dashboard-icebox-column")).toHaveCount(0);

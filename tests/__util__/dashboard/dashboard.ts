@@ -4,7 +4,10 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { writeStoredState } from "../state";
 
 export const dashboardPanel = (page: Page) => page.locator("#dashboard-panel");
-export const dashboardColumn = (page: Page, status: "todo" | "in-progress" | "done") =>
+export const dashboardColumn = (
+  page: Page,
+  status: "icebox" | "todo" | "in-progress" | "done" | "closed",
+) =>
   dashboardPanel(page).locator(`.dashboard-column[data-status="${status}"]`);
 
 // Seeds the Ungrouped group with tab-1..tab-3 in Todo (gray) / Doing (green) / Done (purple) and a Work group with one tab.

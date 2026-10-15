@@ -7,7 +7,6 @@ import type {
 } from "@/src/3-feature";
 import type {
   BookmarkEntry,
-  ClosedTabEntry,
   GroupEntry,
   NoteTab,
   TabColor,
@@ -27,7 +26,6 @@ export type PanelProps = {
   groups: GroupEntry[];
   activeGroupId: string;
   groupMenuOpen: boolean;
-  closedTabs: ClosedTabEntry[];
   globalSearchQuery: string;
   onClose: () => void;
   onCloseGroupMenu: () => void;
@@ -42,12 +40,10 @@ export type PanelProps = {
   onToggleDashboardTabBookmark: ComponentProps<
     typeof Dashboard
   >["onToggleTabBookmark"];
-  onArchiveDashboardTab: ComponentProps<typeof Dashboard>["onArchiveTab"];
-  onRemoveClosedTab: ComponentProps<typeof Dashboard>["onRemoveClosed"];
+  onDeleteDashboardTab: ComponentProps<typeof Dashboard>["onDeleteTab"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
-  onRestoreClosedTab: ComponentProps<typeof Dashboard>["onRestoreClosed"];
 };

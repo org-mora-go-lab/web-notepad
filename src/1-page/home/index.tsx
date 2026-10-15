@@ -14,7 +14,6 @@ import type { PaneViewProps } from "./type";
 export function Home() {
   const {
     hydrated,
-    closedTabs,
     globalSearchQuery,
     setGlobalSearchQuery,
     openPanel,
@@ -25,7 +24,6 @@ export function Home() {
     selectGroupAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,
-    restoreClosedTabAndClosePanel,
     activeTab,
     split,
     bookmarks,
@@ -37,8 +35,7 @@ export function Home() {
     togglePin,
     toggleBookmark,
     moveToGroup,
-    archiveDashboardTab,
-    removeClosedTab,
+    deleteDashboardTab,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
@@ -131,7 +128,6 @@ export function Home() {
           activeGroupId={activeGroupId}
           groupMenuOpen={groupMenuOpen}
           onCloseGroupMenu={closeGroupMenu}
-          closedTabs={closedTabs}
           globalSearchQuery={globalSearchQuery}
           onClose={closeSidePanels}
           onGlobalSearchQueryChange={setGlobalSearchQuery}
@@ -143,14 +139,12 @@ export function Home() {
           onMoveDashboardTabToGroup={moveToGroup}
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
-          onArchiveDashboardTab={archiveDashboardTab}
-          onRemoveClosedTab={removeClosedTab}
+          onDeleteDashboardTab={deleteDashboardTab}
           onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}
           onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
           onToggleGroupPin={toggleGroupPin}
-          onRestoreClosedTab={restoreClosedTabAndClosePanel}
         />
       </main>
     </I18nContext>

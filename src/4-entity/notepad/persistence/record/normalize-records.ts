@@ -11,6 +11,10 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
       const content = typeof tab.content === "string" ? tab.content : "";
       const selectedLines = sanitizeSelectedLines(tab.selectedLines, content);
       const tabColor = normalizeTabColor(tab.tabColor, urgent);
+      const dashboardStatus =
+        tab.dashboardStatus === "icebox" || tab.dashboardStatus === "closed"
+          ? tab.dashboardStatus
+          : undefined;
 
       return {
         ...tabData,
@@ -21,6 +25,7 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
         savedContent:
           typeof tab.savedContent === "string" ? tab.savedContent : "",
         tabColor,
+        dashboardStatus,
         pinned: tab.pinned === true,
         bookmarked: tab.bookmarked === true,
       };

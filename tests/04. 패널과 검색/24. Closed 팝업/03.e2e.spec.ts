@@ -1,14 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { openClosedPanel, readStoredState } from "../../__util__";
+import { dashboardColumn, openPanel, readStoredState } from "../../__util__";
 import { seedClosedPanelState } from "./__fixture__";
 
-test("3. Closed 카드의 영구 삭제 팝업에서 취소하면 항목을 유지한다", async ({ page }) => {
+test("3. 탭 카드를 드래그해 Icebox 상태로 이동한다", async ({ page }) => {
   await seedClosedPanelState(page);
-  await openClosedPanel(page);
-  await page.getByRole("button", { name: "Delete closed tab Archived note" }).click();
-  const dialog = page.getByRole("alertdialog", { name: "Permanently delete closed tab" });
-  await dialog.getByRole("button", { name: "Cancel" }).click();
-  await expect(page.locator(".dashboard-closed-card")).toHaveCount(1);
-  expect((await readStoredState(page)).closedTabs?.some((entry) => entry.id === "closed-1")).toBe(true);
+  await openPanel(page, "dashboard-panel");
+  await page.locator(".dashboard-icebox-command").click();
+  await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "icebox"));
+  expect((await readStoredState(page)).groups[0].tabs.find((tab) => tab.id === "open-1")?.dashboardStatus).toBe("icebox");
 });

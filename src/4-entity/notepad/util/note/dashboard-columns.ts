@@ -16,10 +16,11 @@ export function getDashboardColumns(
     tabs: [] as NoteTab[],
   }));
   for (const tab of tabs) {
-    if (tab.content.trim())
-      columns
-        .find((column) => column.status === getTabStatus(tab, colors))!
-        .tabs.push(tab);
+    if (!tab.content.trim()) continue;
+    const column = columns.find(
+      (item) => item.status === getTabStatus(tab, colors),
+    );
+    column?.tabs.push(tab);
   }
   return columns;
 }

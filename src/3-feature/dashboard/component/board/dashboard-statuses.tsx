@@ -10,14 +10,17 @@ export function DashboardStatuses({
   statusNames,
   iceboxVisible,
   closedVisible,
+  iceboxCount,
   closedCount,
   onRenameStatus,
 }: DashboardStatusesProps) {
   const { t } = useI18n();
   const statusLabels = {
+    icebox: t.icebox,
     todo: t.statusTodo,
     "in-progress": t.statusInProgress,
     done: t.statusDone,
+    closed: t.closedTitle,
   };
   return (
     <div
@@ -26,7 +29,7 @@ export function DashboardStatuses({
       {iceboxVisible && (
         <h3 className="dashboard-icebox-status">
           <span className="dashboard-status-label">{t.icebox}</span>
-          <span className="dashboard-count">0</span>
+          <span className="dashboard-count">{iceboxCount}</span>
         </h3>
       )}
       {columns.map(({ status, tabs }) => (

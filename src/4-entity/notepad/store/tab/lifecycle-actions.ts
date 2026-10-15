@@ -18,7 +18,10 @@ import {
   updateGroup,
 } from "../workspace";
 
-type Actions = Pick<NotepadState, "setTabStatus" | "closeTab" | "archiveTab">;
+type Actions = Pick<
+  NotepadState,
+  "setTabStatus" | "closeTab" | "archiveTab" | "deleteTab"
+>;
 
 export const createTabLifecycleActions: StateCreator<
   NotepadState,
@@ -33,20 +36,57 @@ export const createTabLifecycleActions: StateCreator<
         item.tabs.some((tab) => tab.id === tabId),
       );
       if (!group) return state;
-      const tabColor = getStatusColor(status, state.settings.tabColorCycle);
+      const auxiliary = status === "icebox" || status === "closed";
+      const tabColor = auxiliary
+        ? undefined
+        : getStatusColor(status, state.settings.tabColorCycle);
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(
           current,
           tabId,
-          { tabColor },
-          { tabColor, updatedAt: Date.now() },
+          { ...(tabColor ? { tabColor } : {}), dashboardStatus: auxiliary ? status : undefined },
+          { ...(tabColor ? { tabColor } : {}), updatedAt: Date.now() },
         ),
       );
     });
   },
   closeTab: (tabId) => hideTabFromEditor(set, get, tabId),
   archiveTab: (tabId) => archiveTabEntry(set, get, tabId),
+  deleteTab: (tabId) => deleteTabEntry(set, get, tabId),
 });
+
+const deleteTabEntry = (
+  set: (partial: Partial<NotepadState>) => void,
+  get: () => NotepadState,
+  tabId: string,
+) => {
+  const state = get();
+  const group = getTabGroup(state, tabId);
+  const tab = group?.tabs.find((item) => item.id === tabId);
+  if (!group || !tab) return;
+  const remainingTabs = group.tabs.filter((item) => item.id !== tabId);
+  if (!remainingTabs.some((item) => item.open)) {
+    const { tab: replacement, nextTabNumber } = allocateTab(state);
+    set({
+      ...updateGroup(state, group.id, (current) => ({
+        ...current,
+        ...EMPTY_SPLIT_LAYOUT,
+        splitRatio: current.splitRatio,
+        tabs: [...remainingTabs, replacement],
+        activeTabId: replacement.id,
+      })),
+      nextTabNumber,
+    });
+    return;
+  }
+  set(
+    updateGroup(state, group.id, (current) =>
+      normalizeLayout(
+        assignTabToPane({ ...current, tabs: remainingTabs }, tabId, null),
+      ),
+    ),
+  );
+};
 
 const hideTabFromEditor = (
   set: (partial: Partial<NotepadState>) => void,

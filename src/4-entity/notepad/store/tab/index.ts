@@ -18,6 +18,7 @@ type TabActions = Pick<
   | "setTabStatus"
   | "closeTab"
   | "archiveTab"
+  | "deleteTab"
 >;
 
 export const createTabActions: StateCreator<

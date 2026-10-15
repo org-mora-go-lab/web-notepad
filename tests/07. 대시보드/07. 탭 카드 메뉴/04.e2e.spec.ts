@@ -4,7 +4,7 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../../__util__";
 
-test("4. Closed는 Done 카드 메뉴에만 표시하고 Move Group 아래에 둔다", async ({ page }) => {
+test("4. Todo·Doing·Done 카드 우클릭 메뉴에는 Closed 기능을 표시하지 않는다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -30,9 +30,7 @@ test("4. Closed는 Done 카드 메뉴에만 표시하고 Move Group 아래에 �
     .locator(".dashboard-card", { hasText: "Done task" })
     .click({ button: "right" });
 
-  await expect(page.getByRole("menu").getByRole("menuitem")).toHaveText([
-    "Move Group",
-    "Bookmark",
-    "Closed",
-  ]);
+  await expect(
+    page.getByRole("menu").getByRole("menuitem", { name: "Closed" }),
+  ).toHaveCount(0);
 });

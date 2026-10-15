@@ -9,5 +9,6 @@ export type DashboardStatusesProps = Pick<
   columns: DashboardColumnData[];
   iceboxVisible: boolean;
   closedVisible: boolean;
+  iceboxCount: number;
   closedCount: number;
 };

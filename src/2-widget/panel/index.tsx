@@ -8,7 +8,7 @@ import {
   Setting,
   Shortcut,
 } from "@/src/3-feature";
-import { ALL_GROUP_ID, getClosedTabItems } from "@/src/4-entity/notepad";
+import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
 
 import type { PanelProps } from "./type";
 
@@ -25,7 +25,6 @@ export function Panel({
   groups,
   activeGroupId,
   groupMenuOpen,
-  closedTabs,
   globalSearchQuery,
   onClose,
   onCloseGroupMenu,
@@ -38,22 +37,13 @@ export function Panel({
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
-  onArchiveDashboardTab,
-  onRemoveClosedTab,
+  onDeleteDashboardTab,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
   onRenameGroup,
   onToggleGroupPin,
-  onRestoreClosedTab,
 }: PanelProps) {
-  const visibleClosedTabs = getClosedTabItems(closedTabs, groups)
-    .filter(
-      ({ groupId }) =>
-        activeGroupId === ALL_GROUP_ID || groupId === activeGroupId,
-    )
-    .map(({ entry, groupName }) => ({ entry, groupName }));
-
   return (
     <div className="panel">
       <Bookmark
@@ -76,16 +66,13 @@ export function Panel({
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
-        closedEntries={visibleClosedTabs}
-        onRestoreClosed={onRestoreClosedTab}
-        onRemoveClosed={onRemoveClosedTab}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
         onRenameStatus={onRenameDashboardStatus}
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
-        onArchiveTab={onArchiveDashboardTab}
+        onDeleteTab={onDeleteDashboardTab}
       />
       <Group
         groups={groups}
