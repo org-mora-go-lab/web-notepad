@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { openPanel } from "../../__util__";
-import { dashboardPanel, seedDashboardTabs } from "../../__util__";
+import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../../__util__";
 
 test("1. 현재 탭 카드는 상태 색상의 옅은 배경·테두리와 접근성 현재 표시로 강조한다", async ({ page }) => {
   await seedDashboardTabs(page);
@@ -22,4 +22,24 @@ test("1. 현재 탭 카드는 상태 색상의 옅은 배경·테두리와 접�
     return result;
   });
   expect(colors.actual).toBe(colors.expected);
+
+  await page.locator(".dashboard-closed-command").click();
+  await active.dragTo(dashboardColumn(page, "closed"));
+  const closedActive = dashboardColumn(page, "closed").locator(
+    ".dashboard-card.is-active",
+  );
+  const closedColors = await closedActive.evaluate((card) => {
+    const column = card.closest<HTMLElement>(".dashboard-closed-column")!;
+    const sample = document.createElement("span");
+    sample.style.backgroundColor =
+      "color-mix(in srgb, var(--dashboard-accent) 12%, var(--color-field))";
+    column.append(sample);
+    const result = {
+      actual: getComputedStyle(card).backgroundColor,
+      expected: getComputedStyle(sample).backgroundColor,
+    };
+    sample.remove();
+    return result;
+  });
+  expect(closedColors.actual).toBe(closedColors.expected);
 });

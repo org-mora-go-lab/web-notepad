@@ -27,6 +27,7 @@
 
   .dashboard-column.dashboard-closed-column {
     --dashboard-accent: color-mix(in srgb, var(--color-tab-purple) 68%, #000);
+    --dashboard-focus-accent: var(--dashboard-accent);
   }
 
   .dashboard-column {
