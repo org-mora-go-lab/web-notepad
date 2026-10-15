@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const SEARCH_DEBOUNCE_DELAY = 700;
+const SEARCH_DEBOUNCE_DELAY = 300;
 
 export function useDebouncedSearchQuery(searchQuery: string) {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
