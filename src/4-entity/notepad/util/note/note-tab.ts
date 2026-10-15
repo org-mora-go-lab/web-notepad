@@ -87,6 +87,6 @@ export const getStatusColor = (
   tabColorCycle: TabColor[],
 ): TabColor => {
   if (status === "icebox") return "gray";
-  if (status === "closed") return "teal";
+  if (status === "closed") return "gray";
   return tabColorCycle[TAB_STATUSES.indexOf(status)];
 };
