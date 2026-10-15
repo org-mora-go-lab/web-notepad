@@ -6,8 +6,12 @@ import { dashboardColumn, dashboardPanel } from "../__util__";
 
 test("5. Done 카드를 누르면 위치와 상태·내용을 유지한 채 편집기에 복원한다", async ({ page }) => {
   const group = createGroupFixture("ungrouped", "Ungrouped", [
-    createTabFixture("tab-1", "First closed task", { tabColor: "purple" }),
-    createTabFixture("tab-3", "Third closed task", { tabColor: "purple" }),
+    createTabFixture("tab-3", "", {
+      title: "-",
+      savedContent: "",
+      tabColor: "gray",
+      updatedAt: 0,
+    }),
   ]);
   await writeStoredState(page, {
     activeGroupId: group.id,
@@ -25,20 +29,17 @@ test("5. Done 카드를 누르면 위치와 상태·내용을 유지한 채 편�
   await panel.getByRole("button", { name: "Pin panel", exact: true }).click();
   const column = dashboardColumn(page, "done");
   const titles = column.locator(".dashboard-card strong");
-  await expect(titles).toHaveText([
-    "First closed task",
-    "Second closed task",
-    "Third closed task",
-  ]);
+  await expect(titles).toHaveText(["Second closed task"]);
   const closed = column.locator(".dashboard-card", { hasText: "Second closed task" });
   const before = (await closed.boundingBox())!;
   await closed.locator(".dashboard-card-open").click();
 
   await expect(page.locator("textarea")).toHaveValue("Second closed task");
-  await expect(titles).toHaveText([
-    "First closed task",
-    "Second closed task",
-    "Third closed task",
-  ]);
+  await expect(page.getByRole("tab")).toHaveCount(1);
+  await expect(titles).toHaveText(["Second closed task"]);
   await expect.poll(async () => (await closed.boundingBox())!.y).toBeCloseTo(before.y, 0);
+
+  await page.getByRole("button", { name: "Close Second closed task" }).click();
+  await expect(page.getByRole("tab")).toHaveCount(1);
+  await expect(page.locator("textarea")).toHaveValue("");
 });
