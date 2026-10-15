@@ -7,5 +7,4 @@ export type GlobalSearchProps = {
   open: boolean;
   onClose: () => void;
   onSelectGroup: (groupId: string) => void;
-  onOpenBookmark: (groupId: string, bookmarkId: string) => void;
 };

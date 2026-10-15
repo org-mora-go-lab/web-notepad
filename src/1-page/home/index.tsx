@@ -22,7 +22,6 @@ export function Home() {
     closeSidePanels,
     activeGroupId,
     selectGroupAndClosePanel,
-    openBookmarkAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,
     restoreClosedTabAndClosePanel,
@@ -152,7 +151,6 @@ export function Home() {
           onRenameGroup={renameGroup}
           onToggleGroupPin={toggleGroupPin}
           onRestoreClosedTab={restoreClosedTabAndClosePanel}
-          onOpenSearchedBookmark={openBookmarkAndClosePanel}
         />
       </main>
     </I18nContext>

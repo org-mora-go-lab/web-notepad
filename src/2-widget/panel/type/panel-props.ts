@@ -4,7 +4,6 @@ import type {
   Bookmark,
   Closed,
   Dashboard,
-  GlobalSearch,
   Group,
 } from "@/src/3-feature";
 import type {
@@ -52,5 +51,4 @@ export type PanelProps = {
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
   onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
-  onOpenSearchedBookmark: ComponentProps<typeof GlobalSearch>["onOpenBookmark"];
 };

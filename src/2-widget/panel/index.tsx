@@ -47,7 +47,6 @@ export function Panel({
   onRenameGroup,
   onToggleGroupPin,
   onRestoreClosedTab,
-  onOpenSearchedBookmark,
 }: PanelProps) {
   const visibleClosedTabs = getClosedTabItems(closedTabs, groups)
     .filter(
@@ -112,7 +111,6 @@ export function Panel({
         open={openPanel === "global-search"}
         onClose={onClose}
         onSelectGroup={onSelectGroup}
-        onOpenBookmark={onOpenSearchedBookmark}
       />
       <Shortcut
         open={openPanel === "shortcuts"}
