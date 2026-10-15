@@ -14,11 +14,14 @@ import type { PaneDropZone } from "@/src/5-shared";
 
 type Options = {
   group: GroupEntry | undefined;
-  moveTabToPane: (tabId: string, pane: PaneId) => void;
+  moveTabsToPane: (tabIds: string[], pane: PaneId) => void;
 };
 
-export function usePaneDrag({ group, moveTabToPane }: Options) {
+export function usePaneDrag({ group, moveTabsToPane }: Options) {
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
+  const [draggingTabIds, setDraggingTabIds] = useState<string[]>([]);
+  const [selectedTabIds, setSelectedTabIds] = useState<string[]>([]);
+  const [selectionAnchorId, setSelectionAnchorId] = useState<string | null>(null);
   const draggingPane =
     group && draggingTabId && group.tabs.some((tab) => tab.id === draggingTabId)
       ? getPaneOfTab(group, draggingTabId)
@@ -26,14 +29,57 @@ export function usePaneDrag({ group, moveTabToPane }: Options) {
   const countOf = (pane: PaneId) =>
     group ? getPaneTabs(group, pane).length : 0;
 
-  const dropTo = (pane: PaneId) => () => {
-    if (draggingTabId) moveTabToPane(draggingTabId, pane);
+  const selectTabRange = (
+    tabs: GroupEntry["tabs"],
+    tabId: string,
+    extend: boolean,
+  ) => {
+    if (!extend || !selectionAnchorId) {
+      setSelectionAnchorId(tabId);
+      setSelectedTabIds([tabId]);
+      return;
+    }
+    const anchorIndex = tabs.findIndex((tab) => tab.id === selectionAnchorId);
+    const targetIndex = tabs.findIndex((tab) => tab.id === tabId);
+    if (anchorIndex < 0 || targetIndex < 0) {
+      setSelectionAnchorId(tabId);
+      setSelectedTabIds([tabId]);
+      return;
+    }
+    const [start, end] = [anchorIndex, targetIndex].sort((a, b) => a - b);
+    setSelectedTabIds(tabs.slice(start, end + 1).map((tab) => tab.id));
+  };
+
+  const startDrag = (tabId: string) => {
+    const pane = group ? getPaneOfTab(group, tabId) : null;
+    const ids =
+      group && pane && selectedTabIds.includes(tabId)
+        ? group.tabs
+            .filter(
+              (tab) =>
+                selectedTabIds.includes(tab.id) &&
+                getPaneOfTab(group, tab.id) === pane,
+            )
+            .map((tab) => tab.id)
+        : [tabId];
+    setDraggingTabId(tabId);
+    setDraggingTabIds(ids);
+  };
+
+  const endDrag = () => {
     setDraggingTabId(null);
+    setDraggingTabIds([]);
+  };
+
+  const dropTo = (pane: PaneId) => () => {
+    if (draggingTabIds.length > 0) moveTabsToPane(draggingTabIds, pane);
+    endDrag();
   };
 
   const adoptTo = (pane: PaneId) => (tabId: string) => {
-    moveTabToPane(tabId, pane);
-    setDraggingTabId(null);
+    const ids = draggingTabIds.includes(tabId) ? draggingTabIds : [tabId];
+    moveTabsToPane(ids, pane);
+    endDrag();
   };
 
   const dropZonesFor = (pane: PaneId): PaneDropZone[] => {
@@ -49,7 +95,7 @@ export function usePaneDrag({ group, moveTabToPane }: Options) {
         return zones;
     }
     // Splitting requires another tab to remain in the source pane, including cross-pane drops.
-    if (countOf(draggingPane) < 2) return zones;
+    if (countOf(draggingPane) - draggingTabIds.length < 1) return zones;
 
     const column = getPaneColumn(pane);
     const rightTarget =
@@ -74,5 +120,14 @@ export function usePaneDrag({ group, moveTabToPane }: Options) {
     return zones;
   };
 
-  return { draggingTabId, setDraggingTabId, adoptTo, dropZonesFor };
+  return {
+    draggingTabId,
+    draggingTabIds,
+    selectedTabIds,
+    selectTabRange,
+    startDrag,
+    endDrag,
+    adoptTo,
+    dropZonesFor,
+  };
 }

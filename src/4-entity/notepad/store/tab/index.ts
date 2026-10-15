@@ -10,6 +10,7 @@ type TabActions = Pick<
   | "addTab"
   | "selectTab"
   | "moveTab"
+  | "moveTabs"
   | "updateTab"
   | "setTabSelectedLines"
   | "cycleTabColor"

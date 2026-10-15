@@ -36,6 +36,7 @@ export function useHome() {
     closedTabs,
     updateTab,
     moveTab,
+    moveTabs,
     setSplitRatio,
     setRowRatio,
     cycleTabColor,
@@ -110,10 +111,18 @@ export function useHome() {
     hydrated,
   );
 
-  const { draggingTabId, setDraggingTabId, adoptTo, dropZonesFor } =
-    usePaneDrag({
+  const {
+    draggingTabId,
+    draggingTabIds,
+    selectedTabIds,
+    selectTabRange,
+    startDrag,
+    endDrag,
+    adoptTo,
+    dropZonesFor,
+  } = usePaneDrag({
       group: activeGroup,
-      moveTabToPane: moveTabToPaneAndRecord,
+      moveTabsToPane: moveTabToPaneAndRecord,
     });
 
   // The MENU sits on the top pane of the rightmost column.
@@ -128,6 +137,8 @@ export function useHome() {
       groups,
       activeGroupId,
       draggingTabId,
+      draggingTabIds,
+      selectedTabIds,
       tabs: paneTabs[pane],
       activeTab: paneTab,
       editorRef: editorRefs[pane],
@@ -136,12 +147,19 @@ export function useHome() {
       isFocused: !split || activePane === pane,
       dropZones: dropZonesFor(pane),
       onActivate: () => activatePaneWithHistory(pane),
-      onSelect: selectTabWithHistory,
+      onSelect: (tabId: string, extendSelection: boolean) => {
+        selectTabRange(paneTabs[pane], tabId, extendSelection);
+        selectTabWithHistory(tabId);
+      },
       onClose: requestCloseTab,
-      onMove: moveTab,
+      onMove: (tabIds: string[], toTabId: string) =>
+        tabIds.length === 1
+          ? moveTab(tabIds[0], toTabId)
+          : moveTabs(tabIds, toTabId),
       onMoveToGroup: moveToGroup,
       onAdopt: adoptTo(pane),
-      onDragStateChange: setDraggingTabId,
+      onDragStart: startDrag,
+      onDragEnd: endDrag,
       onCycleTabColor: cycleTabColor,
       onTogglePin: togglePin,
       onToggleBookmark: toggleBookmark,

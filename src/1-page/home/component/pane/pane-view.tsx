@@ -17,6 +17,8 @@ export function PaneView({
   autoFocus,
   isFocused,
   draggingTabId,
+  draggingTabIds,
+  selectedTabIds,
   dropZones,
   heightRatio,
   onActivate,
@@ -25,7 +27,8 @@ export function PaneView({
   onMove,
   onMoveToGroup,
   onAdopt,
-  onDragStateChange,
+  onDragStart,
+  onDragEnd,
   onCycleTabColor,
   onTogglePin,
   onToggleBookmark,
@@ -51,12 +54,15 @@ export function PaneView({
           activeGroupId={activeGroupId}
           activeTabId={activeTab.id}
           draggingTabId={draggingTabId}
+          draggingTabIds={draggingTabIds}
+          selectedTabIds={selectedTabIds}
           onSelect={onSelect}
           onClose={onClose}
           onMove={onMove}
           onMoveToGroup={onMoveToGroup}
           onAdopt={onAdopt}
-          onDragStateChange={onDragStateChange}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
           onCycleTabColor={onCycleTabColor}
           onTogglePin={onTogglePin}
           onToggleBookmark={onToggleBookmark}

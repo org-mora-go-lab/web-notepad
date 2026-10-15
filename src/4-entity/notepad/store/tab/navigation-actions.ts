@@ -11,7 +11,10 @@ import {
   updateGroup,
 } from "../workspace";
 
-type Actions = Pick<NotepadState, "addTab" | "selectTab" | "moveTab">;
+type Actions = Pick<
+  NotepadState,
+  "addTab" | "selectTab" | "moveTab" | "moveTabs"
+>;
 
 export const createTabNavigationActions: StateCreator<
   NotepadState,
@@ -93,6 +96,36 @@ export const createTabNavigationActions: StateCreator<
       return updateGroup(state, group.id, (current) => ({
         ...current,
         tabs,
+      }));
+    }),
+  moveTabs: (tabIds, toTabId) =>
+    set((state) => {
+      const uniqueIds = [...new Set(tabIds)];
+      const group = getTabGroup(state, uniqueIds[0] ?? "");
+      if (!group || !group.tabs.some((tab) => tab.id === toTabId)) return state;
+      const selected = new Set(uniqueIds);
+      if (selected.has(toTabId)) return state;
+      const moved = group.tabs.filter((tab) => selected.has(tab.id));
+      if (moved.length === 0) return state;
+      const targetIndex = group.tabs.findIndex((tab) => tab.id === toTabId);
+      const selectedIndexes = group.tabs.flatMap((tab, index) =>
+        selected.has(tab.id) ? [index] : [],
+      );
+      const selectedBeforeTarget = selectedIndexes.filter(
+        (index) => index < targetIndex,
+      ).length;
+      const movingRight = selectedIndexes[0] < targetIndex;
+      const remaining = group.tabs.filter((tab) => !selected.has(tab.id));
+      const insertionIndex =
+        targetIndex - selectedBeforeTarget + (movingRight ? 1 : 0);
+      remaining.splice(
+        Math.min(insertionIndex, remaining.length),
+        0,
+        ...moved,
+      );
+      return updateGroup(state, group.id, (current) => ({
+        ...current,
+        tabs: remaining,
       }));
     }),
 });
