@@ -3,11 +3,7 @@
 import { Bookmark, Pin } from "lucide-react";
 import { type MouseEvent, useEffect, useRef } from "react";
 
-import {
-  type NoteTab,
-  TAB_STATUSES,
-  type TabStatus,
-} from "@/src/4-entity/notepad";
+import { type NoteTab } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { DashboardCardProps } from "../../type";
@@ -29,23 +25,16 @@ export function DashboardCard({
   tab,
   closed = false,
   groupName,
-  status,
   dragging,
   active = false,
   onOpen,
   onOpenContextMenu,
   onDragStart,
-  onChangeStatus,
   onDragEnd,
 }: DashboardCardProps) {
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const preview = getPreview(tab);
   const { t } = useI18n();
-  const statusLabels: Record<TabStatus, string> = {
-    todo: t.statusTodo,
-    "in-progress": t.statusInProgress,
-    done: t.statusDone,
-  };
   const itemId = id ?? tab.id;
   const touchLayout = () =>
     window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
@@ -116,25 +105,6 @@ export function DashboardCard({
           )}
         </span>
       )}
-      <div
-        className="dashboard-card-status-actions"
-        role="group"
-        aria-label={t.changeTabStatus(tab.title)}
-      >
-        {TAB_STATUSES.map((nextStatus) => (
-          <button
-            key={nextStatus}
-            type="button"
-            aria-pressed={nextStatus === status}
-            onClick={() => {
-              if (nextStatus !== status)
-                onChangeStatus(itemId, closed, nextStatus);
-            }}
-          >
-            {statusLabels[nextStatus]}
-          </button>
-        ))}
-      </div>
     </article>
   );
 }

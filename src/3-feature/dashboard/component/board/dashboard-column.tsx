@@ -71,11 +71,9 @@ export function DashboardColumn({
                     "Ungrouped")
                   : undefined
               }
-              status={status}
               dragging={drag.draggingTabId === entry.id}
               onOpen={() => onRestoreClosed(entry.id)}
               onDragStart={drag.startDrag}
-              onChangeStatus={drag.moveToStatus}
               onDragEnd={drag.endDrag}
             />
           ) : (
@@ -90,12 +88,10 @@ export function DashboardColumn({
                     )?.name
                   : undefined
               }
-              status={status}
               dragging={drag.draggingTabId === tab.id}
               onOpen={onOpenTab}
               onOpenContextMenu={onOpenContextMenu}
               onDragStart={drag.startDrag}
-              onChangeStatus={drag.moveToStatus}
               onDragEnd={drag.endDrag}
             />
           ),

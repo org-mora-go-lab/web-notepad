@@ -39,5 +39,15 @@
       grid-template-rows: repeat(3, auto);
       align-content: start;
     }
+
+    .dashboard-column {
+      padding-left: 8px;
+      border-left: 3px solid
+        color-mix(
+          in srgb,
+          var(--dashboard-accent, #{v.$line}) 70%,
+          transparent
+        );
+    }
   }
 }
