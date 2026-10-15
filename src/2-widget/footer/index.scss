@@ -145,10 +145,13 @@
 
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
-      gap: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
     }
 
     .status-command {
+      width: 100%;
       height: 61.2px;
       gap: 8px;
 
@@ -181,13 +184,24 @@
       }
     }
 
-    .global-search-command,
-    .bookmark-command {
-      margin-right: 16px;
+    .global-search-command {
+      margin-left: 0;
     }
 
     .group-select-command {
-      flex: 0 0 auto;
+      grid-column: 1;
+    }
+
+    .global-search-command {
+      grid-column: 2;
+    }
+
+    .bookmark-command {
+      grid-column: 3;
+    }
+
+    .dashboard-command {
+      grid-column: 4;
     }
 
     .status-command > span.group-select-name {
