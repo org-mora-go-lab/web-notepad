@@ -12,13 +12,13 @@ test("1. MENU 드롭다운은 PC와 모바일에서 지정된 항목 순서로 �
     const menu = page.getByRole("menu", { name: "MENU", exact: true });
     const labels = await menu.locator('[role="menuitem"]:visible').evaluateAll((items) =>
       items.map((item) =>
-        item.textContent?.match(/THEME|CLOSED|SETTINGS|SHORTCUT|SEARCH|GUIDE/)?.[0],
+        item.textContent?.match(/THEME|CLOSED|SETTINGS|SHORTCUT|GUIDE/)?.[0],
       ),
     );
     expect(labels).toEqual(
       viewport.width <= 640
-        ? ["THEME", "SETTINGS", "GUIDE", "SEARCH"]
-        : ["THEME", "SHORTCUT", "SETTINGS", "GUIDE", "SEARCH"],
+        ? ["THEME", "SETTINGS", "GUIDE"]
+        : ["THEME", "SHORTCUT", "SETTINGS", "GUIDE"],
     );
     await page.keyboard.press("Escape");
   }

@@ -16,7 +16,6 @@ type ContextMenuState = { tabId: string; left: number; top: number };
 export function Header({
   onOpenSettings,
   onOpenShortcuts,
-  onOpenSearch,
   tabs,
   groups,
   activeGroupId,
@@ -144,11 +143,10 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenSettings && onOpenSearch && (
+      {onOpenShortcuts && onOpenSettings && (
         <AdditionalTools
           onOpenSettings={onOpenSettings}
           onOpenShortcuts={onOpenShortcuts}
-          onOpenSearch={onOpenSearch}
         />
       )}
     </div>

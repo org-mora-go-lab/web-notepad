@@ -73,9 +73,6 @@ export function Home() {
           onOpenShortcuts: () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           },
-          onOpenSearch: () => {
-            if (openPanel !== "global-search") toggleSidePanel("global-search");
-          },
         }
       : pane;
 
@@ -105,10 +102,12 @@ export function Home() {
           <Footer
             hasBookmarkUpdateToday={hasBookmarkUpdateToday}
             bookmarksOpen={openPanel === "bookmarks"}
+            searchOpen={openPanel === "global-search"}
             dashboardOpen={openPanel === "dashboard"}
             activeGroupName={activeGroupName}
             groupsOpen={groupMenuOpen}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
+            onToggleSearch={() => toggleSidePanel("global-search")}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
             onToggleGroups={() => setGroupMenuOpen((current) => !current)}
           />

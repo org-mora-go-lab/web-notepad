@@ -8,7 +8,6 @@ export function PaneView({
   pane,
   onOpenSettings,
   onOpenShortcuts,
-  onOpenSearch,
   tabs,
   groups,
   activeGroupId,
@@ -47,7 +46,6 @@ export function PaneView({
         <Header
           onOpenSettings={onOpenSettings}
           onOpenShortcuts={onOpenShortcuts}
-          onOpenSearch={onOpenSearch}
           tabs={tabs}
           groups={groups}
           activeGroupId={activeGroupId}

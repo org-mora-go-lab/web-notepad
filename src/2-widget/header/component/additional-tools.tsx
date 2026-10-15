@@ -4,7 +4,6 @@ import {
   BookOpen,
   Keyboard,
   Menu,
-  Search,
   Settings,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -17,7 +16,6 @@ import type { AdditionalToolsProps } from "../type";
 export function AdditionalTools({
   onOpenSettings,
   onOpenShortcuts,
-  onOpenSearch,
 }: AdditionalToolsProps) {
   const [open, setOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
@@ -144,20 +142,6 @@ export function AdditionalTools({
         >
           <BookOpen size={16} />
           <span>{t.guide}</span>
-        </button>
-        <button
-          className="additional-tools-search global-search-command"
-          type="button"
-          role="menuitem"
-          aria-controls="global-search-panel"
-          aria-label={t.search}
-          onClick={() => {
-            close();
-            onOpenSearch();
-          }}
-        >
-          <Search size={16} />
-          <span className="global-search-label">{t.search}</span>
         </button>
       </div>
       {guideOpen && <UserGuide onClose={() => setGuideOpen(false)} />}
