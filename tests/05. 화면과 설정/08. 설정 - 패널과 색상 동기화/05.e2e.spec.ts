@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { openPanel, openSettingsPanel, readStoredState } from "../../__util__";
-import { dashboardColumn } from "../../04. 패널과 검색/__util__";
+import { dashboardColumn } from "../../__util__";
 import { settingsPanel } from "../__util__";
 import { seedArchivedColorCycle } from "./__util__";
 

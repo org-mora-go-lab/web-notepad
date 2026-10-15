@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, readStoredState, writeStoredState } from "../../__util__";
-import { dashboardColumn } from "../__util__";
 
 test("5. 대시보드의 열린 Done 탭을 Closed로 옮기면 Done에서 사라진다", async ({ page }) => {
   await writeStoredState(page, {
@@ -15,13 +14,16 @@ test("5. 대시보드의 열린 Done 탭을 Closed로 옮기면 Done에서 사�
     nextTabNumber: 2,
   });
   await openPanel(page, "dashboard-panel");
-  await dashboardColumn(page, "done")
+  const doneColumn = page.locator(
+    '.dashboard-column[data-status="done"]',
+  );
+  await doneColumn
     .locator(".dashboard-card", { hasText: "Done task" })
     .click({ button: "right" });
 
   await page.getByRole("menuitem", { name: "Closed", exact: true }).click();
   await expect(
-    dashboardColumn(page, "done").locator(".dashboard-card", {
+    doneColumn.locator(".dashboard-card", {
       hasText: "Done task",
     }),
   ).toHaveCount(0);
