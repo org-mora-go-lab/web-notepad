@@ -11,7 +11,7 @@ import {
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
-import { DashboardColumn, DashboardStatuses } from "./component";
+import { DashboardClosedColumn, DashboardColumn, DashboardStatuses } from "./component";
 import { useDashboardDrag, useDashboardScroll } from "./hook";
 import type { DashboardProps } from "./type";
 
@@ -26,7 +26,9 @@ export function Dashboard({
   pinned,
   onTogglePin,
   onClose,
-  onOpenClosed,
+  closedEntries,
+  onRestoreClosed,
+  onRemoveClosed,
   onOpenTab,
   onChangeStatus,
   onRenameStatus,
@@ -36,6 +38,7 @@ export function Dashboard({
   onArchiveTab,
 }: DashboardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [closedVisible, setClosedVisible] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
     left: number;
@@ -83,7 +86,10 @@ export function Dashboard({
           onRenameStatus={onRenameStatus}
         />
         <div className="dashboard-list" ref={listRef}>
-          <div className="dashboard-board" ref={boardRef}>
+          <div
+            className={`dashboard-board ${closedVisible ? "has-closed" : ""}`}
+            ref={boardRef}
+          >
             {columns.map((column) => (
               <DashboardColumn
                 key={column.status}
@@ -102,6 +108,14 @@ export function Dashboard({
                 }
               />
             ))}
+            {closedVisible && (
+              <DashboardClosedColumn
+                entries={closedEntries}
+                showGroupNames={showGroupNames}
+                onRestore={onRestoreClosed}
+                onRemove={onRemoveClosed}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -109,9 +123,8 @@ export function Dashboard({
         <button
           className="dashboard-closed-command"
           type="button"
-          aria-controls="closed-popup"
-          aria-haspopup="dialog"
-          onClick={onOpenClosed}
+          aria-pressed={closedVisible}
+          onClick={() => setClosedVisible((current) => !current)}
         >
           <Archive size={24} strokeWidth={1.8} />
           <span>{t.closed}</span>

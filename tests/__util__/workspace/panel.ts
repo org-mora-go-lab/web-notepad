@@ -44,7 +44,7 @@ export async function openPanel(page: Page, panelId: string) {
 export async function openClosedPanel(page: Page) {
   await openPanel(page, "dashboard-panel");
   await page.locator(".dashboard-closed-command").click();
-  await expect(page.locator("#closed-popup")).toBeVisible();
+  await expect(page.locator(".dashboard-closed-column")).toBeVisible();
 }
 export const openShortcutsPanel = (page: Page) =>
   openPanel(page, "shortcuts-panel");

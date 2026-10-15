@@ -1,5 +1,6 @@
 export type {
   DashboardCardProps,
+  DashboardClosedColumnProps,
   DashboardColumnProps,
   DashboardStatusesProps,
   DashboardStatusProps,

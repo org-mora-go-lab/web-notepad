@@ -1,4 +1,4 @@
-import type { GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
+import type { ClosedTabEntry, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 
 export type DashboardProps = {
   tabs: NoteTab[];
@@ -12,7 +12,9 @@ export type DashboardProps = {
   pinned: boolean;
   onTogglePin: () => void;
   onClose: () => void;
-  onOpenClosed: () => void;
+  closedEntries: Array<{ entry: ClosedTabEntry; groupName: string }>;
+  onRestoreClosed: (entryId: string) => void;
+  onRemoveClosed: (entryId: string) => void;
   onOpenTab: (tabId: string) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
   onRenameStatus: (status: TabStatus, name: string) => void;

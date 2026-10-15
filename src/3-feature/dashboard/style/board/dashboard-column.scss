@@ -8,6 +8,10 @@
     min-height: 100%;
   }
 
+  .dashboard-board.has-closed {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .dashboard-column {
     min-height: 0;
     min-width: 0;
@@ -39,6 +43,11 @@
       grid-template-rows: repeat(3, auto);
       row-gap: 30px;
       align-content: start;
+    }
+
+    .dashboard-board.has-closed {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: repeat(4, auto);
     }
 
     .dashboard-column {

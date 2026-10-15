@@ -145,9 +145,6 @@ export function Home() {
           onToggleDashboardTabBookmark={toggleBookmark}
           onArchiveDashboardTab={archiveDashboardTab}
           onRemoveClosedTab={removeClosedTab}
-          onOpenClosed={() => {
-            if (openPanel !== "closed") toggleSidePanel("closed");
-          }}
           onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}
           onRemoveGroup={removeGroupAndRecord}

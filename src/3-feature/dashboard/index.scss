@@ -43,6 +43,14 @@
     font-size: v.font(14px);
     cursor: pointer;
 
+    &[aria-pressed="true"] {
+      color: v.$ink;
+
+      svg {
+        fill: currentColor;
+      }
+    }
+
     &:hover,
     &:focus-visible {
       color: v.$ink;

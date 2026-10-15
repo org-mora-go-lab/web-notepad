@@ -2,7 +2,6 @@ import type { ComponentProps } from "react";
 
 import type {
   Bookmark,
-  Closed,
   Dashboard,
   Group,
 } from "@/src/3-feature";
@@ -44,12 +43,11 @@ export type PanelProps = {
     typeof Dashboard
   >["onToggleTabBookmark"];
   onArchiveDashboardTab: ComponentProps<typeof Dashboard>["onArchiveTab"];
-  onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
-  onOpenClosed: ComponentProps<typeof Dashboard>["onOpenClosed"];
+  onRemoveClosedTab: ComponentProps<typeof Dashboard>["onRemoveClosed"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
-  onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
+  onRestoreClosedTab: ComponentProps<typeof Dashboard>["onRestoreClosed"];
 };

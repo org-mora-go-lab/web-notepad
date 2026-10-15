@@ -2,7 +2,6 @@
 
 import {
   Bookmark,
-  Closed,
   Dashboard,
   GlobalSearch,
   Group,
@@ -41,7 +40,6 @@ export function Panel({
   onToggleDashboardTabBookmark,
   onArchiveDashboardTab,
   onRemoveClosedTab,
-  onOpenClosed,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
@@ -54,7 +52,7 @@ export function Panel({
       ({ groupId }) =>
         activeGroupId === ALL_GROUP_ID || groupId === activeGroupId,
     )
-    .map(({ entry }) => entry);
+    .map(({ entry, groupName }) => ({ entry, groupName }));
 
   return (
     <div className="panel">
@@ -78,7 +76,9 @@ export function Panel({
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
-        onOpenClosed={onOpenClosed}
+        closedEntries={visibleClosedTabs}
+        onRestoreClosed={onRestoreClosedTab}
+        onRemoveClosed={onRemoveClosedTab}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
         onRenameStatus={onRenameDashboardStatus}
@@ -86,13 +86,6 @@ export function Panel({
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
         onArchiveTab={onArchiveDashboardTab}
-      />
-      <Closed
-        entries={visibleClosedTabs}
-        open={openPanel === "closed"}
-        onClose={onClose}
-        onRestore={onRestoreClosedTab}
-        onRemove={onRemoveClosedTab}
       />
       <Group
         groups={groups}
