@@ -35,19 +35,22 @@ export function Theme({ onSelect }: ThemeProps) {
           aria-label={t.theme}
         >
           {(["dark", "light"] as const).map((option) => (
-            <button
+            <label
               key={option}
-              type="button"
-              role="menuitemradio"
-              aria-checked={theme === option}
-              onClick={() => {
-                setTheme(option);
-                onSelect();
-              }}
+              className="theme-option"
             >
-              {option === "dark" ? <Moon size={16} /> : <Sun size={16} />}
+              <input
+                type="radio"
+                name={optionsId}
+                value={option}
+                checked={theme === option}
+                onChange={() => {
+                  setTheme(option);
+                  onSelect();
+                }}
+              />
               <span>{t[option]}</span>
-            </button>
+            </label>
           ))}
         </div>
       )}

@@ -9,7 +9,7 @@ test("3. LIGHT의 그레이·그린 탭은 일반 10%·활성 22% 배경으로 �
     await page.setViewportSize(viewport);
     await page.getByRole("button", { name: "MENU", exact: true }).click();
     await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-    await page.getByRole("menuitemradio", { name: "LIGHT" }).click();
+    await page.getByRole("radio", { name: "LIGHT" }).click();
 
     const activeTab = page.locator(".tab-item.is-active");
     const colorIcon = activeTab.locator(".dirty-dot");

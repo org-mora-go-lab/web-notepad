@@ -8,7 +8,7 @@ test("2. LIGHT는 작업 영역·편집기·하단 메뉴·그룹 메뉴를 일�
     await page.setViewportSize(viewport);
     await page.getByRole("button", { name: "MENU", exact: true }).click();
     await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-    await page.getByRole("menuitemradio", { name: "LIGHT" }).click();
+    await page.getByRole("radio", { name: "LIGHT" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.locator(".workspace")).toHaveCSS("background-color", "rgb(250, 252, 251)");
     await expect(page.locator("textarea")).toHaveCSS("color", "rgb(32, 38, 36)");
@@ -18,7 +18,7 @@ test("2. LIGHT는 작업 영역·편집기·하단 메뉴·그룹 메뉴를 일�
     await page.keyboard.press("Escape");
     await page.getByRole("button", { name: "MENU", exact: true }).click();
     await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-    await page.getByRole("menuitemradio", { name: "DARK" }).click();
+    await page.getByRole("radio", { name: "DARK" }).click();
     await expect(page.locator(".workspace")).toHaveCSS("background-color", "rgb(17, 17, 16)");
   }
 });
