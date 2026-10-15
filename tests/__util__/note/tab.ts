@@ -19,7 +19,7 @@ export async function openTabMenu(tab: Locator, viewport?: Viewport) {
   else await tab.click({ button: "right" });
 }
 
-// Clicks the active tab colour icon `times` times (orange -> green -> red -> orange by default).
+// Clicks the active tab colour icon `times` times (gray -> green -> purple -> gray by default).
 export async function cycleActiveTabColor(page: Page, times = 1) {
   for (let count = 0; count < times; count += 1) {
     await page.locator(".tab-item.is-active .dirty-dot").click();

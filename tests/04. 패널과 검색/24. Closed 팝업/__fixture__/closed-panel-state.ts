@@ -8,7 +8,7 @@ export function seedClosedPanelState(page: Page, entryCount = 1) {
     activeGroupId: "ungrouped",
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("open-1", "Open note", { tabColor: "orange" }),
+        createTabFixture("open-1", "Open note", { tabColor: "gray" }),
         createTabFixture("tab-closed-1", "Archived note\nArchived body", {
           dashboardStatus: "closed",
           tabColor: "purple",

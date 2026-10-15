@@ -14,7 +14,7 @@ test("2. 중복되거나 잘못된 탭 색상 순서 저장값은 기본 순서�
   }, STORAGE_KEY);
   await page.reload();
   await openSettingsPanel(page);
-  await expect(tabColorRadio(page, 1, "Orange")).toBeChecked();
+  await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
   await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Red")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Purple")).toBeChecked();
 });

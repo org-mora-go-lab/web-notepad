@@ -29,6 +29,10 @@ test("6. Icebox와 Closed 상태를 양쪽에 구분되는 색상의 컬럼으�
     done.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
     closed.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
   ]);
-  expect(iceboxColor.trim()).not.toBe(todoColor.trim());
-  expect(closedColor.trim()).not.toBe(doneColor.trim());
+  expect(iceboxColor.trim()).toBe("#666");
+  expect(todoColor.trim()).toBe("#b8b8b0");
+  expect(doneColor.trim()).toBe("#c3a6f5");
+  expect(closedColor.trim()).toBe(
+    "color-mix(in srgb, #c3a6f5 68%, #000)",
+  );
 });

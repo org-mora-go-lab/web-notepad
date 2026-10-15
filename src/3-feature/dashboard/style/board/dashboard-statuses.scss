@@ -40,7 +40,7 @@
   }
 
   .dashboard-statuses h3.dashboard-icebox-status {
-    --dashboard-accent: color-mix(in srgb, #{v.$saved} 42%, white);
+    --dashboard-accent: #666;
   }
 
   .dashboard-statuses h3.dashboard-closed-status {

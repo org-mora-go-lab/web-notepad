@@ -14,5 +14,5 @@ test("4. 탭 색상만 초기화하면 비기본 폰트 크기와 한국어 설�
   await expect(fontScaleRadio(page, "110%")).toBeChecked();
   await expect(languageRadio(page, "한국어")).toBeChecked();
   await expect(panel.getByRole("radiogroup", { name: "탭 색상 1" })
-    .getByRole("radio", { name: "오렌지", exact: true })).toBeChecked();
+    .getByRole("radio", { name: "그레이", exact: true })).toBeChecked();
 });

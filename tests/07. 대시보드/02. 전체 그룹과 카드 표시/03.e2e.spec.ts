@@ -9,8 +9,8 @@ test("3. 내용이 비어 있는 탭은 대시보드에 표시하지 않고 개�
     activeGroupId: "ungrouped",
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-1", "Filled task", { tabColor: "orange" }),
-        createTabFixture("tab-2", "", { tabColor: "orange" }),
+        createTabFixture("tab-1", "Filled task", { tabColor: "gray" }),
+        createTabFixture("tab-2", "", { tabColor: "gray" }),
         createTabFixture("tab-3", "  \t\n ", { tabColor: "green" }),
       ]),
     ],
