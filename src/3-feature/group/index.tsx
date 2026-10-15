@@ -14,6 +14,7 @@ import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
 import { GroupCreateForm, GroupItem } from "./component";
+import { useGroupMenuResize } from "./hook";
 import type { GroupMenuProps, GroupProps } from "./type";
 
 type GroupRow = Pick<GroupEntry, "id" | "name" | "pinned">;
@@ -37,6 +38,7 @@ function GroupMenu({
 }: GroupMenuProps) {
   const { t } = useI18n();
   const menuRef = useRef<HTMLDivElement>(null);
+  const handleResizeStart = useGroupMenuResize(menuRef);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   // The row whose pin / edit / delete buttons are shown (opened with its … button).
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
@@ -86,9 +88,14 @@ function GroupMenu({
 
   useLayoutEffect(() => {
     const menu = menuRef.current;
-    const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
-    if (!menu || !anchor) return;
+    if (!menu) return;
     const position = () => {
+      const anchor = document.querySelector<HTMLElement>(
+        window.matchMedia(MOBILE_QUERY).matches
+          ? ".current-group-panel"
+          : ANCHOR_SELECTOR,
+      );
+      if (!anchor) return;
       const rect = anchor.getBoundingClientRect();
       menu.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - menu.offsetWidth - 8))}px`;
       menu.style.bottom = `${window.innerHeight - rect.top + 4}px`;
@@ -150,6 +157,13 @@ function GroupMenu({
           <GroupCreateForm onCreate={onCreate} />
           {otherRows.map(renderRow)}
         </div>
+        <div
+          className="group-menu-resizer"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label={t.resizeGroupMenu}
+          onPointerDown={handleResizeStart}
+        />
       </div>
       {groupToDelete && (
         <ConfirmPopup
