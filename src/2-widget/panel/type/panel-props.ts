@@ -17,6 +17,7 @@ import type { ViewPanel } from "@/src/5-shared";
 
 export type PanelProps = {
   openPanel: ViewPanel | null;
+  backgroundPanel: ViewPanel | null;
   pinned: boolean;
   onTogglePin: () => void;
   bookmarks: BookmarkEntry[];

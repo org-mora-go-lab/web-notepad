@@ -18,6 +18,7 @@ export function Home() {
     globalSearchQuery,
     setGlobalSearchQuery,
     openPanel,
+    backgroundPanel,
     toggleSidePanel,
     closeSidePanels,
     activeGroupId,
@@ -87,7 +88,7 @@ export function Home() {
   return (
     <I18nContext value={language}>
       <main
-        className={`home ${panelPinned && openPanel && openPanel !== "global-search" && openPanel !== "closed" ? "is-panel-pinned" : ""}`}
+        className={`home ${panelPinned && (backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}
@@ -106,8 +107,8 @@ export function Home() {
           <Footer
             hasBookmarkUpdateToday={hasBookmarkUpdateToday}
             hasGroupUpdateToday={hasGroupUpdateToday}
-            bookmarksOpen={openPanel === "bookmarks"}
-            dashboardOpen={openPanel === "dashboard"}
+            bookmarksOpen={openPanel === "bookmarks" || backgroundPanel === "bookmarks"}
+            dashboardOpen={openPanel === "dashboard" || backgroundPanel === "dashboard"}
             activeGroupName={activeGroupName}
             groupsOpen={groupMenuOpen}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
@@ -119,6 +120,7 @@ export function Home() {
         <Panel
           activeTabId={activeTab?.id}
           openPanel={openPanel}
+          backgroundPanel={backgroundPanel}
           pinned={panelPinned}
           onTogglePin={togglePanelPin}
           bookmarks={bookmarks}

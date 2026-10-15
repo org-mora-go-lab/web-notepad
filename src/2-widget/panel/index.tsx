@@ -15,6 +15,7 @@ import type { PanelProps } from "./type";
 
 export function Panel({
   openPanel,
+  backgroundPanel,
   pinned,
   onTogglePin,
   bookmarks,
@@ -59,7 +60,7 @@ export function Panel({
     <div className="panel">
       <Bookmark
         bookmarks={bookmarks}
-        open={openPanel === "bookmarks"}
+        open={openPanel === "bookmarks" || backgroundPanel === "bookmarks"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
@@ -73,7 +74,7 @@ export function Panel({
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
         statusNames={dashboardStatusNames}
-        open={openPanel === "dashboard"}
+        open={openPanel === "dashboard" || backgroundPanel === "dashboard"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
@@ -113,13 +114,13 @@ export function Panel({
         onSelectGroup={onSelectGroup}
       />
       <Shortcut
-        open={openPanel === "shortcuts"}
+        open={openPanel === "shortcuts" || backgroundPanel === "shortcuts"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
       />
       <Setting
-        open={openPanel === "settings"}
+        open={openPanel === "settings" || backgroundPanel === "settings"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
