@@ -28,7 +28,10 @@ export function DashboardColumn({
   ].sort((left, right) => {
     const priority = (tab: typeof left.tab) =>
       tab.pinned ? 2 : tab.bookmarked ? 1 : 0;
-    return priority(right.tab) - priority(left.tab);
+    return (
+      priority(right.tab) - priority(left.tab) ||
+      left.tab.id.localeCompare(right.tab.id)
+    );
   });
   return (
     <section
