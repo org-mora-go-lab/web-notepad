@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openGlobalSearchPanel } from "../../__util__";
 
-test("8. PC 검색 팝업의 우측 경계를 드래그해 가로 크기를 조절한다", async ({ page }) => {
+test("8. PC 검색 팝업과 내부 좌우 영역의 가로 크기를 조절한다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   await openGlobalSearchPanel(page);
@@ -20,4 +20,24 @@ test("8. PC 검색 팝업의 우측 경계를 드래그해 가로 크기를 조�
   const after = (await popup.boundingBox())!;
   expect(after.width).toBeGreaterThan(before.width);
   expect(after.width).toBeLessThanOrEqual(DESKTOP_VIEWPORT.width - 32);
+
+  const splitResizer = popup.getByRole("separator", {
+    name: "Resize search results and preview",
+  });
+  const results = popup.locator(".global-search-results-pane");
+  const resultsBefore = (await results.boundingBox())!;
+  const splitHandle = (await splitResizer.boundingBox())!;
+  await page.mouse.move(
+    splitHandle.x + splitHandle.width / 2,
+    splitHandle.y + 100,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    splitHandle.x + splitHandle.width / 2 + 80,
+    splitHandle.y + 100,
+  );
+  await page.mouse.up();
+  expect((await results.boundingBox())!.width).toBeGreaterThan(
+    resultsBefore.width,
+  );
 });

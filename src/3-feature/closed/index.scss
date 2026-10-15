@@ -77,7 +77,9 @@
     min-width: 0;
     min-height: 0;
     display: grid;
-    grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+    grid-template-columns:
+      minmax(280px, var(--closed-results-width, 0.9fr))
+      8px minmax(280px, 1.1fr);
   }
 
   .closed-results-pane {
@@ -120,7 +122,10 @@
     min-width: 0;
     min-height: 0;
     display: grid;
-    border-left: 1px solid v.$line;
+  }
+
+  .closed-split-resizer {
+    @include mixin.split-pane-resizer;
   }
 
   .closed-preview-empty {
@@ -147,6 +152,10 @@
     .closed-preview-pane {
       border-top: 1px solid v.$line;
       border-left: 0;
+    }
+
+    .closed-split-resizer {
+      display: none;
     }
 
     h2 {

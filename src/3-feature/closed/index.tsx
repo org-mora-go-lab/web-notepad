@@ -1,12 +1,13 @@
 "use client";
 
 import { Archive, X } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 import {
   useI18n,
   useModalDialog,
   useScrollableListLayout,
+  useSplitPaneResize,
 } from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
@@ -34,6 +35,11 @@ export function Closed({
   );
   const { containerRef, listRef } = useScrollableListLayout(
     "--closed-scrollbar-width",
+  );
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const handleSplitResizeStart = useSplitPaneResize(
+    bodyRef,
+    "--closed-results-width",
   );
   const closeClosed = () => {
     setSelectedEntryId(null);
@@ -68,7 +74,7 @@ export function Closed({
           <X size={18} />
         </button>
       </div>
-      <div className="closed-body">
+      <div className="closed-body" ref={bodyRef}>
         <div className="closed-results-pane" ref={containerRef}>
           <SearchField
             value={searchQuery}
@@ -102,6 +108,13 @@ export function Closed({
             )}
           </div>
         </div>
+        <div
+          className="closed-split-resizer"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize closed list and preview"
+          onPointerDown={handleSplitResizeStart}
+        />
         <div className="closed-preview-pane">
           {selectedEntry ? (
             <ClosedPreview

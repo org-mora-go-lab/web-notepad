@@ -4,7 +4,7 @@ import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openClosedPanel } from "../../__util__";
 import { seedClosedPanelState } from "./__fixture__";
 
-test("6. Closed 팝업은 912×640px이며 스크롤 시 그라데이션과 너비를 정렬한다", async ({ page }) => {
+test("6. Closed 팝업의 스크롤 표현과 내부 좌우 너비를 조절한다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await seedClosedPanelState(page, 20);
   await openClosedPanel(page);
@@ -29,6 +29,26 @@ test("6. Closed 팝업은 912×640px이며 스크롤 시 그라데이션과 너�
       ),
     )
     .toBe("1");
+
+  const results = popup.locator(".closed-results-pane");
+  const resultsBefore = (await results.boundingBox())!;
+  const splitResizer = popup.getByRole("separator", {
+    name: "Resize closed list and preview",
+  });
+  const splitHandle = (await splitResizer.boundingBox())!;
+  await page.mouse.move(
+    splitHandle.x + splitHandle.width / 2,
+    splitHandle.y + 100,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    splitHandle.x + splitHandle.width / 2 + 80,
+    splitHandle.y + 100,
+  );
+  await page.mouse.up();
+  expect((await results.boundingBox())!.width).toBeGreaterThan(
+    resultsBefore.width,
+  );
 
   await page.keyboard.press("Escape");
   await expect(popup).not.toHaveAttribute("open", "");
