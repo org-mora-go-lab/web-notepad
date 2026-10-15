@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, type Locator, test } from "@playwright/test";
 
 async function expectTextAndIconCentered(button: Locator) {
   const textBounds = (await button.locator(":scope > span").boundingBox())!;

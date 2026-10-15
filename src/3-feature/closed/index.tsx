@@ -1,9 +1,9 @@
 "use client";
 
 import { Archive, X } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 
-import { useI18n } from "@/src/5-shared/hook";
+import { useI18n, useModalDialog } from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
@@ -19,22 +19,11 @@ export function Closed({
 }: ClosedProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useI18n();
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const dialogRef = useModalDialog(open, 'input[type="search"]');
   const titleId = useId();
   const filteredEntries = entries.filter((entry) =>
     matchesSearchQuery(searchQuery, entry.tab.title, entry.tab.content),
   );
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (open && !dialog.open) {
-      dialog.showModal();
-      dialog.querySelector<HTMLInputElement>('input[type="search"]')?.focus();
-    } else if (!open && dialog.open) {
-      dialog.close();
-    }
-  }, [open]);
 
   return (
     <dialog

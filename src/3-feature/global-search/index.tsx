@@ -1,9 +1,9 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 
-import { useI18n } from "@/src/5-shared/hook";
+import { useI18n, useModalDialog } from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
@@ -20,7 +20,7 @@ export function GlobalSearch({
   onSelectGroup,
 }: GlobalSearchProps) {
   const { t } = useI18n();
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const dialogRef = useModalDialog(open, 'input[type="search"]');
   const titleId = useId();
   const [selectedBookmarkId, setSelectedBookmarkId] = useState<string | null>(
     null,
@@ -49,18 +49,10 @@ export function GlobalSearch({
     ({ group, bookmark }) =>
       `${group.id}:${bookmark.id}` === selectedBookmarkId,
   );
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (open && !dialog.open) {
-      dialog.showModal();
-      setSelectedBookmarkId(null);
-      dialog.querySelector<HTMLInputElement>('input[type="search"]')?.focus();
-    } else if (!open && dialog.open) {
-      dialog.close();
-    }
-  }, [open]);
+  const closeSearch = () => {
+    setSelectedBookmarkId(null);
+    onClose();
+  };
 
   return (
     <dialog
@@ -70,10 +62,10 @@ export function GlobalSearch({
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault();
-        onClose();
+        closeSearch();
       }}
       onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) closeSearch();
       }}
     >
       <div className="global-search-header">
@@ -85,7 +77,7 @@ export function GlobalSearch({
           className="global-search-close"
           type="button"
           aria-label={t.closePanel(t.searchTitle)}
-          onClick={onClose}
+          onClick={closeSearch}
         >
           <X size={18} />
         </button>
