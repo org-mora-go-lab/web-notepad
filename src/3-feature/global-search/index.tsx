@@ -1,14 +1,20 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
-import { useI18n, useModalDialog } from "@/src/5-shared/hook";
+import {
+  useDialogHorizontalResize,
+  useI18n,
+  useModalDialog,
+  useScrollableListLayout,
+  useSplitPaneResize,
+} from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { SearchPreview, SearchResult, SearchResultSection } from "./component";
-import { useGlobalSearchResize } from "./hook";
+import { useDebouncedSearchQuery } from "./hook";
 import type { GlobalSearchProps } from "./type";
 
 export function GlobalSearch({
@@ -25,8 +31,16 @@ export function GlobalSearch({
   const [selectedBookmarkId, setSelectedBookmarkId] = useState<string | null>(
     null,
   );
-  const handleResizeStart = useGlobalSearchResize(dialogRef);
-  const query = searchQuery.trim();
+  const handleResizeStart = useDialogHorizontalResize(dialogRef);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const handleSplitResizeStart = useSplitPaneResize(
+    bodyRef,
+    "--global-search-results-width",
+  );
+  const { containerRef, listRef } = useScrollableListLayout(
+    "--global-search-scrollbar-width",
+  );
+  const query = useDebouncedSearchQuery(searchQuery).trim();
   const groupResults = query
     ? groups.filter((group) => matchesSearchQuery(query, group.name))
     : [];
@@ -82,15 +96,15 @@ export function GlobalSearch({
           <X size={18} />
         </button>
       </div>
-      <div className="global-search-body">
-        <div className="global-search-results-pane">
+      <div className="global-search-body" ref={bodyRef}>
+        <div className="global-search-results-pane" ref={containerRef}>
           <SearchField
             value={searchQuery}
             ariaLabel={t.searchEverything}
             placeholder={t.searchEverything}
             onChange={onSearchQueryChange}
           />
-          <div className="global-search-list">
+          <div className="global-search-list" ref={listRef}>
             {!query ? (
               <EmptyState
                 className="global-search-empty-state"
@@ -145,6 +159,13 @@ export function GlobalSearch({
             )}
           </div>
         </div>
+        <div
+          className="global-search-split-resizer"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize search results and preview"
+          onPointerDown={handleSplitResizeStart}
+        />
         <div className="global-search-preview-pane">
           {selectedBookmark ? (
             <SearchPreview

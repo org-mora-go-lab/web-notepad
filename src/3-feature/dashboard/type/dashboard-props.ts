@@ -18,5 +18,5 @@ export type DashboardProps = {
   onMoveToGroup: (tabId: string, groupId: string) => void;
   onToggleTabPin: (tabId: string) => void;
   onToggleTabBookmark: (tabId: string) => void;
-  onArchiveTab: (tabId: string) => void;
+  onDeleteTab: (tabId: string) => void;
 };

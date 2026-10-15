@@ -2,13 +2,21 @@
 
 import {
   BookOpen,
+  FolderOpen,
   Keyboard,
+  Layers3,
   Menu,
+  Search,
   Settings,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Theme, UserGuide } from "@/src/3-feature";
+import {
+  ALL_GROUP_ID,
+  ALL_GROUP_NAME,
+  UNGROUPED_GROUP_ID,
+} from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { AdditionalToolsProps } from "../type";
@@ -16,6 +24,9 @@ import type { AdditionalToolsProps } from "../type";
 export function AdditionalTools({
   onOpenSettings,
   onOpenShortcuts,
+  onToggleSearch,
+  searchOpen,
+  onSelectGroup,
 }: AdditionalToolsProps) {
   const [open, setOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
@@ -48,6 +59,18 @@ export function AdditionalTools({
   return (
     <div className="additional-tools" ref={containerRef}>
       <button
+        className={`global-search-command ${searchOpen ? "is-active" : ""}`}
+        type="button"
+        title={t.search}
+        aria-label={t.search}
+        aria-expanded={searchOpen}
+        aria-controls="global-search-popup"
+        aria-haspopup="dialog"
+        onClick={onToggleSearch}
+      >
+        <Search strokeWidth={1.8} />
+      </button>
+      <button
         className="additional-tools-trigger"
         ref={triggerRef}
         type="button"
@@ -61,7 +84,6 @@ export function AdditionalTools({
         }}
       >
         <Menu size={20} strokeWidth={1.8} />
-        <span className="additional-tools-label">{t.menu}</span>
       </button>
       <div
         hidden={!open}
@@ -142,6 +164,31 @@ export function AdditionalTools({
         >
           <BookOpen size={16} />
           <span>{t.guide}</span>
+        </button>
+        <div className="additional-tools-divider" role="separator" />
+        <button
+          className="additional-tools-all-group"
+          type="button"
+          role="menuitem"
+          onClick={() => {
+            close();
+            onSelectGroup(ALL_GROUP_ID);
+          }}
+        >
+          <Layers3 size={16} />
+          <span>{ALL_GROUP_NAME}</span>
+        </button>
+        <button
+          className="additional-tools-ungrouped"
+          type="button"
+          role="menuitem"
+          onClick={() => {
+            close();
+            onSelectGroup(UNGROUPED_GROUP_ID);
+          }}
+        >
+          <FolderOpen size={16} />
+          <span>Ungrouped</span>
         </button>
       </div>
       {guideOpen && <UserGuide onClose={() => setGuideOpen(false)} />}

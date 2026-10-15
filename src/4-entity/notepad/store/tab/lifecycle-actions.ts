@@ -18,7 +18,10 @@ import {
   updateGroup,
 } from "../workspace";
 
-type Actions = Pick<NotepadState, "setTabStatus" | "closeTab" | "archiveTab">;
+type Actions = Pick<
+  NotepadState,
+  "setTabStatus" | "closeTab" | "archiveTab" | "deleteTab"
+>;
 
 export const createTabLifecycleActions: StateCreator<
   NotepadState,
@@ -33,37 +36,135 @@ export const createTabLifecycleActions: StateCreator<
         item.tabs.some((tab) => tab.id === tabId),
       );
       if (!group) return state;
-      const tabColor = getStatusColor(status, state.settings.tabColorCycle);
+      const auxiliary = status === "icebox" || status === "closed";
+      const tabColor = auxiliary
+        ? undefined
+        : getStatusColor(status, state.settings.tabColorCycle);
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(
           current,
           tabId,
-          { tabColor },
-          { tabColor, updatedAt: Date.now() },
+          { ...(tabColor ? { tabColor } : {}), dashboardStatus: auxiliary ? status : undefined },
+          { ...(tabColor ? { tabColor } : {}), updatedAt: Date.now() },
         ),
       );
     });
   },
-  closeTab: (tabId) => closeTabEntry(set, get, tabId),
-  archiveTab: (tabId) => closeTabEntry(set, get, tabId, true),
+  closeTab: (tabId) => hideTabFromEditor(set, get, tabId),
+  archiveTab: (tabId) => archiveTabEntry(set, get, tabId),
+  deleteTab: (tabId) => deleteTabEntry(set, get, tabId),
 });
 
-const closeTabEntry = (
+const deleteTabEntry = (
   set: (partial: Partial<NotepadState>) => void,
   get: () => NotepadState,
   tabId: string,
-  allowPinned = false,
 ) => {
   const state = get();
   const group = getTabGroup(state, tabId);
   const tab = group?.tabs.find((item) => item.id === tabId);
-  if (!group || !tab || (tab.pinned && !allowPinned)) return;
+  if (!group || !tab) return;
+  const remainingTabs = group.tabs.filter((item) => item.id !== tabId);
+  if (!remainingTabs.some((item) => item.open)) {
+    const { tab: replacement, nextTabNumber } = allocateTab(state);
+    set({
+      ...updateGroup(state, group.id, (current) => ({
+        ...current,
+        ...EMPTY_SPLIT_LAYOUT,
+        splitRatio: current.splitRatio,
+        tabs: [...remainingTabs, replacement],
+        activeTabId: replacement.id,
+      })),
+      nextTabNumber,
+    });
+    return;
+  }
+  set(
+    updateGroup(state, group.id, (current) =>
+      normalizeLayout(
+        assignTabToPane({ ...current, tabs: remainingTabs }, tabId, null),
+      ),
+    ),
+  );
+};
+
+const hideTabFromEditor = (
+  set: (partial: Partial<NotepadState>) => void,
+  get: () => NotepadState,
+  tabId: string,
+) => {
+  const state = get();
+  const group = getTabGroup(state, tabId);
+  const tab = group?.tabs.find((item) => item.id === tabId);
+  if (!group || !tab || tab.pinned || !tab.open) return;
+
+  const pane = getPaneOfTab(group, tabId);
+  const paneIds = getPaneTabs(group, pane).map((item) => item.id);
+  const closedIndex = paneIds.indexOf(tabId);
+  const nextPaneIds = paneIds.filter((id) => id !== tabId);
+  const fallbackId =
+    nextPaneIds[Math.min(closedIndex, nextPaneIds.length - 1)] ?? null;
+  const remainingOpenTabs = group.tabs.filter(
+    (item) => item.id !== tabId && item.open,
+  );
+
+  if (remainingOpenTabs.length === 0) {
+    const { tab: replacement, nextTabNumber } = allocateTab(state);
+    set({
+      ...updateGroup(state, group.id, (current) => ({
+        ...current,
+        ...EMPTY_SPLIT_LAYOUT,
+        splitRatio: current.splitRatio,
+        tabs: [
+          ...current.tabs.map((item) =>
+            item.id === tabId ? { ...item, open: false } : item,
+          ),
+          replacement,
+        ],
+        activeTabId: replacement.id,
+      })),
+      nextTabNumber,
+    });
+    return;
+  }
+
+  set(
+    updateGroup(state, group.id, (current) => {
+      let next = assignTabToPane(
+        {
+          ...current,
+          tabs: current.tabs.map((item) =>
+            item.id === tabId ? { ...item, open: false } : item,
+          ),
+        },
+        tabId,
+        null,
+      );
+      if (getPaneActiveTabId(current, pane) === tabId) {
+        next = setPaneActiveTabId(next, pane, fallbackId);
+      }
+      if (pane !== "left" && nextPaneIds.length > 0)
+        next = { ...next, activePane: pane };
+      return normalizeLayout(next);
+    }),
+  );
+};
+
+const archiveTabEntry = (
+  set: (partial: Partial<NotepadState>) => void,
+  get: () => NotepadState,
+  tabId: string,
+) => {
+  const state = get();
+  const group = getTabGroup(state, tabId);
+  const tab = group?.tabs.find((item) => item.id === tabId);
+  if (!group || !tab) return;
   set({
     closedTabs: [
       {
         id: `closed-${crypto.randomUUID()}`,
         groupId: group.id,
-        tab,
+        tab: { ...tab, open: false },
         closedAt: Date.now(),
       },
       ...state.closedTabs,
@@ -71,14 +172,14 @@ const closeTabEntry = (
   });
 
   const remainingTabs = group.tabs.filter((item) => item.id !== tabId);
-  if (remainingTabs.length === 0) {
+  if (!remainingTabs.some((item) => item.open)) {
     const { tab: replacement, nextTabNumber } = allocateTab(state);
     set({
       ...updateGroup(state, group.id, (current) => ({
         ...current,
         ...EMPTY_SPLIT_LAYOUT,
         splitRatio: current.splitRatio,
-        tabs: [replacement],
+        tabs: [...remainingTabs, replacement],
         activeTabId: replacement.id,
       })),
       nextTabNumber,

@@ -2,19 +2,19 @@
 
 import {
   Bookmark,
-  Closed,
   Dashboard,
   GlobalSearch,
   Group,
   Setting,
   Shortcut,
 } from "@/src/3-feature";
-import { ALL_GROUP_ID, getClosedTabItems } from "@/src/4-entity/notepad";
+import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
 
 import type { PanelProps } from "./type";
 
 export function Panel({
   openPanel,
+  backgroundPanel,
   pinned,
   onTogglePin,
   bookmarks,
@@ -25,7 +25,6 @@ export function Panel({
   groups,
   activeGroupId,
   groupMenuOpen,
-  closedTabs,
   globalSearchQuery,
   onClose,
   onCloseGroupMenu,
@@ -38,28 +37,18 @@ export function Panel({
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
-  onArchiveDashboardTab,
-  onRemoveClosedTab,
-  onOpenClosed,
+  onDeleteDashboardTab,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
   onRenameGroup,
   onToggleGroupPin,
-  onRestoreClosedTab,
 }: PanelProps) {
-  const visibleClosedTabs = getClosedTabItems(closedTabs, groups)
-    .filter(
-      ({ groupId }) =>
-        activeGroupId === ALL_GROUP_ID || groupId === activeGroupId,
-    )
-    .map(({ entry }) => entry);
-
   return (
     <div className="panel">
       <Bookmark
         bookmarks={bookmarks}
-        open={openPanel === "bookmarks"}
+        open={openPanel === "bookmarks" || backgroundPanel === "bookmarks"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
@@ -73,7 +62,7 @@ export function Panel({
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
         statusNames={dashboardStatusNames}
-        open={openPanel === "dashboard"}
+        open={openPanel === "dashboard" || backgroundPanel === "dashboard"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
@@ -83,14 +72,7 @@ export function Panel({
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
-        onArchiveTab={onArchiveDashboardTab}
-      />
-      <Closed
-        entries={visibleClosedTabs}
-        open={openPanel === "closed"}
-        onClose={onClose}
-        onRestore={onRestoreClosedTab}
-        onRemove={onRemoveClosedTab}
+        onDeleteTab={onDeleteDashboardTab}
       />
       <Group
         groups={groups}
@@ -102,7 +84,6 @@ export function Panel({
         onRemove={onRemoveGroup}
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
-        onOpenClosed={onOpenClosed}
       />
       <GlobalSearch
         groups={groups}
@@ -113,13 +94,13 @@ export function Panel({
         onSelectGroup={onSelectGroup}
       />
       <Shortcut
-        open={openPanel === "shortcuts"}
+        open={openPanel === "shortcuts" || backgroundPanel === "shortcuts"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
       />
       <Setting
-        open={openPanel === "settings"}
+        open={openPanel === "settings" || backgroundPanel === "settings"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}

@@ -1,31 +1,14 @@
 import { expect, test } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { openPanel, readStoredState, writeStoredState } from "../../__util__";
-import { dashboardColumn } from "../__util__";
+import { openClosedPanel, readStoredState } from "../../__util__";
+import { seedClosedPanelState } from "./__fixture__";
 
-test("5. 대시보드의 열린 Done 탭을 Closed로 옮기면 Done에서 사라진다", async ({ page }) => {
-  await writeStoredState(page, {
-    activeGroupId: "ungrouped",
-    groups: [
-      createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-1", "Done task", { tabColor: "purple" }),
-      ]),
-    ],
-    nextTabNumber: 2,
-  });
-  await openPanel(page, "dashboard-panel");
-  await dashboardColumn(page, "done")
-    .locator(".dashboard-card", { hasText: "Done task" })
-    .click({ button: "right" });
-
-  await page.getByRole("menuitem", { name: "Closed", exact: true }).click();
-  await expect(
-    dashboardColumn(page, "done").locator(".dashboard-card", {
-      hasText: "Done task",
-    }),
-  ).toHaveCount(0);
+test("5. Closed 카드의 우클릭 메뉴에는 Delete만 표시하고 삭제한다", async ({ page }) => {
+  await seedClosedPanelState(page);
+  await openClosedPanel(page);
+  await page.locator(".dashboard-closed-column .dashboard-card").click({ button: "right" });
+  await expect(page.getByRole("menu").getByRole("menuitem")).toHaveText(["Delete"]);
+  await page.getByRole("menuitem", { name: "Delete", exact: true }).click();
   const state = await readStoredState(page);
-  expect(state.groups[0].tabs.some((tab) => tab.id === "tab-1")).toBe(false);
-  expect(state.closedTabs?.[0].tab.id).toBe("tab-1");
+  expect(state.groups[0].tabs.some((tab) => tab.id === "tab-closed-1")).toBe(false);
 });

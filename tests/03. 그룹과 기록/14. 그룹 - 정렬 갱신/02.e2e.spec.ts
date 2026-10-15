@@ -10,9 +10,6 @@ test("2. 그룹 이름을 수정한 직후 이름 있는 그룹에 같은 정렬
   await page.getByRole("button", { name: "Save group changes" }).click();
 
   await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "All",
-    "Ungrouped",
-    "Closed",
     "가방",
     "나무",
     "다람쥐",

@@ -8,9 +8,6 @@ test("1. 새 그룹을 생성한 직후 이름 있는 그룹에 같은 정렬을
   await createGroup(page, "Beta");
 
   await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "All",
-    "Ungrouped",
-    "Closed",
     "가방",
     "나무",
     "다람쥐",

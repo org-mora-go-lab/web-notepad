@@ -11,15 +11,21 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
       const content = typeof tab.content === "string" ? tab.content : "";
       const selectedLines = sanitizeSelectedLines(tab.selectedLines, content);
       const tabColor = normalizeTabColor(tab.tabColor, urgent);
+      const dashboardStatus =
+        tab.dashboardStatus === "icebox" || tab.dashboardStatus === "closed"
+          ? tab.dashboardStatus
+          : undefined;
 
       return {
         ...tabData,
+        open: tab.open !== false,
         title: typeof tab.title === "string" ? tab.title : "Untitled",
         content,
         selectedLines,
         savedContent:
           typeof tab.savedContent === "string" ? tab.savedContent : "",
         tabColor,
+        dashboardStatus,
         pinned: tab.pinned === true,
         bookmarked: tab.bookmarked === true,
       };
@@ -61,7 +67,7 @@ export const normalizeClosedTabs = (value: unknown): ClosedTabEntry[] =>
       {
         id: entry.id,
         groupId: entry.groupId,
-        tab: { ...tab, pinned: false },
+        tab: { ...tab, open: false, pinned: false },
         closedAt: finiteNumberOr(entry.closedAt, Date.now()),
       },
     ];

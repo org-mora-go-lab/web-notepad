@@ -2,13 +2,11 @@ import type { ComponentProps } from "react";
 
 import type {
   Bookmark,
-  Closed,
   Dashboard,
   Group,
 } from "@/src/3-feature";
 import type {
   BookmarkEntry,
-  ClosedTabEntry,
   GroupEntry,
   NoteTab,
   TabColor,
@@ -17,6 +15,7 @@ import type { ViewPanel } from "@/src/5-shared";
 
 export type PanelProps = {
   openPanel: ViewPanel | null;
+  backgroundPanel: ViewPanel | null;
   pinned: boolean;
   onTogglePin: () => void;
   bookmarks: BookmarkEntry[];
@@ -27,7 +26,6 @@ export type PanelProps = {
   groups: GroupEntry[];
   activeGroupId: string;
   groupMenuOpen: boolean;
-  closedTabs: ClosedTabEntry[];
   globalSearchQuery: string;
   onClose: () => void;
   onCloseGroupMenu: () => void;
@@ -42,13 +40,10 @@ export type PanelProps = {
   onToggleDashboardTabBookmark: ComponentProps<
     typeof Dashboard
   >["onToggleTabBookmark"];
-  onArchiveDashboardTab: ComponentProps<typeof Dashboard>["onArchiveTab"];
-  onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
-  onOpenClosed: ComponentProps<typeof Group>["onOpenClosed"];
+  onDeleteDashboardTab: ComponentProps<typeof Dashboard>["onDeleteTab"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
-  onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
 };

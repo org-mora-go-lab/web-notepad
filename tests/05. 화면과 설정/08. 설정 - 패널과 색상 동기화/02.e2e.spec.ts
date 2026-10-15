@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { openPanel, openSettingsPanel, readStoredState } from "../../__util__";
-import { dashboardColumn, seedDashboardTabs } from "../../04. 패널과 검색/__util__";
+import { dashboardColumn, seedDashboardTabs } from "../../__util__";
 import { tabColorRadio } from "../__util__";
 
 test("2. Tab Colors에서 순번의 색상을 바꾸면 해당 색상의 모든 탭이 새 색상으로 바뀌어 대시보드 상태를 유지한다", async ({ page }) => {

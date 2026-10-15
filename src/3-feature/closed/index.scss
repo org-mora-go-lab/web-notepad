@@ -3,11 +3,14 @@
 @use "./style";
 
 .closed {
-  width: min(760px, calc(100vw - 32px));
+  position: relative;
+  width: min(912px, calc(100vw - 32px));
+  min-width: min(640px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
   height: min(640px, calc(100dvh - 32px));
   margin: auto;
   padding: 0;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid v.$line;
   border-radius: 8px;
@@ -73,8 +76,67 @@
     }
   }
 
-  > .search-field {
-    margin: 16px 18px 0;
+  .closed-body {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns:
+      minmax(280px, var(--closed-results-width, 0.9fr))
+      8px minmax(280px, 1.1fr);
+  }
+
+  .closed-results-pane {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+
+    &::after {
+      position: absolute;
+      z-index: 1;
+      top: 65px;
+      right: var(--closed-scrollbar-width, 0px);
+      left: 0;
+      height: 48px;
+      background: linear-gradient(
+        to bottom,
+        v.$panel 0%,
+        color-mix(in srgb, v.$panel 65%, transparent) 35%,
+        color-mix(in srgb, v.$panel 25%, transparent) 70%,
+        transparent 100%
+      );
+      content: "";
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    &.is-scrolled::after {
+      opacity: 1;
+    }
+  }
+
+  .closed-results-pane > .search-field {
+    margin: 16px calc(18px + var(--closed-scrollbar-width, 0px)) 0 18px;
+  }
+
+  .closed-preview-pane {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+  }
+
+  .closed-split-resizer {
+    @include mixin.split-pane-resizer;
+  }
+
+  .closed-preview-empty {
+    align-self: center;
+  }
+
+  .closed-resizer {
+    @include mixin.dialog-horizontal-resizer;
   }
 
   @include mixin.side-panel-list("closed");
@@ -84,10 +146,30 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 512px) {
   .closed {
     width: calc(100vw - 24px);
+    min-width: 0;
+    max-width: none;
     height: calc(100dvh - 24px);
+
+    .closed-body {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(220px, 1fr) minmax(180px, 0.8fr);
+    }
+
+    .closed-preview-pane {
+      border-top: 1px solid v.$line;
+      border-left: 0;
+    }
+
+    .closed-split-resizer {
+      display: none;
+    }
+
+    .closed-resizer {
+      display: none;
+    }
 
     h2 {
       font-size: v.font(22px * v.$mobile-scale);

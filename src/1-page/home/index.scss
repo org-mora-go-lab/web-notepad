@@ -24,7 +24,7 @@
 .home {
   --footer-height: 48px;
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     --footer-height: calc(112.8px + env(safe-area-inset-bottom));
   }
   width: 100%;
@@ -50,7 +50,7 @@
     grid-template-rows: minmax(0, 1fr) auto;
     background: v.$panel;
 
-    @media (max-width: 640px) {
+    @media (max-width: 512px) {
       grid-template-rows: minmax(0, 1fr) calc(
           112.8px + env(safe-area-inset-bottom)
         );

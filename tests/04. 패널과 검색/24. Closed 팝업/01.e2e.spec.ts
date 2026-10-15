@@ -1,19 +1,26 @@
 import { expect, test } from "@playwright/test";
 
-import { groupsCommand } from "../../__util__";
+import { openPanel } from "../../__util__";
 import { seedClosedPanelState } from "./__fixture__";
 
-test("1. 그룹 메뉴의 Closed는 현재 그룹의 닫힌 탭 팝업을 연다", async ({ page }) => {
+test("1. Icebox와 Closed 명령으로 각 대시보드 상태를 표시하고 숨긴다", async ({ page }) => {
   await seedClosedPanelState(page);
-  await groupsCommand(page).click();
-
-  const specialButtons = page.locator("#groups-menu .group-split-row .group-select");
-  await expect(specialButtons).toHaveText(["All", "Ungrouped", "Closed"]);
-  await specialButtons.filter({ hasText: "Closed" }).click();
-
-  const popup = page.locator("#closed-popup");
-  await expect(popup).toHaveAttribute("open", "");
-  await expect(popup.locator(".closed-item")).toHaveCount(1);
-  await expect(popup).toContainText("Archived note");
-  await expect(popup).not.toContainText("Work archive");
+  await openPanel(page, "dashboard-panel");
+  const iceboxCommand = page.locator(".dashboard-icebox-command");
+  const closedCommand = page.locator(".dashboard-closed-command");
+  await expect(closedCommand.locator("svg")).toHaveClass(/lucide-ghost/);
+  await expect(iceboxCommand).toHaveAttribute("aria-pressed", "false");
+  await expect(closedCommand).toHaveAttribute("aria-pressed", "false");
+  await iceboxCommand.click();
+  await expect(iceboxCommand).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".dashboard-icebox-column")).toBeVisible();
+  await closedCommand.click();
+  await expect(closedCommand).toHaveAttribute("aria-pressed", "true");
+  await expect(closedCommand.locator("svg")).toHaveCSS("fill", "none");
+  await expect(page.locator(".dashboard-closed-column .dashboard-card")).toContainText("Archived note");
+  await expect(page.locator("#closed-popup")).toHaveCount(0);
+  await iceboxCommand.click();
+  await expect(page.locator(".dashboard-icebox-column")).toHaveCount(0);
+  await closedCommand.click();
+  await expect(page.locator(".dashboard-closed-column")).toHaveCount(0);
 });

@@ -45,12 +45,21 @@
     opacity: 0;
     pointer-events: none;
     cursor: pointer;
-    transition: opacity 300ms ease;
+    transition:
+      color 150ms ease,
+      opacity 300ms ease;
 
     &:hover,
     &:focus-visible {
-      background: v.$raised;
       color: v.$ink;
+    }
+
+    &:active svg {
+      transform: scale(0.86);
+    }
+
+    svg {
+      transition: transform 100ms ease;
     }
   }
 
@@ -60,7 +69,7 @@
     pointer-events: auto;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .dashboard-column-status.is-actions-visible .dashboard-status-edit,
     .dashboard-column-status:focus-within .dashboard-status-edit {
       opacity: 1;

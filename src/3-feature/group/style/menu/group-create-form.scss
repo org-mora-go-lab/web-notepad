@@ -7,7 +7,7 @@
     gap: 6px;
     margin: 4px 0;
     padding: 8px 4px;
-    border-block: 1px solid v.$line;
+    border-bottom: 1px solid v.$line;
 
     input {
       min-width: 0;
@@ -50,7 +50,7 @@
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .group-create-form {
       input {
         height: 34px * v.$mobile-scale;

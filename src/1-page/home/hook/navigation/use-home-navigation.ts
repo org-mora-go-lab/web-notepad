@@ -32,6 +32,7 @@ export function useHomeNavigation({
   addTabToPane,
 }: Options) {
   const [openPanel, setOpenPanel] = useState<ViewPanel | null>(null);
+  const [backgroundPanel, setBackgroundPanel] = useState<ViewPanel | null>(null);
   // A pinned panel stays open until its X button closes it.
   const keepsPanelOpen = useCallback(
     () =>
@@ -92,6 +93,7 @@ export function useHomeNavigation({
       if (tab) state.selectTab(tab.id);
     }
     state.setActivePane(snapshot.pane);
+    setBackgroundPanel(null);
     setOpenPanel((current) =>
       snapshot.panel === null && keepsPanelOpenRef.current()
         ? current
@@ -112,9 +114,19 @@ export function useHomeNavigation({
 
   const closeSidePanels = useCallback(() => {
     if (openPanel === null) return;
+    if (
+      backgroundPanel &&
+      (openPanel === "global-search" || openPanel === "closed")
+    ) {
+      setOpenPanel(backgroundPanel);
+      setBackgroundPanel(null);
+      pushView(getCurrentView(backgroundPanel));
+      return;
+    }
     setOpenPanel(null);
+    setBackgroundPanel(null);
     pushView(getCurrentView(null));
-  }, [getCurrentView, openPanel, pushView]);
+  }, [backgroundPanel, getCurrentView, openPanel, pushView]);
 
   const toggleSidePanel = useCallback(
     (panel: ViewPanel) => {
@@ -128,6 +140,14 @@ export function useHomeNavigation({
         )
           closeSidePanels();
         return;
+      }
+      if (
+        (panel === "global-search" || panel === "closed") &&
+        keepsPanelOpen()
+      ) {
+        setBackgroundPanel(openPanel);
+      } else {
+        setBackgroundPanel(null);
       }
       setOpenPanel(panel);
       pushView(getCurrentView(panel));
@@ -172,6 +192,7 @@ export function useHomeNavigation({
 
   return {
     openPanel,
+    backgroundPanel,
     globalSearchQuery,
     setGlobalSearchQuery,
     closeSidePanels,

@@ -48,7 +48,7 @@
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .setting-option span {
       min-width: 58px * v.$mobile-scale;
       font-size: v.font(14px * v.$mobile-scale);

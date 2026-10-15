@@ -5,7 +5,7 @@ import { settingsPanel, tabColorRadio } from "../__util__";
 
 const COLOR_LABELS = ["Gray", "Red", "Orange", "Yellow", "Green", "Teal", "Indigo", "Purple", "Pink"];
 
-test("3. Tab Colors의 세 순서에서 9가지 색상을 선택하며 기본값은 Gray → Green → Purple다", async ({ page }) => {
+test("3. Tab Colors의 세 순서에서 9가지 색상을 선택하며 기본값은 Gray → Green → Purple이다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
   const panel = settingsPanel(page);

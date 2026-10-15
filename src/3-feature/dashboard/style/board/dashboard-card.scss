@@ -13,12 +13,14 @@
       border: 1px solid
         color-mix(
           in srgb,
-          var(--dashboard-accent, #{v.$signal}) 50%,
+          var(--dashboard-focus-accent, var(--dashboard-accent, #{v.$signal}))
+            50%,
           transparent
         );
       background: color-mix(
         in srgb,
-        var(--dashboard-accent, #{v.$signal}) 12%,
+        var(--dashboard-focus-accent, var(--dashboard-accent, #{v.$signal}))
+          12%,
         var(--color-field)
       );
     }

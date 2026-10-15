@@ -7,6 +7,7 @@ import {
   Bookmark,
   FolderInput,
   Pin,
+  Trash2,
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -20,12 +21,14 @@ export function TabContextMenu({
   pinned,
   showPin = true,
   moveGroupFirst = false,
+  deleteOnly = false,
   bookmarked,
   targetGroups,
   onMoveToGroup,
   onTogglePin,
   onToggleBookmark,
   onCloseTab,
+  onDeleteTab,
   onClose,
 }: TabContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -115,6 +118,13 @@ export function TabContextMenu({
         </>
       ) : (
         <>
+          {deleteOnly ? (
+            <button type="button" role="menuitem" onClick={onDeleteTab}>
+              <Trash2 size={14} />
+              <span>{t.delete}</span>
+            </button>
+          ) : (
+            <>
           {moveGroupFirst && moveGroupButton}
           {showPin && (
             <button type="button" role="menuitem" onClick={onTogglePin}>
@@ -133,6 +143,8 @@ export function TabContextMenu({
             </button>
           )}
           {!moveGroupFirst && moveGroupButton}
+            </>
+          )}
         </>
       )}
     </div>,

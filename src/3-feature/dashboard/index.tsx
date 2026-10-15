@@ -1,13 +1,9 @@
 "use client";
 
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Ghost, Maximize2, Minimize2, Snowflake } from "lucide-react";
 import { useState } from "react";
 
-import {
-  compareGroups,
-  getDashboardColumns,
-  getTabStatus,
-} from "@/src/4-entity/notepad";
+import { compareGroups, getDashboardColumns, getTabStatus } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
@@ -32,9 +28,11 @@ export function Dashboard({
   onMoveToGroup,
   onToggleTabPin,
   onToggleTabBookmark,
-  onArchiveTab,
+  onDeleteTab,
 }: DashboardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [iceboxVisible, setIceboxVisible] = useState(false);
+  const [closedVisible, setClosedVisible] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
     left: number;
@@ -43,7 +41,17 @@ export function Dashboard({
   const { t } = useI18n();
   const { contentRef, listRef, boardRef } = useDashboardScroll();
   const columns = getDashboardColumns(tabs, tabColorCycle);
-  const visibleTabs = columns.flatMap((column) => column.tabs);
+  const iceboxTabs = tabs.filter(
+    (tab) => tab.content.trim() && getTabStatus(tab, tabColorCycle) === "icebox",
+  );
+  const closedTabs = tabs.filter(
+    (tab) => tab.content.trim() && getTabStatus(tab, tabColorCycle) === "closed",
+  );
+  const visibleTabs = [
+    ...columns.flatMap((column) => column.tabs),
+    ...(iceboxVisible ? iceboxTabs : []),
+    ...(closedVisible ? closedTabs : []),
+  ];
   const contextTab = visibleTabs.find((tab) => tab.id === contextMenu?.itemId);
   const contextGroup = groups.find((group) =>
     group.tabs.some((tab) => tab.id === contextMenu?.itemId),
@@ -79,10 +87,34 @@ export function Dashboard({
           columns={columns}
           tabColorCycle={tabColorCycle}
           statusNames={statusNames}
+          iceboxVisible={iceboxVisible}
+          closedVisible={closedVisible}
+          iceboxCount={iceboxTabs.length}
+          closedCount={closedTabs.length}
           onRenameStatus={onRenameStatus}
         />
         <div className="dashboard-list" ref={listRef}>
-          <div className="dashboard-board" ref={boardRef}>
+          <div
+            className={`dashboard-board ${iceboxVisible ? "has-icebox" : ""} ${closedVisible ? "has-closed" : ""}`}
+            ref={boardRef}
+          >
+            {iceboxVisible && (
+              <DashboardColumn
+                column={{ status: "icebox", tabs: iceboxTabs }}
+                drag={drag}
+                activeTabId={activeTabId}
+                groups={groups}
+                showGroupNames={showGroupNames}
+                tabColorCycle={tabColorCycle}
+                statusNames={statusNames}
+                contextMenuTabId={contextMenu?.itemId}
+                onOpenTab={onOpenTab}
+                onRenameStatus={onRenameStatus}
+                onOpenContextMenu={(itemId, left, top) =>
+                  setContextMenu({ itemId, left, top })
+                }
+              />
+            )}
             {columns.map((column) => (
               <DashboardColumn
                 key={column.status}
@@ -101,8 +133,45 @@ export function Dashboard({
                 }
               />
             ))}
+            {closedVisible && (
+              <DashboardColumn
+                column={{ status: "closed", tabs: closedTabs }}
+                drag={drag}
+                activeTabId={activeTabId}
+                groups={groups}
+                showGroupNames={showGroupNames}
+                tabColorCycle={tabColorCycle}
+                statusNames={statusNames}
+                contextMenuTabId={contextMenu?.itemId}
+                onOpenTab={onOpenTab}
+                onRenameStatus={onRenameStatus}
+                onOpenContextMenu={(itemId, left, top) =>
+                  setContextMenu({ itemId, left, top })
+                }
+              />
+            )}
           </div>
         </div>
+      </div>
+      <div className="dashboard-footer">
+        <button
+          className="dashboard-icebox-command"
+          type="button"
+          aria-pressed={iceboxVisible}
+          onClick={() => setIceboxVisible((current) => !current)}
+        >
+          <Snowflake size={24} strokeWidth={1.8} />
+          <span>{t.icebox}</span>
+        </button>
+        <button
+          className="dashboard-closed-command"
+          type="button"
+          aria-pressed={closedVisible}
+          onClick={() => setClosedVisible((current) => !current)}
+        >
+          <Ghost size={24} strokeWidth={1.8} />
+          <span>{t.closed}</span>
+        </button>
       </div>
       {contextMenu && contextTab && (
         <TabContextMenu
@@ -110,7 +179,8 @@ export function Dashboard({
           top={contextMenu.top}
           pinned={contextTab.pinned}
           showPin={false}
-          moveGroupFirst
+          moveGroupFirst={getTabStatus(contextTab, tabColorCycle) !== "closed"}
+          deleteOnly={getTabStatus(contextTab, tabColorCycle) === "closed"}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id)
@@ -127,14 +197,10 @@ export function Dashboard({
             onToggleTabBookmark(contextTab.id);
             setContextMenu(null);
           }}
-          onCloseTab={
-            getTabStatus(contextTab, tabColorCycle) === "done"
-              ? () => {
-                  onArchiveTab(contextTab.id);
-                  setContextMenu(null);
-                }
-              : undefined
-          }
+          onDeleteTab={() => {
+            onDeleteTab(contextTab.id);
+            setContextMenu(null);
+          }}
           onClose={() => setContextMenu(null)}
         />
       )}

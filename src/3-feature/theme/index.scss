@@ -83,7 +83,7 @@
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .theme-label {
       min-height: 38px * v.$mobile-scale;
       font-size: v.font(15px * v.$mobile-scale);

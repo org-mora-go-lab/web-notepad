@@ -3,6 +3,9 @@ import type { GroupEntry, NoteTab } from "@/src/4-entity/notepad";
 export type HeaderProps = {
   onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;
+  onToggleSearch?: () => void;
+  searchOpen?: boolean;
+  onSelectGroup?: (groupId: string) => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;

@@ -6,7 +6,7 @@
     top: 0;
     right: 0;
     z-index: 5;
-    width: 140px;
+    width: 90px;
     height: 39px;
     background: v.$strip;
     border-bottom: 1px solid v.$line;
@@ -26,19 +26,38 @@
   }
 
   .additional-tools-trigger {
-    width: 100%;
+    position: absolute;
+    right: 0;
+    width: 45px;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 0 12px;
-    font-size: v.font(14px);
+    padding: 0;
 
     svg {
       width: 22px;
       height: 22px;
       flex: 0 0 22px;
+    }
+  }
+
+  .global-search-command {
+    position: absolute;
+    left: 0;
+    width: 45px;
+    height: 100%;
+    display: grid;
+    place-items: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &.is-active {
+      background: v.$raised;
+      color: v.$ink;
     }
   }
 
@@ -83,18 +102,23 @@
       font-size: v.font(12px);
       line-height: 18px;
     }
+
+    .additional-tools-divider {
+      height: 1px;
+      margin: 4px 6px;
+      background: v.$line;
+    }
   }
 
-  &.has-menu { padding-right: 140px; }
+  &.has-menu { padding-right: 90px; }
 
   @media (min-width: 641px) {
-    .additional-tools { width: 112px; }
+    .additional-tools { width: 78px; }
 
     .additional-tools-trigger {
+      width: 39px;
       font-family: v.$sans;
-      font-size: v.font(15px);
-      font-weight: 500;
-      padding: 0 16px;
+      padding: 0;
 
       > svg {
         width: 18px;
@@ -106,6 +130,10 @@
         background: v.$raised;
         color: v.$ink;
       }
+    }
+
+    .global-search-command {
+      width: 39px;
     }
 
     .additional-tools-menu {
@@ -125,11 +153,11 @@
 
     }
 
-    &.has-menu { padding-right: 112px; }
+    &.has-menu { padding-right: 78px; }
   }
 
-  @media (max-width: 640px) {
-    .additional-tools { width: 45px; height: 45px; }
+  @media (max-width: 512px) {
+    .additional-tools { width: 90px; height: 45px; }
     .additional-tools-trigger {
       padding: 0;
 
@@ -165,8 +193,7 @@
       }
     }
 
-    .additional-tools-label,
     .additional-tools-menu .additional-tools-shortcut { display: none; }
-    &.has-menu { padding-right: 45px; }
+    &.has-menu { padding-right: 90px; }
   }
 }

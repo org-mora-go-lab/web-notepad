@@ -30,7 +30,10 @@ test("3. 클릭과 키보드로 선택한 줄 번호를 활성 탭 색상으로 
   await expect(lines.nth(1)).toHaveAttribute("aria-pressed", "true");
   await expect(lines.nth(1)).toHaveCSS("background-color", tabColors[0].line);
   await expect(lines.nth(1)).toHaveCSS("color", tabColors[0].text);
-  await expect(editor).toHaveCSS("background-image", /rgba\(184, 184, 176, 0\.2\)/);
+  await expect(editor).toHaveCSS(
+    "background-image",
+    /rgba\(184, 184, 176, 0\.2\)/,
+  );
   await lines.nth(1).press("Enter");
   await expect(lines.nth(1)).toHaveAttribute("aria-pressed", "false");
 

@@ -58,7 +58,9 @@ export const getPaneOfTab = (group: GroupEntry, tabId: string): PaneId => {
 };
 
 export const getPaneTabs = (group: GroupEntry, pane: PaneId): NoteTab[] =>
-  group.tabs.filter((tab) => getPaneOfTab(group, tab.id) === pane);
+  group.tabs.filter(
+    (tab) => tab.open && getPaneOfTab(group, tab.id) === pane,
+  );
 
 export const getPaneActiveTabId = (
   group: GroupEntry,
@@ -66,7 +68,9 @@ export const getPaneActiveTabId = (
 ): string | null => group[ACTIVE_KEYS[pane]] || null;
 
 const readLists = (group: GroupEntry): PaneLists => {
-  const tabIds = new Set(group.tabs.map((tab) => tab.id));
+  const tabIds = new Set(
+    group.tabs.filter((tab) => tab.open).map((tab) => tab.id),
+  );
   const seen = new Set<string>();
   const take = (ids: string[]) =>
     ids.filter((id) => {
@@ -78,7 +82,10 @@ const readLists = (group: GroupEntry): PaneLists => {
   const leftBottom = take(group.leftBottomTabIds);
   const rightBottom = take(group.rightBottomTabIds);
   return {
-    left: group.tabs.map((tab) => tab.id).filter((id) => !seen.has(id)),
+    left: group.tabs
+      .filter((tab) => tab.open)
+      .map((tab) => tab.id)
+      .filter((id) => !seen.has(id)),
     right,
     "left-bottom": leftBottom,
     "right-bottom": rightBottom,

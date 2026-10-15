@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Layers, LayoutDashboard, Search } from "lucide-react";
+import { Bookmark, Layers, LayoutDashboard } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -10,12 +10,10 @@ export function Footer({
   hasBookmarkUpdateToday,
   hasGroupUpdateToday,
   bookmarksOpen,
-  searchOpen,
   dashboardOpen,
   activeGroupName,
   groupsOpen,
   onToggleBookmarks,
-  onToggleSearch,
   onToggleDashboard,
   onToggleGroups,
 }: FooterProps) {
@@ -31,20 +29,6 @@ export function Footer({
         <div className="status-controls">
           <div className="status-scroll-area">
             <div className="status-actions">
-              <button
-                className={`status-command global-search-command ${searchOpen ? "is-active" : ""}`}
-                type="button"
-                onClick={onToggleSearch}
-                aria-expanded={searchOpen}
-                aria-controls="global-search-popup"
-                aria-haspopup="dialog"
-                aria-label={t.search}
-              >
-                <span className="status-icon">
-                  <Search size={16} strokeWidth={1.8} />
-                </span>
-                <span className="status-label">{t.search}</span>
-              </button>
               <button
                 className={`status-command bookmark-command ${bookmarksOpen ? "is-active" : ""}`}
                 type="button"

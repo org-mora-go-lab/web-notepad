@@ -35,7 +35,7 @@ export function DashboardCard({
   const preview = getPreview(tab);
   const { t } = useI18n();
   const touchLayout = () =>
-    window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
+    window.matchMedia("(max-width: 512px), (pointer: coarse)").matches;
   const cancelPendingOpen = () => {
     if (openTimerRef.current) clearTimeout(openTimerRef.current);
     openTimerRef.current = null;

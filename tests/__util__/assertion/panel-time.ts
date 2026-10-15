@@ -4,7 +4,7 @@ export async function expectPanelTimes(headings: Locator) {
   await expect(headings.first().locator("xpath=ancestor::aside")).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
   const fields = headings.locator("time");
   await expect(fields).toHaveCount(2);
-  const mobile = headings.page().viewportSize()!.width <= 640;
+  const mobile = headings.page().viewportSize()!.width <= 512;
   const bounds = [];
   for (const heading of await headings.all()) {
     const time = heading.locator("time");

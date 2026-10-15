@@ -116,7 +116,7 @@
       box-shadow: inset 0 3px var(--tab-accent, #{v.$saved});
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 512px) {
       min-width: 114.406px * v.$mobile-scale;
       max-width: 247.65px;
       height: 45px;
@@ -225,7 +225,7 @@
     height: 39px;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .tab-select,
     .tab-close {
       height: 44px;

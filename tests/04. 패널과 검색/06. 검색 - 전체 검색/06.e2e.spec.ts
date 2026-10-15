@@ -3,11 +3,13 @@ import { expect, test } from "@playwright/test";
 import { openGlobalSearchPanel, seedStoredStateOnLoad } from "../../__util__";
 import { createGlobalSearchState } from "./__fixture__";
 
-test("6. 북마크 검색 결과를 우측에 표시하고 검색어를 하이라이트한다", async ({ page }) => {
-  await seedStoredStateOnLoad(page, createGlobalSearchState());
+test("6. 검색 목록과 우측 미리보기를 표시하고 스크롤 상단을 구분한다", async ({ page }) => {
+  await seedStoredStateOnLoad(page, createGlobalSearchState(20));
   await openGlobalSearchPanel(page);
   await page.getByRole("searchbox", { name: "Search everything" }).fill("Work");
-  await page.getByRole("button", { name: "Preview bookmark Work plan" }).click();
+  await page
+    .getByRole("button", { name: "Preview bookmark Work plan", exact: true })
+    .click();
 
   const preview = page.getByRole("region", { name: "Selected tab preview" });
   const results = page.locator(".global-search-results-pane");
@@ -25,5 +27,26 @@ test("6. 북마크 검색 결과를 우측에 표시하고 검색어를 하이�
   const resultsBox = (await results.boundingBox())!;
   expect((await previewPane.boundingBox())!.x).toBeGreaterThanOrEqual(
     resultsBox.x + resultsBox.width,
+  );
+  const list = page.locator(".global-search-list");
+  await list.evaluate((element) => element.scrollTo(0, 120));
+  await expect(results).toHaveClass(/is-scrolled/);
+  const searchBox = (await page.locator(".global-search .search-field").boundingBox())!;
+  const itemBox = (await page.locator(".global-search-result").first().boundingBox())!;
+  expect(searchBox.x + searchBox.width).toBeCloseTo(itemBox.x + itemBox.width, 0);
+  await expect
+    .poll(() =>
+      results.evaluate((element) =>
+        getComputedStyle(element, "::after").opacity,
+      ),
+    )
+    .toBe("1");
+  const paneBox = (await results.boundingBox())!;
+  const gradientTop = await results.evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element, "::after").top),
+  );
+  expect(paneBox.y + gradientTop).toBeCloseTo(
+    searchBox.y + searchBox.height,
+    0,
   );
 });

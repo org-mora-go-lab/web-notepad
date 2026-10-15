@@ -25,15 +25,19 @@ export type NotepadSettings = {
 };
 
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
-export type TabStatus = "todo" | "in-progress" | "done";
+export type TabStatus = "icebox" | "todo" | "in-progress" | "done" | "closed";
 
 export type NoteTab = {
   id: string;
+  // Closed editor tabs remain in their dashboard status until reopened.
+  open: boolean;
   title: string;
   content: string;
   savedContent: string;
   selectedLines: number[];
   tabColor: TabColor;
+  // Icebox and Closed are explicit states; legacy tabs derive the three core states from color.
+  dashboardStatus?: TabStatus;
   pinned: boolean;
   bookmarked: boolean;
   updatedAt: number;
@@ -125,6 +129,7 @@ export type NotepadState = {
   toggleBookmark: (tabId: string) => void;
   closeTab: (tabId: string) => void;
   archiveTab: (tabId: string) => void;
+  deleteTab: (tabId: string) => void;
   openBookmark: (bookmarkId: string) => void;
   removeBookmark: (bookmarkId: string) => void;
   createGroup: (name: string) => void;

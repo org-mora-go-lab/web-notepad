@@ -1,19 +1,19 @@
 import { createClosedTabFixture, createGroupFixture, createTabFixture } from "../../../__fixture__";
 
-export function createGlobalSearchState() {
+export function createGlobalSearchState(bookmarkCount = 1) {
   const workGroup = createGroupFixture("work", "Work", [
     createTabFixture("work-tab", "Quarterly goals"),
   ], {
-    bookmarks: [{
-      id: "work-bookmark",
+    bookmarks: Array.from({ length: bookmarkCount }, (_, index) => ({
+      id: index === 0 ? "work-bookmark" : `work-bookmark-${index}`,
       sourceTabId: "work-tab",
-      title: "Work plan",
-      content: "Work quarterly goals",
-      tabColor: "green",
+      title: index === 0 ? "Work plan" : `Work plan ${index}`,
+      content: index === 0 ? "Work quarterly goals" : `Work goals ${index}`,
+      tabColor: "green" as const,
       selectedLines: [],
-      createdAt: 1,
-      updatedAt: 1,
-    }],
+      createdAt: index + 1,
+      updatedAt: index + 1,
+    })),
   });
   const ungrouped = createGroupFixture("ungrouped", "Ungrouped", [
     createTabFixture("current-tab", "Current note"),

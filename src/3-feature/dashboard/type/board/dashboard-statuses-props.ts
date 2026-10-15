@@ -7,4 +7,8 @@ export type DashboardStatusesProps = Pick<
   "tabColorCycle" | "statusNames" | "onRenameStatus"
 > & {
   columns: DashboardColumnData[];
+  iceboxVisible: boolean;
+  closedVisible: boolean;
+  iceboxCount: number;
+  closedCount: number;
 };

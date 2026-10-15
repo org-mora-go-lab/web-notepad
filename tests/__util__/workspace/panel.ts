@@ -42,12 +42,9 @@ export async function openPanel(page: Page, panelId: string) {
 }
 
 export async function openClosedPanel(page: Page) {
-  await groupsCommand(page).click();
-  await page
-    .locator("#groups-menu")
-    .getByRole("button", { name: "Closed", exact: true })
-    .click();
-  await expect(page.locator("#closed-popup")).toBeVisible();
+  await openPanel(page, "dashboard-panel");
+  await page.locator(".dashboard-closed-command").click();
+  await expect(page.locator(".dashboard-closed-column")).toBeVisible();
 }
 export const openShortcutsPanel = (page: Page) =>
   openPanel(page, "shortcuts-panel");
@@ -73,6 +70,11 @@ export async function createGroups(page: Page, ...names: string[]) {
 
 // Opens the group dropdown, selects the group with the exact name and closes the dropdown.
 export async function switchGroup(page: Page, name: string) {
+  if (name === "All Group" || name === "Ungrouped") {
+    await page.getByRole("button", { name: "MENU", exact: true }).click();
+    await page.getByRole("menuitem", { name, exact: true }).click();
+    return;
+  }
   await groupsCommand(page).click();
   await page
     .locator(".group-item")

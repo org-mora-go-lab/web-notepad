@@ -1,1 +1,5 @@
-export { DashboardCard, DashboardColumn, DashboardStatuses } from "./board";
+export {
+  DashboardCard,
+  DashboardColumn,
+  DashboardStatuses,
+} from "./board";

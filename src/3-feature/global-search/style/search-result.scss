@@ -44,7 +44,7 @@
   color: v.$muted;
   font-size: v.font(12px);
 }
-@media (max-width: 640px) {
+@media (max-width: 512px) {
   .global-search-result {
     strong {
       font-size: v.font(15px * v.$mobile-scale);

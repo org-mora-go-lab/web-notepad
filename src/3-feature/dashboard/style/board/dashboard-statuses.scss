@@ -30,6 +30,23 @@
     }
   }
 
+  .dashboard-statuses.has-icebox,
+  .dashboard-statuses.has-closed {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .dashboard-statuses.has-icebox.has-closed {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .dashboard-statuses h3.dashboard-icebox-status {
+    --dashboard-accent: #666;
+  }
+
+  .dashboard-statuses h3.dashboard-closed-status {
+    --dashboard-accent: #888;
+  }
+
   .dashboard-content.is-scrolled .dashboard-statuses::after {
     opacity: 1;
   }
@@ -71,7 +88,7 @@
     border-left: 3px solid var(--dashboard-accent, v.$line);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .dashboard-statuses {
       display: block;
       height: 0;
@@ -91,6 +108,8 @@
       top: 0;
       z-index: 2;
       display: flex;
+      padding-top: 7px;
+      padding-bottom: 7px;
       margin-bottom: 10px;
       margin-left: -8px;
       border-left: 0;

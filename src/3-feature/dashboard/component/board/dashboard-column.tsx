@@ -21,9 +21,11 @@ export function DashboardColumn({
   const { status, tabs: columnTabs } = column;
   const { t } = useI18n();
   const statusLabel = {
+    icebox: t.icebox,
     todo: t.statusTodo,
     "in-progress": t.statusInProgress,
     done: t.statusDone,
+    closed: t.closedTitle,
   }[status];
   const cardEntries = [...columnTabs].sort((left, right) => {
     const priority = (tab: typeof left) =>
@@ -35,7 +37,7 @@ export function DashboardColumn({
   return (
     <section
       key={status}
-      className={`dashboard-column ${drag.overStatus === status ? "is-drop-target" : ""}`}
+      className={`dashboard-column dashboard-${status}-column ${drag.overStatus === status ? "is-drop-target" : ""}`}
       data-status={status}
       aria-label={statusLabel}
       data-tab-color={getStatusColor(status, tabColorCycle)}

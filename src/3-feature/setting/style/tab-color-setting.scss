@@ -112,7 +112,7 @@
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 512px) {
     .setting-hint {
       font-size: v.font(15px * v.$mobile-scale);
     }

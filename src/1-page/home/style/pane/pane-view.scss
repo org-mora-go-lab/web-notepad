@@ -14,7 +14,7 @@
     display: grid;
     grid-template-rows: 39px minmax(0, 1fr);
 
-    @media (max-width: 640px) {
+    @media (max-width: 512px) {
       grid-template-rows: 45px minmax(0, 1fr);
     }
   }

@@ -25,7 +25,7 @@ test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹�
         ]),
       ],
     });
-    await switchGroup(page, "All");
+    await switchGroup(page, "All Group");
     const workTab = page.locator(".tab-title").filter({ hasText: "Work note" });
     await openTabMenu(workTab, viewport);
     await expect(moveGroup).toBeVisible();

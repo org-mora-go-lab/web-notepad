@@ -3,10 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import type { GroupEntry } from "@/src/4-entity/notepad";
 import {
-  ALL_GROUP_ID,
-  ALL_GROUP_NAME,
   compareGroups,
   UNGROUPED_GROUP_ID,
 } from "@/src/4-entity/notepad";
@@ -17,10 +14,8 @@ import { GroupCreateForm, GroupItem } from "./component";
 import { useGroupMenuResize } from "./hook";
 import type { GroupMenuProps, GroupProps } from "./type";
 
-type GroupRow = Pick<GroupEntry, "id" | "name" | "pinned">;
-
 const ANCHOR_SELECTOR = ".group-select-command";
-const MOBILE_QUERY = "(max-width: 640px)";
+const MOBILE_QUERY = "(max-width: 512px)";
 
 // Group switcher dropdown that opens above the bottom bar's group button, styled like the tab context menu.
 // Pick a group, or pin / rename / delete / create one right in the list.
@@ -34,7 +29,6 @@ function GroupMenu({
   onRemove,
   onRename,
   onTogglePinGroup,
-  onOpenClosed,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -45,26 +39,19 @@ function GroupMenu({
   // The delete button that opened the popup, focused again when the popup is cancelled.
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
-  // All and Ungrouped share the first row (two halves); the create row follows, then the other groups (pinned first).
-  const specialRows: GroupRow[] = [
-    { id: ALL_GROUP_ID, name: ALL_GROUP_NAME, pinned: false },
-    ...groups.filter((group) => group.id === UNGROUPED_GROUP_ID),
-  ];
-  const otherRows: GroupRow[] = [...groups]
+  const otherRows = [...groups]
     .sort(compareGroups)
     .filter((group) => group.id !== UNGROUPED_GROUP_ID);
 
-  const renderRow = (group: GroupRow) => {
-    const special =
-      group.id === UNGROUPED_GROUP_ID || group.id === ALL_GROUP_ID;
+  const renderRow = (group: (typeof groups)[number]) => {
     return (
       <GroupItem
         key={group.id}
         name={group.name}
         active={group.id === activeGroupId}
         pinned={group.pinned}
-        editable={!special}
-        muted={special}
+        editable
+        muted={false}
         actionsOpen={actionsGroupId === group.id}
         onToggleActions={() =>
           setActionsGroupId((current) =>
@@ -137,23 +124,6 @@ function GroupMenu({
         aria-label={t.selectGroup}
       >
         <div className="group-list">
-          <div className="group-split-row">
-            {specialRows.map(renderRow)}
-            <div className="group-item group-closed-item">
-              <button
-                className="group-select"
-                type="button"
-                aria-controls="closed-popup"
-                aria-haspopup="dialog"
-                onClick={() => {
-                  onOpenClosed();
-                  onClose();
-                }}
-              >
-                <strong className="is-ungrouped">{t.closedTitle}</strong>
-              </button>
-            </div>
-          </div>
           <GroupCreateForm onCreate={onCreate} />
           {otherRows.map(renderRow)}
         </div>

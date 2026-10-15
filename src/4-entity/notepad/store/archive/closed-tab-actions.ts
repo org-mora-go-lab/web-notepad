@@ -39,6 +39,7 @@ export const createClosedTabActions: StateCreator<
     const tab = {
       ...entry.tab,
       id: tabId,
+      open: true,
       tabColor: getStatusColor("todo", state.settings.tabColorCycle),
       bookmarked: target.bookmarks.some(
         (bookmark) => bookmark.sourceTabId === tabId,

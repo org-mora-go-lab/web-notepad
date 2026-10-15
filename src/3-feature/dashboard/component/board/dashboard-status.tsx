@@ -27,7 +27,7 @@ export function DashboardStatus({
     hideTimerRef.current = null;
   };
   const revealMobileAction = () => {
-    if (!window.matchMedia("(max-width: 640px), (pointer: coarse)").matches)
+    if (!window.matchMedia("(max-width: 512px), (pointer: coarse)").matches)
       return;
     clearHideTimer();
     setMobileActionsVisible(true);

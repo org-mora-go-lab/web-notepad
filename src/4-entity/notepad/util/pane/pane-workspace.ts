@@ -10,7 +10,9 @@ export function getPaneWorkspace(group: GroupEntry | undefined) {
     "right-bottom": [],
   };
   if (group) {
-    for (const tab of group.tabs) tabs[getPaneOfTab(group, tab.id)].push(tab);
+    for (const tab of group.tabs) {
+      if (tab.open) tabs[getPaneOfTab(group, tab.id)].push(tab);
+    }
   }
   const activeTabs = Object.fromEntries(
     PANE_IDS.map((pane) => {

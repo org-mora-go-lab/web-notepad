@@ -1,5 +1,4 @@
 // Default tab colour cycle order: gray -> green -> purple (DARK theme values).
-// Purple is an extra colour whose backgrounds come from color-mix(), so Chromium serializes them as color(srgb ...).
 export const tabColors = [
   {
     name: "gray",

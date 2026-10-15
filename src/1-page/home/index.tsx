@@ -14,17 +14,16 @@ import type { PaneViewProps } from "./type";
 export function Home() {
   const {
     hydrated,
-    closedTabs,
     globalSearchQuery,
     setGlobalSearchQuery,
     openPanel,
+    backgroundPanel,
     toggleSidePanel,
     closeSidePanels,
     activeGroupId,
     selectGroupAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,
-    restoreClosedTabAndClosePanel,
     activeTab,
     split,
     bookmarks,
@@ -36,8 +35,7 @@ export function Home() {
     togglePin,
     toggleBookmark,
     moveToGroup,
-    archiveDashboardTab,
-    removeClosedTab,
+    deleteDashboardTab,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
@@ -74,6 +72,9 @@ export function Home() {
           onOpenShortcuts: () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           },
+          onToggleSearch: () => toggleSidePanel("global-search"),
+          searchOpen: openPanel === "global-search",
+          onSelectGroup: selectGroupAndClosePanel,
         }
       : pane;
 
@@ -84,7 +85,7 @@ export function Home() {
   return (
     <I18nContext value={language}>
       <main
-        className={`home ${panelPinned && openPanel && openPanel !== "global-search" && openPanel !== "closed" ? "is-panel-pinned" : ""}`}
+        className={`home ${panelPinned && (backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}
@@ -103,13 +104,11 @@ export function Home() {
           <Footer
             hasBookmarkUpdateToday={hasBookmarkUpdateToday}
             hasGroupUpdateToday={hasGroupUpdateToday}
-            bookmarksOpen={openPanel === "bookmarks"}
-            searchOpen={openPanel === "global-search"}
-            dashboardOpen={openPanel === "dashboard"}
+            bookmarksOpen={openPanel === "bookmarks" || backgroundPanel === "bookmarks"}
+            dashboardOpen={openPanel === "dashboard" || backgroundPanel === "dashboard"}
             activeGroupName={activeGroupName}
             groupsOpen={groupMenuOpen}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
-            onToggleSearch={() => toggleSidePanel("global-search")}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
             onToggleGroups={() => setGroupMenuOpen((current) => !current)}
           />
@@ -118,6 +117,7 @@ export function Home() {
         <Panel
           activeTabId={activeTab?.id}
           openPanel={openPanel}
+          backgroundPanel={backgroundPanel}
           pinned={panelPinned}
           onTogglePin={togglePanelPin}
           bookmarks={bookmarks}
@@ -128,7 +128,6 @@ export function Home() {
           activeGroupId={activeGroupId}
           groupMenuOpen={groupMenuOpen}
           onCloseGroupMenu={closeGroupMenu}
-          closedTabs={closedTabs}
           globalSearchQuery={globalSearchQuery}
           onClose={closeSidePanels}
           onGlobalSearchQueryChange={setGlobalSearchQuery}
@@ -140,17 +139,12 @@ export function Home() {
           onMoveDashboardTabToGroup={moveToGroup}
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
-          onArchiveDashboardTab={archiveDashboardTab}
-          onRemoveClosedTab={removeClosedTab}
-          onOpenClosed={() => {
-            if (openPanel !== "closed") toggleSidePanel("closed");
-          }}
+          onDeleteDashboardTab={deleteDashboardTab}
           onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}
           onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
           onToggleGroupPin={toggleGroupPin}
-          onRestoreClosedTab={restoreClosedTabAndClosePanel}
         />
       </main>
     </I18nContext>
