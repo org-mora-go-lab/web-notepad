@@ -17,8 +17,8 @@ test("1. MENU 드롭다운은 PC와 모바일에서 지정된 항목 순서로 �
     );
     expect(labels).toEqual(
       viewport.width <= 640
-        ? ["THEME", "SETTINGS", "GUIDE", "CLOSED", "SEARCH"]
-        : ["THEME", "SHORTCUT", "SETTINGS", "GUIDE", "CLOSED", "SEARCH"],
+        ? ["THEME", "SETTINGS", "GUIDE", "SEARCH"]
+        : ["THEME", "SHORTCUT", "SETTINGS", "GUIDE", "SEARCH"],
     );
     await page.keyboard.press("Escape");
   }

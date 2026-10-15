@@ -14,8 +14,6 @@ import type { HeaderProps } from "./type";
 type ContextMenuState = { tabId: string; left: number; top: number };
 
 export function Header({
-  closedCount = 0,
-  onOpenClosed,
   onOpenSettings,
   onOpenShortcuts,
   onOpenSearch,
@@ -145,10 +143,8 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenClosed && onOpenSettings && onOpenSearch && (
+      {onOpenShortcuts && onOpenSettings && onOpenSearch && (
         <AdditionalTools
-          closedCount={closedCount}
-          onOpenClosed={onOpenClosed}
           onOpenSettings={onOpenSettings}
           onOpenShortcuts={onOpenShortcuts}
           onOpenSearch={onOpenSearch}

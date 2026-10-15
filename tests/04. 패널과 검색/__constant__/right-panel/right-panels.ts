@@ -4,7 +4,6 @@ export const RIGHT_PANEL_IDS = [
   "bookmarks-panel",
   "dashboard-panel",
   "shortcuts-panel",
-  "closed-panel",
   "settings-panel",
   "global-search-panel",
 ];
@@ -17,7 +16,6 @@ export const RIGHT_PANEL_VIEWPORTS = [
     panelIds: [
       "bookmarks-panel",
       "dashboard-panel",
-      "closed-panel",
       "settings-panel",
       "global-search-panel",
     ],

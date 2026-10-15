@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("9. MENU는 위·아래 방향키·Home·End로 항목을 탐색한다", async ({ page }) => {
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "MENU", exact: true });
-  const items = ["THEME", "SHORTCUT", "SETTINGS", "GUIDE", "CLOSED", "SEARCH"];
+  const items = ["THEME", "SHORTCUT", "SETTINGS", "GUIDE", "SEARCH"];
   await trigger.press("Enter");
   await expect(page.getByRole("menuitem", { name: items[0], exact: true })).toBeFocused();
 

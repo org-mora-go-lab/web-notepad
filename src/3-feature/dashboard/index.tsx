@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { compareGroups, getDashboardColumns } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
-import { ConfirmPopup, SidePanel, TabContextMenu } from "@/src/5-shared/ui";
+import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
 import { DashboardColumn, DashboardStatuses } from "./component";
 import { useDashboardDrag, useDashboardScroll } from "./hook";
@@ -23,7 +23,6 @@ export function Dashboard({
   onClose,
   onOpenTab,
   onChangeStatus,
-  onUnpinTab,
   onMoveToGroup,
   onToggleTabPin,
   onToggleTabBookmark,
@@ -47,7 +46,6 @@ export function Dashboard({
     visibleTabs,
     onChangeStatus,
     onChangeClosedStatus,
-    onUnpinTab,
   });
   return (
     <SidePanel
@@ -84,17 +82,6 @@ export function Dashboard({
           </div>
         </div>
       </div>
-      {drag.pendingPinnedTabId && (
-        <ConfirmPopup
-          title={t.closePinnedTabTitle}
-          message={t.closePinnedTabMessage}
-          closeLabel={t.closePanel(t.closePinnedTabTitle)}
-          closeTitle={t.close}
-          confirmLabel={t.unpinAndClose}
-          onConfirm={drag.confirmClose}
-          onCancel={drag.cancelClose}
-        />
-      )}
       {contextMenu && contextTab && (
         <TabContextMenu
           left={contextMenu.left}

@@ -6,7 +6,7 @@ import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../__util__"
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
-test("6. 모바일에서 복원한 Closed 탭의 상태를 새로고침 후에도 유지한다", async ({ page }) => {
+test("6. 모바일에서 변경한 Closed 상태를 새로고침 후에도 유지한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
   const card = (status: "todo" | "in-progress" | "done") =>

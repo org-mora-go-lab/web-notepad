@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import {
   getActiveGroup,
   getPaneActiveTabId,
   getPaneOfTab,
   type GroupEntry,
-  isSubstantialContent,
   type PaneId,
   useNotepadStore,
 } from "@/src/4-entity/notepad";
@@ -19,10 +18,6 @@ type Options = {
 };
 
 export function useHomeTabActions({ editorRefs }: Options) {
-  const [pendingCloseTabId, setPendingCloseTabId] = useState<string | null>(
-    null,
-  );
-
   // The editor showing the tab, when the tab is active in its pane.
   const editorOfTab = useCallback(
     (group: GroupEntry, tabId: string) => {
@@ -43,20 +38,8 @@ export function useHomeTabActions({ editorRefs }: Options) {
 
       const content = editorOfTab(group, tabId)?.value ?? tab.content;
       if (content !== tab.content) state.updateTab(tabId, content);
-      // A tab restored from Closed and left unedited closes without asking.
-      const unchangedSinceRestore =
-        tab.restoredContent !== undefined && content === tab.restoredContent;
-      if (
-        isSubstantialContent(content) &&
-        !tab.bookmarked &&
-        !unchangedSinceRestore
-      ) {
-        setPendingCloseTabId(tabId);
-        return false;
-      } else {
-        state.closeTab(tabId);
-        return true;
-      }
+      state.closeTab(tabId);
+      return true;
     },
     [editorOfTab],
   );
@@ -87,16 +70,8 @@ export function useHomeTabActions({ editorRefs }: Options) {
   };
 
   return {
-    pendingCloseTabId,
     requestCloseTab,
     addTabToPane,
     moveToGroup,
-    cancelCloseTab: () => setPendingCloseTabId(null),
-    confirmCloseTab: () => {
-      if (!pendingCloseTabId) return false;
-      useNotepadStore.getState().closeTab(pendingCloseTabId);
-      setPendingCloseTabId(null);
-      return true;
-    },
   };
 }

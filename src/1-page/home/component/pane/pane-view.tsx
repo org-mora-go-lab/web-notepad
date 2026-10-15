@@ -6,8 +6,6 @@ import type { PaneViewProps } from "../../type";
 
 export function PaneView({
   pane,
-  closedCount,
-  onOpenClosed,
   onOpenSettings,
   onOpenShortcuts,
   onOpenSearch,
@@ -47,8 +45,6 @@ export function PaneView({
         onPointerDownCapture={onActivate}
       >
         <Header
-          closedCount={closedCount}
-          onOpenClosed={onOpenClosed}
           onOpenSettings={onOpenSettings}
           onOpenShortcuts={onOpenShortcuts}
           onOpenSearch={onOpenSearch}

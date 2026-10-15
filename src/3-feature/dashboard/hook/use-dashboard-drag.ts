@@ -6,14 +6,13 @@ import type { DashboardProps } from "../type";
 
 type Options = Pick<
   DashboardProps,
-  "onChangeStatus" | "onChangeClosedStatus" | "onUnpinTab"
+  "onChangeStatus" | "onChangeClosedStatus"
 > & { visibleTabs: NoteTab[] };
 
 export function useDashboardDrag({
   visibleTabs,
   onChangeStatus,
   onChangeClosedStatus,
-  onUnpinTab,
 }: Options) {
   const [draggingItem, setDraggingItem] = useState<{
     id: string;
@@ -21,9 +20,6 @@ export function useDashboardDrag({
   } | null>(null);
   const draggingTabId = draggingItem?.id ?? null;
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
-  const [pendingPinnedTabId, setPendingPinnedTabId] = useState<string | null>(
-    null,
-  );
   const endDrag = () => {
     setDraggingItem(null);
     setOverStatus(null);
@@ -47,9 +43,8 @@ export function useDashboardDrag({
       return;
     }
 
-    const tab = visibleTabs.find((item) => item.id === itemId);
-    if (status === "done" && tab?.pinned) setPendingPinnedTabId(itemId);
-    else onChangeStatus(itemId, status);
+    if (visibleTabs.some((item) => item.id === itemId))
+      onChangeStatus(itemId, status);
   };
   const drop = (status: TabStatus, event: DragEvent<HTMLElement>) => {
     event.preventDefault();
@@ -57,22 +52,13 @@ export function useDashboardDrag({
       moveToStatus(draggingItem.id, draggingItem.closed, status);
     endDrag();
   };
-  const confirmClose = () => {
-    if (!pendingPinnedTabId) return;
-    onUnpinTab(pendingPinnedTabId);
-    onChangeStatus(pendingPinnedTabId, "done");
-    setPendingPinnedTabId(null);
-  };
   return {
     draggingTabId,
     overStatus,
     setOverStatus,
-    pendingPinnedTabId,
     startDrag,
     moveToStatus,
     endDrag,
     drop,
-    confirmClose,
-    cancelClose: () => setPendingPinnedTabId(null),
   };
 }

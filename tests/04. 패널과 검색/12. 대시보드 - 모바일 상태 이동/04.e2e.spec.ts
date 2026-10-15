@@ -6,7 +6,7 @@ import { dashboardColumn, seedDashboardTabs } from "../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
-test("4. 모바일 상태 버튼으로 닫은 탭을 Todo로 정확히 한 번 복원한다", async ({ page }) => {
+test("4. 모바일 상태 버튼으로 열린 Closed 탭을 Todo로 옮겨도 열린 상태를 유지한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
   const card = (status: "todo" | "done") => dashboardColumn(page, status).locator(".dashboard-card", { hasText: "Alpha task" });

@@ -8,21 +8,15 @@ import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
 import { I18nContext } from "@/src/5-shared/hook";
 
-import { Loading, PaneColumn, TabDeletePopup } from "./component";
+import { Loading, PaneColumn } from "./component";
 import type { PaneViewProps } from "./type";
 
 export function Home() {
   const {
     hydrated,
     closedTabs,
-    removeClosedTab,
     globalSearchQuery,
     setGlobalSearchQuery,
-    closedSearchQuery,
-    setClosedSearchQuery,
-    pendingCloseTabId,
-    cancelCloseTab,
-    confirmCloseTab,
     openPanel,
     toggleSidePanel,
     closeSidePanels,
@@ -71,10 +65,6 @@ export function Home() {
     pane.hasMenu
       ? {
           ...pane,
-          closedCount: closedTabs.length,
-          onOpenClosed: () => {
-            if (openPanel !== "closed") toggleSidePanel("closed");
-          },
           onOpenSettings: () => {
             if (openPanel !== "settings") toggleSidePanel("settings");
           },
@@ -135,16 +125,13 @@ export function Home() {
           groupMenuOpen={groupMenuOpen}
           onCloseGroupMenu={closeGroupMenu}
           closedTabs={closedTabs}
-          closedSearchQuery={closedSearchQuery}
           globalSearchQuery={globalSearchQuery}
           onClose={closeSidePanels}
-          onClosedSearchQueryChange={setClosedSearchQuery}
           onGlobalSearchQueryChange={setGlobalSearchQuery}
           onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
-          onUnpinTab={togglePin}
           onMoveDashboardTabToGroup={moveToGroup}
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
@@ -155,19 +142,8 @@ export function Home() {
           onRenameGroup={renameGroup}
           onToggleGroupPin={toggleGroupPin}
           onRestoreClosedTab={restoreClosedTabAndClosePanel}
-          onRemoveClosedTab={removeClosedTab}
           onOpenSearchedBookmark={openBookmarkAndClosePanel}
-          onOpenClosedSearch={(query) => {
-            setClosedSearchQuery(query);
-            toggleSidePanel("closed");
-          }}
         />
-        {pendingCloseTabId && (
-          <TabDeletePopup
-            onConfirm={confirmCloseTab}
-            onCancel={cancelCloseTab}
-          />
-        )}
       </main>
     </I18nContext>
   );

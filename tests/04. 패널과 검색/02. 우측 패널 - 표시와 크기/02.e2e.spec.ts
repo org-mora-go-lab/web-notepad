@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 import { createClosedTabFixture, createGroupFixture, createTabFixture } from "../../__fixture__";
-import { openClosedPanel, seedStoredStateOnLoad } from "../../__util__";
+import { openPanel, seedStoredStateOnLoad } from "../../__util__";
 
-test("2. 닫은 탭이 많을 때 목록을 끝까지 스크롤해 마지막 콘텐츠를 볼 수 있다", async ({ page }) => {
+test("2. 닫힌 탭 카드가 많을 때 대시보드를 끝까지 스크롤할 수 있다", async ({ page }) => {
   const group = createGroupFixture("work", "Work", [createTabFixture("active-tab", "Current note")]);
   const closedTabs = Array.from({ length: 24 }, (_, index) => {
     const content = index === 23 ? "bottom closed note" : `closed note ${index + 1}`;
@@ -17,18 +17,16 @@ test("2. 닫은 탭이 많을 때 목록을 끝까지 스크롤해 마지막 콘
     closedTabs,
   });
   await page.setViewportSize({ width: 390, height: 640 });
-  await openClosedPanel(page);
+  await openPanel(page, "dashboard-panel");
 
-  const list = page.locator(".closed-list");
+  const list = page.locator(".dashboard-list");
   await expect.poll(() => list.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
   await list.evaluate((element) => {
     element.scrollTop = element.scrollHeight;
   });
 
-  const lastItem = page.locator(".closed-item").last();
-  const lastContent = lastItem.locator(".closed-item-content");
-  await expect(lastContent).toHaveText("bottom closed note");
-  await expect(lastContent).toBeInViewport();
+  const lastItem = page.locator(".dashboard-card", { hasText: "bottom closed note" });
+  await expect(lastItem).toBeInViewport();
   await expect.poll(async () => {
     const box = await lastItem.boundingBox();
     return box !== null && box.y + box.height <= 640;

@@ -8,7 +8,6 @@ export {
   getStatusColor,
   getTabStatus,
   getTitleFromContent,
-  isSubstantialContent,
   sanitizeSelectedLines,
 } from "./note";
 export {

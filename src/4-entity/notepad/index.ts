@@ -20,6 +20,5 @@ export {
   getPaneWorkspace,
   getStatusColor,
   getTabStatus,
-  isSubstantialContent,
   PANE_IDS,
 } from "./util";

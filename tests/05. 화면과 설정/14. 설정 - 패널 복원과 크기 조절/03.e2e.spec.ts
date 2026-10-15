@@ -9,7 +9,6 @@ test("3. Panel Slide가 Off이면 모든 사이드 패널을 전환 시간 없�
   for (const id of [
     "bookmarks-panel",
     "dashboard-panel",
-    "closed-panel",
     "global-search-panel",
     "shortcuts-panel",
   ]) {

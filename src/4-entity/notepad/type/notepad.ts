@@ -35,8 +35,6 @@ export type NoteTab = {
   pinned: boolean;
   bookmarked: boolean;
   updatedAt: number;
-  // Content of a tab restored from Closed; closing it again without edits skips the confirmation.
-  restoredContent?: string;
 };
 
 export type BookmarkEntry = {
@@ -51,7 +49,7 @@ export type BookmarkEntry = {
   updatedAt: number;
 };
 
-// A closed tab kept in the Closed panel with the group it was closed from.
+// A tab hidden from the editor and shown in the dashboard with its status color.
 export type ClosedTabEntry = {
   id: string;
   groupId: string;

@@ -2,7 +2,6 @@
 
 import {
   Bookmark,
-  Closed,
   Dashboard,
   GlobalSearch,
   Group,
@@ -25,17 +24,14 @@ export function Panel({
   activeGroupId,
   groupMenuOpen,
   closedTabs,
-  closedSearchQuery,
   globalSearchQuery,
   onClose,
   onCloseGroupMenu,
-  onClosedSearchQueryChange,
   onGlobalSearchQueryChange,
   onOpenBookmark,
   onRemoveBookmark,
   onOpenDashboardTab,
   onChangeTabStatus,
-  onUnpinTab,
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
@@ -46,9 +42,7 @@ export function Panel({
   onRenameGroup,
   onToggleGroupPin,
   onRestoreClosedTab,
-  onRemoveClosedTab,
   onOpenSearchedBookmark,
-  onOpenClosedSearch,
 }: PanelProps) {
   const dashboardClosedTabs = getClosedTabItems(closedTabs, groups)
     .filter(
@@ -81,7 +75,6 @@ export function Panel({
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
-        onUnpinTab={onUnpinTab}
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
@@ -99,21 +92,8 @@ export function Panel({
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
       />
-      <Closed
-        closedTabs={closedTabs}
-        groups={groups}
-        searchQuery={closedSearchQuery}
-        open={openPanel === "closed"}
-        pinned={pinned}
-        onTogglePin={onTogglePin}
-        onClose={onClose}
-        onSearchQueryChange={onClosedSearchQueryChange}
-        onRestore={onRestoreClosedTab}
-        onRemove={onRemoveClosedTab}
-      />
       <GlobalSearch
         groups={groups}
-        closedTabs={closedTabs}
         searchQuery={globalSearchQuery}
         onSearchQueryChange={onGlobalSearchQueryChange}
         open={openPanel === "global-search"}
@@ -122,7 +102,6 @@ export function Panel({
         onClose={onClose}
         onSelectGroup={onSelectGroup}
         onOpenBookmark={onOpenSearchedBookmark}
-        onOpenClosedSearch={onOpenClosedSearch}
       />
       <Shortcut
         open={openPanel === "shortcuts"}

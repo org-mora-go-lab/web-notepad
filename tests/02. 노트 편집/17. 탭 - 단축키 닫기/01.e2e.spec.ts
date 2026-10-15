@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { addTabButton, deleteTabPopup } from "../../__util__";
+import { addTabButton } from "../../__util__";
 
 test("1. Alt/Option+Backspace는 빈 활성 탭을 확인 없이 닫는다", async ({ page }) => {
   await page.goto("/");
@@ -10,7 +10,7 @@ test("1. Alt/Option+Backspace는 빈 활성 탭을 확인 없이 닫는다", asy
   await addTabButton(page).click();
 
   await page.keyboard.press("Alt+Backspace");
-  await expect(deleteTabPopup(page)).toHaveCount(0);
+  await expect(page.getByRole("alertdialog")).toHaveCount(0);
   await expect(tabs).toHaveCount(1);
   await expect(editor).toHaveValue("Keep the first note");
 });

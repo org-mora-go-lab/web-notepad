@@ -8,7 +8,6 @@ test("2. MENU의 SEARCH 항목은 PC와 모바일 모두 다른 MENU 항목과 �
   await seedStoredStateOnLoad(page, createGlobalSearchState());
   const menu = page.getByRole("button", { name: "MENU", exact: true });
   const command = page.locator(".additional-tools-search");
-  const closed = page.locator(".additional-tools-menu .closed-command");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await menu.click();
@@ -17,9 +16,7 @@ test("2. MENU의 SEARCH 항목은 PC와 모바일 모두 다른 MENU 항목과 �
     const labelBounds = (await command.locator("span").boundingBox())!;
     expect(iconBounds.x + iconBounds.width).toBeLessThanOrEqual(labelBounds.x);
     expect(iconBounds.y + iconBounds.height / 2).toBeCloseTo(labelBounds.y + labelBounds.height / 2, 0);
-    // Same row layout as CLOSED above it.
-    const closedIcon = (await closed.locator("svg").first().boundingBox())!;
-    expect(iconBounds.x).toBeCloseTo(closedIcon.x, 0);
+    expect(iconBounds.x).toBeLessThan(labelBounds.x);
     await page.keyboard.press("Escape");
   }
 });

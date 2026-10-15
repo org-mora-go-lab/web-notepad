@@ -6,7 +6,7 @@ test("5. 닫힌 패널 컨트롤은 Tab 순서와 접근성 탐색에서 제외�
   await page.goto("/");
 
   const panels = page.locator(".side-panel-drawer");
-  await expect(panels).toHaveCount(6);
+  await expect(panels).toHaveCount(5);
   expect(
     await panels.evaluateAll((elements) =>
       elements.every(

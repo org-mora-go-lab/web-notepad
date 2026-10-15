@@ -35,7 +35,6 @@ export const createClosedTabActions: StateCreator<
     const tab = {
       ...entry.tab,
       id: tabId,
-      restoredContent: entry.tab.content,
       bookmarked: target.bookmarks.some(
         (bookmark) => bookmark.sourceTabId === tabId,
       ),
@@ -53,7 +52,7 @@ export const createClosedTabActions: StateCreator<
       closedTabs: state.closedTabs.filter((item) => item.id !== entryId),
     });
   },
-  // Dragging a closed card out of the dashboard Closed column restores it with the target column color.
+  // Moving a closed card changes its status while keeping it closed.
   moveClosedTabToStatus: (entryId, status) => {
     const tabColor = getStatusColor(status, get().settings.tabColorCycle);
     set((state) => ({
@@ -63,7 +62,6 @@ export const createClosedTabActions: StateCreator<
           : item,
       ),
     }));
-    get().restoreClosedTab(entryId);
   },
   removeClosedTab: (entryId) =>
     set((state) => ({

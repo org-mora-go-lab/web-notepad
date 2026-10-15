@@ -2,7 +2,6 @@
 
 import {
   BookOpen,
-  Ghost,
   Keyboard,
   Menu,
   Search,
@@ -16,8 +15,6 @@ import { useI18n } from "@/src/5-shared/hook";
 import type { AdditionalToolsProps } from "../type";
 
 export function AdditionalTools({
-  closedCount,
-  onOpenClosed,
   onOpenSettings,
   onOpenShortcuts,
   onOpenSearch,
@@ -147,23 +144,6 @@ export function AdditionalTools({
         >
           <BookOpen size={16} />
           <span>{t.guide}</span>
-        </button>
-        <button
-          className="closed-command"
-          type="button"
-          role="menuitem"
-          aria-controls="closed-panel"
-          aria-label={t.closed}
-          onClick={() => {
-            close();
-            onOpenClosed();
-          }}
-        >
-          <Ghost size={16} />
-          <span>{t.closed}</span>
-          {closedCount > 0 && (
-            <span className="closed-count">{closedCount}</span>
-          )}
         </button>
         <button
           className="additional-tools-search global-search-command"

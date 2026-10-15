@@ -7,7 +7,7 @@ import { panelPinButton } from "../__util__";
 test("1. PC 우측 패널 헤더의 닫기 버튼 왼쪽에 고정 버튼을 표시하고 모바일에서는 숨긴다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
-  for (const panelId of ["bookmarks-panel", "dashboard-panel", "global-search-panel", "closed-panel", "shortcuts-panel"]) {
+  for (const panelId of ["bookmarks-panel", "dashboard-panel", "global-search-panel", "shortcuts-panel"]) {
     await openPanel(page, panelId);
     await expect(page.locator(`#${panelId}`)).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
     const pin = panelPinButton(page, panelId);

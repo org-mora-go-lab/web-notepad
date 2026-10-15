@@ -7,8 +7,6 @@ export type PaneViewProps = {
   pane: PaneId;
   heightRatio?: number;
   hasMenu: boolean;
-  closedCount?: number;
-  onOpenClosed?: () => void;
   onOpenSettings?: () => void;
   onOpenShortcuts?: () => void;
   onOpenSearch?: () => void;

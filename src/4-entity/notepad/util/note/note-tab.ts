@@ -71,10 +71,6 @@ export const getTitleFromContent = (content: unknown, fallback: string) => {
   return firstLine ? truncateGraphemes(firstLine, 28) : fallback;
 };
 
-// Tabs with more than 10 characters ask before closing and are kept in Closed; shorter ones are deleted outright.
-export const isSubstantialContent = (content: string) =>
-  Array.from(content).length > 10;
-
 // Todo / WIP / Done follow the position of the tab color in the cycle; colors outside it count as Todo.
 export const getTabStatus = (
   tab: NoteTab,

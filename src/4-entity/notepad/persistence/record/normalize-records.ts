@@ -22,10 +22,6 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
         tabColor,
         pinned: tab.pinned === true,
         bookmarked: tab.bookmarked === true,
-        restoredContent:
-          typeof tab.restoredContent === "string"
-            ? tab.restoredContent
-            : undefined,
       };
     });
 
