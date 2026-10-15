@@ -104,7 +104,7 @@ export function AdditionalTools({
           }
         }}
       >
-        <Theme key={String(open)} onSelect={close} />
+        <Theme />
         <button
           className="additional-tools-shortcut"
           type="button"

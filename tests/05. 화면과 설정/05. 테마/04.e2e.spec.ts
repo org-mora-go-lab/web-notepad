@@ -5,7 +5,7 @@ test("4. 테마를 노트와 별도로 저장하고 새로고침·재접속 시 
   await page.locator("textarea").fill("Keep this note");
   await page.getByRole("button", { name: "MENU", exact: true }).click();
   await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-  await page.getByRole("radio", { name: "LIGHT" }).click();
+  await page.getByRole("switch", { name: "THEME" }).click();
   expect(await page.evaluate(() => localStorage.getItem("web-notepad-theme"))).toBe("light");
 
   await page.reload();

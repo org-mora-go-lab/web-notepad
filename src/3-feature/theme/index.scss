@@ -27,47 +27,57 @@
     }
   }
 
-  .theme-options {
-    display: flex;
-    gap: 3px;
-    padding-right: 8px;
-  }
-
-  .theme-option {
+  .theme-toggle {
     position: relative;
+    display: block;
+    padding-right: 8px;
     cursor: pointer;
 
     input {
       position: absolute;
       inset: 0;
       z-index: 1;
-      width: 100%;
+      width: calc(100% - 8px);
       height: 100%;
       margin: 0;
       opacity: 0;
       cursor: pointer;
     }
 
-    span {
-      width: 24px;
+    .theme-toggle-track {
+      position: relative;
+      width: 44px;
       height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: block;
       border: 1px solid v.$line;
-      border-radius: 50%;
-      color: v.$muted;
-      font-size: v.font(11px);
-    }
-
-    &:hover span,
-    input:checked + span {
-      border-color: v.$hover-line;
       background: v.$raised;
-      color: v.$ink;
+      border-radius: 999px;
+      transition: border-color 140ms ease, background 140ms ease;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: v.$muted;
+        transition: transform 140ms ease, background 140ms ease;
+      }
     }
 
-    input:focus-visible + span {
+    &:hover .theme-toggle-track,
+    input:checked + .theme-toggle-track {
+      border-color: v.$hover-line;
+    }
+
+    input:checked + .theme-toggle-track::after {
+      transform: translateX(20px);
+      background: v.$ink;
+    }
+
+    input:focus-visible + .theme-toggle-track {
       outline: 1px solid var(--color-focus);
       outline-offset: 1px;
     }
@@ -85,10 +95,20 @@
       }
     }
 
-    .theme-option span {
-      width: 24px * v.$mobile-scale;
+    .theme-toggle-track {
+      width: 44px * v.$mobile-scale;
       height: 24px * v.$mobile-scale;
-      font-size: v.font(11px * v.$mobile-scale);
+
+      &::after {
+        top: 3px * v.$mobile-scale;
+        left: 3px * v.$mobile-scale;
+        width: 16px * v.$mobile-scale;
+        height: 16px * v.$mobile-scale;
+      }
+    }
+
+    .theme-toggle input:checked + .theme-toggle-track::after {
+      transform: translateX(20px * v.$mobile-scale);
     }
   }
 }
