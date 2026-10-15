@@ -100,7 +100,7 @@ export function DashboardCard({
               role="img"
               aria-label={t.bookmarked}
             >
-              <Bookmark size={14} fill="currentColor" strokeWidth={1.8} />
+              <Bookmark size={14} strokeWidth={1.8} />
             </span>
           )}
         </span>
