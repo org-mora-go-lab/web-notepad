@@ -1,16 +1,23 @@
 import { expect, test } from "@playwright/test";
 
-import { addTabButton } from "../../__util__";
-import { dragTabToZone, paneSlot } from "../__util__";
+import { seedSplitState } from "../__util__";
 
-test("3. 탭을 Split right 영역에 드롭해 좌우 분할 화면을 만든다", async ({ page }) => {
-  await page.goto("/");
-  await page.locator("textarea").fill("first");
-  await addTabButton(page).click();
-  await page.locator("textarea").fill("second");
+test("3. 각 패널은 자체 탭 목록과 활성 탭을 가진다", async ({ page }) => {
+  await seedSplitState(page);
+  const leftPane = page.locator(".pane-slot").nth(0);
+  const rightPane = page.locator(".pane-slot").nth(1);
+  await expect(leftPane.locator(".tab-title")).toHaveText([/^left$/i]);
+  await expect(rightPane.locator(".tab-title")).toHaveText([/^right$/i]);
 
-  const tab = page.locator(".tab-item").filter({ hasText: /^first$/ });
-  await dragTabToZone(page, tab, paneSlot(page, "left"), "Split right");
-  await expect(page.locator(".pane-slot")).toHaveCount(2);
-  await expect(paneSlot(page, "right").locator("textarea")).toHaveValue("first");
+  await rightPane.getByRole("button", { name: "New tab" }).click();
+  await rightPane.locator("textarea").fill("right two");
+  await expect(rightPane.locator(".tab-title")).toHaveText([/^right$/i, "right two"]);
+  await expect(leftPane.locator(".tab-title")).toHaveText([/^left$/i]);
+  await expect(leftPane.locator("textarea")).toHaveValue("left");
+
+  await rightPane.locator('[role="tab"]').first().click();
+  await expect(rightPane.locator("textarea")).toHaveValue("right");
+  await expect(rightPane.locator(".tab-item.is-active .tab-title")).toHaveText(/^right$/i);
+  await expect(leftPane.locator(".tab-item.is-active .tab-title")).toHaveText(/^left$/i);
+  await expect(leftPane.locator("textarea")).toHaveValue("left");
 });

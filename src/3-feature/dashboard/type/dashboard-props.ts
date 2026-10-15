@@ -12,7 +12,7 @@ export type DashboardProps = {
   // Closed tabs of the shown group(s); they fill the Done column.
   closedTabs: ClosedTabEntry[];
   groups: GroupEntry[];
-  // All Group: cards show the group they belong to.
+  // All: cards show the group they belong to.
   showGroupNames: boolean;
   tabColorCycle: TabColor[];
   open: boolean;

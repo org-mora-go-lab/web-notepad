@@ -33,7 +33,7 @@ $extra-tab-colors: (
 
 // PC panel width: reserve at least 20% of the viewport for the workspace.
 $side-panel-width: clamp(
-  320px,
+  336px,
   var(--side-panel-width, 462px),
   80vw
 );

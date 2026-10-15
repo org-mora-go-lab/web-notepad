@@ -1,53 +1,35 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
-import { BOTH_VIEWPORTS, DESKTOP_VIEWPORT } from "../../__constant__";
-import {
-  bookmarkActiveTab,
-  bookmarksCommand,
-  createGroups,
-  openShortcutsPanel,
-  readStoredState,
-} from "../../__util__";
+import { MOBILE_VIEWPORT } from "../../__constant__";
+import { bookmarksCommand, groupsCommand } from "../../__util__";
 
-test("6. PC와 모바일에서 Escape로 우측 패널을 닫고 메모·그룹·북마크 데이터를 유지한다", async ({ page }) => {
+async function expectIconCentered(button: Locator) {
+  const buttonBox = (await button.boundingBox())!;
+  const iconBox = (await button.locator(":scope > svg:only-child").boundingBox())!;
+
+  expect(iconBox.x + iconBox.width / 2).toBeCloseTo(
+    buttonBox.x + buttonBox.width / 2,
+    1,
+  );
+  expect(iconBox.y + iconBox.height / 2).toBeCloseTo(
+    buttonBox.y + buttonBox.height / 2,
+    1,
+  );
+}
+
+test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중앙에 배치한다", async ({ page }) => {
+  await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
-  const note = "Preserve this note";
-  await createGroups(page, "Work");
-  await bookmarkActiveTab(page, note);
-  const editor = page.locator("textarea");
-  const bookmarksPanel = page.locator("#bookmarks-panel");
-  const bookmarkSearch = bookmarksPanel.getByPlaceholder("Search bookmarks");
-  const shortcutsPanel = page.locator("#shortcuts-panel");
 
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
+  await bookmarksCommand(page).click();
+  await expectIconCentered(page.locator("#bookmarks-panel .side-panel-close"));
+  await page.locator("#bookmarks-panel .side-panel-close").click();
 
-    await bookmarksCommand(page).click();
-    await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "false");
-    await bookmarkSearch.fill("Preserve");
-    await expect(bookmarkSearch).toBeFocused();
-    await page.keyboard.press("Escape");
-    await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "true");
-    await expect(editor).toHaveValue(note);
-
-    if (viewport === DESKTOP_VIEWPORT) {
-      await openShortcutsPanel(page);
-      await expect(shortcutsPanel).toHaveAttribute("aria-hidden", "false");
-      await page.keyboard.press("Escape");
-      await expect(shortcutsPanel).toHaveAttribute("aria-hidden", "true");
-      await expect(editor).toHaveValue(note);
-    }
-  }
-
-  const { groups } = await readStoredState(page);
-  const work = groups.find((group) => group.name === "Work")!;
-  expect({
-    groups: groups.map((group) => group.name),
-    content: work.tabs[0].content,
-    bookmarks: work.bookmarks.map((bookmark) => bookmark.content),
-  }).toEqual({
-    groups: ["Ungrouped", "Work"],
-    content: note,
-    bookmarks: [note],
-  });
+  await groupsCommand(page).click();
+  const createInput = page.getByRole("textbox", { name: "New group name" });
+  await createInput.fill("Work");
+  await expectIconCentered(page.getByRole("button", { name: "Create group" }));
+  await page.getByRole("button", { name: "Create group" }).click();
+  await page.getByRole("button", { name: "Work group actions" }).click();
+  await expectIconCentered(page.getByRole("button", { name: "Delete Work group" }));
 });

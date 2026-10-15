@@ -2,14 +2,33 @@ import { expect, test } from "@playwright/test";
 
 import { bookmarksCommand } from "../../__util__";
 
-test("2. Search bookmarks창은 헤더 아래에 표시하며 위쪽 여백 14px, 아래쪽 여백 6px를 적용한다", async ({ page }) => {
+test("2. 검색어 지우기 아이콘을 패널 닫기 버튼과 같은 옅은 회색으로 표시한다", async ({ page }) => {
   await page.goto("/");
   await bookmarksCommand(page).click();
+
   const search = page.getByRole("searchbox", { name: "Search bookmarks" });
-  await expect(search).toBeVisible();
-  const margins = await search.evaluate((element) => {
-    const style = getComputedStyle(element.closest("label")!);
-    return [style.marginTop, style.marginBottom];
-  });
-  expect(margins).toEqual(["14px", "6px"]);
+  await search.fill("검색어");
+
+  await expect
+    .poll(() =>
+      search.evaluate(() => {
+        const rules = Array.from(document.styleSheets).flatMap((sheet) => {
+          try {
+            return Array.from(sheet.cssRules);
+          } catch {
+            return [];
+          }
+        });
+        const cancelButtonRule = rules.find(
+          (rule) =>
+            rule instanceof CSSStyleRule &&
+            rule.selectorText.includes("::-webkit-search-cancel-button"),
+        );
+
+        return cancelButtonRule instanceof CSSStyleRule
+          ? cancelButtonRule.style.filter
+          : "";
+      }),
+    )
+    .toBe("brightness(0.4)");
 });

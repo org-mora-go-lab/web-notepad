@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { bookmarksCommand } from "../../__util__";
 
-test("1. 모바일 하단 패널 명령 아이콘은 28.8px, 현재 그룹 이름은 17px로 표시한다", async ({ page }) => {
+test("1. 모바일 편집기는 19px·39px 줄 높이, 라인 번호는 12px 글자를 유지한다", async ({ page }) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
 
-  await expect(bookmarksCommand(page).locator(".status-label")).toBeVisible();
-  await expect(bookmarksCommand(page).locator("svg")).toHaveCSS("width", /^28\.(8|79)/);
-  await expect(page.locator(".group-select-name")).toHaveCSS("font-size", "17px");
+  const editor = page.locator(".note-area");
+  await expect(editor).toHaveCSS("font-size", "19px");
+  await expect(editor).toHaveCSS("line-height", "39px");
+  await expect(page.locator(".line-rail")).toHaveCSS("font-size", "12px");
 });

@@ -121,6 +121,11 @@ export const ko: Messages = {
   shuffleTabColors: "탭 색상 무작위 선택",
   resetSettingsMessage:
     "모든 설정이 기본값으로 돌아갑니다. 초기화하시겠습니까?",
+  dataManagement: "데이터",
+  deleteAllData: "전체 데이터 삭제",
+  deleteAllDataMessage:
+    "모든 메모, 그룹, 북마크, 닫은 탭과 설정이 영구적으로 삭제됩니다. 정말 삭제하시겠습니까?",
+  deleteAll: "전체 삭제",
   guide: "사용 가이드",
   userGuideTitle: "사용 가이드",
   previous: "이전",

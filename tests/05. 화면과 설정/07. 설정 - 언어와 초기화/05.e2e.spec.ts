@@ -1,41 +1,37 @@
 import { expect, test } from "@playwright/test";
 
-import { STORAGE_KEY } from "../../__constant__";
-import { openSettingsPanel } from "../../__util__";
-import { settingsPanel } from "../__util__";
+import { bookmarksCommand, openSettingsPanel } from "../../__util__";
+import { languageRadio, settingsPanel } from "../__util__";
 
-const TAB_COLORS = ["gray", "red", "orange", "yellow", "green", "teal", "indigo", "purple", "pink"];
-
-test("5. 색상 초기화 버튼 오른쪽의 셔플 버튼은 팝업 없이 서로 다른 3가지 색상을 무작위로 골라 순서를 바꾼다", async ({ page }) => {
+test("5. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문구에 즉시 적용한다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
   const panel = settingsPanel(page);
-  await expect(panel).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
-  const reset = panel.getByRole("button", { name: "Reset tab colors", exact: true });
-  const shuffle = panel.getByRole("button", { name: "Shuffle tab colors", exact: true });
-  const resetBounds = (await reset.boundingBox())!;
-  const shuffleBounds = (await shuffle.boundingBox())!;
-  expect(shuffleBounds.x).toBeGreaterThanOrEqual(resetBounds.x + resetBounds.width);
-  expect(shuffleBounds.y).toBeCloseTo(resetBounds.y, 0);
+  const headings = panel.locator(".setting-section h3");
 
-  const readSettings = () =>
-    page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY);
+  await languageRadio(page, "한국어").check();
+  await expect(panel.locator("h2")).toHaveText("설정");
+  await expect(headings).toHaveText([
+    "전체 폰트 크기",
+    "탭 색상",
+    "언어",
+    "패널 슬라이드 효과",
+    "패널 위치",
+    "데이터",
+  ]);
+  await expect(panel.locator(".setting-hint")).toContainText("새 탭은 첫 번째 색상으로 시작합니다.그레이 → 그린 → 퍼플");
+  await expect(bookmarksCommand(page).locator(".status-label")).toHaveText("북마크");
+  await expect(page.locator(".global-search-command")).toContainText("검색");
+  await expect(page.locator(".note-area")).toHaveAttribute("placeholder", "메모를 입력하세요..");
 
-  let previous: string[] = ["gray", "green", "purple"];
-  for (let round = 0; round < 5; round += 1) {
-    await shuffle.click();
-    await expect(page.getByRole("alertdialog")).toHaveCount(0);
-    await expect.poll(async () => (await readSettings()).tabColorCycle).not.toEqual(previous);
-    const settings = await readSettings();
-    const cycle: string[] = settings.tabColorCycle;
-    expect(cycle).toHaveLength(3);
-    expect(new Set(cycle).size).toBe(3);
-    for (const color of cycle) expect(TAB_COLORS).toContain(color);
-    for (const [index, color] of cycle.entries()) {
-      await expect(
-        panel.getByRole("radiogroup", { name: `Tab color ${index + 1}` }).locator(`[data-tab-color="${color}"]`),
-      ).toBeChecked();
-    }
-    previous = cycle;
-  }
+  await page.getByRole("button", { name: "설정 닫기" }).click();
+  await page.getByRole("button", { name: "메뉴", exact: true }).click();
+  await expect(page.getByRole("menuitem", { name: "설정" })).toContainText("설정");
+  await expect(page.getByRole("menuitem", { name: "닫은 탭" })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+
+  await openSettingsPanel(page);
+  await languageRadio(page, "English").check();
+  await expect(panel.locator("h2")).toHaveText("Settings");
+  await expect(bookmarksCommand(page).locator(".status-label")).toHaveText("BOOKMARK");
 });

@@ -1,24 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../../__constant__";
-import { openPanel, openSettingsPanel } from "../../__util__";
+import { openPanel } from "../../__util__";
 import { dragPanelEdgeTo } from "../__util__";
 
-test("5. 좌측에 배치한 미고정 패널의 크기를 조절할 수 있다", async ({ page }) => {
-  await page.setViewportSize(DESKTOP_VIEWPORT);
+test("5. 화면 크기가 바뀌면 저장된 패널 너비를 현재 화면 너비의 80% 이하로 제한한다", async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: DESKTOP_VIEWPORT.height });
   await page.goto("/");
-  await openSettingsPanel(page);
-  await page
-    .locator("#settings-panel")
-    .getByRole("radio", { name: "Left", exact: true })
-    .check();
-  await page.locator("#settings-panel .side-panel-close").click();
   await openPanel(page, "bookmarks-panel");
   const panel = page.locator("#bookmarks-panel");
+  const width = async () => (await panel.boundingBox())!.width;
+  await dragPanelEdgeTo(page, "bookmarks-panel", 0);
+  await expect.poll(width).toBeCloseTo(1920 * 0.8, 0);
 
-  await dragPanelEdgeTo(page, "bookmarks-panel", 520);
-
-  await expect
-    .poll(async () => (await panel.boundingBox())!.width)
-    .toBeCloseTo(520, 1);
+  await page.setViewportSize({ width: 641, height: DESKTOP_VIEWPORT.height });
+  await expect.poll(width).toBeCloseTo(641 * 0.8, 1);
 });

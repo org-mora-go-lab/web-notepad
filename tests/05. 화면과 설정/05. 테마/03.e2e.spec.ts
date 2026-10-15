@@ -1,35 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-import { BOTH_VIEWPORTS } from "../../__constant__";
-
-test("3. LIGHT의 그레이·그린 탭은 일반 10%·활성 22% 배경으로 표시한다", async ({ page }) => {
+test("3. 테마를 노트와 별도로 저장하고 새로고침·재접속 시 복원한다", async ({ page, context }) => {
   await page.goto("/");
+  await page.locator("textarea").fill("Keep this note");
+  await page.getByRole("button", { name: "MENU", exact: true }).click();
+  await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
+  await page.getByRole("switch", { name: "THEME" }).click();
+  expect(await page.evaluate(() => localStorage.getItem("web-notepad-theme"))).toBe("light");
 
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    await page.getByRole("button", { name: "MENU", exact: true }).click();
-    await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-    const toggle = page.getByRole("switch", { name: "THEME" });
-    if (!await toggle.isChecked()) await toggle.click();
-    await page.keyboard.press("Escape");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("textarea")).toHaveValue("Keep this note");
 
-    const activeTab = page.locator(".tab-item.is-active");
-    const colorIcon = activeTab.locator(".dirty-dot");
-    const inactiveBackground = () => activeTab.evaluate((element) => {
-      const probe = document.createElement("span");
-      probe.style.backgroundColor = "var(--tab-background)";
-      element.appendChild(probe);
-      const color = getComputedStyle(probe).backgroundColor;
-      probe.remove();
-      return color;
-    });
-
-    await expect(activeTab).toHaveCSS("background-color", "rgba(104, 119, 110, 0.22)");
-    await expect.poll(inactiveBackground).toMatch(/^rgba\(104, 119, 110, 0\.1(?:02)?\)$/);
-    await colorIcon.click();
-    await expect(activeTab).toHaveCSS("background-color", "rgba(37, 131, 86, 0.22)");
-    await expect.poll(inactiveBackground).toMatch(/^rgba\(37, 131, 86, 0\.1(?:02)?\)$/);
-    await colorIcon.click();
-    await colorIcon.click();
-  }
+  const reopened = await context.newPage();
+  await reopened.goto("/");
+  await expect(reopened.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(reopened.locator("textarea")).toHaveValue("Keep this note");
+  await reopened.close();
 });

@@ -7,7 +7,7 @@ export const dashboardPanel = (page: Page) => page.locator("#dashboard-panel");
 export const dashboardColumn = (page: Page, status: "todo" | "in-progress" | "done") =>
   dashboardPanel(page).locator(`.dashboard-column[data-status="${status}"]`);
 
-// Seeds the Ungrouped group with tab-1..tab-3 in Todo (gray) / WIP (green) / Done (purple) and a Work group with one tab.
+// Seeds the Ungrouped group with tab-1..tab-3 in Todo (gray) / Doing (green) / Done (purple) and a Work group with one tab.
 export async function seedDashboardTabs(page: Page) {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",

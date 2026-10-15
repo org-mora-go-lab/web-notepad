@@ -4,6 +4,7 @@
   box-sizing: border-box;
   scrollbar-color: v.$dim v.$panel;
   scrollbar-width: thin;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar {
@@ -63,8 +64,14 @@ button {
   color: inherit;
 }
 
-button,
-[role="button"],
-[role="tab"] {
-  -webkit-tap-highlight-color: transparent;
+// Keep icon-only controls optically centered across browsers, including iOS Safari.
+button:has(> svg:only-child) {
+  display: grid;
+  place-items: center;
+  line-height: 0;
+
+  > svg {
+    display: block;
+    margin: auto;
+  }
 }

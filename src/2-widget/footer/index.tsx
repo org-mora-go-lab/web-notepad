@@ -21,6 +21,11 @@ export function Footer({
   const { t } = useI18n();
   return (
     <footer className="footer">
+      <div className="current-group-panel" title={activeGroupName}>
+        <span className="current-group-name" title={activeGroupName}>
+          {activeGroupName}
+        </span>
+      </div>
       <div className="status-meta">
         <div className="status-controls">
           <div className="status-scroll-area">
@@ -91,6 +96,7 @@ export function Footer({
             >
               {activeGroupName}
             </span>
+            <span className="status-label group-command-label">{t.group}</span>
           </button>
         </div>
       </div>

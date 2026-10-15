@@ -1,13 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import { createGroup, groupsCommand, readStoredState } from "../../__util__";
+import { groupsCommand, readStoredState } from "../../__util__";
 
-test("2. 새 그룹 이름의 앞뒤 공백을 제거해 저장한다", async ({ page }) => {
+test("2. 새 그룹 이름은 최대 60자로 입력하고 저장한다", async ({ page }) => {
   await page.goto("/");
   await groupsCommand(page).click();
-  await createGroup(page, "  Work  ");
+  const input = page.getByRole("textbox", { name: "New group name" });
+  await expect(input).toHaveAttribute("maxlength", "60");
+  await input.fill("A".repeat(70));
+  await expect(input).toHaveValue("A".repeat(60));
+  await page.getByRole("button", { name: "Create group" }).click();
 
-  const names = (await readStoredState(page)).groups.map((group) => group.name);
-  expect(names).toContain("Work");
-  expect(names).not.toContain("  Work  ");
+  expect((await readStoredState(page)).groups.map((group) => group.name)).toContain("A".repeat(60));
 });

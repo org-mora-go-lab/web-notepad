@@ -1,22 +1,31 @@
 import { expect, test } from "@playwright/test";
 
-import { expectSelectedLines, readStoredState, seedStoredStateOnLoad } from "../../__util__";
+import { createTabFixture } from "../../__fixture__";
+import { readStoredState, seedStoredStateOnLoad } from "../../__util__";
 
-test("6. 저장된 선택 줄의 중복·범위 초과·잘못된 인덱스를 제거하고 정렬해 복원한다", async ({ page }) => {
+test("6. non-boolean pinned·bookmarked 값을 false로 복원한다", async ({ page }) => {
   await seedStoredStateOnLoad(page, {
     activeGroupId: "ungrouped",
     groups: [{
       id: "ungrouped",
       name: "Ungrouped",
       activeTabId: "tab-1",
-      tabs: [{
-        id: "tab-1",
-        content: "one\ntwo\nthree",
-        selectedLines: [2, 1, 1, -1, 3, 0.5, "0", null],
-      }],
+      tabs: [
+        { ...createTabFixture("tab-1", "invalid string"), pinned: "false", bookmarked: "yes" },
+        { ...createTabFixture("tab-2", "invalid number"), pinned: 1, bookmarked: 1 },
+      ],
     }],
   });
-  await expectSelectedLines(page, [false, true, true]);
-  await page.locator('[role="tab"]').click();
-  expect((await readStoredState(page)).groups[0].tabs[0].selectedLines).toEqual([1, 2]);
+
+  const tabs = page.locator(".tab-item");
+  for (const tab of await tabs.all()) {
+    await expect(tab).not.toHaveClass(/is-pinned/);
+    await expect(tab).not.toHaveClass(/is-bookmarked/);
+  }
+  await tabs.nth(1).getByRole("tab").click();
+  const restoredTabs = (await readStoredState(page)).groups[0].tabs;
+  expect(restoredTabs.map(({ pinned, bookmarked }) => ({ pinned, bookmarked }))).toEqual([
+    { pinned: false, bookmarked: false },
+    { pinned: false, bookmarked: false },
+  ]);
 });

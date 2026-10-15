@@ -1,14 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel } from "../../__util__";
-import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../__util__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { openPanel, readStoredState, writeStoredState } from "../../__util__";
+import { dashboardColumn } from "../__util__";
 
-test("3. PC에서 드래그로 바꾼 대시보드 상태를 새로고침 후 복원한다", async ({ page }) => {
-  await seedDashboardTabs(page);
+test("3. 짧은 일반 탭을 Done으로 옮겨도 편집기에 열린 상태를 유지한다", async ({ page }) => {
+  const tab = createTabFixture("tab-short", "short", { tabColor: "gray" });
+  await writeStoredState(page, { groups: [createGroupFixture("ungrouped", "Ungrouped", [tab])], activeGroupId: "ungrouped" });
   await openPanel(page, "dashboard-panel");
-  const card = () => dashboardPanel(page).locator(".dashboard-card").filter({ hasText: "Alpha task" });
-  await card().dragTo(dashboardColumn(page, "in-progress"));
-  await page.reload();
-  await expect(dashboardColumn(page, "in-progress")).toContainText("Alpha task");
-  await expect(card()).toHaveAttribute("data-tab-color", "green");
+  await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "done"));
+
+  await expect(page.getByRole("alertdialog")).toHaveCount(0);
+  expect((await readStoredState(page)).closedTabs).toEqual([]);
+  await expect(page.locator(".tab-item", { hasText: "short" })).toHaveCount(1);
 });

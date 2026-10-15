@@ -15,7 +15,7 @@ export const seedArchivedColorCycle = (page: Page) => {
       tabColor: "red",
       bookmarked: true,
     }),
-    createTabFixture("tab-wip", "WIP cycle note", { tabColor: "yellow" }),
+    createTabFixture("tab-wip", "Doing cycle note", { tabColor: "yellow" }),
     createTabFixture("tab-done", "Done cycle note", { tabColor: "teal" }),
   ];
   return seedStoredStateOnLoad(page, {

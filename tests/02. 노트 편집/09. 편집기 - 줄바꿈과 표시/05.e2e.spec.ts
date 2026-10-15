@@ -1,28 +1,38 @@
 import { expect, test } from "@playwright/test";
 
-import { MOBILE_VIEWPORT } from "../../__constant__";
-import { expectSelectedLines, lineButtons } from "../../__util__";
+import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
+import { expectSelectedLines, lineButtons, readActiveGroup } from "../../__util__";
 import { WRAPPED_NOTE as content } from "./__constant__";
 import { countWrappedLines } from "./__util__";
 
-test("5. 자동 줄바꿈된 번호를 선택하면 원본 줄의 모든 표시 줄을 강조한다", async ({ page }) => {
+test("5. 반응형 재줄바꿈 후에도 개행 기준 선택과 원본 줄 강조를 유지한다", async ({ page }) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
   const editor = page.locator("textarea").first();
   const lines = lineButtons(page);
   await editor.fill(content);
   await expect.poll(() => lines.count()).toBe(await countWrappedLines(editor));
-  const firstSourceLineCount = (await lines.count()) - 2;
-  expect(firstSourceLineCount).toBeGreaterThan(1);
-
+  const mobileCount = await lines.count();
+  const selectedMobileLines = mobileCount - 2;
   await lines.first().click();
-  await expectSelectedLines(page, [
-    ...Array(firstSourceLineCount).fill(true),
-    false,
-  ]);
-  const expectedSize = await editor.evaluate((element, count) => {
-    const style = getComputedStyle(element);
-    return `100% ${count * Number.parseFloat(style.lineHeight) + Number.parseFloat(style.paddingTop)}px`;
-  }, firstSourceLineCount);
-  await expect(editor).toHaveCSS("background-size", expectedSize);
+  await expectSelectedLines(page, [...Array(selectedMobileLines).fill(true), false]);
+
+  const storedSelection = async () => {
+    const group = await readActiveGroup(page);
+    return group.tabs.find((tab) => tab.id === group.activeTabId)!.selectedLines;
+  };
+  await expect.poll(storedSelection).toHaveLength(1);
+  const selection = await storedSelection();
+
+  await page.setViewportSize(DESKTOP_VIEWPORT);
+  await expect.poll(() => lines.count()).toBe(await countWrappedLines(editor));
+  const desktopCount = await lines.count();
+  expect(desktopCount).toBeLessThan(mobileCount);
+  await expectSelectedLines(page, [...Array(desktopCount - 2).fill(true), false]);
+  expect(await storedSelection()).toEqual(selection);
+
+  await page.setViewportSize(MOBILE_VIEWPORT);
+  await expect(lines).toHaveCount(mobileCount);
+  await expectSelectedLines(page, [...Array(selectedMobileLines).fill(true), false]);
+  expect(await storedSelection()).toEqual(selection);
 });

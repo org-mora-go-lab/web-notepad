@@ -90,7 +90,7 @@ export type NotepadState = {
   groups: GroupEntry[];
   activeGroupId: string;
   closedTabs: ClosedTabEntry[];
-  // All Group keeps its view layout separate from the tabs' owning groups.
+  // All keeps its view layout separate from the tabs' owning groups.
   allGroupActiveTabId: string | null;
   allGroupLayout: PaneLayout | null;
   settings: NotepadSettings;

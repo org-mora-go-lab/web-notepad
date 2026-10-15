@@ -3,7 +3,7 @@ import type { StateCreator } from "zustand";
 import { UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
 import { getStatusColor, getTitleFromContent } from "../../util";
-import { allocateTab, updateGroup } from "../workspace";
+import { allocateTab, EMPTY_SPLIT_LAYOUT, updateGroup } from "../workspace";
 
 type ClosedTabActions = Pick<
   NotepadState,
@@ -43,11 +43,17 @@ export const createClosedTabActions: StateCreator<
         (bookmark) => bookmark.sourceTabId === tabId,
       ),
     };
+    const replacesBlankTab =
+      target.tabs.length === 1 &&
+      target.tabs[0].content.trim() === "" &&
+      !target.tabs[0].pinned &&
+      !target.tabs[0].bookmarked;
 
     set({
       ...updateGroup(state, target.id, (current) => ({
         ...current,
-        tabs: [...current.tabs, tab],
+        ...(replacesBlankTab ? EMPTY_SPLIT_LAYOUT : {}),
+        tabs: replacesBlankTab ? [tab] : [...current.tabs, tab],
         activeTabId: tabId,
         activePane: "left",
       })),

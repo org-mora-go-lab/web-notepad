@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 
-import { expectLowerTabSplitRight } from "./__util__";
+import { expectLowerTabSplitRightPersistence } from "./__util__";
 
-test("3. 일반 그룹에 오른쪽 열이 없으면 하단 탭을 새 우상단으로 이동한다", async ({ page }) => {
-  await expectLowerTabSplitRight(page, { allGroup: false, hasRightTop: false });
+test("3. 일반 그룹의 복합 우측 분할 배치를 새로고침 후 복원한다", async ({ page }) => {
+  await expectLowerTabSplitRightPersistence(page, false);
 });

@@ -1,14 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { chooseTabMenuItem, readStoredState } from "../../__util__";
+import { chooseTabMenuItem, cycleActiveTabColor, readStoredState } from "../../__util__";
 
-test("3. 탭 메뉴에서 기존 북마크를 해제한다", async ({ page }) => {
+test("3. 북마크를 추가하면 탭 색상을 보관한다", async ({ page }) => {
   await page.goto("/");
-  await page.locator("textarea").fill("bookmark title\nbookmark content");
+  await page.locator("textarea").fill("bookmark color");
+  await cycleActiveTabColor(page, 2);
   await chooseTabMenuItem(page, "Bookmark");
-  await chooseTabMenuItem(page, "Remove bookmark");
 
-  const group = (await readStoredState(page)).groups[0];
-  expect(group.bookmarks).toHaveLength(0);
-  expect(group.tabs[0].bookmarked).toBe(false);
+  expect((await readStoredState(page)).groups[0].bookmarks[0].tabColor).toBe("purple");
 });

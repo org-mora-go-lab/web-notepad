@@ -1,10 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-import { createPinnedAndBookmarkedTabs } from "../../__util__";
+import { addTabButton, readStoredState } from "../../__util__";
 
-test("4. 고정 탭은 가운데 클릭으로 닫히지 않는다", async ({ page }) => {
-  const { pinnedTab: tab } = await createPinnedAndBookmarkedTabs(page);
-  await tab.locator('[role="tab"]').click({ button: "middle" });
-  await expect(tab).toHaveClass(/is-pinned/);
-  await expect(page.locator(".tab-item")).toHaveCount(2);
+test("4. 북마크된 탭도 가운데 클릭으로 확인 없이 바로 닫는다", async ({ page }) => {
+  await page.goto("/");
+  const tabs = page.locator(".tab-item");
+  await page.locator("textarea").fill("bookmarked content");
+  await tabs.first().getByRole("tab").click({ button: "right" });
+  await page.getByRole("menuitem", { name: "Bookmark", exact: true }).click();
+  await addTabButton(page).click();
+
+  await tabs.first().getByRole("tab").click({ button: "middle" });
+  await expect(tabs).toHaveCount(1);
+  await expect(page.getByRole("alertdialog")).toHaveCount(0);
+  await expect.poll(async () => (await readStoredState(page)).closedTabs?.[0].tab.bookmarked).toBe(true);
 });

@@ -1,11 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-import { addTabButton } from "../../__util__";
+import { createPinnedAndBookmarkedTabs } from "../../__util__";
 
-test("2. 가운데 클릭으로 일반 탭을 닫을 수 있다", async ({ page }) => {
-  await page.goto("/");
-  const tabs = page.locator(".tab-item");
-  await addTabButton(page).click();
-  await tabs.nth(1).locator('[role="tab"]').click({ button: "middle" });
-  await expect(tabs).toHaveCount(1);
+test("2. 고정 탭에는 일반 닫기 버튼을 표시하지 않는다", async ({ page }) => {
+  const { pinnedTab: tab } = await createPinnedAndBookmarkedTabs(page);
+  await expect(tab).toHaveClass(/is-pinned/);
+  await expect(tab.locator(".tab-close")).toHaveCount(0);
 });

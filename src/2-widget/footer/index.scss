@@ -11,6 +11,11 @@
   color: v.$muted;
   font-size: v.font(14px);
 
+  .current-group-panel,
+  .group-command-label {
+    display: none;
+  }
+
   .status-meta {
     width: 100%;
     min-width: 0;
@@ -116,16 +121,37 @@
   }
 
   @media (max-width: 640px) {
-    min-height: 76.8px;
-    padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
+    min-height: calc(112.8px + env(safe-area-inset-bottom));
+    padding: 0;
+    display: grid;
+    grid-template-rows: 36px calc(76.8px + env(safe-area-inset-bottom));
+    align-items: stretch;
     font-size: v.font(12px);
 
-    .status-meta {
-      gap: 12px;
+    .current-group-panel {
+      min-width: 0;
+      padding: 0 21px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid v.$line;
+      font-size: v.font(17px);
     }
 
-    // Mobile: group icon + name on the left, BOOKMARK / DASHBOARD on the right.
+    .current-group-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-meta {
+      padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+    }
+
     .status-command {
+      width: 100%;
       height: 61.2px;
       gap: 8px;
 
@@ -141,7 +167,8 @@
       }
     }
 
-    // Mobile: SEARCH / BOOKMARK / DASHBOARD labels sit under their icons, spaced apart.
+    // Mobile footer commands use the same icon-over-label layout.
+    .group-select-command,
     .global-search-command,
     .bookmark-command,
     .dashboard-command {
@@ -157,18 +184,36 @@
       }
     }
 
-    .global-search-command,
-    .bookmark-command {
-      margin-right: 16px;
+    .global-search-command {
+      margin-left: 0;
     }
 
     .group-select-command {
-      flex: 0 1 auto;
+      grid-column: 1;
+    }
+
+    .global-search-command {
+      grid-column: 2;
+    }
+
+    .bookmark-command {
+      grid-column: 3;
+    }
+
+    .dashboard-command {
+      grid-column: 4;
     }
 
     .status-command > span.group-select-name {
-      max-width: none;
-      font-size: v.font(17px);
+      display: none;
+    }
+
+    .status-command > span.group-command-label {
+      display: block;
+      font-size: v.font(10px);
+      line-height: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
   }
 }

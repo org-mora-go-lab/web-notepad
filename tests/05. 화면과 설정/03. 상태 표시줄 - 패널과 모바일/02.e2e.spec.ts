@@ -1,26 +1,23 @@
 import { expect, test } from "@playwright/test";
 
-import { MOBILE_VIEWPORT } from "../../__constant__";
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { writeStoredState } from "../../__util__";
+test("2. 하단 메뉴 항목은 연결된 메뉴·패널을 열고 활성 상태를 표시한다", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/");
 
-test("2. 모바일은 별도 현재 그룹 표시줄 없이 하단 그룹 선택 버튼에 현재 그룹명을 표시한다", async ({
-  page,
-}) => {
-  await page.setViewportSize(MOBILE_VIEWPORT);
-  await writeStoredState(page, {
-    activeGroupId: "ungrouped",
-    groups: [
-      createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-1", ""),
-      ]),
-    ],
-    nextTabNumber: 2,
-  });
-  const panel = page.locator(".group-select-command");
-  const name = panel.locator(".group-select-name");
-  await expect(panel).toBeVisible();
-  await expect(name).toHaveText("Ungrouped");
-  await expect(panel.locator("svg")).toHaveCount(1);
-  await expect(page.locator(".current-group-panel")).toHaveCount(0);
+  for (const command of await page.locator(".status-meta .status-command:visible").all()) {
+    const panelId = await command.getAttribute("aria-controls");
+    const target = page.locator(`#${panelId}`);
+    await command.click();
+    await expect(command).toHaveAttribute("aria-expanded", "true");
+    await expect(command).toHaveClass(/is-active/);
+
+    if (panelId === "groups-menu") {
+      await expect(target).toBeVisible();
+      await page.keyboard.press("Escape");
+      continue;
+    }
+
+    await expect(target).toHaveAttribute("aria-hidden", "false");
+    await target.locator(".side-panel-close").click();
+  }
 });

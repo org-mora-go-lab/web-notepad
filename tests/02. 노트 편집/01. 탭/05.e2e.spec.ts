@@ -1,14 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-import { activeTabItem } from "../../__util__";
-
-test("5. 저장 기준과 다른 내용에 변경 표시를 보여준다", async ({ page }) => {
+test("5. 첫 번째 비어 있지 않은 줄을 공백 제거 후 최대 28자로 표시한다", async ({
+  page,
+}) => {
   await page.goto("/");
-  const tab = activeTabItem(page);
+  const title = page.locator(".tab-item.is-active .tab-title");
   const editor = page.locator("textarea");
-  await expect(tab).not.toHaveClass(/is-dirty/);
-  await editor.fill("changed");
-  await expect(tab).toHaveClass(/is-dirty/);
-  await editor.fill("");
-  await expect(tab).not.toHaveClass(/is-dirty/);
+  await editor.fill("  First title  \nsecond line");
+  await expect(title).toHaveText("First title");
+  await editor.fill("\n   \n  Third line title  \nnext");
+  await expect(title).toHaveText("Third line title");
+  await editor.fill("A".repeat(40));
+  await expect(title).toHaveText("A".repeat(28));
+  await editor.fill(`   ${"B".repeat(28)}C   `);
+  await expect(title).toHaveText("B".repeat(28));
 });

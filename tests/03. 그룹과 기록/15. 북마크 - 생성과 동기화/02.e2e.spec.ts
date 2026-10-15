@@ -2,13 +2,13 @@ import { expect, test } from "@playwright/test";
 
 import { chooseTabMenuItem, readStoredState } from "../../__util__";
 
-test("2. 탭 메뉴에서 북마크를 추가하면 생성 시각을 보관한다", async ({ page }) => {
+test("2. 탭 메뉴에서 기존 북마크를 해제한다", async ({ page }) => {
   await page.goto("/");
-  await page.locator("textarea").fill("bookmark timestamp");
-  const beforeBookmark = Date.now();
+  await page.locator("textarea").fill("bookmark title\nbookmark content");
   await chooseTabMenuItem(page, "Bookmark");
+  await chooseTabMenuItem(page, "Remove bookmark");
 
-  const createdAt = (await readStoredState(page)).groups[0].bookmarks[0].createdAt;
-  expect(createdAt).toBeGreaterThanOrEqual(beforeBookmark);
-  expect(createdAt).toBeLessThanOrEqual(Date.now());
+  const group = (await readStoredState(page)).groups[0];
+  expect(group.bookmarks).toHaveLength(0);
+  expect(group.tabs[0].bookmarked).toBe(false);
 });

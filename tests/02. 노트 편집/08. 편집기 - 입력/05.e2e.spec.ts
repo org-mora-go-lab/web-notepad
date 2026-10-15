@@ -1,12 +1,14 @@
 import { expect, test } from "@playwright/test";
 
-test("5. 한글 IME 조합 중에도 입력을 처리한다", async ({ page }) => {
+test("5. Shift+Tab은 탭 문자를 삽입하지 않고 편집기에서 역방향으로 포커스를 이동한다", async ({ page }) => {
   await page.goto("/");
-  const editor = page.locator("textarea");
+  const editor = page.locator(".note-area");
+  await editor.fill("Keep this text unchanged");
   await editor.focus();
-  await editor.dispatchEvent("compositionstart");
-  await page.keyboard.insertText("한글");
-  await expect(editor).toHaveValue("한글");
-  await editor.dispatchEvent("compositionend");
-  await expect(editor).toHaveValue("한글");
+
+  await page.keyboard.press("Shift+Tab");
+
+  await expect(editor).toHaveValue("Keep this text unchanged");
+  await expect(editor).not.toBeFocused();
+  await expect(page.locator('.line-rail [role="button"]').last()).toBeFocused();
 });

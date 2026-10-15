@@ -17,7 +17,7 @@ test("1. BOOKMARK 오른쪽에 DASHBOARD 명령을 표시하고 PC는 아이콘 
   await page.setViewportSize(MOBILE_VIEWPORT);
   await expect(command.locator(".status-label")).toBeVisible();
   expect((await command.locator(".status-label").boundingBox())!.y).toBeGreaterThanOrEqual((await command.locator("svg").boundingBox())!.y + 28);
-  expect((await command.boundingBox())!.x).toBeGreaterThan((await bookmark.boundingBox())!.x + (await bookmark.boundingBox())!.width);
+  expect((await command.boundingBox())!.x).toBeGreaterThan((await bookmark.boundingBox())!.x);
   await expect(command.locator("svg")).toBeVisible();
 
   await command.click();

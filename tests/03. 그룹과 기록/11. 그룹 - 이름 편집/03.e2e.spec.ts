@@ -1,13 +1,14 @@
 import { expect, test } from "@playwright/test";
 
-import { chooseGroupAction, createGroups, groupsCommand, groupStatusName } from "../../__util__";
+import { readStoredState } from "../../__util__";
+import { renameWorkGroup } from "./__util__";
 
-test("3. 이름 수정의 취소 버튼은 입력한 이름을 버리고 기존 이름을 유지한다", async ({ page }) => {
-  await page.goto("/");
-  await createGroups(page, "Work");
-  await groupsCommand(page).click();
-  await chooseGroupAction(page, "Work", "수정");
-  await page.getByRole("textbox", { name: "Edit Work group name" }).fill("Cancelled");
-  await page.getByRole("button", { name: "Cancel group changes" }).click();
-  await expect(groupStatusName(page)).toHaveText("Work");
+test("3. 그룹 이름을 바꿔도 그룹 ID를 유지하고 새로고침 후 복원한다", async ({ page }) => {
+  const originalId = await renameWorkGroup(page);
+  const renamedGroup = (await readStoredState(page)).groups.find((group) => group.name === "Focus")!;
+  expect(renamedGroup.id).toBe(originalId);
+
+  await page.reload();
+  const restoredGroup = (await readStoredState(page)).groups.find((group) => group.name === "Focus")!;
+  expect(restoredGroup.id).toBe(originalId);
 });

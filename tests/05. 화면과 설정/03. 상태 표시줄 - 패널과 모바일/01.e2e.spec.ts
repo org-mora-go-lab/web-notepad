@@ -12,6 +12,16 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
       const bounds = (await command.boundingBox())!;
       expect(bounds.height).toBeCloseTo(width <= 640 ? 61.2 : 35, 1);
     }
+    if (width <= 640) {
+      const centers = (await Promise.all(
+        (await commands.all()).map(async (command) => {
+          const bounds = (await command.boundingBox())!;
+          return bounds.x + bounds.width / 2;
+        }),
+      )).sort((left, right) => left - right);
+      const gaps = centers.slice(1).map((center, index) => center - centers[index]);
+      expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThanOrEqual(1);
+    }
     expect(await page.locator(".footer").evaluate((bar) => bar.scrollWidth <= bar.clientWidth)).toBe(true);
   }
 });

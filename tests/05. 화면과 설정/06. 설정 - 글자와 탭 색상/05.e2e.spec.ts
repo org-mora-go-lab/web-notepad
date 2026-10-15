@@ -1,20 +1,22 @@
 import { expect, test } from "@playwright/test";
 
-import { openSettingsPanel } from "../../__util__";
-import { settingsPanel, tabColorRadio } from "../__util__";
+import { STORAGE_KEY } from "../../__constant__";
+import { expectCssPx, openSettingsPanel } from "../../__util__";
+import { closeSettingsPanel, fontScaleRadio, tabColorRadio } from "../__util__";
 
-test("5. 앞 순번에서 뒤 순번이 사용 중인 색상을 선택하면 두 순번의 색상을 서로 바꾼다", async ({ page }) => {
+test("5. 설정한 폰트 크기와 탭 색상 순서는 새로고침 후에도 유지한다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
+  await fontScaleRadio(page, "110%").check();
+  await tabColorRadio(page, 2, "Yellow").check();
+  await expect
+    .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
+    .toEqual({ fontScale: 1.1, tabColorCycle: ["gray", "yellow", "purple"], language: "en", panelSlide: false, panelPosition: "right" });
+  await closeSettingsPanel(page);
 
-  await tabColorRadio(page, 1, "Purple").check();
-  await expect(tabColorRadio(page, 1, "Purple")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Gray")).toBeChecked();
-  await expect(settingsPanel(page).locator(".setting-hint")).toContainText("Purple → Green → Gray");
-
-  await tabColorRadio(page, 2, "Gray").check();
-  await expect(tabColorRadio(page, 2, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Green")).toBeChecked();
-  await expect(settingsPanel(page).locator(".setting-hint")).toContainText("Purple → Gray → Green");
+  await page.reload();
+  await openSettingsPanel(page);
+  await expect(fontScaleRadio(page, "110%")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Yellow")).toBeChecked();
+  await expectCssPx(page.locator("textarea").first(), "fontSize", 20.9);
 });

@@ -1,25 +1,21 @@
 import { expect, test } from "@playwright/test";
 
-import { openPanel, openSettingsPanel, readStoredState } from "../../__util__";
-import { dashboardColumn, seedDashboardTabs } from "../../04. 패널과 검색/__util__";
-import { tabColorRadio } from "../__util__";
+import { openPanel, openSettingsPanel } from "../../__util__";
 
-test("3. Tab Colors에서 순번의 색상을 바꾸면 해당 색상의 모든 탭이 새 색상으로 바뀌어 대시보드 상태를 유지한다", async ({ page }) => {
-  await seedDashboardTabs(page);
+test("3. Panel Position의 기본 Right와 Left 선택을 모든 사이드 패널에 즉시 적용한다", async ({ page }) => {
+  await page.goto("/");
   await openSettingsPanel(page);
+  const settings = page.locator("#settings-panel");
+  await expect(settings.getByRole("radio", { name: "Right", exact: true })).toBeChecked();
+  await expect(settings.locator(".setting-section h3").nth(4)).toHaveText("Panel Position");
+  await settings.getByRole("radio", { name: "Left", exact: true }).check();
+  await expect(page.locator(".home")).toHaveAttribute("data-panel-position", "left");
+  expect((await settings.boundingBox())!.x).toBe(0);
+  await settings.getByRole("button", { name: "Close Settings", exact: true }).click();
 
-  await tabColorRadio(page, 1, "Yellow").check();
-  await tabColorRadio(page, 2, "Teal").check();
-  await tabColorRadio(page, 3, "Pink").check();
-
-  await expect.poll(async () => {
-    const state = await readStoredState(page);
-    return state.groups.flatMap((group) => group.tabs.map((tab) => tab.tabColor));
-  }).toEqual(["yellow", "teal", "pink", "yellow"]);
-
-  await openPanel(page, "dashboard-panel");
-  await expect(dashboardColumn(page, "todo")).toContainText("Alpha task");
-  await expect(dashboardColumn(page, "in-progress")).toContainText("Beta task");
-  await expect(dashboardColumn(page, "done")).toContainText("Gamma task");
-  await expect(dashboardColumn(page, "todo").locator(".dashboard-card").first()).toHaveAttribute("data-tab-color", "yellow");
+  for (const id of ["bookmarks-panel", "dashboard-panel", "global-search-panel"]) {
+    await openPanel(page, id);
+    expect((await page.locator(`#${id}`).boundingBox())!.x).toBe(0);
+    await page.keyboard.press("Escape");
+  }
 });

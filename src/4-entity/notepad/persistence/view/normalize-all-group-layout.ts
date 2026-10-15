@@ -1,4 +1,4 @@
-import { ALL_GROUP_ID } from "../../constant";
+import { ALL_GROUP_ID, ALL_GROUP_NAME } from "../../constant";
 import type { GroupEntry, PaneLayout } from "../../type";
 import { getPaneLayout, normalizeLayout, PANE_IDS } from "../../util";
 
@@ -16,7 +16,7 @@ export function normalizeAllGroupLayout(
     ? getPaneLayout(
         normalizeLayout({
           id: ALL_GROUP_ID,
-          name: "All Group",
+          name: ALL_GROUP_NAME,
           pinned: false,
           createdAt: 0,
           tabs: groups.flatMap((group) => group.tabs),

@@ -1,29 +1,26 @@
 import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { seedStoredStateOnLoad } from "../../__util__";
+import { readStoredState, seedStoredStateOnLoad } from "../../__util__";
 
-test("4. 잘못된 그룹 항목을 건너뛰고 유효한 노트를 복원한다", async ({
-  page,
-}) => {
-  const errors: string[] = [];
-  page.on("pageerror", (error) => errors.push(error.message));
+test("4. 저장된 임의 필드와 스토어 액션 이름 필드를 복원 상태에서 제외한다", async ({ page }) => {
   await seedStoredStateOnLoad(page, {
     activeGroupId: "ungrouped",
     groups: [
-      null,
-      false,
-      42,
-      "invalid",
-      {},
       createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-1", "Preserved note"),
+        createTabFixture("tab-1", "Protected note"),
       ]),
     ],
+    nextTabNumber: 2,
+    updateTab: "corrupted update action",
+    addTab: null,
+    createGroup: { corrupted: true },
+    arbitraryField: "must not enter the store",
   });
-  await expect(page.locator("textarea")).toHaveValue("Preserved note");
-  await expect(page.locator(".tab-item")).toHaveCount(1);
-  expect(errors).toEqual([]);
-  await page.locator("textarea").fill("Still editable");
-  await expect(page.locator("textarea")).toHaveValue("Still editable");
+
+  await expect.poll(async () => {
+    const stored = (await readStoredState(page)) as unknown as Record<string, unknown>;
+    return ["updateTab", "addTab", "createGroup", "arbitraryField"]
+      .filter((key) => Object.hasOwn(stored, key));
+  }).toEqual([]);
 });

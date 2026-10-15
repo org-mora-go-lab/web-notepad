@@ -6,7 +6,7 @@ import { dashboardPanel, seedDashboardTabs } from "../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
-test("3. 모바일의 Todo↔WIP와 WIP↔Done 상태 영역 사이는 각각 30px 간격으로 표시한다", async ({ page }) => {
+test("3. 모바일의 Todo↔Doing과 Doing↔Done 상태 영역 사이는 각각 30px 간격으로 표시한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
 

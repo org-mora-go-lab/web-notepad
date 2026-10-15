@@ -1,21 +1,25 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { BOTH_VIEWPORTS } from "../../__constant__";
-import { expectCssPx, openSettingsPanel } from "../../__util__";
-import { settingsPanel } from "../__util__";
+import { openPanel, openSettingsPanel, readStoredState } from "../../__util__";
+import { dashboardColumn, seedDashboardTabs } from "../../04. 패널과 검색/__util__";
+import { tabColorRadio } from "../__util__";
 
-test("2. Tab Colors 오른쪽의 초기화·셔플 버튼은 28.8px, 아이콘은 15.6px로 표시한다", async ({ page }) => {
-  await page.goto("/");
+test("2. Tab Colors에서 순번의 색상을 바꾸면 해당 색상의 모든 탭이 새 색상으로 바뀌어 대시보드 상태를 유지한다", async ({ page }) => {
+  await seedDashboardTabs(page);
   await openSettingsPanel(page);
-  const buttons = settingsPanel(page).locator(".setting-section-heading .setting-section-reset");
 
-  for (const viewport of BOTH_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    for (const button of await buttons.all()) {
-      await expectCssPx(button, "width", 28.8);
-      await expectCssPx(button, "height", 28.8);
-      await expectCssPx(button.locator("svg"), "width", 15.6);
-      await expectCssPx(button.locator("svg"), "height", 15.6);
-    }
-  }
+  await tabColorRadio(page, 1, "Yellow").check();
+  await tabColorRadio(page, 2, "Teal").check();
+  await tabColorRadio(page, 3, "Pink").check();
+
+  await expect.poll(async () => {
+    const state = await readStoredState(page);
+    return state.groups.flatMap((group) => group.tabs.map((tab) => tab.tabColor));
+  }).toEqual(["yellow", "teal", "pink", "yellow"]);
+
+  await openPanel(page, "dashboard-panel");
+  await expect(dashboardColumn(page, "todo")).toContainText("Alpha task");
+  await expect(dashboardColumn(page, "in-progress")).toContainText("Beta task");
+  await expect(dashboardColumn(page, "done")).toContainText("Gamma task");
+  await expect(dashboardColumn(page, "todo").locator(".dashboard-card").first()).toHaveAttribute("data-tab-color", "yellow");
 });

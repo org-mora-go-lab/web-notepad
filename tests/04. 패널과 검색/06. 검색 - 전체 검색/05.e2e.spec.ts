@@ -1,15 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-import { openGlobalSearchPanel, seedStoredStateOnLoad } from "../../__util__";
+import { groupStatusName, openGlobalSearchPanel, seedStoredStateOnLoad } from "../../__util__";
 import { createGlobalSearchState } from "./__fixture__";
 
-test("5. 그룹과 북마크를 대소문자 구분 없이 부분 검색한다", async ({ page }) => {
+test("5. 그룹 검색 결과를 선택하면 해당 그룹으로 이동한다", async ({ page }) => {
   await seedStoredStateOnLoad(page, createGlobalSearchState());
   await openGlobalSearchPanel(page);
-  const search = page.getByRole("searchbox", { name: "Search everything" });
-  await search.fill("wOr");
-  await expect(page.locator(".global-search-groups .global-search-result")).toHaveCount(1);
-  await expect(page.locator(".global-search-bookmarks .global-search-result")).toHaveCount(1);
-  await search.fill("gOaLs");
-  await expect(page.locator(".global-search-bookmarks .global-search-result")).toHaveCount(1);
+  await page.getByRole("searchbox", { name: "Search everything" }).fill("Work");
+  await page.getByRole("button", { name: "Select group Work" }).click();
+  await expect(groupStatusName(page)).toHaveText("Work");
+  await expect(page.locator("textarea")).toHaveValue("Quarterly goals");
 });

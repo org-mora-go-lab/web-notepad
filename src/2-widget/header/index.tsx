@@ -43,6 +43,11 @@ export function Header({
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const dragActive = draggingTabId !== null;
   const contextTab = tabs.find((tab) => tab.id === contextMenu?.tabId);
+  const contextGroupId = contextTab
+    ? (groups.find((group) =>
+        group.tabs.some((tab) => tab.id === contextTab.id),
+      )?.id ?? activeGroupId)
+    : activeGroupId;
 
   const endDrag = () => {
     setDropTargetId(null);
@@ -126,7 +131,7 @@ export function Header({
           showPin={false}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
-            .filter((group) => group.id !== activeGroupId)
+            .filter((group) => group.id !== contextGroupId)
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);

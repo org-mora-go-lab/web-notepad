@@ -16,7 +16,7 @@ import {
   setPaneActiveTabId,
 } from "../../util";
 
-// All Group gathers the original tabs and applies only its own independent view layout.
+// All gathers the original tabs and applies only its own independent view layout.
 const buildAllGroup = (state: NotepadState): GroupEntry => {
   const tabs = state.groups.flatMap((group) => group.tabs);
   const activeTab =
@@ -40,7 +40,7 @@ export const getActiveGroup = (state: NotepadState) =>
     : (state.groups.find((group) => group.id === state.activeGroupId) ??
       state.groups[0]);
 
-// The group a tab edit applies to: the All Group lists tabs of every group, so a tab edit goes to its own group.
+// The group a tab edit applies to: the All lists tabs of every group, so a tab edit goes to its own group.
 export const getTabGroup = (state: NotepadState, tabId: string) =>
   state.activeGroupId === ALL_GROUP_ID
     ? state.groups.find((group) => group.tabs.some((tab) => tab.id === tabId))
