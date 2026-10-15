@@ -4,7 +4,7 @@ import { createClosedTabFixture, createGroupFixture, createTabFixture } from "..
 import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn, dashboardPanel } from "../__util__";
 
-test("5. Closed 카드를 누르면 위치와 상태·내용을 유지한 채 편집기에 복원한다", async ({ page }) => {
+test("5. Done 카드를 누르면 위치와 상태·내용을 유지한 채 편집기에 복원한다", async ({ page }) => {
   const group = createGroupFixture("ungrouped", "Ungrouped", [
     createTabFixture("tab-1", "First closed task", { tabColor: "purple" }),
     createTabFixture("tab-3", "Third closed task", { tabColor: "purple" }),

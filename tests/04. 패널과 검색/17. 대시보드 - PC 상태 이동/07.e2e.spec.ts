@@ -4,7 +4,7 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, readStoredState, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("7. 고정 탭의 Closed 상태는 새로고침 후에도 유지한다", async ({ page }) => {
+test("7. 고정 탭의 Done 상태는 새로고침 후에도 유지한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [

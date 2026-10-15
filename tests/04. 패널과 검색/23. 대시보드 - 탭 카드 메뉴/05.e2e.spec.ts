@@ -4,7 +4,7 @@ import { createClosedTabFixture, createGroupFixture, createTabFixture } from "..
 import { openPanel, readStoredState, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("5. Closed의 닫힌 탭 카드 메뉴로 그룹을 옮겨도 닫힌 상태를 유지한다", async ({ page }) => {
+test("5. Done의 닫힌 탭 카드 메뉴로 그룹을 옮겨도 닫힌 상태를 유지한다", async ({ page }) => {
   await writeStoredState(page, {
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [

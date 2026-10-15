@@ -4,7 +4,7 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("6. 고정 탭을 Closed로 옮기면 확인 없이 고정과 열린 상태를 유지한다", async ({ page }) => {
+test("6. 고정 탭을 Done으로 옮기면 확인 없이 고정과 열린 상태를 유지한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [

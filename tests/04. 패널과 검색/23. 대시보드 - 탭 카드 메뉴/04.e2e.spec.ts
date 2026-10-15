@@ -4,7 +4,7 @@ import { createClosedTabFixture, createGroupFixture, createTabFixture } from "..
 import { openPanel, readStoredState, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("4. Closed의 닫힌 탭 카드 메뉴로 북마크해도 닫힌 상태를 유지한다", async ({ page }) => {
+test("4. Done의 닫힌 탭 카드 메뉴로 북마크해도 닫힌 상태를 유지한다", async ({ page }) => {
   await writeStoredState(page, {
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [

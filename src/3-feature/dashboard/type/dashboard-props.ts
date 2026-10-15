@@ -9,7 +9,7 @@ import type {
 export type DashboardProps = {
   tabs: NoteTab[];
   activeTabId?: string;
-  // Closed tabs of the shown group(s); they fill the Closed column.
+  // Closed tabs of the shown group(s); they fill the Done column.
   closedTabs: ClosedTabEntry[];
   groups: GroupEntry[];
   // All Group: cards show the group they belong to.
