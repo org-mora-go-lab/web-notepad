@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { FONT_SCALES, useNotepadStore } from "@/src/4-entity/notepad";
@@ -20,6 +20,18 @@ export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
   const setPanelSlide = useNotepadStore((state) => state.setPanelSlide);
   const resetSettings = useNotepadStore((state) => state.resetSettings);
   const [confirmingReset, setConfirmingReset] = useState(false);
+  const [confirmingDeleteAll, setConfirmingDeleteAll] = useState(false);
+
+  const deleteAllData = () => {
+    try {
+      for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+        const key = localStorage.key(index);
+        if (key?.startsWith("web-notepad-")) localStorage.removeItem(key);
+      }
+    } finally {
+      window.location.reload();
+    }
+  };
 
   return (
     <SidePanel
@@ -87,6 +99,17 @@ export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
             { value: "right", label: t.panelRight },
           ]}
         />
+        <section className="setting-section setting-danger-zone">
+          <h3>{t.dataManagement}</h3>
+          <button
+            className="setting-delete-all"
+            type="button"
+            onClick={() => setConfirmingDeleteAll(true)}
+          >
+            <Trash2 size={14} aria-hidden="true" />
+            {t.deleteAllData}
+          </button>
+        </section>
       </div>
       {confirmingReset && (
         <ConfirmPopup
@@ -101,6 +124,17 @@ export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
             resetSettings();
             setConfirmingReset(false);
           }}
+        />
+      )}
+      {confirmingDeleteAll && (
+        <ConfirmPopup
+          title={t.deleteAllData}
+          message={t.deleteAllDataMessage}
+          closeLabel={t.closePanel(t.deleteAllData)}
+          closeTitle={t.close}
+          confirmLabel={t.deleteAll}
+          onCancel={() => setConfirmingDeleteAll(false)}
+          onConfirm={deleteAllData}
         />
       )}
     </SidePanel>

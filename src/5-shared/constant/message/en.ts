@@ -118,6 +118,11 @@ export const en = {
   shuffleTabColors: "Shuffle tab colors",
   resetSettingsMessage:
     "All settings will return to their defaults. Do you want to reset them?",
+  dataManagement: "Data",
+  deleteAllData: "Delete all data",
+  deleteAllDataMessage:
+    "All notes, groups, bookmarks, closed tabs, and settings will be permanently deleted. Are you sure?",
+  deleteAll: "Delete all",
   guide: "GUIDE",
   userGuideTitle: "User Guide",
   previous: "Previous",

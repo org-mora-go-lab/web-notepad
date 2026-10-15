@@ -26,9 +26,41 @@
     }
   }
 
+  .setting-danger-zone {
+    border-bottom: 0;
+  }
+
+  .setting-delete-all {
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border: 1px solid v.$tab-red;
+    background: transparent;
+    color: v.$tab-red;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: color-mix(in srgb, #{v.$tab-red} 12%, transparent);
+    }
+  }
+
   @media (max-width: 640px) {
     .setting-section h3 {
       font-size: v.font(16px * v.$mobile-scale);
+    }
+
+    .setting-delete-all {
+      min-height: 36px * v.$mobile-scale;
+      font-size: v.font(14px * v.$mobile-scale);
+
+      svg {
+        width: 14px * v.$mobile-scale;
+        height: 14px * v.$mobile-scale;
+      }
     }
   }
 }

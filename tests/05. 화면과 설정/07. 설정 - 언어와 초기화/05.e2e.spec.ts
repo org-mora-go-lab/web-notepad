@@ -11,7 +11,14 @@ test("5. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
 
   await languageRadio(page, "한국어").check();
   await expect(panel.locator("h2")).toHaveText("설정");
-  await expect(headings).toHaveText(["전체 폰트 크기", "탭 색상", "언어", "패널 슬라이드 효과", "패널 위치"]);
+  await expect(headings).toHaveText([
+    "전체 폰트 크기",
+    "탭 색상",
+    "언어",
+    "패널 슬라이드 효과",
+    "패널 위치",
+    "데이터",
+  ]);
   await expect(panel.locator(".setting-hint")).toContainText("새 탭은 첫 번째 색상으로 시작합니다.그레이 → 그린 → 퍼플");
   await expect(bookmarksCommand(page).locator(".status-label")).toHaveText("북마크");
   await expect(page.locator(".global-search-command")).toContainText("검색");
