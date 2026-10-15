@@ -25,12 +25,13 @@
     min-height: 48px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding: 6px 26px 6px 16px;
     border-top: 1px solid v.$line;
     background: v.$strip;
   }
 
+  .dashboard-icebox-command,
   .dashboard-closed-command {
     height: 35px;
     display: flex;

@@ -3,15 +3,22 @@ import { expect, test } from "@playwright/test";
 import { openPanel } from "../../__util__";
 import { seedClosedPanelState } from "./__fixture__";
 
-test("1. Closed 명령으로 대시보드의 Closed 상태를 표시하고 숨긴다", async ({ page }) => {
+test("1. Icebox와 Closed 명령으로 각 대시보드 상태를 표시하고 숨긴다", async ({ page }) => {
   await seedClosedPanelState(page);
   await openPanel(page, "dashboard-panel");
-  const command = page.locator(".dashboard-closed-command");
-  await expect(command).toHaveAttribute("aria-pressed", "false");
-  await command.click();
-  await expect(command).toHaveAttribute("aria-pressed", "true");
+  const iceboxCommand = page.locator(".dashboard-icebox-command");
+  const closedCommand = page.locator(".dashboard-closed-command");
+  await expect(iceboxCommand).toHaveAttribute("aria-pressed", "false");
+  await expect(closedCommand).toHaveAttribute("aria-pressed", "false");
+  await iceboxCommand.click();
+  await expect(iceboxCommand).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".dashboard-icebox-column")).toBeVisible();
+  await closedCommand.click();
+  await expect(closedCommand).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".dashboard-closed-card")).toContainText("Archived note");
   await expect(page.locator("#closed-popup")).toHaveCount(0);
-  await command.click();
+  await iceboxCommand.click();
+  await expect(page.locator(".dashboard-icebox-column")).toHaveCount(0);
+  await closedCommand.click();
   await expect(page.locator(".dashboard-closed-column")).toHaveCount(0);
 });

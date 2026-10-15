@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, Maximize2, Minimize2 } from "lucide-react";
+import { Archive, Maximize2, Minimize2, Snowflake } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -38,6 +38,7 @@ export function Dashboard({
   onArchiveTab,
 }: DashboardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [iceboxVisible, setIceboxVisible] = useState(false);
   const [closedVisible, setClosedVisible] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
@@ -87,9 +88,21 @@ export function Dashboard({
         />
         <div className="dashboard-list" ref={listRef}>
           <div
-            className={`dashboard-board ${closedVisible ? "has-closed" : ""}`}
+            className={`dashboard-board ${iceboxVisible ? "has-icebox" : ""} ${closedVisible ? "has-closed" : ""}`}
             ref={boardRef}
           >
+            {iceboxVisible && (
+              <section
+                className="dashboard-column dashboard-icebox-column"
+                aria-label={t.icebox}
+              >
+                <h3 className="dashboard-column-status">
+                  <span>{t.icebox}</span>
+                  <span className="dashboard-count">0</span>
+                </h3>
+                <div className="dashboard-cards" />
+              </section>
+            )}
             {columns.map((column) => (
               <DashboardColumn
                 key={column.status}
@@ -120,6 +133,15 @@ export function Dashboard({
         </div>
       </div>
       <div className="dashboard-footer">
+        <button
+          className="dashboard-icebox-command"
+          type="button"
+          aria-pressed={iceboxVisible}
+          onClick={() => setIceboxVisible((current) => !current)}
+        >
+          <Snowflake size={24} strokeWidth={1.8} />
+          <span>{t.icebox}</span>
+        </button>
         <button
           className="dashboard-closed-command"
           type="button"
