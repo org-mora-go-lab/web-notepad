@@ -1,15 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-import { expectCssPx, openSettingsPanel } from "../../__util__";
-import { fontScaleRadio, settingsPanel } from "../__util__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { activeTabItem, writeStoredState } from "../../__util__";
 
-test("3. 폰트 비율을 바꾸면 설정 초기화 확인 팝업 글자 크기에도 즉시 적용한다", async ({ page }) => {
-  await page.goto("/");
-  await openSettingsPanel(page);
-  await fontScaleRadio(page, "120%").check();
-  await settingsPanel(page).getByRole("button", { name: "Reset settings", exact: true }).click();
-  const popup = page.getByRole("alertdialog", { name: "Reset settings" });
-  await expect(popup).toBeVisible();
-  await expectCssPx(popup.getByRole("heading"), "fontSize", 19.2);
-  await expectCssPx(popup.locator("p"), "fontSize", 16.8);
+test("3. 설정 순서에 없는 색상 탭의 색상 아이콘을 누르면 첫 번째 색상으로 바꾼다", async ({ page }) => {
+  await writeStoredState(page, {
+    activeGroupId: "ungrouped",
+    groups: [createGroupFixture("ungrouped", "Ungrouped", [
+      createTabFixture("tab-red", "Out of cycle", { tabColor: "red" }),
+    ])],
+  });
+  const tab = activeTabItem(page);
+  await expect(tab).toHaveAttribute("data-tab-color", "red");
+  await tab.locator(".dirty-dot").click();
+  await expect(tab).toHaveAttribute("data-tab-color", "gray");
 });

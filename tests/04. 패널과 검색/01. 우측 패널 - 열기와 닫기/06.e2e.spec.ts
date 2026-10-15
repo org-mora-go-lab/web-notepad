@@ -1,0 +1,35 @@
+import { expect, test, type Locator } from "@playwright/test";
+
+import { MOBILE_VIEWPORT } from "../../__constant__";
+import { bookmarksCommand, groupsCommand } from "../../__util__";
+
+async function expectIconCentered(button: Locator) {
+  const buttonBox = (await button.boundingBox())!;
+  const iconBox = (await button.locator(":scope > svg:only-child").boundingBox())!;
+
+  expect(iconBox.x + iconBox.width / 2).toBeCloseTo(
+    buttonBox.x + buttonBox.width / 2,
+    1,
+  );
+  expect(iconBox.y + iconBox.height / 2).toBeCloseTo(
+    buttonBox.y + buttonBox.height / 2,
+    1,
+  );
+}
+
+test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중앙에 배치한다", async ({ page }) => {
+  await page.setViewportSize(MOBILE_VIEWPORT);
+  await page.goto("/");
+
+  await bookmarksCommand(page).click();
+  await expectIconCentered(page.locator("#bookmarks-panel .side-panel-close"));
+  await page.locator("#bookmarks-panel .side-panel-close").click();
+
+  await groupsCommand(page).click();
+  const createInput = page.getByRole("textbox", { name: "New group name" });
+  await createInput.fill("Work");
+  await expectIconCentered(page.getByRole("button", { name: "Create group" }));
+  await page.getByRole("button", { name: "Create group" }).click();
+  await page.getByRole("button", { name: "Work group actions" }).click();
+  await expectIconCentered(page.getByRole("button", { name: "Delete Work group" }));
+});

@@ -63,3 +63,15 @@ textarea {
 button {
   color: inherit;
 }
+
+// Keep icon-only controls optically centered across browsers, including iOS Safari.
+button:has(> svg:only-child) {
+  display: grid;
+  place-items: center;
+  line-height: 0;
+
+  > svg {
+    display: block;
+    margin: auto;
+  }
+}
