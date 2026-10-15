@@ -43,6 +43,10 @@ export type PanelProps = {
   onChangeClosedTabStatus: ComponentProps<
     typeof Dashboard
   >["onChangeClosedStatus"];
+  onMoveClosedTabToGroup: ComponentProps<typeof Dashboard>["onMoveClosedToGroup"];
+  onToggleClosedTabBookmark: ComponentProps<
+    typeof Dashboard
+  >["onToggleClosedBookmark"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];

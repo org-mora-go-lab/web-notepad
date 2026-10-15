@@ -2,12 +2,16 @@ import type { StateCreator } from "zustand";
 
 import { UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
-import { getStatusColor } from "../../util";
+import { getStatusColor, getTitleFromContent } from "../../util";
 import { allocateTab, updateGroup } from "../workspace";
 
 type ClosedTabActions = Pick<
   NotepadState,
-  "restoreClosedTab" | "removeClosedTab" | "moveClosedTabToStatus"
+  | "restoreClosedTab"
+  | "removeClosedTab"
+  | "moveClosedTabToStatus"
+  | "moveClosedTabToGroup"
+  | "toggleClosedTabBookmark"
 >;
 
 export const createClosedTabActions: StateCreator<
@@ -63,6 +67,74 @@ export const createClosedTabActions: StateCreator<
       ),
     }));
   },
+  moveClosedTabToGroup: (entryId, groupId) =>
+    set((state) => {
+      const entry = state.closedTabs.find((item) => item.id === entryId);
+      const source = state.groups.find((group) => group.id === entry?.groupId);
+      const target = state.groups.find((group) => group.id === groupId);
+      if (!entry || !source || !target || source.id === target.id) return state;
+      const linkedBookmark = source.bookmarks.find(
+        (bookmark) => bookmark.sourceTabId === entry.tab.id,
+      );
+      return {
+        ...updateGroup(
+          updateGroup(state, source.id, (group) => ({
+            ...group,
+            bookmarks: group.bookmarks.filter(
+              (bookmark) => bookmark.sourceTabId !== entry.tab.id,
+            ),
+          })),
+          target.id,
+          (group) => ({
+            ...group,
+            bookmarks: linkedBookmark
+              ? [linkedBookmark, ...group.bookmarks]
+              : group.bookmarks,
+          }),
+        ),
+        closedTabs: state.closedTabs.map((item) =>
+          item.id === entryId ? { ...item, groupId } : item,
+        ),
+      };
+    }),
+  toggleClosedTabBookmark: (entryId) =>
+    set((state) => {
+      const entry = state.closedTabs.find((item) => item.id === entryId);
+      const group = state.groups.find((item) => item.id === entry?.groupId);
+      if (!entry || !group) return state;
+      const existing = group.bookmarks.find(
+        (bookmark) => bookmark.sourceTabId === entry.tab.id,
+      );
+      const createdAt = Date.now();
+      return {
+        ...updateGroup(state, group.id, (current) => ({
+          ...current,
+          bookmarks: existing
+            ? current.bookmarks.filter((bookmark) => bookmark.id !== existing.id)
+            : [
+                {
+                  id: `bookmark-${entry.tab.id}`,
+                  sourceTabId: entry.tab.id,
+                  title: getTitleFromContent(entry.tab.content, entry.tab.title),
+                  content: entry.tab.content,
+                  tabColor: entry.tab.tabColor,
+                  selectedLines: [...entry.tab.selectedLines],
+                  createdAt,
+                  updatedAt: createdAt,
+                },
+                ...current.bookmarks,
+              ],
+        })),
+        closedTabs: state.closedTabs.map((item) =>
+          item.id === entryId
+            ? {
+                ...item,
+                tab: { ...item.tab, bookmarked: !existing },
+              }
+            : item,
+        ),
+      };
+    }),
   removeClosedTab: (entryId) =>
     set((state) => ({
       closedTabs: state.closedTabs.filter((item) => item.id !== entryId),

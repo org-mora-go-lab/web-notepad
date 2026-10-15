@@ -17,6 +17,7 @@ export function TabContextMenu({
   left,
   top,
   pinned,
+  showPin = true,
   bookmarked,
   targetGroups,
   onMoveToGroup,
@@ -99,10 +100,12 @@ export function TabContextMenu({
         </>
       ) : (
         <>
-          <button type="button" role="menuitem" onClick={onTogglePin}>
-            <Pin size={14} />
-            <span>{pinned ? t.unpin : t.pin}</span>
-          </button>
+          {showPin && (
+            <button type="button" role="menuitem" onClick={onTogglePin}>
+              <Pin size={14} />
+              <span>{pinned ? t.unpin : t.pin}</span>
+            </button>
+          )}
           <button type="button" role="menuitem" onClick={onToggleBookmark}>
             <Bookmark size={14} />
             <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>

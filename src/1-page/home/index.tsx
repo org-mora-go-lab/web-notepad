@@ -36,6 +36,8 @@ export function Home() {
     toggleBookmark,
     moveToGroup,
     moveClosedTabToStatus,
+    moveClosedTabToGroup,
+    toggleClosedTabBookmark,
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
@@ -136,6 +138,8 @@ export function Home() {
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
           onChangeClosedTabStatus={moveClosedTabToStatus}
+          onMoveClosedTabToGroup={moveClosedTabToGroup}
+          onToggleClosedTabBookmark={toggleClosedTabBookmark}
           onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}
           onRemoveGroup={removeGroupAndRecord}

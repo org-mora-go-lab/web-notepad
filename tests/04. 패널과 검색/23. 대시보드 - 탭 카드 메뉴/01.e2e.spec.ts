@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { openPanel } from "../../__util__";
 import { dashboardColumn, seedDashboardTabs } from "../__util__";
 
-test("1. PC에서 열린 탭 카드 메뉴로 고정 상태를 전환한다", async ({ page }) => {
+test("1. PC 대시보드 탭 카드 메뉴에 Pin·Unpin을 표시하지 않는다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
   const card = dashboardColumn(page, "todo").locator(".dashboard-card", {
@@ -11,7 +11,6 @@ test("1. PC에서 열린 탭 카드 메뉴로 고정 상태를 전환한다", as
   });
 
   await card.click({ button: "right" });
-  await page.getByRole("menuitem", { name: "Pin", exact: true }).click();
-
-  await expect(card.getByRole("img", { name: "Pinned" })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Pin", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("menuitem", { name: "Unpin", exact: true })).toHaveCount(0);
 });

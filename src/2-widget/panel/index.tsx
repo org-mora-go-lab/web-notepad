@@ -36,6 +36,8 @@ export function Panel({
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
   onChangeClosedTabStatus,
+  onMoveClosedTabToGroup,
+  onToggleClosedTabBookmark,
   onCreateGroup,
   onSelectGroup,
   onRemoveGroup,
@@ -80,6 +82,8 @@ export function Panel({
         onToggleTabBookmark={onToggleDashboardTabBookmark}
         onRestoreClosed={onRestoreClosedTab}
         onChangeClosedStatus={onChangeClosedTabStatus}
+        onMoveClosedToGroup={onMoveClosedTabToGroup}
+        onToggleClosedBookmark={onToggleClosedTabBookmark}
       />
       <Group
         groups={groups}

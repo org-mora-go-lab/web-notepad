@@ -73,6 +73,9 @@ export function DashboardColumn({
               }
               dragging={drag.draggingTabId === entry.id}
               onOpen={() => onRestoreClosed(entry.id)}
+              onOpenContextMenu={(tabId, left, top) =>
+                onOpenContextMenu(entry.id, left, top, true)
+              }
               onDragStart={drag.startDrag}
               onDragEnd={drag.endDrag}
             />
@@ -90,7 +93,9 @@ export function DashboardColumn({
               }
               dragging={drag.draggingTabId === tab.id}
               onOpen={onOpenTab}
-              onOpenContextMenu={onOpenContextMenu}
+              onOpenContextMenu={(tabId, left, top) =>
+                onOpenContextMenu(tabId, left, top, false)
+              }
               onDragStart={drag.startDrag}
               onDragEnd={drag.endDrag}
             />

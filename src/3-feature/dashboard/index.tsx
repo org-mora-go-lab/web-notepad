@@ -28,9 +28,12 @@ export function Dashboard({
   onToggleTabBookmark,
   onRestoreClosed,
   onChangeClosedStatus,
+  onMoveClosedToGroup,
+  onToggleClosedBookmark,
 }: DashboardProps) {
   const [contextMenu, setContextMenu] = useState<{
-    tabId: string;
+    itemId: string;
+    closed: boolean;
     left: number;
     top: number;
   } | null>(null);
@@ -38,9 +41,16 @@ export function Dashboard({
   const { contentRef, listRef, boardRef } = useDashboardScroll();
   const columns = getDashboardColumns(tabs, closedTabs, tabColorCycle);
   const visibleTabs = columns.flatMap((column) => column.tabs);
-  const contextTab = visibleTabs.find((tab) => tab.id === contextMenu?.tabId);
+  const contextClosed = closedTabs.find(
+    (entry) => contextMenu?.closed && entry.id === contextMenu.itemId,
+  );
+  const contextTab = contextClosed?.tab ?? visibleTabs.find(
+    (tab) => !contextMenu?.closed && tab.id === contextMenu?.itemId,
+  );
   const contextGroup = groups.find((group) =>
-    group.tabs.some((tab) => tab.id === contextMenu?.tabId),
+    contextClosed
+      ? group.id === contextClosed.groupId
+      : group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
   const drag = useDashboardDrag({
     visibleTabs,
@@ -74,8 +84,8 @@ export function Dashboard({
                 tabColorCycle={tabColorCycle}
                 onRestoreClosed={onRestoreClosed}
                 onOpenTab={onOpenTab}
-                onOpenContextMenu={(tabId, left, top) =>
-                  setContextMenu({ tabId, left, top })
+                onOpenContextMenu={(itemId, left, top, closed) =>
+                  setContextMenu({ itemId, left, top, closed })
                 }
               />
             ))}
@@ -87,12 +97,14 @@ export function Dashboard({
           left={contextMenu.left}
           top={contextMenu.top}
           pinned={contextTab.pinned}
+          showPin={false}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id)
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
-            onMoveToGroup(contextTab.id, groupId);
+            if (contextClosed) onMoveClosedToGroup(contextClosed.id, groupId);
+            else onMoveToGroup(contextTab.id, groupId);
             setContextMenu(null);
           }}
           onTogglePin={() => {
@@ -100,7 +112,8 @@ export function Dashboard({
             setContextMenu(null);
           }}
           onToggleBookmark={() => {
-            onToggleTabBookmark(contextTab.id);
+            if (contextClosed) onToggleClosedBookmark(contextClosed.id);
+            else onToggleTabBookmark(contextTab.id);
             setContextMenu(null);
           }}
           onClose={() => setContextMenu(null)}

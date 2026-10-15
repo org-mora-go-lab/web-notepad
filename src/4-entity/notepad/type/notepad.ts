@@ -126,5 +126,7 @@ export type NotepadState = {
   selectGroup: (groupId: string) => void;
   restoreClosedTab: (entryId: string) => void;
   moveClosedTabToStatus: (entryId: string, status: TabStatus) => void;
+  moveClosedTabToGroup: (entryId: string, groupId: string) => void;
+  toggleClosedTabBookmark: (entryId: string) => void;
   removeClosedTab: (entryId: string) => void;
 };
