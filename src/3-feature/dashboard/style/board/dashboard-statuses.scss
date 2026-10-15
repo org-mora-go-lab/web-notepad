@@ -44,7 +44,7 @@
   }
 
   .dashboard-statuses h3.dashboard-closed-status {
-    --dashboard-accent: color-mix(in srgb, var(--color-tab-purple) 68%, #000);
+    --dashboard-accent: var(--color-tab-teal);
   }
 
   .dashboard-content.is-scrolled .dashboard-statuses::after {
