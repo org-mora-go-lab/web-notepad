@@ -63,6 +63,8 @@ export type GroupEntry = {
   // Pinned groups sort first in the group lists.
   pinned: boolean;
   createdAt: number;
+  // Last time the group itself or its tab membership changed.
+  updatedAt: number;
   tabs: NoteTab[];
   bookmarks: BookmarkEntry[];
   activeTabId: string;
@@ -83,7 +85,7 @@ export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
 
 export type PaneColumn = "left" | "right";
 
-export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "tabs" | "bookmarks">;
+export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks">;
 
 export type NotepadState = {
   nextTabNumber: number;

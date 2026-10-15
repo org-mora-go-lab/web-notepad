@@ -60,6 +60,7 @@ export function useHome() {
   const hasBookmarkUpdateToday = bookmarks.some((bookmark) =>
     isToday(bookmark.updatedAt),
   );
+  const hasGroupUpdateToday = groups.some((group) => isToday(group.updatedAt));
   const { panelPinned, togglePanelPin } = usePanelPin();
 
   const {
@@ -211,6 +212,7 @@ export function useHome() {
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
+    hasGroupUpdateToday,
     panelPinned,
     togglePanelPin,
     columns,

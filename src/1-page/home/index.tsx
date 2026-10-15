@@ -40,6 +40,7 @@ export function Home() {
     groups,
     activeGroupName,
     hasBookmarkUpdateToday,
+    hasGroupUpdateToday,
     panelPinned,
     togglePanelPin,
     columns,
@@ -100,6 +101,7 @@ export function Home() {
 
           <Footer
             hasBookmarkUpdateToday={hasBookmarkUpdateToday}
+            hasGroupUpdateToday={hasGroupUpdateToday}
             bookmarksOpen={openPanel === "bookmarks"}
             searchOpen={openPanel === "global-search"}
             dashboardOpen={openPanel === "dashboard"}
