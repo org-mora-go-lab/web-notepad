@@ -12,7 +12,7 @@ test("4. Closed 항목의 영구 삭제를 확정하면 저장 데이터에서 �
     .getByRole("button", { name: "Delete", exact: true })
     .click();
 
-  await expect(page.locator("#closed-panel .closed-item")).toHaveCount(0);
+  await expect(page.locator("#closed-popup .closed-item")).toHaveCount(0);
   expect(
     (await readStoredState(page)).closedTabs?.some(
       (entry) => entry.id === "closed-1",

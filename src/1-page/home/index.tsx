@@ -82,7 +82,7 @@ export function Home() {
   return (
     <I18nContext value={language}>
       <main
-        className={`home ${panelPinned && openPanel && openPanel !== "global-search" ? "is-panel-pinned" : ""}`}
+        className={`home ${panelPinned && openPanel && openPanel !== "global-search" && openPanel !== "closed" ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}

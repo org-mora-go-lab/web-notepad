@@ -136,7 +136,8 @@ function GroupMenu({
               <button
                 className="group-select"
                 type="button"
-                aria-controls="closed-panel"
+                aria-controls="closed-popup"
+                aria-haspopup="dialog"
                 onClick={() => {
                   onOpenClosed();
                   onClose();

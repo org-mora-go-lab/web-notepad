@@ -38,6 +38,7 @@ export function useHomeNavigation({
       panelPinned &&
       openPanel !== null &&
       openPanel !== "global-search" &&
+      openPanel !== "closed" &&
       isPinLayout(),
     [openPanel, panelPinned],
   );
@@ -122,6 +123,7 @@ export function useHomeNavigation({
           panel === "bookmarks" ||
           panel === "dashboard" ||
           panel === "global-search" ||
+          panel === "closed" ||
           !keepsPanelOpen()
         )
           closeSidePanels();

@@ -1,15 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../../__constant__";
-import { closeActiveTabWithContent, openClosedPanel } from "../../__util__";
+import { openPanel } from "../../__util__";
 import { panelPinButton } from "../__util__";
 
-test("4. 닫힌 탭을 다시 열어도 고정된 Closed 패널을 유지한다", async ({ page }) => {
+test("4. 다른 패널 명령을 선택하면 고정 상태를 유지한 채 해당 패널로 전환한다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
-  await closeActiveTabWithContent(page, "restore from pinned panel");
-  await openClosedPanel(page);
-  await panelPinButton(page, "closed-panel").click();
-  await page.locator("#closed-panel").getByRole("button", { name: "Reopen" }).click();
-  await expect(page.locator("#closed-panel")).toHaveAttribute("aria-hidden", "false");
+  await openPanel(page, "bookmarks-panel");
+  await panelPinButton(page, "bookmarks-panel").click();
+  await openPanel(page, "dashboard-panel");
+
+  await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute("aria-hidden", "false");
+  await expect(panelPinButton(page, "dashboard-panel")).toHaveAttribute("aria-pressed", "true");
 });

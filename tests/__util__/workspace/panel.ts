@@ -8,25 +8,13 @@ export const groupSelectCommand = (page: Page) =>
 export const bookmarksCommand = (page: Page) =>
   page.locator('button[aria-controls="bookmarks-panel"]');
 export const closedCommand = (page: Page) =>
-  page.locator('button[aria-controls="closed-panel"]');
+  page.locator('button[aria-controls="closed-popup"]');
 export const groupStatusName = (page: Page) =>
   page.locator(".group-select-name:visible, .current-group-name:visible");
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
 export async function openPanel(page: Page, panelId: string) {
-  if (panelId === "closed-panel") {
-    await groupsCommand(page).click();
-    await page
-      .locator("#groups-menu")
-      .getByRole("button", { name: "Closed", exact: true })
-      .click();
-    await expect(page.locator("#closed-panel")).toHaveAttribute(
-      "aria-hidden",
-      "false",
-    );
-    return;
-  }
   const command = page
     .locator(`button[aria-controls="${panelId}"]:visible`)
     .first();
@@ -53,7 +41,14 @@ export async function openPanel(page: Page, panelId: string) {
   );
 }
 
-export const openClosedPanel = (page: Page) => openPanel(page, "closed-panel");
+export async function openClosedPanel(page: Page) {
+  await groupsCommand(page).click();
+  await page
+    .locator("#groups-menu")
+    .getByRole("button", { name: "Closed", exact: true })
+    .click();
+  await expect(page.locator("#closed-popup")).toBeVisible();
+}
 export const openShortcutsPanel = (page: Page) =>
   openPanel(page, "shortcuts-panel");
 export const openSettingsPanel = (page: Page) =>

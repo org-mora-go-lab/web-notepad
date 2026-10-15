@@ -85,8 +85,6 @@ export function Panel({
       <Closed
         entries={visibleClosedTabs}
         open={openPanel === "closed"}
-        pinned={pinned}
-        onTogglePin={onTogglePin}
         onClose={onClose}
         onRestore={onRestoreClosedTab}
         onRemove={onRemoveClosedTab}
