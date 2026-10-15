@@ -35,7 +35,8 @@ export function Footer({
                 type="button"
                 onClick={onToggleSearch}
                 aria-expanded={searchOpen}
-                aria-controls="global-search-panel"
+                aria-controls="global-search-popup"
+                aria-haspopup="dialog"
                 aria-label={t.search}
               >
                 <span className="status-icon">

@@ -34,7 +34,11 @@ export function useHomeNavigation({
   const [openPanel, setOpenPanel] = useState<ViewPanel | null>(null);
   // A pinned panel stays open until its X button closes it.
   const keepsPanelOpen = useCallback(
-    () => panelPinned && openPanel !== null && isPinLayout(),
+    () =>
+      panelPinned &&
+      openPanel !== null &&
+      openPanel !== "global-search" &&
+      isPinLayout(),
     [openPanel, panelPinned],
   );
   const keepsPanelOpenRef = useRef(keepsPanelOpen);
@@ -114,7 +118,12 @@ export function useHomeNavigation({
   const toggleSidePanel = useCallback(
     (panel: ViewPanel) => {
       if (openPanel === panel) {
-        if (panel === "bookmarks" || panel === "dashboard" || !keepsPanelOpen())
+        if (
+          panel === "bookmarks" ||
+          panel === "dashboard" ||
+          panel === "global-search" ||
+          !keepsPanelOpen()
+        )
           closeSidePanels();
         return;
       }

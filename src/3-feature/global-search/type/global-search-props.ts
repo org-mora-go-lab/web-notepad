@@ -5,8 +5,6 @@ export type GlobalSearchProps = {
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
   onClose: () => void;
   onSelectGroup: (groupId: string) => void;
   onOpenBookmark: (groupId: string, bookmarkId: string) => void;

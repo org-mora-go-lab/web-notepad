@@ -58,8 +58,10 @@ export const openShortcutsPanel = (page: Page) =>
   openPanel(page, "shortcuts-panel");
 export const openSettingsPanel = (page: Page) =>
   openPanel(page, "settings-panel");
-export const openGlobalSearchPanel = (page: Page) =>
-  openPanel(page, "global-search-panel");
+export async function openGlobalSearchPanel(page: Page) {
+  await page.locator('button[aria-controls="global-search-popup"]').click();
+  await expect(page.locator("#global-search-popup")).toBeVisible();
+}
 
 // Creates a group from the open group dropdown.
 export async function createGroup(page: Page, name: string) {

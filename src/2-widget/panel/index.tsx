@@ -108,8 +108,6 @@ export function Panel({
         searchQuery={globalSearchQuery}
         onSearchQueryChange={onGlobalSearchQueryChange}
         open={openPanel === "global-search"}
-        pinned={pinned}
-        onTogglePin={onTogglePin}
         onClose={onClose}
         onSelectGroup={onSelectGroup}
         onOpenBookmark={onOpenSearchedBookmark}

@@ -19,7 +19,7 @@ test("4. 마우스 입력 기기는 전체 폰트 설정에 따른 입력란 크
 
   await expectBelowTouchMinimum(".note-area");
   await openGlobalSearchPanel(page);
-  await expectBelowTouchMinimum("#global-search-panel input");
+  await expectBelowTouchMinimum("#global-search-popup input");
   await page.keyboard.press("Escape");
   await groupsCommand(page).click();
   await expectBelowTouchMinimum(".group-create-form input");

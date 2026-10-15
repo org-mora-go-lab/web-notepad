@@ -13,7 +13,7 @@ test("3. Panel Position의 기본 Right와 Left 선택을 모든 사이드 패�
   expect((await settings.boundingBox())!.x).toBe(0);
   await settings.getByRole("button", { name: "Close Settings", exact: true }).click();
 
-  for (const id of ["bookmarks-panel", "dashboard-panel", "global-search-panel"]) {
+  for (const id of ["bookmarks-panel", "dashboard-panel"]) {
     await openPanel(page, id);
     expect((await page.locator(`#${id}`).boundingBox())!.x).toBe(0);
     await page.keyboard.press("Escape");

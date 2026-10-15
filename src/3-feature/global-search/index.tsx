@@ -1,6 +1,10 @@
 "use client";
+
+import { Search, X } from "lucide-react";
+import { useEffect, useId, useRef } from "react";
+
 import { useI18n } from "@/src/5-shared/hook";
-import { EmptyState, SearchField, SidePanel } from "@/src/5-shared/ui";
+import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { SearchResult, SearchResultSection } from "./component";
@@ -11,13 +15,13 @@ export function GlobalSearch({
   searchQuery,
   onSearchQueryChange,
   open,
-  pinned,
-  onTogglePin,
   onClose,
   onSelectGroup,
   onOpenBookmark,
 }: GlobalSearchProps) {
   const { t } = useI18n();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   const query = searchQuery.trim();
   const groupResults = query
     ? groups.filter((group) => matchesSearchQuery(query, group.name))
@@ -38,18 +42,45 @@ export function GlobalSearch({
     : [];
   const resultCount = groupResults.length + bookmarkResults.length;
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open && !dialog.open) {
+      dialog.showModal();
+      dialog.querySelector<HTMLInputElement>('input[type="search"]')?.focus();
+    } else if (!open && dialog.open) {
+      dialog.close();
+    }
+  }, [open]);
+
   return (
-    <SidePanel
+    <dialog
+      ref={dialogRef}
       className="global-search"
-      id="global-search-panel"
-      title={t.searchTitle}
-      open={open}
-      pinned={pinned}
-      onTogglePin={onTogglePin}
-      closeLabel={t.closePanel(t.searchTitle)}
-      ariaLabel={t.searchTitle}
-      onClose={onClose}
+      id="global-search-popup"
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
     >
+      <div className="global-search-header">
+        <div className="global-search-heading">
+          <Search size={20} aria-hidden="true" />
+          <h2 id={titleId}>{t.searchTitle}</h2>
+        </div>
+        <button
+          className="global-search-close"
+          type="button"
+          aria-label={t.closePanel(t.searchTitle)}
+          onClick={onClose}
+        >
+          <X size={18} />
+        </button>
+      </div>
       <SearchField
         value={searchQuery}
         ariaLabel={t.searchEverything}
@@ -108,6 +139,6 @@ export function GlobalSearch({
           </>
         )}
       </div>
-    </SidePanel>
+    </dialog>
   );
 }
