@@ -21,7 +21,7 @@ test("5. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   ]);
   await expect(panel.locator(".setting-hint")).toContainText("새 탭은 첫 번째 색상으로 시작합니다.그레이 → 그린 → 퍼플");
   await expect(bookmarksCommand(page).locator(".status-label")).toHaveText("북마크");
-  await expect(page.locator(".global-search-command")).toContainText("검색");
+  await expect(page.locator(".global-search-command")).toHaveAccessibleName("검색");
   await expect(page.locator(".note-area")).toHaveAttribute("placeholder", "메모를 입력하세요..");
 
   await page.getByRole("button", { name: "설정 닫기" }).click();

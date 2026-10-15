@@ -6,6 +6,7 @@ import {
   Keyboard,
   Layers3,
   Menu,
+  Search,
   Settings,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -23,6 +24,8 @@ import type { AdditionalToolsProps } from "../type";
 export function AdditionalTools({
   onOpenSettings,
   onOpenShortcuts,
+  onToggleSearch,
+  searchOpen,
   onSelectGroup,
 }: AdditionalToolsProps) {
   const [open, setOpen] = useState(false);
@@ -56,6 +59,18 @@ export function AdditionalTools({
   return (
     <div className="additional-tools" ref={containerRef}>
       <button
+        className={`global-search-command ${searchOpen ? "is-active" : ""}`}
+        type="button"
+        title={t.search}
+        aria-label={t.search}
+        aria-expanded={searchOpen}
+        aria-controls="global-search-popup"
+        aria-haspopup="dialog"
+        onClick={onToggleSearch}
+      >
+        <Search strokeWidth={1.8} />
+      </button>
+      <button
         className="additional-tools-trigger"
         ref={triggerRef}
         type="button"
@@ -69,7 +84,6 @@ export function AdditionalTools({
         }}
       >
         <Menu size={20} strokeWidth={1.8} />
-        <span className="additional-tools-label">{t.menu}</span>
       </button>
       <div
         hidden={!open}

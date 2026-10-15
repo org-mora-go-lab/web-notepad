@@ -2,18 +2,23 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
 
-test("1. MENU 버튼은 탭 줄 우측 상단에서 탭 목록과 겹치지 않게 표시한다", async ({ page }) => {
+test("1. 문구 없는 메뉴 아이콘 왼쪽에 검색 아이콘을 표시한다", async ({ page }) => {
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "MENU", exact: true });
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await expect(trigger).toBeInViewport();
     const bounds = (await trigger.boundingBox())!;
+    const search = page.locator(".header .global-search-command");
+    const searchBounds = (await search.boundingBox())!;
     expect(bounds.y).toBe(0);
     expect(bounds.x + bounds.width).toBeCloseTo(viewport.width, 1);
+    expect(searchBounds.x + searchBounds.width).toBeCloseTo(bounds.x, 1);
     const tabsBounds = (await page.locator(".tabs-scroll").first().boundingBox())!;
     expect(tabsBounds.x + tabsBounds.width).toBeLessThanOrEqual(bounds.x + 1);
     await expect(trigger.locator("svg")).toBeVisible();
     await expect(trigger.locator("svg")).toHaveClass(/lucide-menu/);
+    await expect(trigger).toHaveText("");
+    await expect(search.locator("svg")).toHaveClass(/lucide-search/);
   }
 });

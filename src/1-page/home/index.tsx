@@ -74,6 +74,8 @@ export function Home() {
           onOpenShortcuts: () => {
             if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
           },
+          onToggleSearch: () => toggleSidePanel("global-search"),
+          searchOpen: openPanel === "global-search",
           onSelectGroup: selectGroupAndClosePanel,
         }
       : pane;
@@ -105,12 +107,10 @@ export function Home() {
             hasBookmarkUpdateToday={hasBookmarkUpdateToday}
             hasGroupUpdateToday={hasGroupUpdateToday}
             bookmarksOpen={openPanel === "bookmarks"}
-            searchOpen={openPanel === "global-search"}
             dashboardOpen={openPanel === "dashboard"}
             activeGroupName={activeGroupName}
             groupsOpen={groupMenuOpen}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
-            onToggleSearch={() => toggleSidePanel("global-search")}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
             onToggleGroups={() => setGroupMenuOpen((current) => !current)}
           />

@@ -8,6 +8,8 @@ export function PaneView({
   pane,
   onOpenSettings,
   onOpenShortcuts,
+  onToggleSearch,
+  searchOpen,
   onSelectGroup,
   tabs,
   groups,
@@ -50,6 +52,8 @@ export function PaneView({
         <Header
           onOpenSettings={onOpenSettings}
           onOpenShortcuts={onOpenShortcuts}
+          onToggleSearch={onToggleSearch}
+          searchOpen={searchOpen}
           onSelectGroup={onSelectGroup}
           tabs={tabs}
           groups={groups}

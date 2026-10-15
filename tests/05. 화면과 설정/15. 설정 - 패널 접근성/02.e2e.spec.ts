@@ -6,7 +6,7 @@ test("2. 언어 변경은 전체 검색 팝업과 검색 입력·닫기 조작�
   await page.goto("/");
   const settings = await switchWorkspaceToKorean(page);
   await settings.getByRole("button", { name: "설정 닫기", exact: true }).click();
-  await page.locator('.footer button[aria-controls="global-search-popup"]').click();
+  await page.locator('.header button[aria-controls="global-search-popup"]').click();
   await expect(page.locator("#global-search-popup")).toHaveAccessibleName("검색");
   await expect(page.getByRole("searchbox", { name: "전체 검색" })).toBeVisible();
   await expect(page.getByRole("button", { name: "검색 닫기", exact: true })).toBeVisible();

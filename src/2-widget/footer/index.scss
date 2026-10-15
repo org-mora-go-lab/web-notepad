@@ -99,13 +99,13 @@
     display: none;
   }
 
-  // Group select sits on the left; SEARCH, BOOKMARK and DASHBOARD are pushed to the right.
+  // Group select sits on the left; BOOKMARK and DASHBOARD are pushed to the right.
   .group-select-command {
     order: -1;
     gap: 12px;
   }
 
-  .global-search-command {
+  .bookmark-command {
     margin-left: auto;
   }
 
@@ -147,7 +147,7 @@
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
     }
 
@@ -170,7 +170,6 @@
 
     // Mobile footer commands use the same icon-over-label layout.
     .group-select-command,
-    .global-search-command,
     .bookmark-command,
     .dashboard-command {
       flex-direction: column;
@@ -185,24 +184,17 @@
       }
     }
 
-    .global-search-command {
-      margin-left: 0;
-    }
-
     .group-select-command {
       grid-column: 1;
     }
 
-    .global-search-command {
-      grid-column: 2;
-    }
-
     .bookmark-command {
-      grid-column: 3;
+      grid-column: 2;
+      margin-left: 0;
     }
 
     .dashboard-command {
-      grid-column: 4;
+      grid-column: 3;
     }
 
     .status-command > span.group-select-name {
@@ -248,7 +240,7 @@
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
     }
 
@@ -270,7 +262,6 @@
     }
 
     .group-select-command,
-    .global-search-command,
     .bookmark-command,
     .dashboard-command {
       flex-direction: column;
@@ -285,21 +276,17 @@
       }
     }
 
-    .global-search-command {
-      margin-left: 0;
-      grid-column: 2;
-    }
-
     .group-select-command {
       grid-column: 1;
     }
 
     .bookmark-command {
-      grid-column: 3;
+      grid-column: 2;
+      margin-left: 0;
     }
 
     .dashboard-command {
-      grid-column: 4;
+      grid-column: 3;
     }
 
     .status-command > span.group-select-name {
