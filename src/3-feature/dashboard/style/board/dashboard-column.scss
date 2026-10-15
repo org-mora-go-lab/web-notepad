@@ -4,7 +4,7 @@
   .dashboard-board {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 15px;
+    column-gap: 15px;
     min-height: 100%;
   }
 
@@ -37,6 +37,7 @@
     .dashboard-board {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: repeat(3, auto);
+      row-gap: 15px;
       align-content: start;
     }
 
