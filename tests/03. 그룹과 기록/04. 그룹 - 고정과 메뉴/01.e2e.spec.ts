@@ -8,7 +8,7 @@ test("1. 그룹을 고정하면 이름 있는 그룹 목록의 맨 위로 옮기
   await chooseGroupAction(page, "Zulu", "고정");
 
   await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "Closed", "Zulu", "가방", "나무", "다람쥐", "Alpha",
+    "Zulu", "가방", "나무", "다람쥐", "Alpha",
   ]);
   await expect(page.locator(".group-item").filter({ hasText: "Zulu" }).locator(".group-pin-indicator")).toBeVisible();
 });

@@ -77,6 +77,7 @@ export function Panel({
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
+        onOpenClosed={onOpenClosed}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
         onRenameStatus={onRenameDashboardStatus}
@@ -102,7 +103,6 @@ export function Panel({
         onRemove={onRemoveGroup}
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
-        onOpenClosed={onOpenClosed}
       />
       <GlobalSearch
         groups={groups}

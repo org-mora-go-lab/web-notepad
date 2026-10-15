@@ -1,6 +1,6 @@
 "use client";
 
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Archive, Maximize2, Minimize2 } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -26,6 +26,7 @@ export function Dashboard({
   pinned,
   onTogglePin,
   onClose,
+  onOpenClosed,
   onOpenTab,
   onChangeStatus,
   onRenameStatus,
@@ -103,6 +104,18 @@ export function Dashboard({
             ))}
           </div>
         </div>
+      </div>
+      <div className="dashboard-footer">
+        <button
+          className="dashboard-closed-command"
+          type="button"
+          aria-controls="closed-popup"
+          aria-haspopup="dialog"
+          onClick={onOpenClosed}
+        >
+          <Archive size={24} strokeWidth={1.8} />
+          <span>{t.closed}</span>
+        </button>
       </div>
       {contextMenu && contextTab && (
         <TabContextMenu

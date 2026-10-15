@@ -12,6 +12,7 @@ export type DashboardProps = {
   pinned: boolean;
   onTogglePin: () => void;
   onClose: () => void;
+  onOpenClosed: () => void;
   onOpenTab: (tabId: string) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
   onRenameStatus: (status: TabStatus, name: string) => void;

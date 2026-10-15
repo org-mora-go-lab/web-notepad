@@ -42,11 +42,8 @@ export async function openPanel(page: Page, panelId: string) {
 }
 
 export async function openClosedPanel(page: Page) {
-  await groupsCommand(page).click();
-  await page
-    .locator("#groups-menu")
-    .getByRole("button", { name: "Closed", exact: true })
-    .click();
+  await openPanel(page, "dashboard-panel");
+  await page.locator(".dashboard-closed-command").click();
   await expect(page.locator("#closed-popup")).toBeVisible();
 }
 export const openShortcutsPanel = (page: Page) =>

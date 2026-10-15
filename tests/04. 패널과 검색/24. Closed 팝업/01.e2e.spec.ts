@@ -1,14 +1,26 @@
 import { expect, test } from "@playwright/test";
 
-import { groupsCommand } from "../../__util__";
+import { openPanel } from "../../__util__";
 import { seedClosedPanelState } from "./__fixture__";
 
 test("1. Closed는 현재 그룹 목록과 선택한 탭의 우측 미리보기를 표시한다", async ({ page }) => {
   await seedClosedPanelState(page);
-  await groupsCommand(page).click();
+  await openPanel(page, "dashboard-panel");
 
-  const closedButton = page.locator("#groups-menu .group-closed-item .group-select");
-  await expect(closedButton).toHaveText("Closed");
+  const dashboard = page.locator("#dashboard-panel");
+  const dashboardFooter = dashboard.locator(".dashboard-footer");
+  const closedButton = dashboard.locator(".dashboard-closed-command");
+  await expect(dashboardFooter).toHaveCSS("height", "48px");
+  await expect(closedButton).toContainText("CLOSED");
+  await expect(closedButton.locator("svg")).toHaveClass(/lucide-archive/);
+  const [sectionBox, buttonBox] = await Promise.all([
+    dashboardFooter.boundingBox(),
+    closedButton.boundingBox(),
+  ]);
+  expect(buttonBox!.x + buttonBox!.width).toBeCloseTo(
+    sectionBox!.x + sectionBox!.width - 26,
+    0,
+  );
   await closedButton.click();
 
   const popup = page.locator("#closed-popup");
