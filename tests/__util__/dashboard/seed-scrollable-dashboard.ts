@@ -13,7 +13,7 @@ export async function seedScrollableDashboard(page: Page) {
         "Ungrouped",
         Array.from({ length: 30 }, (_, index) =>
           createTabFixture(`tab-${index}`, `Task ${index}\nBody`, {
-            tabColor: index % 3 === 0 ? "gray" : index % 3 === 1 ? "green" : "purple",
+            tabColor: index % 3 === 0 ? "orange" : index % 3 === 1 ? "green" : "red",
           }),
         ),
       ),

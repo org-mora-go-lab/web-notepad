@@ -21,9 +21,9 @@ test("4. Reset은 모든 설정을 기본값으로 되돌린다", async ({ page 
 
   await expect(panel.locator("h2")).toHaveText("Settings");
   await expect(fontScaleRadio(page, "100%")).toBeChecked();
-  await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
+  await expect(tabColorRadio(page, 1, "Orange")).toBeChecked();
   await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Purple")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Red")).toBeChecked();
   await expect(languageRadio(page, "English")).toBeChecked();
   await expect(panel.getByRole("radio", { name: "Off", exact: true })).toBeChecked();
   await expect(panel.getByRole("radio", { name: "Right", exact: true })).toBeChecked();

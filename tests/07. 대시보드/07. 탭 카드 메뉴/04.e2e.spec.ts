@@ -9,8 +9,8 @@ test("4. Todo·Doing·Done 카드 우클릭 메뉴에는 Closed 기능을 표시
     activeGroupId: "ungrouped",
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-0", "Todo task", { tabColor: "gray" }),
-        createTabFixture("tab-1", "Done task", { tabColor: "purple" }),
+        createTabFixture("tab-0", "Todo task", { tabColor: "orange" }),
+        createTabFixture("tab-1", "Done task", { tabColor: "red" }),
       ]),
       createGroupFixture("work", "Work", [createTabFixture("tab-2", "Work task")]),
     ],

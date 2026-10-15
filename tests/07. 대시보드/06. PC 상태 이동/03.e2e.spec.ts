@@ -5,7 +5,7 @@ import { openPanel, readStoredState, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../../__util__";
 
 test("3. 짧은 일반 탭을 Done으로 옮겨도 편집기에 열린 상태를 유지한다", async ({ page }) => {
-  const tab = createTabFixture("tab-short", "short", { tabColor: "gray" });
+  const tab = createTabFixture("tab-short", "short", { tabColor: "orange" });
   await writeStoredState(page, { groups: [createGroupFixture("ungrouped", "Ungrouped", [tab])], activeGroupId: "ungrouped" });
   await openPanel(page, "dashboard-panel");
   await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "done"));

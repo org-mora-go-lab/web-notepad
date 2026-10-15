@@ -22,7 +22,7 @@ test("3. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
     STORAGE_KEY,
   )).toEqual({
     fontScale: 1,
-    tabColorCycle: ["gray", "green", "purple"],
+    tabColorCycle: ["orange", "green", "red"],
     language: "en",
     panelSlide: false,
     panelPosition: "right",

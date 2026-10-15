@@ -10,5 +10,5 @@ test("1. PC에서 카드를 다른 컬럼으로 드래그하면 상태와 탭 �
   await card.dragTo(dashboardColumn(page, "in-progress"));
   await expect(card).toHaveAttribute("data-tab-color", "green");
   await card.dragTo(dashboardColumn(page, "todo"));
-  await expect(card).toHaveAttribute("data-tab-color", "gray");
+  await expect(card).toHaveAttribute("data-tab-color", "orange");
 });

@@ -21,5 +21,5 @@ test("3. 내용이 있는 탭을 닫으면 상태를 유지한 채 에디터에�
       status: hiddenTab?.tabColor,
       closedCount: state.closedTabs?.length,
     };
-  }).toEqual({ open: false, status: "gray", closedCount: 0 });
+  }).toEqual({ open: false, status: "orange", closedCount: 0 });
 });
