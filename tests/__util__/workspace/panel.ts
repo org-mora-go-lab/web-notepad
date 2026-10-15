@@ -21,8 +21,7 @@ export async function openPanel(page: Page, panelId: string) {
   if (
     panelId === "closed-panel" ||
     panelId === "shortcuts-panel" ||
-    panelId === "settings-panel" ||
-    panelId === "global-search-panel"
+    panelId === "settings-panel"
   ) {
     const menu = page.locator(".additional-tools-trigger");
     await menu.click();

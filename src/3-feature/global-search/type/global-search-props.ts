@@ -1,8 +1,7 @@
-import type { ClosedTabEntry, GroupEntry } from "@/src/4-entity/notepad";
+import type { GroupEntry } from "@/src/4-entity/notepad";
 
 export type GlobalSearchProps = {
   groups: GroupEntry[];
-  closedTabs: ClosedTabEntry[];
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   open: boolean;
@@ -11,5 +10,4 @@ export type GlobalSearchProps = {
   onClose: () => void;
   onSelectGroup: (groupId: string) => void;
   onOpenBookmark: (groupId: string, bookmarkId: string) => void;
-  onOpenClosedSearch: (query: string) => void;
 };

@@ -22,6 +22,7 @@
 
   .user-guide-header,
   .user-guide-heading,
+  .user-guide-header-actions,
   .user-guide-actions,
   .user-guide-nav {
     display: flex;
@@ -41,6 +42,10 @@
       flex: 0 0 auto;
       color: v.$signal;
     }
+  }
+
+  .user-guide-header-actions {
+    gap: 8px;
   }
 
   h3 {
@@ -74,6 +79,10 @@
     gap: 8px;
   }
 
+  .user-guide-actions {
+    justify-content: flex-end;
+  }
+
   button {
     min-height: 34px;
     display: flex;
@@ -104,6 +113,9 @@
   }
 
   .user-guide-stop {
+    width: 34px;
+    min-width: 34px;
+    padding: 0;
     color: v.$muted;
   }
 
@@ -140,6 +152,11 @@
         width: 14px * v.$mobile-scale;
         height: 14px * v.$mobile-scale;
       }
+    }
+
+    .user-guide-stop {
+      width: 34px * v.$mobile-scale;
+      min-width: 34px * v.$mobile-scale;
     }
   }
 }

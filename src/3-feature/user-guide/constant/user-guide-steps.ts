@@ -38,7 +38,7 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
     },
     {
       title: "Search and closed tabs",
-      description: "Use SEARCH in MENU to search everything, and CLOSED to restore tabs you closed.",
+      description: "Use SEARCH at the bottom to search everything, and the dashboard to restore closed tabs.",
     },
     {
       title: "Theme and settings",
@@ -80,7 +80,7 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
     },
     {
       title: "검색과 닫은 탭",
-      description: "메뉴의 검색으로 전체 내용을 찾고, 닫은 탭에서 닫았던 탭을 복원합니다.",
+      description: "하단의 검색으로 전체 내용을 찾고, 대시보드에서 닫았던 탭을 복원합니다.",
     },
     {
       title: "테마와 설정",

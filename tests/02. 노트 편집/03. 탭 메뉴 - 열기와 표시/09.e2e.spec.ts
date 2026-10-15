@@ -10,6 +10,6 @@ test("9. 모바일 핀 아이콘을 더블탭하면 해당 탭 메뉴를 연다"
   const { pinnedTab } = await createPinnedAndBookmarkedTabs(page);
   await pinnedTab.getByRole("tab").click();
   await pinnedTab.locator(".tab-pin-indicator").dblclick();
-  await expect(page.getByRole("menuitem", { name: "Unpin", exact: true })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Unpin", exact: true })).toHaveCount(0);
   await expect(page.getByRole("menuitem", { name: "Bookmark", exact: true })).toBeVisible();
 });

@@ -20,6 +20,12 @@ test("4. 누락된 기본 그룹의 복구 탭 ID는 기존 탭과 북마크 원
       })),
     })],
   });
+  await page.waitForFunction(() => {
+    const stored = localStorage.getItem("web-notepad-storage");
+    if (!stored) return false;
+    const state = JSON.parse(stored).state;
+    return state.groups?.some((group: { id?: string }) => group.id === "ungrouped");
+  });
   const state = await readStoredState(page);
   const recovered = state.groups.find((group) => group.id === "ungrouped")?.tabs[0];
   expect(recovered).toBeDefined();

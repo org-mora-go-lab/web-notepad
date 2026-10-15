@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { openPanel } from "../../__util__";
 import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../__util__";
 
-test("1. Closed 카드를 Todo로 옮기면 Todo 색상으로 정확히 한 번 복원한다", async ({ page }) => {
+test("1. Done 카드를 Todo로 옮기면 Todo 색상으로 정확히 한 번 복원한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
   await dashboardColumn(page, "todo")

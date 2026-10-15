@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import {
   getActiveGroup,
@@ -27,7 +27,6 @@ const COLUMNS: PaneColumn[] = ["left", "right"];
 
 export function useHome() {
   const hydrated = useNotepadHydrated();
-  const [closedSearchQuery, setClosedSearchQuery] = useState("");
   const editorRefs = usePaneRefs<HTMLTextAreaElement | null>(null);
   const composingRefs = usePaneRefs(false);
   const store = useNotepadStore();
@@ -35,7 +34,6 @@ export function useHome() {
     groups,
     activeGroupId,
     closedTabs,
-    removeClosedTab,
     updateTab,
     moveTab,
     setSplitRatio,
@@ -45,6 +43,8 @@ export function useHome() {
     toggleBookmark,
     setTabStatus,
     moveClosedTabToStatus,
+    moveClosedTabToGroup,
+    toggleClosedTabBookmark,
     removeBookmark,
     createGroup,
     renameGroup,
@@ -72,12 +72,9 @@ export function useHome() {
   const paneActiveTab = (pane: PaneId) => activeTabs[pane];
 
   const {
-    pendingCloseTabId,
     requestCloseTab: requestCloseTabAction,
     addTabToPane,
     moveToGroup,
-    cancelCloseTab,
-    confirmCloseTab: confirmCloseTabAction,
   } = useHomeTabActions({ editorRefs });
 
   const navigation = useHomeNavigation({ hydrated, panelPinned, addTabToPane });
@@ -96,9 +93,6 @@ export function useHome() {
     },
     [replaceCurrentView, requestCloseTabAction],
   );
-  const confirmCloseTab = useCallback(() => {
-    if (confirmCloseTabAction()) replaceCurrentView();
-  }, [confirmCloseTabAction, replaceCurrentView]);
 
   useNotepadShortcuts({
     editorRefs,
@@ -183,14 +177,8 @@ export function useHome() {
   return {
     hydrated,
     closedTabs,
-    removeClosedTab,
     ...navigation,
-    pendingCloseTabId,
-    cancelCloseTab,
-    confirmCloseTab,
     openPanel,
-    closedSearchQuery,
-    setClosedSearchQuery,
     activeGroupId,
     activeTab,
     split,
@@ -205,7 +193,11 @@ export function useHome() {
     tabColorCycle: settings.tabColorCycle,
     setTabStatus,
     togglePin,
+    toggleBookmark,
+    moveToGroup,
     moveClosedTabToStatus,
+    moveClosedTabToGroup,
+    toggleClosedTabBookmark,
     removeBookmark,
     createGroup,
     renameGroup,

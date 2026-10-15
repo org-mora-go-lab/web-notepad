@@ -11,7 +11,8 @@ test("7. LIGHT의 그레이·그린 아이콘 강조색과 레드·DARK 탭 색�
     await page.setViewportSize(viewport);
     await page.getByRole("button", { name: "MENU", exact: true }).click();
     await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-    await page.getByRole("menuitemradio", { name: "LIGHT" }).click();
+    await page.getByRole("switch", { name: "THEME" }).click();
+    await page.keyboard.press("Escape");
 
     const activeTab = page.locator(".tab-item.is-active");
     const colorIcon = activeTab.locator(".dirty-dot");
@@ -26,8 +27,9 @@ test("7. LIGHT의 그레이·그린 아이콘 강조색과 레드·DARK 탭 색�
 
     await page.getByRole("button", { name: "MENU", exact: true }).click();
     await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-    await page.getByRole("menuitemradio", { name: "DARK" }).click();
+    await page.getByRole("switch", { name: "THEME" }).click();
     await expect.poll(iconColor).toBe("rgb(184, 184, 176)");
     await expect(activeTab).toHaveCSS("background-color", "rgba(184, 184, 176, 0.16)");
+    await page.keyboard.press("Escape");
   }
 });

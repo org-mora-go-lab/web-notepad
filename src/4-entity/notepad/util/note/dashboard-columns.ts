@@ -24,7 +24,13 @@ export function getDashboardColumns(
         .find((column) => column.status === getTabStatus(tab, colors))!
         .tabs.push(tab);
   }
-  columns.find((column) => column.status === "done")!.closedTabs =
-    closedTabs.filter((entry) => entry.tab.content.trim());
+  for (const entry of closedTabs) {
+    if (entry.tab.content.trim())
+      columns
+        .find(
+          (column) => column.status === getTabStatus(entry.tab, colors),
+        )!
+        .closedTabs.push(entry);
+  }
   return columns;
 }

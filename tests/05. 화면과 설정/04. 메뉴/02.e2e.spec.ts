@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../../__constant__";
 
-test("2. PC MENU 버튼과 드롭다운은 지정된 크기·모서리와 CLOSED 구분선으로 표시한다", async ({ page }) => {
+test("2. PC MENU 버튼과 드롭다운은 지정된 크기와 모서리로 표시한다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   const trigger = page.getByRole("button", { name: "MENU", exact: true });
@@ -16,9 +16,7 @@ test("2. PC MENU 버튼과 드롭다운은 지정된 크기·모서리와 CLOSED
   const menu = page.getByRole("menu", { name: "MENU", exact: true });
   await expect(menu).toHaveCSS("width", "208px");
   await expect(menu).toHaveCSS("border-radius", "6px");
-  const closed = page.getByRole("menuitem", { name: "CLOSED" });
-  await expect(closed).toBeVisible();
-  expect(await closed.evaluate(element => getComputedStyle(element).borderTopStyle)).not.toBe("none");
+  await expect(page.getByRole("menuitem", { name: "CLOSED" })).toHaveCount(0);
   expect(await page.getByRole("menuitem", { name: "SHORTCUT" })
     .evaluate(element => getComputedStyle(element).borderTopStyle)).toBe("none");
 });

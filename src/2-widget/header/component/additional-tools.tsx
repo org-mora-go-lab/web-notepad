@@ -2,10 +2,8 @@
 
 import {
   BookOpen,
-  Ghost,
   Keyboard,
   Menu,
-  Search,
   Settings,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -16,11 +14,8 @@ import { useI18n } from "@/src/5-shared/hook";
 import type { AdditionalToolsProps } from "../type";
 
 export function AdditionalTools({
-  closedCount,
-  onOpenClosed,
   onOpenSettings,
   onOpenShortcuts,
-  onOpenSearch,
 }: AdditionalToolsProps) {
   const [open, setOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
@@ -107,7 +102,7 @@ export function AdditionalTools({
           }
         }}
       >
-        <Theme key={String(open)} onSelect={close} />
+        <Theme />
         <button
           className="additional-tools-shortcut"
           type="button"
@@ -147,37 +142,6 @@ export function AdditionalTools({
         >
           <BookOpen size={16} />
           <span>{t.guide}</span>
-        </button>
-        <button
-          className="closed-command"
-          type="button"
-          role="menuitem"
-          aria-controls="closed-panel"
-          aria-label={t.closed}
-          onClick={() => {
-            close();
-            onOpenClosed();
-          }}
-        >
-          <Ghost size={16} />
-          <span>{t.closed}</span>
-          {closedCount > 0 && (
-            <span className="closed-count">{closedCount}</span>
-          )}
-        </button>
-        <button
-          className="additional-tools-search global-search-command"
-          type="button"
-          role="menuitem"
-          aria-controls="global-search-panel"
-          aria-label={t.search}
-          onClick={() => {
-            close();
-            onOpenSearch();
-          }}
-        >
-          <Search size={16} />
-          <span className="global-search-label">{t.search}</span>
         </button>
       </div>
       {guideOpen && <UserGuide onClose={() => setGuideOpen(false)} />}

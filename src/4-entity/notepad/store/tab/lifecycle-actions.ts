@@ -7,7 +7,6 @@ import {
   getPaneOfTab,
   getPaneTabs,
   getStatusColor,
-  isSubstantialContent,
   normalizeLayout,
   setPaneActiveTabId,
 } from "../../util";
@@ -27,7 +26,7 @@ export const createTabLifecycleActions: StateCreator<
   [],
   Actions
 > = (set, get) => ({
-  // Moving a tab to a dashboard column gives it that column's tab color; the Closed column closes it without a prompt.
+  // Dashboard columns describe status only; changing status never closes a tab.
   setTabStatus: (tabId, status) => {
     set((state) => {
       const group = state.groups.find((item) =>
@@ -44,46 +43,30 @@ export const createTabLifecycleActions: StateCreator<
         ),
       );
     });
-    const state = get();
-    const tab = getTabGroup(state, tabId)?.tabs.find(
-      (item) => item.id === tabId,
-    );
-    if (status === "done" && tab) closeTabEntry(set, get, tabId, true);
   },
-  closeTab: (tabId) => closeTabEntry(set, get, tabId, false),
+  closeTab: (tabId) => closeTabEntry(set, get, tabId),
 });
 
-// forceKeep keeps the tab in Closed regardless of its length or bookmark (dashboard Closed column).
 const closeTabEntry = (
   set: (partial: Partial<NotepadState>) => void,
   get: () => NotepadState,
   tabId: string,
-  forceKeep: boolean,
 ) => {
   const state = get();
   const group = getTabGroup(state, tabId);
   const tab = group?.tabs.find((item) => item.id === tabId);
   if (!group || !tab || tab.pinned) return;
-  // A tab restored from Closed and left unedited goes back to Closed, whatever its length or bookmark.
-  const unchangedSinceRestore =
-    tab.restoredContent !== undefined && tab.content === tab.restoredContent;
-  if (
-    forceKeep ||
-    unchangedSinceRestore ||
-    (isSubstantialContent(tab.content) && !tab.bookmarked)
-  ) {
-    set({
-      closedTabs: [
-        {
-          id: `closed-${crypto.randomUUID()}`,
-          groupId: group.id,
-          tab,
-          closedAt: Date.now(),
-        },
-        ...state.closedTabs,
-      ],
-    });
-  }
+  set({
+    closedTabs: [
+      {
+        id: `closed-${crypto.randomUUID()}`,
+        groupId: group.id,
+        tab,
+        closedAt: Date.now(),
+      },
+      ...state.closedTabs,
+    ],
+  });
 
   const remainingTabs = group.tabs.filter((item) => item.id !== tabId);
   if (remainingTabs.length === 0) {

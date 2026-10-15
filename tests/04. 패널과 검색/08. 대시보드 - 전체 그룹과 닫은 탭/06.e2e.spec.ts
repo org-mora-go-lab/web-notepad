@@ -21,6 +21,7 @@ test("6. 고정·북마크된 탭의 카드는 우측 상단에 핀·북마크 �
   const bookmark = (title: string) => card(title).locator(".dashboard-card-bookmark");
 
   await expect(bookmark("Marked task")).toBeVisible();
+  await expect(bookmark("Marked task").locator("svg")).toHaveCSS("fill", "none");
   await expect(pin("Marked task")).toHaveCount(0);
   await expect(pin("Pinned task")).toBeVisible();
   await expect(bookmark("Pinned task")).toHaveCount(0);

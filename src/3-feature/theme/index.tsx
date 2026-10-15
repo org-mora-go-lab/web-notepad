@@ -1,56 +1,34 @@
 "use client";
 
-import { ChevronRight, Moon, Sun } from "lucide-react";
-import { useId, useState } from "react";
+import { Moon, Sun } from "lucide-react";
 
 import { useTheme } from "@/src/4-entity";
 import { useI18n } from "@/src/5-shared/hook";
 
-import type { ThemeProps } from "./type";
-
-export function Theme({ onSelect }: ThemeProps) {
-  const [open, setOpen] = useState(false);
-  const optionsId = useId();
+export function Theme() {
   const { theme, setTheme } = useTheme();
   const { t } = useI18n();
 
   return (
     <div className="theme">
-      <button
-        type="button"
+      <div
+        className="theme-label"
         role="menuitem"
-        aria-expanded={open}
-        aria-controls={optionsId}
-        onClick={() => setOpen(!open)}
+        tabIndex={0}
       >
         {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
         <span>{t.theme}</span>
-        <ChevronRight className={open ? "is-expanded" : ""} size={14} />
-      </button>
-      {open && (
-        <div
-          className="theme-options"
-          id={optionsId}
-          role="menu"
+      </div>
+      <label className="theme-toggle">
+        <input
+          type="checkbox"
+          role="switch"
           aria-label={t.theme}
-        >
-          {(["dark", "light"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              role="menuitemradio"
-              aria-checked={theme === option}
-              onClick={() => {
-                setTheme(option);
-                onSelect();
-              }}
-            >
-              {option === "dark" ? <Moon size={16} /> : <Sun size={16} />}
-              <span>{t[option]}</span>
-            </button>
-          ))}
-        </div>
-      )}
+          checked={theme === "light"}
+          onChange={(event) => setTheme(event.target.checked ? "light" : "dark")}
+        />
+        <span className="theme-toggle-track" aria-hidden="true" />
+      </label>
     </div>
   );
 }

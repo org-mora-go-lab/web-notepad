@@ -1,5 +1,4 @@
 "use client";
-import { getClosedTabItems } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { EmptyState, SearchField, SidePanel } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
@@ -9,7 +8,6 @@ import type { GlobalSearchProps } from "./type";
 
 export function GlobalSearch({
   groups,
-  closedTabs,
   searchQuery,
   onSearchQueryChange,
   open,
@@ -18,7 +16,6 @@ export function GlobalSearch({
   onClose,
   onSelectGroup,
   onOpenBookmark,
-  onOpenClosedSearch,
 }: GlobalSearchProps) {
   const { t } = useI18n();
   const query = searchQuery.trim();
@@ -39,18 +36,7 @@ export function GlobalSearch({
           .map((bookmark) => ({ group, bookmark })),
       )
     : [];
-  const closedResults = query
-    ? getClosedTabItems(closedTabs, groups).filter(({ entry, groupName }) =>
-        matchesSearchQuery(
-          query,
-          groupName,
-          entry.tab.title,
-          entry.tab.content,
-        ),
-      )
-    : [];
-  const resultCount =
-    groupResults.length + bookmarkResults.length + closedResults.length;
+  const resultCount = groupResults.length + bookmarkResults.length;
 
   return (
     <SidePanel
@@ -115,25 +101,6 @@ export function GlobalSearch({
                     query={query}
                     ariaLabel={t.openBookmarkResult(bookmark.title)}
                     onSelect={() => onOpenBookmark(group.id, bookmark.id)}
-                  />
-                ))}
-              </SearchResultSection>
-            )}
-            {closedResults.length > 0 && (
-              <SearchResultSection
-                title={t.closedTitle}
-                className="global-search-closed"
-              >
-                {closedResults.map(({ entry, groupName }) => (
-                  <SearchResult
-                    key={entry.id}
-                    category={t.closedCategory}
-                    groupName={groupName}
-                    title={entry.tab.title}
-                    description={entry.tab.content}
-                    query={query}
-                    ariaLabel={t.viewClosedResult(entry.tab.title)}
-                    onSelect={() => onOpenClosedSearch(query)}
                   />
                 ))}
               </SearchResultSection>

@@ -14,4 +14,10 @@ export type DashboardColumnProps = Pick<
 > & {
   column: DashboardColumnData;
   drag: ReturnType<typeof useDashboardDrag>;
+  onOpenContextMenu: (
+    itemId: string,
+    clientX: number,
+    clientY: number,
+    closed: boolean,
+  ) => void;
 };

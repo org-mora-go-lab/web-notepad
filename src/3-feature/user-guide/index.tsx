@@ -8,7 +8,7 @@ import { useI18n } from "@/src/5-shared/hook";
 import { USER_GUIDE_STEPS } from "./constant";
 import type { UserGuideProps } from "./type";
 
-// Modal walkthrough: one step at a time with Previous/Next, closed by "Stop viewing" or Escape.
+// Modal walkthrough: one step at a time with Previous/Next, closed by the header button or Escape.
 export function UserGuide({ onClose }: UserGuideProps) {
   const { language, t } = useI18n();
   const steps = USER_GUIDE_STEPS[language];
@@ -52,17 +52,23 @@ export function UserGuide({ onClose }: UserGuideProps) {
           <BookOpen size={18} aria-hidden="true" />
           <h3>{t.userGuideTitle}</h3>
         </div>
-        <span className="user-guide-progress" aria-live="polite">
-          {index + 1} / {steps.length}
-        </span>
+        <div className="user-guide-header-actions">
+          <span className="user-guide-progress" aria-live="polite">
+            {index + 1} / {steps.length}
+          </span>
+          <button
+            className="user-guide-stop"
+            type="button"
+            aria-label={t.userGuideStop}
+            onClick={close}
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        </div>
       </div>
       <h4 id={`${guideId}-title`}>{step.title}</h4>
       <p id={`${guideId}-description`}>{step.description}</p>
       <div className="user-guide-actions">
-        <button className="user-guide-stop" type="button" onClick={close}>
-          <X size={14} aria-hidden="true" />
-          {t.userGuideStop}
-        </button>
         <div className="user-guide-nav">
           <button
             className="user-guide-prev"

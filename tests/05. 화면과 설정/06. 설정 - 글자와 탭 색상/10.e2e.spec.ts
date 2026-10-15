@@ -24,7 +24,7 @@ test("10. 색상 순서 칩에 배경·여백·테마별 글자색과 반응형 
   await closeSettingsPanel(page);
   await page.getByRole("button", { name: "MENU", exact: true }).click();
   await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-  await page.getByRole("menuitemradio", { name: "LIGHT" }).click();
+  await page.getByRole("switch", { name: "THEME" }).click();
   for (const chip of await chips.all()) {
     await expect(chip).toHaveCSS("color", "rgb(250, 252, 251)");
   }

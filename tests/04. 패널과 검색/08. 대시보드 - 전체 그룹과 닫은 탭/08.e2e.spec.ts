@@ -4,7 +4,7 @@ import { createClosedTabFixture, createGroupFixture, createTabFixture } from "..
 import { closeActiveTab, openPanel, seedStoredStateOnLoad } from "../../__util__";
 import { dashboardColumn } from "../__util__";
 
-test("8. Closed 컬럼에서 연 탭을 수정 없이 X로 닫으면 짧은 내용이어도 Closed 컬럼에 다시 남는다", async ({ page }) => {
+test("8. Done 컬럼에서 연 탭을 수정 없이 X로 닫으면 짧은 내용이어도 Done 컬럼에 다시 남는다", async ({ page }) => {
   const group = createGroupFixture("ungrouped", "Ungrouped", [createTabFixture("tab-1", "Open task", { tabColor: "gray" })]);
   await seedStoredStateOnLoad(page, {
     activeGroupId: group.id,

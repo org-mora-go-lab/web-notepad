@@ -1,12 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { chooseTabMenuItem } from "../../__util__";
-
-test("1. PC 우클릭 메뉴에서 탭의 고정 상태를 전환한다", async ({ page }) => {
+test("1. PC 탭 우클릭 메뉴에 Pin·Unpin을 표시하지 않는다", async ({ page }) => {
   await page.goto("/");
   const tab = page.locator(".tab-item").first();
-  await chooseTabMenuItem(page, "Pin");
-  await expect(tab).toHaveClass(/is-pinned/);
-  await chooseTabMenuItem(page, "Unpin");
-  await expect(tab).not.toHaveClass(/is-pinned/);
+  await tab.getByRole("tab").click({ button: "right" });
+
+  await expect(page.getByRole("menuitem", { name: "Pin", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("menuitem", { name: "Unpin", exact: true })).toHaveCount(0);
 });

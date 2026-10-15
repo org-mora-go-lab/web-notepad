@@ -94,12 +94,12 @@
     display: none;
   }
 
-  // Group select sits on the left; BOOKMARK and DASHBOARD are pushed to the right.
+  // Group select sits on the left; SEARCH, BOOKMARK and DASHBOARD are pushed to the right.
   .group-select-command {
     order: -1;
   }
 
-  .bookmark-command {
+  .global-search-command {
     margin-left: auto;
   }
 
@@ -141,7 +141,8 @@
       }
     }
 
-    // Mobile: BOOKMARK / DASHBOARD labels sit under their icons, spaced apart.
+    // Mobile: SEARCH / BOOKMARK / DASHBOARD labels sit under their icons, spaced apart.
+    .global-search-command,
     .bookmark-command,
     .dashboard-command {
       flex-direction: column;
@@ -156,6 +157,7 @@
       }
     }
 
+    .global-search-command,
     .bookmark-command {
       margin-right: 16px;
     }

@@ -11,7 +11,8 @@ test("3. 그룹 목록의 뒤로가기 버튼은 이동 없이 기존 탭 메뉴
     await page.getByRole("menuitem", { name: "Move Group", exact: true }).click();
     await page.getByRole("menuitem", { name: "Back to tab actions" }).click();
     await expect(page.getByRole("menu", { name: "Tab actions", exact: true })).toBeVisible();
-    await expect(page.getByRole("menuitem", { name: "Unpin", exact: true })).toBeVisible();
+    await expect(page.getByRole("menuitem", { name: "Unpin", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("menuitem", { name: "Remove bookmark", exact: true })).toBeVisible();
     await expect(moveGroupSourceTab(page)).toBeVisible();
   }
 });

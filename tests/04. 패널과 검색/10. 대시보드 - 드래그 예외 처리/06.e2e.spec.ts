@@ -8,7 +8,7 @@ import {
 import { openPanel, readStoredState, writeStoredState } from "../../__util__";
 import { dashboardColumn, dashboardPanel } from "../__util__";
 
-test("6. 일반적이지 않은 닫은 탭 ID의 Closed 카드를 WIP으로 한 번 복원한다", async ({ page }) => {
+test("6. 일반적이지 않은 닫은 탭 ID의 카드를 WIP으로 옮겨도 닫힌 상태를 유지한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -38,10 +38,7 @@ test("6. 일반적이지 않은 닫은 탭 ID의 Closed 카드를 WIP으로 한 
   );
   await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(2);
   const stored = await readStoredState(page);
-  expect(stored.closedTabs).toHaveLength(0);
-  const restored = stored.groups
-    .find((group) => group.id === "ungrouped")
-    ?.tabs.filter((tab) => tab.id === "tab-2");
-  expect(restored).toHaveLength(1);
-  expect(restored?.[0].tabColor).toBe("green");
+  expect(stored.closedTabs).toHaveLength(1);
+  expect(stored.closedTabs?.[0].tab.tabColor).toBe("green");
+  await expect(page.locator(".tab-item", { hasText: "Legacy archived note" })).toHaveCount(0);
 });

@@ -2,7 +2,6 @@ import type { ComponentProps } from "react";
 
 import type {
   Bookmark,
-  Closed,
   Dashboard,
   GlobalSearch,
   Group,
@@ -28,27 +27,31 @@ export type PanelProps = {
   activeGroupId: string;
   groupMenuOpen: boolean;
   closedTabs: ClosedTabEntry[];
-  closedSearchQuery: string;
   globalSearchQuery: string;
   onClose: () => void;
   onCloseGroupMenu: () => void;
-  onClosedSearchQueryChange: (query: string) => void;
   onGlobalSearchQueryChange: (query: string) => void;
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
-  onUnpinTab: ComponentProps<typeof Dashboard>["onUnpinTab"];
+  onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
+  onToggleDashboardTabPin: ComponentProps<typeof Dashboard>["onToggleTabPin"];
+  onToggleDashboardTabBookmark: ComponentProps<
+    typeof Dashboard
+  >["onToggleTabBookmark"];
   onChangeClosedTabStatus: ComponentProps<
     typeof Dashboard
   >["onChangeClosedStatus"];
+  onMoveClosedTabToGroup: ComponentProps<typeof Dashboard>["onMoveClosedToGroup"];
+  onToggleClosedTabBookmark: ComponentProps<
+    typeof Dashboard
+  >["onToggleClosedBookmark"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
-  onRestoreClosedTab: ComponentProps<typeof Closed>["onRestore"];
-  onRemoveClosedTab: ComponentProps<typeof Closed>["onRemove"];
+  onRestoreClosedTab: ComponentProps<typeof Dashboard>["onRestoreClosed"];
   onOpenSearchedBookmark: ComponentProps<typeof GlobalSearch>["onOpenBookmark"];
-  onOpenClosedSearch: ComponentProps<typeof GlobalSearch>["onOpenClosedSearch"];
 };

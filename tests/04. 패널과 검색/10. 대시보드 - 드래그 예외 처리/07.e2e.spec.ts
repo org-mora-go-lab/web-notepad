@@ -8,7 +8,7 @@ import {
 import { openPanel, readStoredState, writeStoredState } from "../../__util__";
 import { dashboardColumn, dashboardPanel } from "../__util__";
 
-test("7. 일반적이지 않은 닫은 탭 ID의 Closed 카드를 Todo로 한 번 복원한다", async ({ page }) => {
+test("7. 일반적이지 않은 닫은 탭 ID의 카드를 Todo로 옮겨도 닫힌 상태를 유지한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -41,10 +41,7 @@ test("7. 일반적이지 않은 닫은 탭 ID의 Closed 카드를 Todo로 한 �
   await expect(restoredCard).toHaveAttribute("data-tab-color", "gray");
   await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(2);
   const stored = await readStoredState(page);
-  expect(stored.closedTabs).toHaveLength(0);
-  expect(
-    stored.groups
-      .find((group) => group.id === "ungrouped")
-      ?.tabs.filter((tab) => tab.id === "restored-custom-id"),
-  ).toHaveLength(1);
+  expect(stored.closedTabs).toHaveLength(1);
+  expect(stored.closedTabs?.[0].tab.tabColor).toBe("gray");
+  await expect(page.locator(".tab-item", { hasText: "Legacy Todo note" })).toHaveCount(0);
 });

@@ -2,12 +2,113 @@
 @use "./style/palette";
 
 .theme {
-  .theme-options {
-    margin: 0 4px 4px 20px;
-    border-left: 1px solid v.$line;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+
+  .theme-label {
+    min-height: 38px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: v.$muted;
+    font-size: v.font(15px);
+
+    > svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--color-focus);
+      outline-offset: -2px;
+    }
   }
 
-  @media (min-width: 641px) {
-    .theme-options { margin: 2px 2px 6px 18px; }
+  .theme-toggle {
+    position: relative;
+    display: block;
+    padding-right: 8px;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: calc(100% - 8px);
+      height: 100%;
+      margin: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .theme-toggle-track {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      display: block;
+      border: 1px solid v.$line;
+      background: v.$raised;
+      border-radius: 999px;
+      transition: border-color 140ms ease, background 140ms ease;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: v.$muted;
+        transition: transform 140ms ease, background 140ms ease;
+      }
+    }
+
+    &:hover .theme-toggle-track,
+    input:checked + .theme-toggle-track {
+      border-color: v.$hover-line;
+    }
+
+    input:checked + .theme-toggle-track::after {
+      transform: translateX(20px);
+      background: v.$ink;
+    }
+
+    input:focus-visible + .theme-toggle-track {
+      outline: 1px solid var(--color-focus);
+      outline-offset: 1px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .theme-label {
+      min-height: 38px * v.$mobile-scale;
+      font-size: v.font(15px * v.$mobile-scale);
+
+      > svg {
+        width: 18px * v.$mobile-scale;
+        height: 18px * v.$mobile-scale;
+        flex-basis: 18px * v.$mobile-scale;
+      }
+    }
+
+    .theme-toggle-track {
+      width: 44px * v.$mobile-scale;
+      height: 24px * v.$mobile-scale;
+
+      &::after {
+        top: 3px * v.$mobile-scale;
+        left: 3px * v.$mobile-scale;
+        width: 16px * v.$mobile-scale;
+        height: 16px * v.$mobile-scale;
+      }
+    }
+
+    .theme-toggle input:checked + .theme-toggle-track::after {
+      transform: translateX(20px * v.$mobile-scale);
+    }
   }
 }

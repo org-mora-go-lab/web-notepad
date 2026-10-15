@@ -12,7 +12,8 @@ test("6. LIGHT에서 라인 번호와 편집기 선택 줄에 탭 색상별 강�
 
   await page.getByRole("button", { name: "MENU", exact: true }).click();
   await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
-  await page.getByRole("menuitemradio", { name: "LIGHT" }).click();
+  await page.getByRole("switch", { name: "THEME" }).click();
+  await page.keyboard.press("Escape");
 
   const colorButton = activeTabItem(page).locator(".dirty-dot");
   for (const color of ["rgba(104, 119, 110, 0.15)", "rgba(37, 131, 86, 0.15)", "rgba(184, 75, 69, 0.13)"]) {

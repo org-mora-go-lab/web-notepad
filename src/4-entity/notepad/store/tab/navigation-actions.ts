@@ -2,12 +2,7 @@ import type { StateCreator } from "zustand";
 
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
-import {
-  assignTabToPane,
-  getPaneColumn,
-  getPaneTabs,
-  setPaneActiveTabId,
-} from "../../util";
+import { assignTabToPane, getPaneTabs, setPaneActiveTabId } from "../../util";
 import {
   activateTab,
   allocateTab,
@@ -36,9 +31,6 @@ export const createTabNavigationActions: StateCreator<
     // A pane that is not open falls back to the left pane.
     const target =
       !inAllGroup && getPaneTabs(group, pane).length > 0 ? pane : "left";
-    const bottom = target === "left-bottom" || target === "right-bottom";
-    const rowRatioKey =
-      getPaneColumn(target) === "right" ? "rightRowRatio" : "leftRowRatio";
     const changes = updateGroup(state, group.id, (current) => {
       const next = assignTabToPane(
         { ...current, tabs: [...current.tabs, tab] },
@@ -48,8 +40,6 @@ export const createTabNavigationActions: StateCreator<
       return {
         ...setPaneActiveTabId(next, target, tab.id),
         activePane: target,
-        splitRatio: target === "right" ? 0.5 : current.splitRatio,
-        [rowRatioKey]: bottom ? 0.5 : current[rowRatioKey],
       };
     });
     const allGroup = inAllGroup
