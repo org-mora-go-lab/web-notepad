@@ -3,7 +3,11 @@
 import { Search, X } from "lucide-react";
 import { useId, useState } from "react";
 
-import { useI18n, useModalDialog } from "@/src/5-shared/hook";
+import {
+  useI18n,
+  useModalDialog,
+  useScrollableListLayout,
+} from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
@@ -26,6 +30,9 @@ export function GlobalSearch({
     null,
   );
   const handleResizeStart = useGlobalSearchResize(dialogRef);
+  const { containerRef, listRef } = useScrollableListLayout(
+    "--global-search-scrollbar-width",
+  );
   const query = searchQuery.trim();
   const groupResults = query
     ? groups.filter((group) => matchesSearchQuery(query, group.name))
@@ -83,14 +90,14 @@ export function GlobalSearch({
         </button>
       </div>
       <div className="global-search-body">
-        <div className="global-search-results-pane">
+        <div className="global-search-results-pane" ref={containerRef}>
           <SearchField
             value={searchQuery}
             ariaLabel={t.searchEverything}
             placeholder={t.searchEverything}
             onChange={onSearchQueryChange}
           />
-          <div className="global-search-list">
+          <div className="global-search-list" ref={listRef}>
             {!query ? (
               <EmptyState
                 className="global-search-empty-state"

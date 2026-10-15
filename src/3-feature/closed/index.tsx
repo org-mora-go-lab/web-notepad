@@ -3,11 +3,15 @@
 import { Archive, X } from "lucide-react";
 import { useId, useState } from "react";
 
-import { useI18n, useModalDialog } from "@/src/5-shared/hook";
+import {
+  useI18n,
+  useModalDialog,
+  useScrollableListLayout,
+} from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
-import { ClosedItem } from "./component";
+import { ClosedItem, ClosedPreview } from "./component";
 import type { ClosedProps } from "./type";
 
 export function Closed({
@@ -18,12 +22,23 @@ export function Closed({
   onRemove,
 }: ClosedProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const { t } = useI18n();
   const dialogRef = useModalDialog(open, 'input[type="search"]');
   const titleId = useId();
   const filteredEntries = entries.filter((entry) =>
     matchesSearchQuery(searchQuery, entry.tab.title, entry.tab.content),
   );
+  const selectedEntry = filteredEntries.find(
+    (entry) => entry.id === selectedEntryId,
+  );
+  const { containerRef, listRef } = useScrollableListLayout(
+    "--closed-scrollbar-width",
+  );
+  const closeClosed = () => {
+    setSelectedEntryId(null);
+    onClose();
+  };
 
   return (
     <dialog
@@ -33,10 +48,10 @@ export function Closed({
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault();
-        onClose();
+        closeClosed();
       }}
       onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) closeClosed();
       }}
     >
       <div className="closed-header">
@@ -48,41 +63,60 @@ export function Closed({
           className="closed-close"
           type="button"
           aria-label={t.closePanel(t.closedTitle)}
-          onClick={onClose}
+          onClick={closeClosed}
         >
           <X size={18} />
         </button>
       </div>
-      <SearchField
-        value={searchQuery}
-        ariaLabel={t.searchClosed}
-        placeholder={t.searchClosed}
-        onChange={setSearchQuery}
-      />
-      <div className="closed-list">
-        {entries.length === 0 ? (
-          <EmptyState
-            className="closed-empty"
-            icon={<Archive size={26} strokeWidth={1.4} />}
-            message={t.emptyClosed}
+      <div className="closed-body">
+        <div className="closed-results-pane" ref={containerRef}>
+          <SearchField
+            value={searchQuery}
+            ariaLabel={t.searchClosed}
+            placeholder={t.searchClosed}
+            onChange={setSearchQuery}
           />
-        ) : filteredEntries.length === 0 ? (
-          <EmptyState
-            className="search-empty-state"
-            search
-            message={t.noSearchResults}
-          />
-        ) : (
-          filteredEntries.map((entry) => (
-            <ClosedItem
-              key={entry.id}
-              entry={entry}
+          <div className="closed-list" ref={listRef}>
+            {entries.length === 0 ? (
+              <EmptyState
+                className="closed-empty"
+                icon={<Archive size={26} strokeWidth={1.4} />}
+                message={t.emptyClosed}
+              />
+            ) : filteredEntries.length === 0 ? (
+              <EmptyState
+                className="search-empty-state"
+                search
+                message={t.noSearchResults}
+              />
+            ) : (
+              filteredEntries.map((entry) => (
+                <ClosedItem
+                  key={entry.id}
+                  entry={entry}
+                  searchQuery={searchQuery}
+                  selected={entry.id === selectedEntryId}
+                  onSelect={() => setSelectedEntryId(entry.id)}
+                />
+              ))
+            )}
+          </div>
+        </div>
+        <div className="closed-preview-pane">
+          {selectedEntry ? (
+            <ClosedPreview
+              entry={selectedEntry}
               searchQuery={searchQuery}
               onRestore={onRestore}
               onRemove={onRemove}
             />
-          ))
-        )}
+          ) : (
+            <EmptyState
+              className="closed-preview-empty"
+              message={t.searchPreview}
+            />
+          )}
+        </div>
       </div>
     </dialog>
   );

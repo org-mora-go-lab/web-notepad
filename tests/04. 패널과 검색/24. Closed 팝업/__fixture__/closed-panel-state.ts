@@ -7,7 +7,7 @@ import {
 } from "../../../__fixture__";
 import { writeStoredState } from "../../../__util__";
 
-export function seedClosedPanelState(page: Page) {
+export function seedClosedPanelState(page: Page, entryCount = 1) {
   return writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -25,6 +25,16 @@ export function seedClosedPanelState(page: Page) {
         createTabFixture("tab-closed-1", "Archived note\nArchived body", {
           tabColor: "purple",
         }),
+      ),
+      ...Array.from({ length: entryCount - 1 }, (_, index) =>
+        createClosedTabFixture(
+          `closed-extra-${index}`,
+          "ungrouped",
+          createTabFixture(
+            `tab-closed-extra-${index}`,
+            `Archived extra ${index}\nArchived body ${index}`,
+          ),
+        ),
       ),
       createClosedTabFixture(
         "closed-2",
