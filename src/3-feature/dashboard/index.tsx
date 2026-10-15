@@ -3,7 +3,11 @@
 import { Maximize2, Minimize2 } from "lucide-react";
 import { useState } from "react";
 
-import { compareGroups, getDashboardColumns } from "@/src/4-entity/notepad";
+import {
+  compareGroups,
+  getDashboardColumns,
+  getTabStatus,
+} from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
@@ -27,6 +31,7 @@ export function Dashboard({
   onMoveToGroup,
   onToggleTabPin,
   onToggleTabBookmark,
+  onArchiveTab,
   onRestoreClosed,
   onChangeClosedStatus,
   onMoveClosedToGroup,
@@ -131,6 +136,15 @@ export function Dashboard({
             else onToggleTabBookmark(contextTab.id);
             setContextMenu(null);
           }}
+          onCloseTab={
+            !contextClosed &&
+            getTabStatus(contextTab, tabColorCycle) === "done"
+              ? () => {
+                  onArchiveTab(contextTab.id);
+                  setContextMenu(null);
+                }
+              : undefined
+          }
           onClose={() => setContextMenu(null)}
         />
       )}

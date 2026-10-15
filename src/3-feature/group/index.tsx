@@ -33,6 +33,7 @@ function GroupMenu({
   onRemove,
   onRename,
   onTogglePinGroup,
+  onOpenClosed,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -129,7 +130,22 @@ function GroupMenu({
         aria-label={t.selectGroup}
       >
         <div className="group-list">
-          <div className="group-split-row">{specialRows.map(renderRow)}</div>
+          <div className="group-split-row">
+            {specialRows.map(renderRow)}
+            <div className="group-item group-closed-item">
+              <button
+                className="group-select"
+                type="button"
+                aria-controls="closed-panel"
+                onClick={() => {
+                  onOpenClosed();
+                  onClose();
+                }}
+              >
+                <strong className="is-ungrouped">{t.closedTitle}</strong>
+              </button>
+            </div>
+          </div>
           <GroupCreateForm onCreate={onCreate} />
           {otherRows.map(renderRow)}
         </div>

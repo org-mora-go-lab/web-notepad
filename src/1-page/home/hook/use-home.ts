@@ -46,6 +46,8 @@ export function useHome() {
     moveClosedTabToStatus,
     moveClosedTabToGroup,
     toggleClosedTabBookmark,
+    archiveTab,
+    removeClosedTab,
     removeBookmark,
     createGroup,
     renameGroup,
@@ -93,6 +95,14 @@ export function useHome() {
       if (requestCloseTabAction(tabId)) replaceCurrentView();
     },
     [replaceCurrentView, requestCloseTabAction],
+  );
+
+  const archiveDashboardTab = useCallback(
+    (tabId: string) => {
+      archiveTab(tabId);
+      replaceCurrentView();
+    },
+    [archiveTab, replaceCurrentView],
   );
 
   useNotepadShortcuts({
@@ -216,6 +226,8 @@ export function useHome() {
     moveClosedTabToStatus,
     moveClosedTabToGroup,
     toggleClosedTabBookmark,
+    archiveDashboardTab,
+    removeClosedTab,
     removeBookmark,
     createGroup,
     renameGroup,

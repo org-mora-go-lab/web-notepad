@@ -119,6 +119,7 @@ export type NotepadState = {
   setTabStatus: (tabId: string, status: TabStatus) => void;
   toggleBookmark: (tabId: string) => void;
   closeTab: (tabId: string) => void;
+  archiveTab: (tabId: string) => void;
   openBookmark: (bookmarkId: string) => void;
   removeBookmark: (bookmarkId: string) => void;
   createGroup: (name: string) => void;

@@ -10,6 +10,6 @@ test("2. 그룹 고정 상태를 저장하고 새로고침 후 복원한다", as
 
   await page.reload();
   await groupsCommand(page).click();
-  await expect(page.locator(".group-item .group-select strong").nth(2)).toHaveText("Zulu");
+  await expect(page.locator(".group-item .group-select strong").nth(3)).toHaveText("Zulu");
   await expect(page.locator(".group-item").filter({ hasText: "Zulu" }).locator(".group-pin-indicator")).toBeVisible();
 });

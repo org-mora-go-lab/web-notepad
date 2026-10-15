@@ -1,0 +1,40 @@
+@use "../../../5-shared/style/mixin";
+@use "../../../5-shared/style/variable" as v;
+
+.closed {
+  @include mixin.note-card("closed");
+
+  .closed-item-content {
+    max-height: 144px;
+    margin: 18px 0;
+    overflow: hidden;
+    color: v.$saved;
+    font-family: v.$sans;
+    font-size: v.font(16px);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+
+    &.is-empty {
+      min-height: 30px;
+      margin: 0;
+    }
+  }
+
+  .closed-primary-actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .closed {
+    .closed-item-content {
+      font-size: v.font(16px * v.$mobile-scale);
+    }
+
+    .closed-primary-actions {
+      gap: 6px;
+    }
+  }
+}
