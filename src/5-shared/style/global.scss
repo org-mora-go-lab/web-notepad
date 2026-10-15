@@ -4,6 +4,7 @@
   box-sizing: border-box;
   scrollbar-color: v.$dim v.$panel;
   scrollbar-width: thin;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar {
@@ -61,10 +62,4 @@ textarea {
 
 button {
   color: inherit;
-}
-
-button,
-[role="button"],
-[role="tab"] {
-  -webkit-tap-highlight-color: transparent;
 }
