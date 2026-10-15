@@ -76,14 +76,15 @@ export const createClosedTabActions: StateCreator<
       const linkedBookmark = source.bookmarks.find(
         (bookmark) => bookmark.sourceTabId === entry.tab.id,
       );
+      const sourceChanges = updateGroup(state, source.id, (group) => ({
+        ...group,
+        bookmarks: group.bookmarks.filter(
+          (bookmark) => bookmark.sourceTabId !== entry.tab.id,
+        ),
+      }));
       return {
         ...updateGroup(
-          updateGroup(state, source.id, (group) => ({
-            ...group,
-            bookmarks: group.bookmarks.filter(
-              (bookmark) => bookmark.sourceTabId !== entry.tab.id,
-            ),
-          })),
+          { ...state, ...sourceChanges },
           target.id,
           (group) => ({
             ...group,
