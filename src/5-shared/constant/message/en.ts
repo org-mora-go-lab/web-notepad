@@ -39,7 +39,6 @@ export const en = {
   resizeGroupMenu: "Resize group panel",
   expandDashboard: "Expand dashboard",
   collapseDashboard: "Collapse dashboard",
-  editDashboardStatus: (name: string) => `Edit ${name} status name`,
   resizeVerticalPanes: "Resize pane widths",
   resizeHorizontalPanes: "Resize pane heights",
   closePanel: (title: string) => `Close ${title}`,

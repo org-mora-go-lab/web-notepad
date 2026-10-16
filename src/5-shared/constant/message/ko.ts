@@ -41,7 +41,6 @@ export const ko: Messages = {
   resizeGroupMenu: "그룹 패널 크기 조절",
   expandDashboard: "대시보드 확장",
   collapseDashboard: "대시보드 축소",
-  editDashboardStatus: (name: string) => `${name} 상태 이름 수정`,
   resizeVerticalPanes: "영역 크기 조절",
   resizeHorizontalPanes: "상하 크기 조절",
   closePanel: (title: string) => `${title} 닫기`,

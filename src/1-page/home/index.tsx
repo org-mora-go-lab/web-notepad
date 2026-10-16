@@ -29,8 +29,6 @@ export function Home() {
     bookmarks,
     activeGroupTabs,
     tabColorCycle,
-    dashboardStatusNames,
-    setDashboardStatusName,
     setTabStatus,
     togglePin,
     toggleBookmark,
@@ -123,7 +121,6 @@ export function Home() {
           bookmarks={bookmarks}
           activeGroupTabs={activeGroupTabs}
           tabColorCycle={tabColorCycle}
-          dashboardStatusNames={dashboardStatusNames}
           groups={groups}
           activeGroupId={activeGroupId}
           groupMenuOpen={groupMenuOpen}
@@ -135,7 +132,6 @@ export function Home() {
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
-          onRenameDashboardStatus={setDashboardStatusName}
           onMoveDashboardTabToGroup={moveToGroup}
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}

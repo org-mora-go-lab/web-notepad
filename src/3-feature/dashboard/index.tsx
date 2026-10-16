@@ -17,14 +17,12 @@ export function Dashboard({
   groups,
   showGroupNames,
   tabColorCycle,
-  statusNames,
   open,
   pinned,
   onTogglePin,
   onClose,
   onOpenTab,
   onChangeStatus,
-  onRenameStatus,
   onMoveToGroup,
   onToggleTabPin,
   onToggleTabBookmark,
@@ -96,12 +94,10 @@ export function Dashboard({
         <DashboardStatuses
           columns={columns}
           tabColorCycle={tabColorCycle}
-          statusNames={statusNames}
           iceboxVisible={iceboxVisible}
           closedVisible={closedVisible}
           iceboxCount={iceboxTabs.length}
           closedCount={closedTabs.length}
-          onRenameStatus={onRenameStatus}
         />
         <div className="dashboard-list" ref={listRef}>
           <div
@@ -116,10 +112,8 @@ export function Dashboard({
                 groups={groups}
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
-                statusNames={statusNames}
                 contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
-                onRenameStatus={onRenameStatus}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
@@ -134,10 +128,8 @@ export function Dashboard({
                 groups={groups}
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
-                statusNames={statusNames}
                 contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
-                onRenameStatus={onRenameStatus}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
@@ -151,10 +143,8 @@ export function Dashboard({
                 groups={groups}
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
-                statusNames={statusNames}
                 contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
-                onRenameStatus={onRenameStatus}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }

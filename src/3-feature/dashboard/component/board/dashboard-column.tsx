@@ -12,10 +12,8 @@ export function DashboardColumn({
   groups,
   showGroupNames,
   tabColorCycle,
-  statusNames,
   contextMenuTabId,
   onOpenTab,
-  onRenameStatus,
   onOpenContextMenu,
 }: DashboardColumnProps) {
   const { status, tabs: columnTabs } = column;
@@ -58,10 +56,9 @@ export function DashboardColumn({
       <DashboardStatus
         className="dashboard-column-status"
         status={status}
-        label={statusNames[status] ?? statusLabel}
+        label={statusLabel}
         count={columnTabs.length}
         tabColor={getStatusColor(status, tabColorCycle)}
-        onRename={onRenameStatus}
       />
       <div className="dashboard-cards">
         {cardEntries.map((tab) => (

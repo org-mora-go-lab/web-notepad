@@ -50,7 +50,6 @@ export function useHome() {
     renameGroup,
     toggleGroupPin,
     removeGroup,
-    setDashboardStatusName,
     settings,
   } = store;
 
@@ -219,8 +218,6 @@ export function useHome() {
     columns,
     activeGroupTabs,
     tabColorCycle: settings.tabColorCycle,
-    dashboardStatusNames: settings.dashboardStatusNames,
-    setDashboardStatusName,
     setTabStatus,
     togglePin,
     toggleBookmark,

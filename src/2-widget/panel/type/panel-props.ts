@@ -22,7 +22,6 @@ export type PanelProps = {
   activeGroupTabs: NoteTab[];
   activeTabId?: string;
   tabColorCycle: TabColor[];
-  dashboardStatusNames: ComponentProps<typeof Dashboard>["statusNames"];
   groups: GroupEntry[];
   activeGroupId: string;
   groupMenuOpen: boolean;
@@ -34,7 +33,6 @@ export type PanelProps = {
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
-  onRenameDashboardStatus: ComponentProps<typeof Dashboard>["onRenameStatus"];
   onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
   onToggleDashboardTabPin: ComponentProps<typeof Dashboard>["onToggleTabPin"];
   onToggleDashboardTabBookmark: ComponentProps<
