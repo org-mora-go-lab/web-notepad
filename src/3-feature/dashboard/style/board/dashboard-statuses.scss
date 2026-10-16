@@ -17,13 +17,8 @@
       left: 0;
       right: var(--dashboard-scrollbar-width, 0px);
       height: 48px;
-      background: linear-gradient(
-        to bottom,
-        v.$panel 0%,
-        color-mix(in srgb, v.$panel 65%, transparent) 35%,
-        color-mix(in srgb, v.$panel 25%, transparent) 70%,
-        transparent 100%
-      );
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
       opacity: 0;
       transition: opacity 180ms ease;
       pointer-events: none;
@@ -136,18 +131,17 @@
         left: 0;
         right: 0;
         height: 5px;
-        background: color-mix(in srgb, var(--dashboard-accent, #{v.$line}) 16%, transparent);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
         pointer-events: none;
       }
 
       &::before {
         bottom: 100%;
-        mask-image: linear-gradient(to top, #000, transparent);
       }
 
       &::after {
         top: 100%;
-        mask-image: linear-gradient(to bottom, #000, transparent);
       }
     }
   }

@@ -19,36 +19,19 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
   await expect(title.locator(".dashboard-count")).toHaveCSS("font-size", "15.4px");
   await expect(title.locator(".dashboard-count")).toHaveCSS("padding-right", "13px");
   for (const pseudo of ["::before", "::after"]) {
-    const fog = await title.evaluate((element, selector) => {
+    const blur = await title.evaluate((element, selector) => {
       const style = getComputedStyle(element, selector);
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 1;
-      const context = canvas.getContext("2d")!;
-      const sample = (color: string) => {
-        context.clearRect(0, 0, 1, 1);
-        context.fillStyle = color;
-        context.fillRect(0, 0, 1, 1);
-        return Array.from(context.getImageData(0, 0, 1, 1).data);
-      };
       return {
         height: style.height,
         mask: style.maskImage,
-        color: sample(style.backgroundColor),
-        accent: sample(getComputedStyle(element).getPropertyValue("--dashboard-accent").trim()),
+        backdropFilter: style.backdropFilter,
         pointerEvents: style.pointerEvents,
       };
     }, pseudo);
-    expect(fog.height).toBe("5px");
-    expect(fog.mask).toMatch(pseudo === "::before"
-      ? /^linear-gradient\(to top, rgb\(0, 0, 0\)/
-      : /^linear-gradient\((?:to bottom, )?rgb\(0, 0, 0\)/);
-    expect(fog.mask).toContain("rgba(0, 0, 0, 0)");
-    expect(fog.color[3]).toBeGreaterThan(0);
-    expect(fog.color[3]).toBeLessThan(255);
-    for (let channel = 0; channel < 3; channel++) {
-      expect(Math.abs(fog.color[channel] - fog.accent[channel])).toBeLessThanOrEqual(3);
-    }
-    expect(fog.pointerEvents).toBe("none");
+    expect(blur.height).toBe("5px");
+    expect(blur.mask).toBe("none");
+    expect(blur.backdropFilter).toBe("blur(5px)");
+    expect(blur.pointerEvents).toBe("none");
   }
   const borderColor = await column.evaluate(
     (element) => getComputedStyle(element).borderLeftColor,
