@@ -1,6 +1,6 @@
 "use client";
 
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Ghost, Maximize2, Minimize2, StickyNote } from "lucide-react";
 import { useState } from "react";
 
 import { compareGroups, getDashboardColumns, getTabStatus } from "@/src/4-entity/notepad";
@@ -52,6 +52,7 @@ export function Dashboard({
     ...(closedVisible ? closedTabs : []),
   ];
   const contextTab = visibleTabs.find((tab) => tab.id === contextMenu?.itemId);
+  const contextStatus = contextTab ? getTabStatus(contextTab, tabColorCycle) : null;
   const contextGroup = groups.find((group) =>
     group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
@@ -170,6 +171,15 @@ export function Dashboard({
           moveGroupFirst={getTabStatus(contextTab, tabColorCycle) !== "closed"}
           deleteOnly={getTabStatus(contextTab, tabColorCycle) === "closed"}
           bookmarked={contextTab.bookmarked}
+          footerAction={(contextStatus === "todo" || contextStatus === "done") && (
+            <button type="button" role="menuitem" onClick={() => {
+              onChangeStatus(contextTab.id, contextStatus === "todo" ? "icebox" : "closed");
+              setContextMenu(null);
+            }}>
+              {contextStatus === "todo" ? <StickyNote size={14} /> : <Ghost size={14} />}
+              <span>{contextStatus === "todo" ? statusNames.icebox ?? t.icebox : statusNames.closed ?? t.closedTitle}</span>
+            </button>
+          )}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id)
             .sort(compareGroups)}
