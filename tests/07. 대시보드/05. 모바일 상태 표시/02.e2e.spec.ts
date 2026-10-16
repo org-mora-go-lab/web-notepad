@@ -1,14 +1,12 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { openPanel } from "../../__util__";
-import { dashboardColumn, seedDashboardTabs } from "../../__util__";
+import { dashboardColumn, dashboardPanel, seedScrollableDashboard } from "../../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
 test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세로선을 이어서 표시한다", async ({ page }) => {
-  await seedDashboardTabs(page);
-  await openPanel(page, "dashboard-panel");
+  await seedScrollableDashboard(page);
 
   const column = dashboardColumn(page, "in-progress");
   await expect(column).toHaveCSS("border-left-width", "3px");
@@ -18,21 +16,40 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
   await expect(title).toHaveCSS("font-size", "17.8px");
   await expect(title.locator(".dashboard-count")).toHaveCSS("font-size", "15.4px");
   await expect(title.locator(".dashboard-count")).toHaveCSS("padding-right", "13px");
-  for (const pseudo of ["::before", "::after"]) {
-    const blur = await title.evaluate((element, selector) => {
+  const readBlur = (pseudo: "::before" | "::after") =>
+    title.evaluate((element, selector) => {
       const style = getComputedStyle(element, selector);
       return {
         height: style.height,
-        mask: style.maskImage,
+        backgroundImage: style.backgroundImage,
         backdropFilter: style.backdropFilter,
+        webkitBackdropFilter: style.getPropertyValue("-webkit-backdrop-filter"),
+        opacity: style.opacity,
         pointerEvents: style.pointerEvents,
       };
     }, pseudo);
-    expect(blur.height).toBe("5px");
-    expect(blur.mask).toBe("none");
-    expect(blur.backdropFilter).toBe("blur(5px)");
-    expect(blur.pointerEvents).toBe("none");
+
+  for (const pseudo of ["::before", "::after"] as const) {
+    const blur = await readBlur(pseudo);
+    expect(blur.opacity).toBe("0");
   }
+
+  await dashboardPanel(page).locator(".dashboard-list").evaluate((element) => {
+    element.scrollTop = 1;
+  });
+  await expect(dashboardPanel(page).locator(".dashboard-content")).toHaveClass(/is-scrolled/);
+
+  const gradients: string[] = [];
+  for (const pseudo of ["::before", "::after"] as const) {
+    await expect.poll(async () => (await readBlur(pseudo)).opacity).toBe("1");
+    const blur = await readBlur(pseudo);
+    expect(blur.height).toBe("7px");
+    expect(blur.backgroundImage).toContain("linear-gradient");
+    expect([blur.backdropFilter, blur.webkitBackdropFilter]).toContain("blur(7px)");
+    expect(blur.pointerEvents).toBe("none");
+    gradients.push(blur.backgroundImage);
+  }
+  expect(gradients[0]).not.toBe(gradients[1]);
   const borderColor = await column.evaluate(
     (element) => getComputedStyle(element).borderLeftColor,
   );
