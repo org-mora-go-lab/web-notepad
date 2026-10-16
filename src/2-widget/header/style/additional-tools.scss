@@ -1,13 +1,17 @@
 @use "../../../5-shared/style/variable" as v;
 
 .header {
+  --tools-right-padding: 26px;
+  --tools-buttons-width: 90px;
+
   .additional-tools {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 5;
-    width: 90px;
+    width: calc(var(--tools-buttons-width) + var(--tools-right-padding));
     height: 39px;
+    padding-right: var(--tools-right-padding);
     background: v.$strip;
     border-bottom: 1px solid v.$line;
 
@@ -27,7 +31,7 @@
 
   .additional-tools-trigger {
     position: absolute;
-    right: 0;
+    right: var(--tools-right-padding);
     width: 45px;
     height: 100%;
     display: flex;
@@ -110,10 +114,10 @@
     }
   }
 
-  &.has-menu { padding-right: 90px; }
+  &.has-menu { padding-right: calc(var(--tools-buttons-width) + var(--tools-right-padding)); }
 
   @media (min-width: 641px) {
-    .additional-tools { width: 78px; }
+    --tools-buttons-width: 78px;
 
     .additional-tools-trigger {
       width: 39px;
@@ -153,11 +157,12 @@
 
     }
 
-    &.has-menu { padding-right: 78px; }
   }
 
   @media (max-width: 512px) {
-    .additional-tools { width: 90px; height: 45px; }
+    --tools-right-padding: 21px;
+
+    .additional-tools { height: 45px; }
     .additional-tools-trigger {
       padding: 0;
 
@@ -194,6 +199,5 @@
     }
 
     .additional-tools-menu .additional-tools-shortcut { display: none; }
-    &.has-menu { padding-right: 90px; }
   }
 }
