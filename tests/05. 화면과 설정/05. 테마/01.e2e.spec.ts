@@ -17,13 +17,24 @@ test("1. MENU의 THEME 우측 토글은 메뉴를 닫지 않고 좌우로 이동
     });
     await expect(toggle).not.toBeChecked();
     await expect.poll(thumbX).toBe(0);
+    const leftInset = await toggle.evaluate((element) =>
+      parseFloat(getComputedStyle(element.nextElementSibling!, "::after").left),
+    );
     await themeItem.click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await toggle.click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.getByRole("menu", { name: "MENU" })).toBeVisible();
     await expect(toggle).toBeChecked();
-    await expect.poll(thumbX).toBeGreaterThan(0);
+    await expect.poll(() => toggle.evaluate((element) => {
+      const track = element.nextElementSibling!;
+      const trackStyle = getComputedStyle(track);
+      const thumbStyle = getComputedStyle(track, "::after");
+      const innerWidth = track.getBoundingClientRect().width
+        - parseFloat(trackStyle.borderLeftWidth) - parseFloat(trackStyle.borderRightWidth);
+      const thumbLeft = parseFloat(thumbStyle.left) + new DOMMatrix(thumbStyle.transform).m41;
+      return innerWidth - thumbLeft - parseFloat(thumbStyle.width);
+    })).toBeCloseTo(leftInset, 1);
     await toggle.click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await expect.poll(thumbX).toBe(0);
