@@ -31,6 +31,7 @@ export function Panel({
   onOpenBookmark,
   onRemoveBookmark,
   onOpenDashboardTab,
+  onAddDashboardTask,
   onChangeTabStatus,
   onSaveDashboardStatusNames,
   onMoveDashboardTabToGroup,
@@ -68,6 +69,7 @@ export function Panel({
         onTogglePin={onTogglePin}
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
+        onAddTask={onAddDashboardTask}
         onChangeStatus={onChangeTabStatus}
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabPin={onToggleDashboardTabPin}

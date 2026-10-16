@@ -1,20 +1,23 @@
 import { expect, test } from "@playwright/test";
 
-import { groupsCommand, openPanel } from "../../__util__";
-import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../../__util__";
+import { BOTH_VIEWPORTS } from "../../__constant__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { dashboardColumn, dashboardPanel, openPanel, writeStoredState } from "../../__util__";
 
-test("3. 대시보드는 현재 그룹의 탭만 표시하고 그룹 이름 필드를 표시하지 않는다", async ({ page }) => {
-  await seedDashboardTabs(page);
-  await openPanel(page, "dashboard-panel");
-  await expect(dashboardPanel(page).locator(".dashboard-group")).toHaveCount(0);
-  await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(3);
-  await page.keyboard.press("Escape");
-
-  await groupsCommand(page).click();
-  await page.getByRole("button", { name: "Work", exact: true }).click();
-  await groupsCommand(page).click();
-  await openPanel(page, "dashboard-panel");
-  await expect(dashboardPanel(page).locator(".dashboard-group")).toHaveCount(0);
-  await expect(dashboardPanel(page).locator(".dashboard-card")).toHaveCount(1);
-  await expect(dashboardColumn(page, "todo")).toContainText("Work only task");
+test("3. 빈 상태에 상태별 안내를 표시하고 카드가 있는 상태에는 표시하지 않는다", async ({ page }) => {
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    await writeStoredState(page, { groups: [createGroupFixture("ungrouped", "Ungrouped", [createTabFixture("tab-1", "", { tabColor: "gray" })])] });
+    await openPanel(page, "dashboard-panel");
+    await expect(dashboardColumn(page, "todo").getByText("No tasks yet", { exact: true })).toBeVisible();
+    await expect(dashboardColumn(page, "todo").getByRole("button", { name: "Add task", exact: true })).toBeVisible();
+    await expect(dashboardColumn(page, "in-progress").locator(".dashboard-empty")).toHaveCSS("border-top-style", "dashed");
+    await expect(dashboardColumn(page, "in-progress").getByText("Move a task here to get started", { exact: true })).toBeVisible();
+    await expect(dashboardColumn(page, "done").getByText("Completed tasks will appear here", { exact: true })).toBeVisible();
+    await dashboardPanel(page).locator(".side-panel-close").click();
+    await page.locator("textarea").first().fill("Ready task");
+    await openPanel(page, "dashboard-panel");
+    await expect(dashboardColumn(page, "todo").locator(".dashboard-empty")).toHaveCount(0);
+    await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toContainText("Ready task");
+  }
 });
