@@ -20,8 +20,8 @@ test("3. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
   await expect(panel.locator("h2")).toHaveText("Settings");
   await expect(fontScaleRadio(page, "100%")).toBeChecked();
   await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Purple")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Indigo")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Teal")).toBeChecked();
   await expect(languageRadio(page, "English")).toBeChecked();
   await expect(panel.getByRole("radio", { name: "Off", exact: true })).toBeChecked();
   await expect(panel.getByRole("radio", { name: "Right", exact: true })).toBeChecked();
@@ -31,7 +31,7 @@ test("3. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
     STORAGE_KEY,
   )).toEqual({
     fontScale: 1,
-    tabColorCycle: ["gray", "green", "purple"],
+    tabColorCycle: ["gray", "indigo", "teal"],
     language: "en",
     panelSlide: false,
     panelPosition: "right",

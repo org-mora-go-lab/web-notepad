@@ -14,9 +14,10 @@ test("4. 모바일에서 아래로 스크롤하면 Todo, Doing, Done을 차례�
     done: panel.locator('.dashboard-column-status[data-status="done"]'),
   };
   const headerBox = (await panel.locator(".side-panel-header").boundingBox())!;
-  const stickyY = headerBox.y + headerBox.height + 30;
+  const initialY = headerBox.y + headerBox.height + 20;
+  const stickyY = headerBox.y + headerBox.height;
 
-  expect((await titles.todo.boundingBox())!.y).toBeCloseTo(stickyY, 0);
+  expect((await titles.todo.boundingBox())!.y).toBeCloseTo(initialY, 0);
   await titles.todo.evaluate((element) =>
     element.scrollIntoView({ block: "start" }),
   );

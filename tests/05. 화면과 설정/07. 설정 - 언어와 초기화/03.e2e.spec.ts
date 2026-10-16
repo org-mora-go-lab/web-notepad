@@ -22,9 +22,9 @@ test("3. Tab Colors 제목 오른쪽의 색상 초기화 버튼은 팝업 없이
   await reset.click();
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
   await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Green")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Purple")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Indigo")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Teal")).toBeChecked();
   await expect
     .poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.settings, STORAGE_KEY))
-    .toMatchObject({ tabColorCycle: ["gray", "green", "purple"] });
+    .toMatchObject({ tabColorCycle: ["gray", "indigo", "teal"] });
 });

@@ -11,7 +11,7 @@ test("6. 모바일 상태 제목은 자신의 세로선 끝까지 이동한 뒤 
     activeGroupId: "ungrouped",
     groups: [createGroupFixture("ungrouped", "Ungrouped", Array.from(
       { length: 20 },
-      (_, index) => createTabFixture(`tab-${index}`, `Done task ${index}\nBody`, { tabColor: "purple" }),
+      (_, index) => createTabFixture(`tab-${index}`, `Done task ${index}\nBody`, { tabColor: "teal" }),
     ))],
   });
   await openPanel(page, "dashboard-panel");
@@ -21,7 +21,7 @@ test("6. 모바일 상태 제목은 자신의 세로선 끝까지 이동한 뒤 
   const title = todo.locator(".dashboard-column-status");
   const doingTitle = dashboardColumn(page, "in-progress").locator(".dashboard-column-status");
   const headerBox = (await panel.locator(".side-panel-header").boundingBox())!;
-  const stickyTop = headerBox.y + headerBox.height + 30;
+  const stickyTop = headerBox.y + headerBox.height;
   const titleHeight = (await title.boundingBox())!.height;
   const columnBox = (await todo.boundingBox())!;
 

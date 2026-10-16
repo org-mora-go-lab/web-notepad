@@ -34,5 +34,5 @@ test("4. 고정 탭을 Done으로 옮기면 확인 없이 고정과 열린 상�
     (await readStoredState(page)).groups[0].tabs.find(
       (tab) => tab.id === "tab-1",
     ),
-  ).toMatchObject({ pinned: true, tabColor: "purple" });
+  ).toMatchObject({ pinned: true, tabColor: "teal" });
 });

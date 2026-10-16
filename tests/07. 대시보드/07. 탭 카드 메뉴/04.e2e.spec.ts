@@ -5,7 +5,7 @@ import { dashboardColumn, openPanel, toggleDashboardStatus, writeStoredState } f
 
 test("4. Done 카드 메뉴 맨 아래의 Closed를 선택하면 Closed 상태로 이동한다", async ({ page }) => {
   await writeStoredState(page, {
-    groups: [createGroupFixture("ungrouped", "Ungrouped", [createTabFixture("tab-1", "Done task", { tabColor: "purple" })])],
+    groups: [createGroupFixture("ungrouped", "Ungrouped", [createTabFixture("tab-1", "Done task", { tabColor: "teal" })])],
   });
   await openPanel(page, "dashboard-panel");
   await toggleDashboardStatus(page, "closed");

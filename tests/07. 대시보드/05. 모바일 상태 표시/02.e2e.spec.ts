@@ -1,14 +1,12 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { openPanel } from "../../__util__";
-import { dashboardColumn, seedDashboardTabs } from "../../__util__";
+import { dashboardColumn, dashboardPanel, seedScrollableDashboard } from "../../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
 test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세로선을 이어서 표시한다", async ({ page }) => {
-  await seedDashboardTabs(page);
-  await openPanel(page, "dashboard-panel");
+  await seedScrollableDashboard(page);
 
   const column = dashboardColumn(page, "in-progress");
   await expect(column).toHaveCSS("border-left-width", "3px");
@@ -18,38 +16,42 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
   await expect(title).toHaveCSS("font-size", "17.8px");
   await expect(title.locator(".dashboard-count")).toHaveCSS("font-size", "15.4px");
   await expect(title.locator(".dashboard-count")).toHaveCSS("padding-right", "13px");
-  for (const pseudo of ["::before", "::after"]) {
-    const fog = await title.evaluate((element, selector) => {
+  const readBlur = (pseudo: "::before" | "::after") =>
+    title.evaluate((element, selector) => {
       const style = getComputedStyle(element, selector);
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 1;
-      const context = canvas.getContext("2d")!;
-      const sample = (color: string) => {
-        context.clearRect(0, 0, 1, 1);
-        context.fillStyle = color;
-        context.fillRect(0, 0, 1, 1);
-        return Array.from(context.getImageData(0, 0, 1, 1).data);
-      };
       return {
         height: style.height,
-        mask: style.maskImage,
-        color: sample(style.backgroundColor),
-        accent: sample(getComputedStyle(element).getPropertyValue("--dashboard-accent").trim()),
+        backdropFilter: style.backdropFilter,
+        webkitBackdropFilter: style.getPropertyValue("-webkit-backdrop-filter"),
+        maskImage: style.maskImage,
+        webkitMaskImage: style.getPropertyValue("-webkit-mask-image"),
+        opacity: style.opacity,
         pointerEvents: style.pointerEvents,
       };
     }, pseudo);
-    expect(fog.height).toBe("5px");
-    expect(fog.mask).toMatch(pseudo === "::before"
-      ? /^linear-gradient\(to top, rgb\(0, 0, 0\)/
-      : /^linear-gradient\((?:to bottom, )?rgb\(0, 0, 0\)/);
-    expect(fog.mask).toContain("rgba(0, 0, 0, 0)");
-    expect(fog.color[3]).toBeGreaterThan(0);
-    expect(fog.color[3]).toBeLessThan(255);
-    for (let channel = 0; channel < 3; channel++) {
-      expect(Math.abs(fog.color[channel] - fog.accent[channel])).toBeLessThanOrEqual(3);
-    }
-    expect(fog.pointerEvents).toBe("none");
+
+  for (const pseudo of ["::before", "::after"] as const) {
+    const blur = await readBlur(pseudo);
+    expect(blur.opacity).toBe("0");
   }
+
+  await dashboardPanel(page).locator(".dashboard-list").evaluate((element) => {
+    element.scrollTop = 1;
+  });
+  await expect(dashboardPanel(page).locator(".dashboard-content")).toHaveClass(/is-scrolled/);
+
+  const gradients: string[] = [];
+  for (const pseudo of ["::before", "::after"] as const) {
+    await expect.poll(async () => (await readBlur(pseudo)).opacity).toBe("1");
+    const blur = await readBlur(pseudo);
+    expect(blur.height).toBe("20px");
+    const mask = blur.maskImage !== "none" ? blur.maskImage : blur.webkitMaskImage;
+    expect(mask).toContain("linear-gradient");
+    expect([blur.backdropFilter, blur.webkitBackdropFilter]).toContain("blur(2px)");
+    expect(blur.pointerEvents).toBe("none");
+    gradients.push(mask);
+  }
+  expect(gradients[0]).not.toBe(gradients[1]);
   const borderColor = await column.evaluate(
     (element) => getComputedStyle(element).borderLeftColor,
   );

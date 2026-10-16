@@ -12,7 +12,13 @@ test("1. 문구 없는 메뉴 아이콘 왼쪽에 검색 아이콘을 표시한�
     const search = page.locator(".header .global-search-command");
     const searchBounds = (await search.boundingBox())!;
     expect(bounds.y).toBe(0);
-    expect(bounds.x + bounds.width).toBeCloseTo(viewport.width, 1);
+    const footerPaddingRight = await page.locator(".footer").evaluate((footer) => {
+      const target = window.matchMedia("(max-width: 512px)").matches
+        ? footer.querySelector(".status-meta")!
+        : footer;
+      return parseFloat(getComputedStyle(target).paddingRight);
+    });
+    expect(viewport.width - bounds.x - bounds.width).toBeCloseTo(footerPaddingRight, 1);
     expect(searchBounds.x + searchBounds.width).toBeCloseTo(bounds.x, 1);
     const tabsBounds = (await page.locator(".tabs-scroll").first().boundingBox())!;
     expect(tabsBounds.x + tabsBounds.width).toBeLessThanOrEqual(bounds.x + 1);
