@@ -21,12 +21,12 @@ test("7. 상태 이름은 기본 이름으로 표시하고 PC와 모바일에서
     for (let load = 0; load < 2; load += 1) {
       await toggleDashboardStatus(page, "icebox");
       await toggleDashboardStatus(page, "closed");
-      await expect(titles.locator(".dashboard-status-label")).toHaveText(["ICEBOX", "Todo", "Doing", "Done", "Closed"]);
+      await expect(titles.locator(".dashboard-status-label")).toHaveText(["Memo", "Ready", "Doing", "Done", "Closed"]);
       await titles.nth(1).hover();
       await titles.nth(1).click();
       await expect(titles.getByRole("button")).toHaveCount(0);
       await expect(titles.getByRole("textbox")).toHaveCount(0);
-      await expect(titles.locator(".dashboard-status-label").nth(1)).toHaveText("Todo");
+      await expect(titles.locator(".dashboard-status-label").nth(1)).toHaveText("Ready");
       if (load === 0) await page.reload();
     }
   }

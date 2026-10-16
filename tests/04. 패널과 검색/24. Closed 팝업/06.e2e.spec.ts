@@ -23,7 +23,7 @@ test("6. Icebox와 Closed 상태를 양쪽에 구분되는 색상의 컬럼으�
   await expect(page.locator(".dashboard-board")).toHaveClass(/has-icebox.*has-closed/);
   await expect(
     page.locator(".dashboard-statuses > h3 .dashboard-status-label"),
-  ).toHaveText(["ICEBOX", "Todo", "Doing", "Done", "Closed"]);
+  ).toHaveText(["Memo", "Ready", "Doing", "Done", "Closed"]);
   const [iceboxColor, todoColor, doneColor, closedColor] = await Promise.all([
     icebox.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
     todo.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
