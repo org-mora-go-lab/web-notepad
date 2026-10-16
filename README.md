@@ -64,3 +64,4 @@ npm run test:e2e -- "tests/02. 노트 편집/12. 분할 패널 - 기본 동작"
 공통 유틸리티는 `tests/__util__/state`, `note`, `workspace`, `assertion`으로 구분합니다.
 분할 패널 전용 유틸리티는 `tests/02. 노트 편집/__util__/split-panel/state`, `drag`로 구분합니다.
 각 그룹은 배럴을 제공하며, E2E 파일은 기존 `__util__` 배럴을 통해 가져옵니다.
+

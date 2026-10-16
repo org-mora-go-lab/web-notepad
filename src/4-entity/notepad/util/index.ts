@@ -1,3 +1,4 @@
+export { normalizeDashboardStatusNames } from "./dashboard-status-names";
 export { compareGroups } from "./group-sort";
 export type { DashboardColumnData } from "./note";
 export {

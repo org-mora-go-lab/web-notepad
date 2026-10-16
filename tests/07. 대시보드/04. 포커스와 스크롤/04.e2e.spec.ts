@@ -13,10 +13,13 @@ test("4. 모바일에서 아래로 스크롤하면 Todo, Doing, Done을 차례�
     ),
     done: panel.locator('.dashboard-column-status[data-status="done"]'),
   };
-  const stickyY = (await titles.todo.boundingBox())!.y;
   const headerBox = (await panel.locator(".side-panel-header").boundingBox())!;
+  const stickyY = headerBox.y + headerBox.height + 30;
 
-  expect(stickyY).toBeCloseTo(headerBox.y + headerBox.height, 0);
+  expect((await titles.todo.boundingBox())!.y).toBeCloseTo(stickyY, 0);
+  await titles.todo.evaluate((element) =>
+    element.scrollIntoView({ block: "start" }),
+  );
   expect((await titles.todo.boundingBox())!.y).toBeCloseTo(stickyY, 0);
   await titles.doing.evaluate((element) =>
     element.scrollIntoView({ block: "start" }),

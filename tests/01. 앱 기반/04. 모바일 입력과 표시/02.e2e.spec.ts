@@ -1,26 +1,37 @@
 import { expect, test } from "@playwright/test";
 
-import { MOBILE_VIEWPORT } from "../../__constant__";
+import { MOBILE_VIEWPORT, STORAGE_KEY } from "../../__constant__";
+import {
+  chooseGroupAction,
+  createGroup,
+  groupsCommand,
+  openGlobalSearchPanel,
+} from "../../__util__";
 
-test("2. 모바일의 모든 요소는 터치할 때 탭 하이라이트를 표시하지 않는다", async ({ page }) => {
-  await page.setViewportSize(MOBILE_VIEWPORT);
+test.use({ viewport: MOBILE_VIEWPORT, isMobile: true, hasTouch: true });
+
+test("2. 터치 기기의 에디터·검색창·그룹 이름 입력란은 최소 16px를 유지한다", async ({ page }) => {
+  // The smallest font scale would otherwise push every field under 16px.
+  await page.addInitScript((key) => {
+    if (sessionStorage.getItem("touch-font-seed")) return;
+    localStorage.setItem(key, JSON.stringify({ state: { settings: { fontScale: 0.8 } }, version: 0 }));
+    sessionStorage.setItem("touch-font-seed", "true");
+  }, STORAGE_KEY);
   await page.goto("/");
-  await page.getByRole("button", { name: "MENU" }).click();
+  expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
 
-  const toggle = page.getByRole("switch", { name: "THEME" });
-  await expect(toggle).toHaveCSS("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
-  await expect(page.locator(".theme-toggle")).toHaveCSS(
-    "-webkit-tap-highlight-color",
-    "rgba(0, 0, 0, 0)",
-  );
+  const fontSize = (selector: string) =>
+    page.locator(selector).first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+  expect(await fontSize(".note-area")).toBeGreaterThanOrEqual(16);
 
-  expect(
-    await page.locator("*").evaluateAll((elements) =>
-      elements.every(
-        (element) =>
-          getComputedStyle(element).getPropertyValue("-webkit-tap-highlight-color") ===
-          "rgba(0, 0, 0, 0)",
-      ),
-    ),
-  ).toBe(true);
+  await openGlobalSearchPanel(page);
+  expect(await fontSize("#global-search-popup input")).toBeGreaterThanOrEqual(16);
+  await page.keyboard.press("Escape");
+
+  await groupsCommand(page).click();
+  await createGroup(page, "Alpha");
+  expect(await fontSize(".group-create-form input")).toBeGreaterThanOrEqual(16);
+  await chooseGroupAction(page, "Alpha", "수정");
+  await expect(page.getByRole("textbox", { name: "Edit Alpha group name" })).toBeVisible();
+  expect(await fontSize(".group-edit-form input")).toBeGreaterThanOrEqual(16);
 });

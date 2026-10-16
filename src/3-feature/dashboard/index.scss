@@ -1,12 +1,14 @@
 @use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
 @use "./style/board";
+@use "./style/dashboard-options";
+@use "./style/dashboard-status-editor";
 
 .dashboard {
   @include mixin.side-panel-list("dashboard");
 
   .side-panel-drawer {
-    grid-template-rows: auto minmax(0, 1fr) 48px;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .dashboard-content {
@@ -18,53 +20,6 @@
   .dashboard-expand[aria-pressed="true"] {
     border-color: v.$hover-line;
     color: v.$signal;
-  }
-
-  .dashboard-footer {
-    min-width: 0;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 26px 6px 16px;
-    border-top: 1px solid v.$line;
-    background: v.$strip;
-  }
-
-  .dashboard-icebox-command,
-  .dashboard-closed-command {
-    height: 35px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--color-command);
-    font-size: v.font(14px);
-    cursor: pointer;
-
-    &[aria-pressed="true"] {
-      color: v.$ink;
-
-      svg {
-        fill: currentColor;
-      }
-    }
-
-    &:hover,
-    &:focus-visible {
-      color: v.$ink;
-    }
-
-    &:focus-visible {
-      outline: 2px solid v.$saved;
-      outline-offset: 2px;
-    }
-  }
-
-  .dashboard-closed-command[aria-pressed="true"] svg {
-    fill: none;
   }
 
   // The board fills the panel so the area under each status title accepts drops down to the bottom.
@@ -91,7 +46,7 @@
     }
 
     .dashboard-list {
-      padding-top: 0;
+      padding-top: 30px;
     }
   }
 

@@ -44,7 +44,11 @@
   }
 
   .dashboard-statuses h3.dashboard-closed-status {
-    --dashboard-accent: #888;
+    --dashboard-accent: var(--color-status-closed);
+  }
+
+  .dashboard-column-status[data-status="closed"][data-tab-color] {
+    --dashboard-accent: var(--color-status-closed);
   }
 
   .dashboard-content.is-scrolled .dashboard-statuses::after {
@@ -110,7 +114,6 @@
       display: flex;
       padding-top: 7px;
       padding-bottom: 7px;
-      margin-bottom: 10px;
       margin-left: -8px;
       border-left: 0;
       background: color-mix(

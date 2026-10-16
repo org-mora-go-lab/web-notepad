@@ -3,14 +3,17 @@
 import { useCallback } from "react";
 
 import {
+  ALL_GROUP_ID,
   getActiveGroup,
   getBottomPane,
   getPaneWorkspace,
   type PaneColumn,
   type PaneId,
+  UNGROUPED_GROUP_ID,
   useNotepadHydrated,
   useNotepadStore,
 } from "@/src/4-entity/notepad";
+import { MESSAGES } from "@/src/5-shared/constant";
 import { isToday } from "@/src/5-shared/util";
 
 import type { PaneColumnProps, PaneViewProps } from "../type";
@@ -48,16 +51,21 @@ export function useHome() {
     removeBookmark,
     createGroup,
     renameGroup,
+    setGroupStatusNames,
     toggleGroupPin,
     removeGroup,
-    setDashboardStatusName,
     settings,
   } = store;
 
   const activeGroup = getActiveGroup(store);
   const bookmarks = activeGroup?.bookmarks ?? [];
   const activeGroupTabs = activeGroup?.tabs ?? [];
-  const activeGroupName = activeGroup?.name ?? "Ungrouped";
+  const messages = MESSAGES[settings.language];
+  const activeGroupName = activeGroupId === ALL_GROUP_ID
+    ? messages.allGroup
+    : activeGroupId === UNGROUPED_GROUP_ID
+      ? messages.ungrouped
+      : activeGroup?.name ?? messages.ungrouped;
   const hasBookmarkUpdateToday = bookmarks.some((bookmark) =>
     isToday(bookmark.updatedAt),
   );
@@ -210,7 +218,9 @@ export function useHome() {
     activeTab,
     split,
     bookmarks,
-    groups,
+    groups: groups.map((group) => group.id === UNGROUPED_GROUP_ID
+      ? { ...group, name: messages.ungrouped }
+      : group),
     activeGroupName,
     hasBookmarkUpdateToday,
     hasGroupUpdateToday,
@@ -219,8 +229,6 @@ export function useHome() {
     columns,
     activeGroupTabs,
     tabColorCycle: settings.tabColorCycle,
-    dashboardStatusNames: settings.dashboardStatusNames,
-    setDashboardStatusName,
     setTabStatus,
     togglePin,
     toggleBookmark,
@@ -230,6 +238,7 @@ export function useHome() {
     removeBookmark,
     createGroup,
     renameGroup,
+    setGroupStatusNames,
     toggleGroupPin,
     removeGroup,
     fontScale: settings.fontScale,

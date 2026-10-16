@@ -20,12 +20,11 @@ export type NotepadSettings = {
   // Right panels slide in and out; off shows and hides them in place.
   panelSlide: boolean;
   panelPosition: "left" | "right";
-  // Optional display-only labels for dashboard statuses.
-  dashboardStatusNames: Partial<Record<TabStatus, string>>;
 };
 
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
 export type TabStatus = "icebox" | "todo" | "in-progress" | "done" | "closed";
+export type DashboardStatusNames = Partial<Record<TabStatus, string>>;
 
 export type NoteTab = {
   id: string;
@@ -64,6 +63,7 @@ export type ClosedTabEntry = {
 };
 
 export type GroupEntry = {
+  dashboardStatusNames?: DashboardStatusNames;
   id: string;
   name: string;
   // Pinned groups sort first in the group lists.
@@ -91,7 +91,7 @@ export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
 
 export type PaneColumn = "left" | "right";
 
-export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks">;
+export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames">;
 
 export type NotepadState = {
   nextTabNumber: number;
@@ -107,7 +107,6 @@ export type NotepadState = {
   setLanguage: (language: Language) => void;
   setPanelSlide: (panelSlide: boolean) => void;
   setPanelPosition: (panelPosition: "left" | "right") => void;
-  setDashboardStatusName: (status: TabStatus, name: string) => void;
   resetSettings: () => void;
   resetTabColorCycle: () => void;
   shuffleTabColorCycle: () => void;
@@ -134,6 +133,7 @@ export type NotepadState = {
   removeBookmark: (bookmarkId: string) => void;
   createGroup: (name: string) => void;
   renameGroup: (groupId: string, name: string) => void;
+  setGroupStatusNames: (groupId: string, names: DashboardStatusNames) => void;
   toggleGroupPin: (groupId: string) => void;
   removeGroup: (groupId: string) => void;
   selectGroup: (groupId: string) => void;

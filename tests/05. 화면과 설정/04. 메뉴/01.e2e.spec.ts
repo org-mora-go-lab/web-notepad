@@ -20,5 +20,9 @@ test("1. 문구 없는 메뉴 아이콘 왼쪽에 검색 아이콘을 표시한�
     await expect(trigger.locator("svg")).toHaveClass(/lucide-menu/);
     await expect(trigger).toHaveText("");
     await expect(search.locator("svg")).toHaveClass(/lucide-search/);
+    await expect(page.locator(".footer .global-search-command")).toHaveCount(0);
+    await trigger.click();
+    await expect(page.getByRole("menuitem", { name: "SEARCH", exact: true })).toHaveCount(0);
+    await page.keyboard.press("Escape");
   }
 });

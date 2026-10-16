@@ -14,6 +14,7 @@ import type {
 import type { ViewPanel } from "@/src/5-shared";
 
 export type PanelProps = {
+  onSaveDashboardStatusNames: ComponentProps<typeof Dashboard>["onSaveStatusNames"];
   openPanel: ViewPanel | null;
   backgroundPanel: ViewPanel | null;
   pinned: boolean;
@@ -22,7 +23,6 @@ export type PanelProps = {
   activeGroupTabs: NoteTab[];
   activeTabId?: string;
   tabColorCycle: TabColor[];
-  dashboardStatusNames: ComponentProps<typeof Dashboard>["statusNames"];
   groups: GroupEntry[];
   activeGroupId: string;
   groupMenuOpen: boolean;
@@ -33,8 +33,8 @@ export type PanelProps = {
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
+  onAddDashboardTask: ComponentProps<typeof Dashboard>["onAddTask"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
-  onRenameDashboardStatus: ComponentProps<typeof Dashboard>["onRenameStatus"];
   onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
   onToggleDashboardTabPin: ComponentProps<typeof Dashboard>["onToggleTabPin"];
   onToggleDashboardTabBookmark: ComponentProps<

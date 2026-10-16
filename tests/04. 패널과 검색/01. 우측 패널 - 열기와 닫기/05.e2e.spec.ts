@@ -16,7 +16,7 @@ test("5. PC와 모바일에서 Escape로 우측 패널을 닫고 메모·그룹�
   await bookmarkActiveTab(page, note);
   const editor = page.locator("textarea");
   const bookmarksPanel = page.locator("#bookmarks-panel");
-  const bookmarkSearch = bookmarksPanel.getByPlaceholder("Search bookmarks");
+  const bookmarkAction = bookmarksPanel.getByRole("button", { name: "Open", exact: true });
   const shortcutsPanel = page.locator("#shortcuts-panel");
 
   for (const viewport of BOTH_VIEWPORTS) {
@@ -24,8 +24,8 @@ test("5. PC와 모바일에서 Escape로 우측 패널을 닫고 메모·그룹�
 
     await bookmarksCommand(page).click();
     await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "false");
-    await bookmarkSearch.fill("Preserve");
-    await expect(bookmarkSearch).toBeFocused();
+    await bookmarkAction.focus();
+    await expect(bookmarkAction).toBeFocused();
     await page.keyboard.press("Escape");
     await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "true");
     await expect(editor).toHaveValue(note);

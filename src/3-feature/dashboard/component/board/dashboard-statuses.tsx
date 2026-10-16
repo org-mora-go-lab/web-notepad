@@ -12,7 +12,6 @@ export function DashboardStatuses({
   closedVisible,
   iceboxCount,
   closedCount,
-  onRenameStatus,
 }: DashboardStatusesProps) {
   const { t } = useI18n();
   const statusLabels = {
@@ -34,7 +33,6 @@ export function DashboardStatuses({
           label={statusNames.icebox ?? t.icebox}
           count={iceboxCount}
           tabColor="gray"
-          onRename={onRenameStatus}
         />
       )}
       {columns.map(({ status, tabs }) => (
@@ -45,7 +43,6 @@ export function DashboardStatuses({
           label={statusNames[status] ?? statusLabels[status]}
           count={tabs.length}
           tabColor={getStatusColor(status, tabColorCycle)}
-          onRename={onRenameStatus}
         />
       ))}
       {closedVisible && (
@@ -56,7 +53,6 @@ export function DashboardStatuses({
           label={statusNames.closed ?? t.closedTitle}
           count={closedCount}
           tabColor="purple"
-          onRename={onRenameStatus}
         />
       )}
     </div>

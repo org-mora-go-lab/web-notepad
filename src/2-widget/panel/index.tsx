@@ -21,7 +21,6 @@ export function Panel({
   activeGroupTabs,
   activeTabId,
   tabColorCycle,
-  dashboardStatusNames,
   groups,
   activeGroupId,
   groupMenuOpen,
@@ -32,8 +31,9 @@ export function Panel({
   onOpenBookmark,
   onRemoveBookmark,
   onOpenDashboardTab,
+  onAddDashboardTask,
   onChangeTabStatus,
-  onRenameDashboardStatus,
+  onSaveDashboardStatusNames,
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
@@ -56,19 +56,21 @@ export function Panel({
         onRemove={onRemoveBookmark}
       />
       <Dashboard
+        groupId={activeGroupId}
+        statusNames={groups.find((group) => group.id === activeGroupId)?.dashboardStatusNames ?? {}}
+        onSaveStatusNames={onSaveDashboardStatusNames}
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
         groups={groups}
         showGroupNames={activeGroupId === ALL_GROUP_ID}
         tabColorCycle={tabColorCycle}
-        statusNames={dashboardStatusNames}
         open={openPanel === "dashboard" || backgroundPanel === "dashboard"}
         pinned={pinned}
         onTogglePin={onTogglePin}
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
+        onAddTask={onAddDashboardTask}
         onChangeStatus={onChangeTabStatus}
-        onRenameStatus={onRenameDashboardStatus}
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}

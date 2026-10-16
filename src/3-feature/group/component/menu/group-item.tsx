@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Ellipsis, Pencil, Pin, Trash2, X } from "lucide-react";
+import { Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -100,7 +100,7 @@ export function GroupItem({
             title={t.groupActions}
             onClick={onToggleActions}
           >
-            <Ellipsis size={14} />
+            <EllipsisVertical size={14} />
           </button>
         </div>
       )}

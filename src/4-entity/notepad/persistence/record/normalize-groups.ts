@@ -1,6 +1,6 @@
 import { UNGROUPED_GROUP_ID } from "../../constant";
 import type { BookmarkEntry, GroupEntry, NoteTab, PaneId } from "../../type";
-import { normalizeLayout, PANE_IDS } from "../../util";
+import { normalizeDashboardStatusNames, normalizeLayout, PANE_IDS } from "../../util";
 import { finiteNumberOr } from "../read-value";
 import { normalizeBookmarks, normalizeTabs } from "./normalize-records";
 
@@ -69,6 +69,7 @@ export function normalizeGroups(
       const sourceActivePane = fromSource("activePane", "left");
       const createdAt = finiteNumberOr(group.createdAt, Date.now());
       return normalizeLayout({
+        ...(group.dashboardStatusNames ? { dashboardStatusNames: normalizeDashboardStatusNames(group.dashboardStatusNames) } : {}),
         id,
         name: typeof group.name === "string" ? group.name : "Untitled Group",
         pinned: id !== UNGROUPED_GROUP_ID && group.pinned === true,

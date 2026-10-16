@@ -7,5 +7,4 @@ export type DashboardStatusProps = {
   label: string;
   count: number;
   tabColor: TabColor;
-  onRename: (status: TabStatus, name: string) => void;
 };

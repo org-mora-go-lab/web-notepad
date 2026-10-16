@@ -1,3 +1,5 @@
+import { Plus } from "lucide-react";
+
 import { getStatusColor } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -15,7 +17,7 @@ export function DashboardColumn({
   statusNames,
   contextMenuTabId,
   onOpenTab,
-  onRenameStatus,
+  onAddTask,
   onOpenContextMenu,
 }: DashboardColumnProps) {
   const { status, tabs: columnTabs } = column;
@@ -37,7 +39,7 @@ export function DashboardColumn({
   return (
     <section
       key={status}
-      className={`dashboard-column dashboard-${status}-column ${drag.overStatus === status ? "is-drop-target" : ""}`}
+      className={`dashboard-column dashboard-${status}-column ${columnTabs.length === 0 ? "is-empty" : ""} ${drag.overStatus === status ? "is-drop-target" : ""}`}
       data-status={status}
       aria-label={statusLabel}
       data-tab-color={getStatusColor(status, tabColorCycle)}
@@ -61,9 +63,14 @@ export function DashboardColumn({
         label={statusNames[status] ?? statusLabel}
         count={columnTabs.length}
         tabColor={getStatusColor(status, tabColorCycle)}
-        onRename={onRenameStatus}
       />
       <div className="dashboard-cards">
+        {columnTabs.length === 0 && ["todo", "in-progress", "done"].includes(status) && (
+          <div className={`dashboard-empty dashboard-empty-${status}`}>
+            <p>{status === "todo" ? t.emptyReady : status === "in-progress" ? t.emptyDoing : t.emptyDone}</p>
+            {status === "todo" && <button type="button" onClick={onAddTask}><Plus size={16} aria-hidden="true" />{t.addDashboardTask}</button>}
+          </div>
+        )}
         {cardEntries.map((tab) => (
           <DashboardCard
             key={tab.id}

@@ -41,6 +41,7 @@ export function TabItem({
         tab.bookmarked ? "is-bookmarked" : ""
       }`}
       data-tab-color={tab.tabColor}
+      data-dashboard-status={tab.dashboardStatus}
       draggable
       onContextMenu={(event) => {
         event.preventDefault();

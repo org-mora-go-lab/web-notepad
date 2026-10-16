@@ -30,20 +30,22 @@
     min-height: 52px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
+    align-items: start;
     gap: 16px;
+    padding: 10px 0;
     border-bottom: 1px solid v.$line;
 
     dt {
       min-width: 0;
+      padding-top: 4px;
       color: v.$saved;
       font-size: v.font(15px);
     }
 
     dd {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      flex-direction: column;
+      align-items: flex-end;
       gap: 5px;
       margin: 0;
     }

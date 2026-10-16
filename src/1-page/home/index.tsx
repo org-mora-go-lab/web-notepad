@@ -20,6 +20,7 @@ export function Home() {
     backgroundPanel,
     toggleSidePanel,
     closeSidePanels,
+    addTabAndRecord,
     activeGroupId,
     selectGroupAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
@@ -29,8 +30,6 @@ export function Home() {
     bookmarks,
     activeGroupTabs,
     tabColorCycle,
-    dashboardStatusNames,
-    setDashboardStatusName,
     setTabStatus,
     togglePin,
     toggleBookmark,
@@ -46,6 +45,7 @@ export function Home() {
     removeBookmark,
     createGroupAndRecord,
     renameGroup,
+    setGroupStatusNames,
     toggleGroupPin,
     removeGroupAndRecord,
     fontScale,
@@ -123,7 +123,6 @@ export function Home() {
           bookmarks={bookmarks}
           activeGroupTabs={activeGroupTabs}
           tabColorCycle={tabColorCycle}
-          dashboardStatusNames={dashboardStatusNames}
           groups={groups}
           activeGroupId={activeGroupId}
           groupMenuOpen={groupMenuOpen}
@@ -134,8 +133,8 @@ export function Home() {
           onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
+          onAddDashboardTask={() => { addTabAndRecord("left"); closeSidePanels(); }}
           onChangeTabStatus={setTabStatus}
-          onRenameDashboardStatus={setDashboardStatusName}
           onMoveDashboardTabToGroup={moveToGroup}
           onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
@@ -144,6 +143,7 @@ export function Home() {
           onSelectGroup={selectGroupAndClosePanel}
           onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
+          onSaveDashboardStatusNames={(names) => setGroupStatusNames(activeGroupId, names)}
           onToggleGroupPin={toggleGroupPin}
         />
       </main>

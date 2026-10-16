@@ -11,7 +11,7 @@ export type DashboardColumnProps = Pick<
   | "tabColorCycle"
   | "statusNames"
   | "onOpenTab"
-  | "onRenameStatus"
+  | "onAddTask"
 > & {
   column: DashboardColumnData;
   drag: ReturnType<typeof useDashboardDrag>;
