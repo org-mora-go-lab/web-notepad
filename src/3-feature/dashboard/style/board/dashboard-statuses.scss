@@ -139,19 +139,29 @@
       &::before {
         height: 20px;
         bottom: 100%;
-        background: linear-gradient(
+        -webkit-mask-image: linear-gradient(
           to bottom,
           transparent,
-          color-mix(in srgb, var(--dashboard-status-background) 35%, transparent)
+          #000
+        );
+        mask-image: linear-gradient(
+          to bottom,
+          transparent,
+          #000
         );
       }
 
       &::after {
-        height: 7px;
+        height: 10px;
         top: 100%;
-        background: linear-gradient(
+        -webkit-mask-image: linear-gradient(
           to bottom,
-          color-mix(in srgb, var(--dashboard-status-background) 35%, transparent),
+          #000,
+          transparent
+        );
+        mask-image: linear-gradient(
+          to bottom,
+          #000,
           transparent
         );
       }
