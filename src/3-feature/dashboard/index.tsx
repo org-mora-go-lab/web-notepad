@@ -65,16 +65,6 @@ export function Dashboard({
       expanded={open && expanded}
       headerActions={
         <>
-          <button
-            className="side-panel-action dashboard-expand"
-            type="button"
-            onClick={() => setExpanded((current) => !current)}
-            aria-pressed={expanded}
-            aria-label={expanded ? t.collapseDashboard : t.expandDashboard}
-            title={expanded ? t.collapseDashboard : t.expandDashboard}
-          >
-            {expanded ? <Minimize2 /> : <Maximize2 />}
-          </button>
           {open && (
             <DashboardOptions
               key={groupId}
@@ -88,6 +78,16 @@ export function Dashboard({
               onToggleClosed={() => setClosedVisible((current) => !current)}
             />
           )}
+          <button
+            className="side-panel-action dashboard-expand"
+            type="button"
+            onClick={() => setExpanded((current) => !current)}
+            aria-pressed={expanded}
+            aria-label={expanded ? t.collapseDashboard : t.expandDashboard}
+            title={expanded ? t.collapseDashboard : t.expandDashboard}
+          >
+            {expanded ? <Minimize2 /> : <Maximize2 />}
+          </button>
         </>
       }
       closeLabel={t.closePanel(t.dashboardTitle)}
