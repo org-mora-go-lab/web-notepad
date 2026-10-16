@@ -3,7 +3,6 @@
 import { Bookmark as BookmarkIcon, Trash2 } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
-import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 import { formatDate } from "@/src/5-shared/util";
 
 import type { BookmarkItemProps } from "../type";
@@ -22,7 +21,6 @@ const getBodyWithoutTitle = (content: string, title: string) => {
 
 export function BookmarkItem({
   bookmark,
-  searchQuery,
   onOpen,
   onRemove,
 }: BookmarkItemProps) {
@@ -34,17 +32,13 @@ export function BookmarkItem({
   return (
     <article className="bookmark-item">
       <div className="bookmark-item-heading">
-        <strong>
-          <SearchHighlight text={bookmark.title} query={searchQuery} />
-        </strong>
+        <strong>{bookmark.title}</strong>
         <time dateTime={new Date(bookmark.createdAt).toISOString()}>
           {formatDate(bookmark.createdAt)}
         </time>
       </div>
       {body.trim() ? (
-        <p className="bookmark-item-content">
-          <SearchHighlight text={body} query={searchQuery} />
-        </p>
+        <p className="bookmark-item-content">{body}</p>
       ) : (
         <p className="bookmark-item-content is-empty" aria-hidden="true" />
       )}

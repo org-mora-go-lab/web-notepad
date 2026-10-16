@@ -5,6 +5,6 @@
   @include mixin.side-panel-list("bookmark");
 
   .side-panel-drawer {
-    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
   }
 }

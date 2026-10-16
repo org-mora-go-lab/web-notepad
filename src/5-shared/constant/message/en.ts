@@ -56,7 +56,6 @@ export const en = {
   closePinnedTabMessage: "This tab is pinned. Unpin it and move it to Done?",
   unpinAndClose: "Unpin and close",
   bookmarksTitle: "Bookmarks",
-  searchBookmarks: "Search bookmarks",
   emptyBookmarks: "Empty Bookmarks",
   emptyNote: "Empty note",
   open: "Open",

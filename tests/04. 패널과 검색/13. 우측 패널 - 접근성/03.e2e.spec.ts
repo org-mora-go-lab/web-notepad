@@ -31,15 +31,15 @@ test("3. 닫힌 패널 컨트롤은 Tab 순서와 접근성 탐색에서 제외�
   await openPanel(page, "bookmarks-panel");
   const bookmarks = page.locator("#bookmarks-panel");
   await expect(bookmarks).not.toHaveAttribute("inert", "");
-  const search = bookmarks.locator('input[type="search"]');
-  await search.focus();
-  await expect(search).toBeFocused();
+  const closeButton = bookmarks.locator(".side-panel-close");
+  await closeButton.focus();
+  await expect(closeButton).toBeFocused();
 
   await bookmarks.getByRole("button", { name: "Close Bookmarks" }).click();
   await expect(bookmarks).toHaveAttribute("aria-hidden", "true");
   await expect(bookmarks).toHaveAttribute("inert", "");
   expect(
-    await search.evaluate((element) => {
+    await closeButton.evaluate((element) => {
       element.focus();
       return document.activeElement === element;
     }),

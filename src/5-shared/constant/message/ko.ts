@@ -59,7 +59,6 @@ export const ko: Messages = {
     "고정된 탭입니다. 고정을 해제하고 Done 상태로 변경하시겠습니까?",
   unpinAndClose: "고정 해제 후 닫기",
   bookmarksTitle: "북마크",
-  searchBookmarks: "북마크 검색",
   emptyBookmarks: "북마크가 없습니다",
   emptyNote: "빈 메모",
   open: "열기",
