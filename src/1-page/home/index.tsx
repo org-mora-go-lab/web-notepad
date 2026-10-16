@@ -7,6 +7,7 @@ import { type CSSProperties, useCallback, useEffect, useState } from "react";
 import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
 import { I18nContext } from "@/src/5-shared/hook";
+import { MobileTapFeedback } from "@/src/5-shared/ui";
 
 import { Loading, PaneColumn } from "./component";
 import type { PaneViewProps } from "./type";
@@ -83,6 +84,7 @@ export function Home() {
 
   return (
     <I18nContext value={language}>
+      <MobileTapFeedback />
       <main
         className={`home ${panelPinned && (backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}

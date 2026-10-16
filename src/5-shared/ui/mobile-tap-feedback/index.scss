@@ -1,0 +1,25 @@
+.mobile-tap-feedback {
+  position: fixed;
+  inset: auto;
+  z-index: 2147483647;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-signal) 40%, transparent);
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 25%, color-mix(in srgb, var(--color-signal) 22%, transparent) 70%);
+  pointer-events: none;
+  user-select: none;
+  animation: mobile-tap-wave 420ms ease-out forwards;
+
+  &::backdrop { background: transparent; pointer-events: none; }
+}
+
+@keyframes mobile-tap-wave {
+  from { transform: scale(0.35); opacity: 0.8; }
+  to { transform: scale(1.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-tap-feedback { display: none; animation: none; }
+}
