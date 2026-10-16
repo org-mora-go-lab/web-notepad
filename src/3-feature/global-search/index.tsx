@@ -6,7 +6,6 @@ import { useId, useRef, useState } from "react";
 import {
   useDialogHorizontalResize,
   useI18n,
-  useModalDialog,
   useScrollableListLayout,
   useSplitPaneResize,
 } from "@/src/5-shared/hook";
@@ -14,7 +13,7 @@ import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
 import { SearchPreview, SearchResult, SearchResultSection } from "./component";
-import { useDebouncedSearchQuery } from "./hook";
+import { useDebouncedSearchQuery, useSearchPopover } from "./hook";
 import type { GlobalSearchProps } from "./type";
 
 export function GlobalSearch({
@@ -26,12 +25,10 @@ export function GlobalSearch({
   onSelectGroup,
 }: GlobalSearchProps) {
   const { t } = useI18n();
-  const dialogRef = useModalDialog(open, 'input[type="search"]');
   const titleId = useId();
   const [selectedBookmarkId, setSelectedBookmarkId] = useState<string | null>(
     null,
   );
-  const handleResizeStart = useDialogHorizontalResize(dialogRef);
   const bodyRef = useRef<HTMLDivElement>(null);
   const handleSplitResizeStart = useSplitPaneResize(
     bodyRef,
@@ -67,13 +64,20 @@ export function GlobalSearch({
     setSelectedBookmarkId(null);
     onClose();
   };
+  const dialogRef = useSearchPopover(open, closeSearch);
+  const handleResizeStart = useDialogHorizontalResize(dialogRef, {
+    minWidth: selectedBookmark ? 640 : 320,
+    viewportMargin: 16,
+    centered: false,
+  });
 
   return (
     <dialog
       ref={dialogRef}
-      className="global-search"
+      className={`global-search ${query ? "has-query" : ""} ${selectedBookmark ? "has-preview" : ""}`}
       id="global-search-popup"
       aria-labelledby={titleId}
+      aria-modal="false"
       onCancel={(event) => {
         event.preventDefault();
         closeSearch();
@@ -147,6 +151,7 @@ export function GlobalSearch({
                         title={bookmark.title}
                         description={bookmark.content}
                         query={query}
+                        selected={selectedBookmarkId === `${group.id}:${bookmark.id}`}
                         ariaLabel={t.previewBookmarkResult(bookmark.title)}
                         onSelect={() =>
                           setSelectedBookmarkId(`${group.id}:${bookmark.id}`)

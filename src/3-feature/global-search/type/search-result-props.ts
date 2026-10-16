@@ -6,4 +6,5 @@ export type SearchResultProps = {
   query: string;
   ariaLabel: string;
   onSelect: () => void;
+  selected?: boolean;
 };
