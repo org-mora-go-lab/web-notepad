@@ -140,8 +140,13 @@
       padding: 1px 21px;
       display: flex;
       align-items: center;
+      gap: 3px;
       border-bottom: 1px solid v.$line;
       font-size: v.font(18px);
+    }
+
+    .current-group-icon {
+      flex-shrink: 0;
     }
 
     .current-group-name {
