@@ -122,20 +122,20 @@
   }
 
   @media (max-width: 512px) {
-    min-height: calc(112.8px + env(safe-area-inset-bottom));
+    min-height: calc(114.8px + env(safe-area-inset-bottom));
     padding: 0;
     display: grid;
-    grid-template-rows: 36px calc(76.8px + env(safe-area-inset-bottom));
+    grid-template-rows: 38px calc(76.8px + env(safe-area-inset-bottom));
     align-items: stretch;
     font-size: v.font(12px);
 
     .current-group-panel {
       min-width: 0;
-      padding: 0 21px;
+      padding: 1px 21px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid v.$line;
-      font-size: v.font(17px);
+      font-size: v.font(18px);
     }
 
     .current-group-name {
