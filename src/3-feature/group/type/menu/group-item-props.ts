@@ -1,4 +1,11 @@
+import type { PointerEventHandler } from "react";
+
 export type GroupItemProps = {
+  groupId: string;
+  dragging: boolean;
+  dropTarget: boolean;
+  onReorderStart: PointerEventHandler<HTMLButtonElement>;
+  onReorderKey: (direction: number) => void;
   name: string;
   active: boolean;
   pinned: boolean;

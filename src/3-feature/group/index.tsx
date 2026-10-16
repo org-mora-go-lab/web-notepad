@@ -11,7 +11,7 @@ import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
 import { GroupCreateForm, GroupItem } from "./component";
-import { useGroupMenuResize } from "./hook";
+import { useGroupMenuResize, useGroupReorder } from "./hook";
 import type { GroupMenuProps, GroupProps } from "./type";
 
 const ANCHOR_SELECTOR = ".group-select-command";
@@ -29,10 +29,12 @@ function GroupMenu({
   onRemove,
   onRename,
   onTogglePinGroup,
+  onMoveGroup,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const menuRef = useRef<HTMLDivElement>(null);
   const handleResizeStart = useGroupMenuResize(menuRef);
+  const reorder = useGroupReorder(onMoveGroup);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   // The row whose pin / edit / delete buttons are shown (opened with its … button).
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
@@ -47,6 +49,15 @@ function GroupMenu({
     return (
       <GroupItem
         key={group.id}
+        groupId={group.id}
+        dragging={reorder.draggingId === group.id}
+        dropTarget={reorder.targetId === group.id}
+        onReorderStart={(event) => reorder.start(group.id, event)}
+        onReorderKey={(direction) => {
+          const peers = otherRows.filter((item) => item.pinned === group.pinned);
+          const target = peers[peers.findIndex((item) => item.id === group.id) + direction];
+          if (target) onMoveGroup(group.id, target.id);
+        }}
         name={group.name}
         active={group.id === activeGroupId}
         pinned={group.pinned}

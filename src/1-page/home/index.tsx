@@ -45,6 +45,7 @@ export function Home() {
     renameGroup,
     setGroupStatusNames,
     toggleGroupPin,
+    moveGroup,
     removeGroupAndRecord,
     fontScale,
     language,
@@ -141,6 +142,7 @@ export function Home() {
           onRenameGroup={renameGroup}
           onSaveDashboardStatusNames={(names) => setGroupStatusNames(activeGroupId, names)}
           onToggleGroupPin={toggleGroupPin}
+          onMoveGroup={moveGroup}
         />
       </main>
     </I18nContext>

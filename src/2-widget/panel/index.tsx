@@ -40,6 +40,7 @@ export function Panel({
   onRemoveGroup,
   onRenameGroup,
   onToggleGroupPin,
+  onMoveGroup,
 }: PanelProps) {
   return (
     <div className="panel">
@@ -78,6 +79,7 @@ export function Panel({
         onRemove={onRemoveGroup}
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
+        onMoveGroup={onMoveGroup}
       />
       <GlobalSearch
         groups={groups}

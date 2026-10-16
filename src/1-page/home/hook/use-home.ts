@@ -53,6 +53,7 @@ export function useHome() {
     renameGroup,
     setGroupStatusNames,
     toggleGroupPin,
+    moveGroup,
     removeGroup,
     settings,
   } = store;
@@ -237,6 +238,7 @@ export function useHome() {
     renameGroup,
     setGroupStatusNames,
     toggleGroupPin,
+    moveGroup,
     removeGroup,
     fontScale: settings.fontScale,
     language: settings.language,

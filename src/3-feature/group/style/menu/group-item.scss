@@ -15,6 +15,24 @@
     gap: 6px;
     padding: 0 4px 0 10px;
 
+    &.is-dragging { opacity: 0.5; }
+    &.is-drop-target { outline: 1px solid v.$signal; outline-offset: -1px; }
+
+    .group-reorder {
+      display: grid;
+      place-items: center;
+      flex: 0 0 24px;
+      min-height: 32px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: v.$dim;
+      cursor: grab;
+      touch-action: none;
+      &:active { cursor: grabbing; }
+      &:focus-visible { outline: 1px solid v.$signal; }
+    }
+
     // Hover is lighter than the selected group.
     &:hover {
       background: color-mix(in srgb, #{v.$line} 50%, transparent);

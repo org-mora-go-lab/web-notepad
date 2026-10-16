@@ -10,4 +10,5 @@ export type GroupProps = {
   onRemove: (groupId: string) => void;
   onRename: (groupId: string, name: string) => void;
   onTogglePinGroup: (groupId: string) => void;
+  onMoveGroup: (groupId: string, targetId: string) => void;
 };

@@ -80,6 +80,7 @@ export const ko: Messages = {
   cancelGroupEdit: "그룹 수정 취소",
   pinnedGroup: "고정된 그룹",
   pinGroup: (name: string) => `${name} 그룹 고정`,
+  reorderGroup: (name: string) => `${name} 그룹 순서 이동`,
   unpinGroup: (name: string) => `${name} 그룹 고정 해제`,
   editGroup: "그룹 수정",
   editGroupFor: (name: string) => `${name} 그룹 수정`,

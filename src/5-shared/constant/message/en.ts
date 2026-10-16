@@ -77,6 +77,7 @@ export const en = {
   cancelGroupEdit: "Cancel group changes",
   pinnedGroup: "Pinned group",
   pinGroup: (name: string) => `Pin ${name} group`,
+  reorderGroup: (name: string) => `Move ${name} group`,
   unpinGroup: (name: string) => `Unpin ${name} group`,
   editGroup: "Edit group",
   editGroupFor: (name: string) => `Edit ${name} group`,

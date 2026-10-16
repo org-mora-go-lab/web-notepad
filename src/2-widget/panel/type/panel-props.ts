@@ -42,5 +42,6 @@ export type PanelProps = {
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
+  onMoveGroup: ComponentProps<typeof Group>["onMoveGroup"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
 };
