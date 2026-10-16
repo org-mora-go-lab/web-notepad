@@ -43,9 +43,9 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
   for (const pseudo of ["::before", "::after"] as const) {
     await expect.poll(async () => (await readBlur(pseudo)).opacity).toBe("1");
     const blur = await readBlur(pseudo);
-    expect(blur.height).toBe("7px");
+    expect(blur.height).toBe(pseudo === "::before" ? "20px" : "7px");
     expect(blur.backgroundImage).toContain("linear-gradient");
-    expect([blur.backdropFilter, blur.webkitBackdropFilter]).toContain("blur(7px)");
+    expect([blur.backdropFilter, blur.webkitBackdropFilter]).toContain("blur(2px)");
     expect(blur.pointerEvents).toBe("none");
     gradients.push(blur.backgroundImage);
   }

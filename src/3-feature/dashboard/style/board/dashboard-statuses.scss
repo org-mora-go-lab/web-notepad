@@ -129,28 +129,29 @@
         position: absolute;
         left: 0;
         right: 0;
-        height: 7px;
-        -webkit-backdrop-filter: blur(7px);
-        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
         opacity: 0;
         transition: opacity 180ms ease;
         pointer-events: none;
       }
 
       &::before {
+        height: 20px;
         bottom: 100%;
         background: linear-gradient(
           to bottom,
           transparent,
-          color-mix(in srgb, var(--dashboard-status-background) 55%, transparent)
+          color-mix(in srgb, var(--dashboard-status-background) 35%, transparent)
         );
       }
 
       &::after {
+        height: 7px;
         top: 100%;
         background: linear-gradient(
           to bottom,
-          color-mix(in srgb, var(--dashboard-status-background) 55%, transparent),
+          color-mix(in srgb, var(--dashboard-status-background) 35%, transparent),
           transparent
         );
       }
