@@ -20,7 +20,8 @@ test("6. 모바일 상태 제목은 자신의 세로선 끝까지 이동한 뒤 
   const todo = dashboardColumn(page, "todo");
   const title = todo.locator(".dashboard-column-status");
   const doingTitle = dashboardColumn(page, "in-progress").locator(".dashboard-column-status");
-  const stickyTop = (await title.boundingBox())!.y;
+  const headerBox = (await panel.locator(".side-panel-header").boundingBox())!;
+  const stickyTop = headerBox.y + headerBox.height + 30;
   const titleHeight = (await title.boundingBox())!.height;
   const columnBox = (await todo.boundingBox())!;
 
