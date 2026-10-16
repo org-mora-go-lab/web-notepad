@@ -20,10 +20,6 @@
   .dashboard-column.dashboard-icebox-column {
     --dashboard-accent: #666;
     --dashboard-focus-accent: var(--dashboard-accent);
-
-    .dashboard-column-status {
-      color: var(--dashboard-accent);
-    }
   }
 
   .dashboard-column.dashboard-closed-column {
