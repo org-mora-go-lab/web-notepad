@@ -117,11 +117,17 @@
       top: 0;
       z-index: 2;
       display: flex;
-      padding-top: 7px;
-      padding-bottom: 7px;
+      padding-top: 9px;
+      padding-bottom: 9px;
+      font-size: v.font(14px * 1.2 + 1px);
       margin-left: -8px;
       border-left: 0;
       background: var(--dashboard-status-background);
+
+      .dashboard-count {
+        padding-right: 13px;
+        font-size: v.font(12px * 1.2 + 1px);
+      }
 
       &::before,
       &::after {

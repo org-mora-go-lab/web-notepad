@@ -13,8 +13,11 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
   const column = dashboardColumn(page, "in-progress");
   await expect(column).toHaveCSS("border-left-width", "3px");
   const title = column.locator(".dashboard-column-status");
-  await expect(title).toHaveCSS("padding-top", "7px");
-  await expect(title).toHaveCSS("padding-bottom", "7px");
+  await expect(title).toHaveCSS("padding-top", "9px");
+  await expect(title).toHaveCSS("padding-bottom", "9px");
+  await expect(title).toHaveCSS("font-size", "17.8px");
+  await expect(title.locator(".dashboard-count")).toHaveCSS("font-size", "15.4px");
+  await expect(title.locator(".dashboard-count")).toHaveCSS("padding-right", "13px");
   for (const pseudo of ["::before", "::after"]) {
     const fog = await title.evaluate((element, selector) => {
       const style = getComputedStyle(element, selector);
