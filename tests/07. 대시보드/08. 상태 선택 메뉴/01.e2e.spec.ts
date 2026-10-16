@@ -14,7 +14,10 @@ test("1. PC와 모바일에서 우측 세로 점 메뉴로 상태를 전환하�
     await expect(panel.locator(".side-panel-header").locator(".dashboard-options-trigger")).toBeVisible();
     const titleBox = (await panel.locator(".side-panel-header h2").boundingBox())!;
     const triggerBox = (await trigger.boundingBox())!;
-    expect(triggerBox.x - titleBox.x - titleBox.width).toBeCloseTo(5, 0);
+    expect(triggerBox.x - titleBox.x - titleBox.width).toBeCloseTo(10, 0);
+    const iconBox = (await trigger.locator("svg").boundingBox())!;
+    expect(iconBox.width).toBeCloseTo(14.4 * 1.2, 1);
+    expect(iconBox.height).toBeCloseTo(14.4 * 1.2, 1);
     await trigger.click();
     const menu = panel.getByRole("dialog", { name: "Dashboard options" });
     await expect(menu.locator(".dashboard-closed-command")).toHaveText("Closed");
