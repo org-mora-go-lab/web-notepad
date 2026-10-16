@@ -1,8 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-test("1. Next.js 앱 화면과 React 노트 편집기가 표시된다", async ({ page }) => {
+import { STORAGE_KEY } from "../../__constant__";
+
+test("1. 노트 상태는 web-notepad-storage 키로 저장되고 새로고침 후 복원된다", async ({
+  page,
+}) => {
   await page.goto("/");
-  await expect(page).toHaveTitle(/Notepad/);
-  await expect(page.locator("textarea").first()).toBeVisible();
-  await expect(page.locator('[role="tab"]').first()).toBeVisible();
+  const editor = page.locator("textarea").first();
+  await editor.fill("persisted note");
+  await expect
+    .poll(() => page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY))
+    .toContain("persisted note");
+  await page.reload();
+  await expect(editor).toHaveValue("persisted note");
 });
