@@ -108,7 +108,7 @@
         #{v.$panel}
       );
       position: sticky;
-      top: 0;
+      top: -20px;
       z-index: 2;
       display: flex;
       padding-top: 9px;
@@ -152,7 +152,7 @@
       }
 
       &::after {
-        height: 10px;
+        height: 20px;
         top: 100%;
         -webkit-mask-image: linear-gradient(
           to bottom,

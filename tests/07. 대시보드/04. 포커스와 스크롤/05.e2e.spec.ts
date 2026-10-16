@@ -19,7 +19,7 @@ test("5. 모바일에서 위로 스크롤하면 Doing과 Todo를 다시 상단�
     '.dashboard-column-status[data-status="todo"]',
   );
   const headerBox = (await panel.locator(".side-panel-header").boundingBox())!;
-  const stickyY = headerBox.y + headerBox.height + 20;
+  const stickyY = headerBox.y + headerBox.height;
 
   await panel
     .locator('.dashboard-column-status[data-status="done"]')
