@@ -103,11 +103,16 @@
       }
 
       &::after {
-        top: 0;
+        display: none;
       }
     }
 
     .dashboard-column-status {
+      --dashboard-status-background: color-mix(
+        in srgb,
+        var(--dashboard-accent, #{v.$line}) 16%,
+        #{v.$panel}
+      );
       position: sticky;
       top: 0;
       z-index: 2;
@@ -116,11 +121,27 @@
       padding-bottom: 7px;
       margin-left: -8px;
       border-left: 0;
-      background: color-mix(
-        in srgb,
-        var(--dashboard-accent, #{v.$line}) 16%,
-        v.$panel
-      );
+      background: var(--dashboard-status-background);
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 5px;
+        pointer-events: none;
+      }
+
+      &::before {
+        bottom: 100%;
+        background: linear-gradient(to top, var(--dashboard-status-background), transparent);
+      }
+
+      &::after {
+        top: 100%;
+        background: linear-gradient(to bottom, var(--dashboard-status-background), transparent);
+      }
     }
   }
 }

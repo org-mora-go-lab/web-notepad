@@ -15,6 +15,15 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
   const title = column.locator(".dashboard-column-status");
   await expect(title).toHaveCSS("padding-top", "7px");
   await expect(title).toHaveCSS("padding-bottom", "7px");
+  for (const pseudo of ["::before", "::after"]) {
+    const fog = await title.evaluate((element, selector) => {
+      const style = getComputedStyle(element, selector);
+      return { height: style.height, background: style.backgroundImage, pointerEvents: style.pointerEvents };
+    }, pseudo);
+    expect(fog.height).toBe("5px");
+    expect(fog.background).toContain("linear-gradient");
+    expect(fog.pointerEvents).toBe("none");
+  }
   const borderColor = await column.evaluate(
     (element) => getComputedStyle(element).borderLeftColor,
   );
