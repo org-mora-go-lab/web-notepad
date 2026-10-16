@@ -14,5 +14,5 @@ test("2. 그룹 이동 목록은 고정 그룹을 일반 그룹보다 먼저 배
   });
   await openTabMenu(activeTab(page));
   await page.getByRole("menuitem", { name: "Move Group", exact: true }).click();
-  await expect(page.locator(".move-group-option")).toHaveText(["Zulu", "가방", "Ungrouped"]);
+  await expect(page.locator(".move-group-option")).toHaveText(["Zulu", "가방"]);
 });

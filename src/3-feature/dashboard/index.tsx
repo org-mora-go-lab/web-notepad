@@ -3,7 +3,7 @@
 import { Ghost, Maximize2, Minimize2, StickyNote } from "lucide-react";
 import { useState } from "react";
 
-import { compareGroups, getDashboardColumns, getTabStatus } from "@/src/4-entity/notepad";
+import { compareGroups, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
@@ -181,7 +181,7 @@ export function Dashboard({
             </button>
           )}
           targetGroups={groups
-            .filter((group) => group.id !== contextGroup?.id)
+            .filter((group) => group.id !== contextGroup?.id && group.id !== UNGROUPED_GROUP_ID)
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);
