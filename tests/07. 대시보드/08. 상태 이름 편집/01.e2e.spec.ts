@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { toggleDashboardStatus } from "../../__util__";
 import { openPanel } from "../../__util__";
 import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../../__util__";
 
@@ -8,8 +9,8 @@ test("1. PC의 다섯 상태는 같은 폰트 색상과 수정 가능한 표시 
 }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
-  await page.locator(".dashboard-icebox-command").click();
-  await page.locator(".dashboard-closed-command").click();
+  await toggleDashboardStatus(page, "icebox");
+  await toggleDashboardStatus(page, "closed");
   const statuses = dashboardPanel(page).locator(".dashboard-statuses h3");
   const colors = await statuses.evaluateAll((elements) =>
     elements.map((element) => getComputedStyle(element).color),
@@ -60,8 +61,8 @@ test("1. PC의 다섯 상태는 같은 폰트 색상과 수정 가능한 표시 
   }
 
   await page.reload();
-  await page.locator(".dashboard-icebox-command").click();
-  await page.locator(".dashboard-closed-command").click();
+  await toggleDashboardStatus(page, "icebox");
+  await toggleDashboardStatus(page, "closed");
   await expect(
     dashboardPanel(page).locator('.dashboard-statuses h3[data-status="todo"]'),
   ).toContainText("Backlog");

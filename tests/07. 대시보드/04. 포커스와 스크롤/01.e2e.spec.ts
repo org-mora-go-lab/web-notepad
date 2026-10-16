@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { toggleDashboardStatus } from "../../__util__";
 import { openPanel } from "../../__util__";
 import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../../__util__";
 
@@ -23,7 +24,7 @@ test("1. 현재 탭 카드는 상태 색상의 옅은 배경·테두리와 접�
   });
   expect(colors.actual).toBe(colors.expected);
 
-  await page.locator(".dashboard-icebox-command").click();
+  await toggleDashboardStatus(page, "icebox");
   await active.dragTo(dashboardColumn(page, "icebox"));
   const iceboxActive = dashboardColumn(page, "icebox").locator(
     ".dashboard-card.is-active",
@@ -43,7 +44,7 @@ test("1. 현재 탭 카드는 상태 색상의 옅은 배경·테두리와 접�
   });
   expect(iceboxColors.actual).toBe(iceboxColors.expected);
 
-  await page.locator(".dashboard-closed-command").click();
+  await toggleDashboardStatus(page, "closed");
   await iceboxActive.dragTo(dashboardColumn(page, "closed"));
   const closedActive = dashboardColumn(page, "closed").locator(
     ".dashboard-card.is-active",

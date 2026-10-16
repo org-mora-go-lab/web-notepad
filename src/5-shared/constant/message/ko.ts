@@ -13,6 +13,7 @@ export const ko: Messages = {
   bookmark: "북마크",
   dashboard: "대시보드",
   dashboardTitle: "대시보드",
+  dashboardOptions: "대시보드 옵션",
   statusTodo: "할 일",
   statusInProgress: "진행 중",
   statusDone: "완료",

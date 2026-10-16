@@ -43,8 +43,15 @@ export async function openPanel(page: Page, panelId: string) {
 
 export async function openClosedPanel(page: Page) {
   await openPanel(page, "dashboard-panel");
-  await page.locator(".dashboard-closed-command").click();
+  await toggleDashboardStatus(page, "closed");
   await expect(page.locator(".dashboard-closed-column")).toBeVisible();
+}
+
+export async function toggleDashboardStatus(page: Page, status: "icebox" | "closed") {
+  const trigger = page.locator(".dashboard-options-trigger");
+  if (await trigger.getAttribute("aria-expanded") !== "true") await trigger.click();
+  await page.locator(`.dashboard-${status}-command`).click();
+  await trigger.click();
 }
 export const openShortcutsPanel = (page: Page) =>
   openPanel(page, "shortcuts-panel");

@@ -8,6 +8,7 @@ test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 test("4. 모바일에서 Icebox와 Closed를 반복 전환해도 상태 영역을 한 열로 표시한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
+  await page.locator(".dashboard-options-trigger").click();
 
   const panel = dashboardPanel(page);
   const columns = panel.locator(".dashboard-column");

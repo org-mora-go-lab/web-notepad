@@ -1,13 +1,13 @@
 "use client";
 
-import { Ghost, Maximize2, Minimize2, Snowflake } from "lucide-react";
+import { Maximize2, Minimize2 } from "lucide-react";
 import { useState } from "react";
 
 import { compareGroups, getDashboardColumns, getTabStatus } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
-import { DashboardColumn, DashboardStatuses } from "./component";
+import { DashboardColumn, DashboardOptions, DashboardStatuses } from "./component";
 import { useDashboardDrag, useDashboardScroll } from "./hook";
 import type { DashboardProps } from "./type";
 
@@ -67,16 +67,26 @@ export function Dashboard({
       expanded={open && expanded}
       onTogglePin={onTogglePin}
       headerActions={
-        <button
-          className="side-panel-action dashboard-expand"
-          type="button"
-          onClick={() => setExpanded((current) => !current)}
-          aria-pressed={expanded}
-          aria-label={expanded ? t.collapseDashboard : t.expandDashboard}
-          title={expanded ? t.collapseDashboard : t.expandDashboard}
-        >
-          {expanded ? <Minimize2 /> : <Maximize2 />}
-        </button>
+        <>
+          <button
+            className="side-panel-action dashboard-expand"
+            type="button"
+            onClick={() => setExpanded((current) => !current)}
+            aria-pressed={expanded}
+            aria-label={expanded ? t.collapseDashboard : t.expandDashboard}
+            title={expanded ? t.collapseDashboard : t.expandDashboard}
+          >
+            {expanded ? <Minimize2 /> : <Maximize2 />}
+          </button>
+          {open && (
+            <DashboardOptions
+              iceboxVisible={iceboxVisible}
+              closedVisible={closedVisible}
+              onToggleIcebox={() => setIceboxVisible((current) => !current)}
+              onToggleClosed={() => setClosedVisible((current) => !current)}
+            />
+          )}
+        </>
       }
       closeLabel={t.closePanel(t.dashboardTitle)}
       ariaLabel={t.dashboardTitle}
@@ -152,26 +162,6 @@ export function Dashboard({
             )}
           </div>
         </div>
-      </div>
-      <div className="dashboard-footer">
-        <button
-          className="dashboard-icebox-command"
-          type="button"
-          aria-pressed={iceboxVisible}
-          onClick={() => setIceboxVisible((current) => !current)}
-        >
-          <Snowflake size={24} strokeWidth={1.8} />
-          <span>{t.icebox}</span>
-        </button>
-        <button
-          className="dashboard-closed-command"
-          type="button"
-          aria-pressed={closedVisible}
-          onClick={() => setClosedVisible((current) => !current)}
-        >
-          <Ghost size={24} strokeWidth={1.8} />
-          <span>{t.closed}</span>
-        </button>
       </div>
       {contextMenu && contextTab && (
         <TabContextMenu

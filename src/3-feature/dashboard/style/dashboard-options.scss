@@ -1,0 +1,61 @@
+@use "../../../5-shared/style/variable" as v;
+
+.dashboard {
+  .dashboard-options {
+    position: relative;
+    z-index: 30;
+  }
+
+  .dashboard-options-trigger[aria-expanded="true"] {
+    color: v.$ink;
+    border-color: v.$hover-line;
+  }
+
+  .dashboard-options-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 201px;
+    max-width: calc(100vw - 44px);
+    padding: 4px;
+    border: 1px solid v.$line;
+    background: v.$raised;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+    button {
+      width: 100%;
+      min-height: 39px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      border: 0;
+      background: transparent;
+      color: v.$ink;
+      font-size: v.font(15px);
+      text-align: left;
+      cursor: pointer;
+
+      &:hover,
+      &:focus-visible {
+        outline: none;
+        background: v.$line;
+      }
+
+      &[aria-pressed="true"] {
+        color: v.$signal;
+      }
+    }
+  }
+
+  .dashboard-option-check {
+    margin-left: auto;
+  }
+
+  @media (max-width: 512px) {
+    .dashboard-options-menu button {
+      min-height: 44px;
+      font-size: v.font(15px * v.$mobile-scale);
+    }
+  }
+}

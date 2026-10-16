@@ -15,4 +15,5 @@ export {
   openShortcutsPanel,
   shortcutsCommand,
   switchGroup,
+  toggleDashboardStatus,
 } from "./panel";

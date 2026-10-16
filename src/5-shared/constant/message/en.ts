@@ -11,6 +11,7 @@ export const en = {
   bookmark: "BOOKMARK",
   dashboard: "DASHBOARD",
   dashboardTitle: "Dashboard",
+  dashboardOptions: "Dashboard options",
   statusTodo: "Todo",
   statusInProgress: "Doing",
   statusDone: "Done",

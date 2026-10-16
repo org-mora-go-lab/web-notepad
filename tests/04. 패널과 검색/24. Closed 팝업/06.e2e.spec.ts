@@ -1,12 +1,13 @@
 import { expect, test } from "@playwright/test";
 
+import { toggleDashboardStatus } from "../../__util__";
 import { openClosedPanel } from "../../__util__";
 import { seedClosedPanelState } from "./__fixture__";
 
 test("6. Icebox와 Closed 상태를 양쪽에 구분되는 색상의 컬럼으로 표시한다", async ({ page }) => {
   await seedClosedPanelState(page);
   await openClosedPanel(page);
-  await page.locator(".dashboard-icebox-command").click();
+  await toggleDashboardStatus(page, "icebox");
   const icebox = page.locator(".dashboard-icebox-column");
   const todo = page.locator('.dashboard-column[data-status="todo"]');
   const done = page.locator('.dashboard-column[data-status="done"]');
