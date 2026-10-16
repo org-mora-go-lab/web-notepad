@@ -14,7 +14,7 @@ test("2. 취소·Escape·바깥 클릭으로 상태 이름 편집을 닫으면 �
       await trigger.click();
       await panel.getByRole("button", { name: "Edit Status", exact: true }).click();
       const editor = page.getByRole("dialog", { name: "Edit Status", exact: true });
-      await editor.getByRole("textbox", { name: "To do", exact: true }).fill("Unsaved");
+      await editor.getByRole("textbox", { name: "To Do", exact: true }).fill("Unsaved");
       if (method === "cancel") await editor.getByRole("button", { name: "Cancel", exact: true }).click();
       else if (method === "escape") await page.keyboard.press("Escape");
       else await page.mouse.click(5, 5);
