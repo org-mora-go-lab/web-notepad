@@ -71,10 +71,12 @@
     }
 
     .dashboard-board.has-icebox.has-closed {
+      grid-template-columns: minmax(0, 1fr);
       grid-template-rows: repeat(5, auto);
     }
 
     .dashboard-column {
+      row-gap: 10px;
       padding-left: 8px;
       border-left: 3px solid
         color-mix(
