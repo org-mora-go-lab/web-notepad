@@ -23,6 +23,7 @@ test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹�
         createGroupFixture("work", "Work", [
           createTabFixture("work-tab", "Work note"),
         ]),
+        createGroupFixture("target", "Target", [createTabFixture("target-tab", "Target note")]),
       ],
     });
     await switchGroup(page, "All Group");
@@ -36,15 +37,16 @@ test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹�
       exact: true,
     });
     await expect(menu).toBeVisible();
-    await expect(ungroupedOption).toBeVisible();
-    await expect(ungroupedOption).toBeFocused();
+    await expect(ungroupedOption).toHaveCount(0);
+    const targetOption = menu.getByRole("menuitem", { name: "Target", exact: true });
+    await expect(targetOption).toBeFocused();
     await expect(
       menu.getByRole("menuitem", { name: "Work", exact: true }),
     ).toHaveCount(0);
-    await ungroupedOption.click();
+    await targetOption.click();
     const groups = (await readStoredState(page)).groups;
     expect(
-      groups.find((group) => group.id === "ungrouped")?.tabs.some(
+      groups.find((group) => group.id === "target")?.tabs.some(
         (tab) => tab.id === "work-tab",
       ),
     ).toBe(true);

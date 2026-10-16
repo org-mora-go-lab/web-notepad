@@ -1,9 +1,9 @@
 "use client";
 
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Ghost, Maximize2, Minimize2, StickyNote } from "lucide-react";
 import { useState } from "react";
 
-import { compareGroups, getDashboardColumns, getTabStatus } from "@/src/4-entity/notepad";
+import { compareGroups, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
@@ -52,6 +52,7 @@ export function Dashboard({
     ...(closedVisible ? closedTabs : []),
   ];
   const contextTab = visibleTabs.find((tab) => tab.id === contextMenu?.itemId);
+  const contextStatus = contextTab ? getTabStatus(contextTab, tabColorCycle) : null;
   const contextGroup = groups.find((group) =>
     group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
@@ -65,16 +66,6 @@ export function Dashboard({
       expanded={open && expanded}
       headerActions={
         <>
-          <button
-            className="side-panel-action dashboard-expand"
-            type="button"
-            onClick={() => setExpanded((current) => !current)}
-            aria-pressed={expanded}
-            aria-label={expanded ? t.collapseDashboard : t.expandDashboard}
-            title={expanded ? t.collapseDashboard : t.expandDashboard}
-          >
-            {expanded ? <Minimize2 /> : <Maximize2 />}
-          </button>
           {open && (
             <DashboardOptions
               key={groupId}
@@ -88,6 +79,16 @@ export function Dashboard({
               onToggleClosed={() => setClosedVisible((current) => !current)}
             />
           )}
+          <button
+            className="side-panel-action dashboard-expand"
+            type="button"
+            onClick={() => setExpanded((current) => !current)}
+            aria-pressed={expanded}
+            aria-label={expanded ? t.collapseDashboard : t.expandDashboard}
+            title={expanded ? t.collapseDashboard : t.expandDashboard}
+          >
+            {expanded ? <Minimize2 /> : <Maximize2 />}
+          </button>
         </>
       }
       closeLabel={t.closePanel(t.dashboardTitle)}
@@ -170,8 +171,17 @@ export function Dashboard({
           moveGroupFirst={getTabStatus(contextTab, tabColorCycle) !== "closed"}
           deleteOnly={getTabStatus(contextTab, tabColorCycle) === "closed"}
           bookmarked={contextTab.bookmarked}
+          footerAction={(contextStatus === "todo" || contextStatus === "done") && (
+            <button type="button" role="menuitem" onClick={() => {
+              onChangeStatus(contextTab.id, contextStatus === "todo" ? "icebox" : "closed");
+              setContextMenu(null);
+            }}>
+              {contextStatus === "todo" ? <StickyNote size={14} /> : <Ghost size={14} />}
+              <span>{contextStatus === "todo" ? statusNames.icebox ?? t.icebox : statusNames.closed ?? t.closedTitle}</span>
+            </button>
+          )}
           targetGroups={groups
-            .filter((group) => group.id !== contextGroup?.id)
+            .filter((group) => group.id !== contextGroup?.id && group.id !== UNGROUPED_GROUP_ID)
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);

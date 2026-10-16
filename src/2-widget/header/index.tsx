@@ -3,7 +3,7 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-import { compareGroups } from "@/src/4-entity/notepad";
+import { compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { TabContextMenu } from "@/src/5-shared/ui";
 
@@ -142,7 +142,7 @@ export function Header({
           showPin={false}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
-            .filter((group) => group.id !== contextGroupId)
+            .filter((group) => group.id !== contextGroupId && group.id !== UNGROUPED_GROUP_ID)
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);

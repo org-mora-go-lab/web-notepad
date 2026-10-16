@@ -21,6 +21,7 @@ export function Footer({
   return (
     <footer className="footer">
       <div className="current-group-panel" title={activeGroupName}>
+        <Layers className="current-group-icon" size={18} strokeWidth={1.8} aria-hidden="true" />
         <span className="current-group-name" title={activeGroupName}>
           {activeGroupName}
         </span>

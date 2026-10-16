@@ -20,6 +20,12 @@ test("3. 모바일 그룹 버튼은 GROUP을 표시하고 별도 영역에 현�
       await expect(command.locator(".group-command-label")).toHaveText("GROUP");
       await expect(command.locator(".group-select-name")).toBeHidden();
       await expect(page.locator(".current-group-panel")).toBeVisible();
+      const icon = page.locator(".current-group-icon");
+      await expect(icon).toBeVisible();
+      await expect(icon).toHaveClass(/lucide-layers/);
+      const iconBox = (await icon.boundingBox())!;
+      const nameBox = (await page.locator(".current-group-name").boundingBox())!;
+      expect(nameBox.x - iconBox.x - iconBox.width).toBeCloseTo(3, 0);
     } else {
       await expect(command).toHaveCSS("gap", "12px");
       await expect(command.locator(".group-select-name")).toBeVisible();

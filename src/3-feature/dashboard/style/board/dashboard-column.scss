@@ -71,10 +71,6 @@
     p { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
   }
 
-  .dashboard-column.is-empty .dashboard-cards {
-    padding-block: 12px;
-  }
-
   @media (max-width: 512px) {
     .dashboard-board {
       grid-template-columns: minmax(0, 1fr);

@@ -1,8 +1,18 @@
 @use "../../../5-shared/style/variable" as v;
 
 .dashboard {
-  .dashboard-options {
+  .side-panel-header {
     position: relative;
+    justify-content: flex-start;
+    gap: 5px;
+  }
+
+  .side-panel-header-actions { display: contents; }
+
+  .side-panel-close { margin-left: 3px; }
+
+  .dashboard-options {
+    margin-right: auto;
     z-index: 30;
   }
 
@@ -14,7 +24,7 @@
   .dashboard-options-menu {
     position: absolute;
     top: calc(100% + 8px);
-    right: 0;
+    left: 22px;
     width: 201px;
     max-width: calc(100vw - 44px);
     padding: 4px;

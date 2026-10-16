@@ -16,7 +16,7 @@ export const en = {
   selectGroupToEditStatus: "Select a group to edit its status names.",
   groupStatusScope: (name: string) => `Applies only to ${name}.`,
   statusNameHint: "Leave a name blank to use its default. Up to 30 characters.",
-  statusTodo: "To do",
+  statusTodo: "To Do",
   statusInProgress: "Doing",
   statusDone: "Done",
   dashboardEmpty: "None",

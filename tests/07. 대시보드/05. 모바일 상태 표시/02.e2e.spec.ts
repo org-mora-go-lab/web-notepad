@@ -21,10 +21,33 @@ test("2. 모바일 상태 영역 왼쪽에 70% 불투명도의 3px 상태색 세
   for (const pseudo of ["::before", "::after"]) {
     const fog = await title.evaluate((element, selector) => {
       const style = getComputedStyle(element, selector);
-      return { height: style.height, background: style.backgroundImage, pointerEvents: style.pointerEvents };
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const context = canvas.getContext("2d")!;
+      const sample = (color: string) => {
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = color;
+        context.fillRect(0, 0, 1, 1);
+        return Array.from(context.getImageData(0, 0, 1, 1).data);
+      };
+      return {
+        height: style.height,
+        mask: style.maskImage,
+        color: sample(style.backgroundColor),
+        accent: sample(getComputedStyle(element).getPropertyValue("--dashboard-accent").trim()),
+        pointerEvents: style.pointerEvents,
+      };
     }, pseudo);
     expect(fog.height).toBe("5px");
-    expect(fog.background).toContain("linear-gradient");
+    expect(fog.mask).toMatch(pseudo === "::before"
+      ? /^linear-gradient\(to top, rgb\(0, 0, 0\)/
+      : /^linear-gradient\((?:to bottom, )?rgb\(0, 0, 0\)/);
+    expect(fog.mask).toContain("rgba(0, 0, 0, 0)");
+    expect(fog.color[3]).toBeGreaterThan(0);
+    expect(fog.color[3]).toBeLessThan(255);
+    for (let channel = 0; channel < 3; channel++) {
+      expect(Math.abs(fog.color[channel] - fog.accent[channel])).toBeLessThanOrEqual(3);
+    }
     expect(fog.pointerEvents).toBe("none");
   }
   const borderColor = await column.evaluate(

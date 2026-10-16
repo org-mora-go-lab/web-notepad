@@ -136,17 +136,18 @@
         left: 0;
         right: 0;
         height: 5px;
+        background: color-mix(in srgb, var(--dashboard-accent, #{v.$line}) 16%, transparent);
         pointer-events: none;
       }
 
       &::before {
         bottom: 100%;
-        background: linear-gradient(to top, var(--dashboard-status-background), transparent);
+        mask-image: linear-gradient(to top, #000, transparent);
       }
 
       &::after {
         top: 100%;
-        background: linear-gradient(to bottom, var(--dashboard-status-background), transparent);
+        mask-image: linear-gradient(to bottom, #000, transparent);
       }
     }
   }

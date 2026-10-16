@@ -11,10 +11,10 @@ test("6. PC 대시보드를 페이지 전체 영역으로 확장하고 기존 �
 
   const panel = dashboardPanel(page);
   const expand = panel.getByRole("button", { name: "Expand dashboard" });
-  const pin = panel.locator(".dashboard-options-trigger");
+  const options = panel.locator(".dashboard-options-trigger");
   const expandBounds = (await expand.boundingBox())!;
-  const pinBounds = (await pin.boundingBox())!;
-  expect(expandBounds.x + expandBounds.width).toBeLessThanOrEqual(pinBounds.x);
+  const optionsBounds = (await options.boundingBox())!;
+  expect(optionsBounds.x + optionsBounds.width).toBeLessThanOrEqual(expandBounds.x);
 
   await expand.click();
   await expect(panel.getByRole("button", { name: "Collapse dashboard" })).toHaveAttribute(

@@ -83,7 +83,7 @@ export function DashboardOptions({
             onClick={onToggleClosed}
           >
             <Ghost size={18} strokeWidth={1.8} />
-            <span>{statusNames.closed ?? t.closed}</span>
+            <span>{statusNames.closed ?? t.closedTitle}</span>
             {closedVisible && <Check className="dashboard-option-check" size={16} />}
           </button>
           <button

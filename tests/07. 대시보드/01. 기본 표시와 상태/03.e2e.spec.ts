@@ -11,9 +11,14 @@ test("3. 빈 상태에 상태별 안내를 표시하고 카드가 있는 상태�
     await openPanel(page, "dashboard-panel");
     await expect(dashboardPanel(page).locator(".dashboard-empty")).toHaveText(["None", "None", "None"]);
     await dashboardPanel(page).locator(".side-panel-close").click();
-    await page.locator("textarea").first().fill("To do task");
+    await page.locator("textarea").first().fill("To Do task");
     await openPanel(page, "dashboard-panel");
     await expect(dashboardColumn(page, "todo").locator(".dashboard-empty")).toHaveCount(0);
-    await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toContainText("To do task");
+    await expect(dashboardColumn(page, "todo").locator(".dashboard-card")).toContainText("To Do task");
+    if (viewport.width > 512) {
+      const card = (await dashboardColumn(page, "todo").locator(".dashboard-card").boundingBox())!;
+      const empty = (await dashboardColumn(page, "in-progress").locator(".dashboard-empty").boundingBox())!;
+      expect(empty.y).toBeCloseTo(card.y, 0);
+    }
   }
 });
