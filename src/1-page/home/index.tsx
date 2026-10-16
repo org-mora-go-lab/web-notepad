@@ -20,7 +20,6 @@ export function Home() {
     backgroundPanel,
     toggleSidePanel,
     closeSidePanels,
-    addTabAndRecord,
     activeGroupId,
     selectGroupAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
@@ -133,7 +132,6 @@ export function Home() {
           onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
           onRemoveBookmark={removeBookmark}
           onOpenDashboardTab={openTabAndClosePanel}
-          onAddDashboardTask={() => { addTabAndRecord("left"); closeSidePanels(); }}
           onChangeTabStatus={setTabStatus}
           onMoveDashboardTabToGroup={moveToGroup}
           onToggleDashboardTabPin={togglePin}

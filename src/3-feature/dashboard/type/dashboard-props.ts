@@ -15,7 +15,6 @@ export type DashboardProps = {
   onTogglePin: () => void;
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
-  onAddTask: () => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
   onMoveToGroup: (tabId: string, groupId: string) => void;
   onToggleTabPin: (tabId: string) => void;

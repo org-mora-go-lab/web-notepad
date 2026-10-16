@@ -1,5 +1,3 @@
-import { Plus } from "lucide-react";
-
 import { getStatusColor } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -17,7 +15,6 @@ export function DashboardColumn({
   statusNames,
   contextMenuTabId,
   onOpenTab,
-  onAddTask,
   onOpenContextMenu,
 }: DashboardColumnProps) {
   const { status, tabs: columnTabs } = column;
@@ -65,10 +62,9 @@ export function DashboardColumn({
         tabColor={getStatusColor(status, tabColorCycle)}
       />
       <div className="dashboard-cards">
-        {columnTabs.length === 0 && ["todo", "in-progress", "done"].includes(status) && (
-          <div className={`dashboard-empty dashboard-empty-${status}`}>
-            <p>{status === "todo" ? t.emptyReady : status === "in-progress" ? t.emptyDoing : t.emptyDone}</p>
-            {status === "todo" && <button type="button" onClick={onAddTask}><Plus size={16} aria-hidden="true" />{t.addDashboardTask}</button>}
+        {columnTabs.length === 0 && (
+          <div className="dashboard-empty">
+            <p>{t.dashboardEmpty}</p>
           </div>
         )}
         {cardEntries.map((tab) => (

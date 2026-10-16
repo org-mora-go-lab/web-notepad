@@ -25,7 +25,6 @@ export function Dashboard({
   onTogglePin,
   onClose,
   onOpenTab,
-  onAddTask,
   onChangeStatus,
   onMoveToGroup,
   onToggleTabPin,
@@ -125,7 +124,6 @@ export function Dashboard({
                 tabColorCycle={tabColorCycle}
                 contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
-                onAddTask={onAddTask}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
@@ -143,7 +141,6 @@ export function Dashboard({
                 tabColorCycle={tabColorCycle}
                 contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
-                onAddTask={onAddTask}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
@@ -160,7 +157,6 @@ export function Dashboard({
                 tabColorCycle={tabColorCycle}
                 contextMenuTabId={contextMenu?.itemId}
                 onOpenTab={onOpenTab}
-                onAddTask={onAddTask}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
