@@ -13,7 +13,7 @@ test("3. 우측 패널은 한 번에 하나만 열린다", async ({ page }) => {
         panelId === openId ? "false" : "true",
       );
     }
-    await page.keyboard.press("Escape");
+    await page.locator(`#${openId} .side-panel-close`).click();
     await expect(page.locator(`#${openId}`)).toHaveAttribute("aria-hidden", "true");
   }
 });

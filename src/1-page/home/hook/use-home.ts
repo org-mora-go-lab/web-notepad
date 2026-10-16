@@ -17,7 +17,7 @@ import { MESSAGES } from "@/src/5-shared/constant";
 import { isToday } from "@/src/5-shared/util";
 
 import type { PaneColumnProps, PaneViewProps } from "../type";
-import { useHomeNavigation, usePanelPin } from "./navigation";
+import { useHomeNavigation } from "./navigation";
 import { useNotepadShortcuts } from "./shortcut";
 import {
   useEditorFocus,
@@ -70,7 +70,6 @@ export function useHome() {
     isToday(bookmark.updatedAt),
   );
   const hasGroupUpdateToday = groups.some((group) => isToday(group.updatedAt));
-  const { panelPinned, togglePanelPin } = usePanelPin();
 
   const {
     tabs: paneTabs,
@@ -87,7 +86,7 @@ export function useHome() {
     moveToGroup,
   } = useHomeTabActions({ editorRefs });
 
-  const navigation = useHomeNavigation({ hydrated, panelPinned, addTabToPane });
+  const navigation = useHomeNavigation({ hydrated, addTabToPane });
   const {
     openPanel,
     selectTabWithHistory,
@@ -224,8 +223,6 @@ export function useHome() {
     activeGroupName,
     hasBookmarkUpdateToday,
     hasGroupUpdateToday,
-    panelPinned,
-    togglePanelPin,
     columns,
     activeGroupTabs,
     tabColorCycle: settings.tabColorCycle,

@@ -21,8 +21,6 @@ export function Dashboard({
   showGroupNames,
   tabColorCycle,
   open,
-  pinned,
-  onTogglePin,
   onClose,
   onOpenTab,
   onChangeStatus,
@@ -64,9 +62,7 @@ export function Dashboard({
       id="dashboard-panel"
       title={t.dashboardTitle}
       open={open}
-      pinned={pinned}
       expanded={open && expanded}
-      onTogglePin={onTogglePin}
       headerActions={
         <>
           <button

@@ -7,8 +7,6 @@ import type { ShortcutProps } from "./type";
 
 export function Shortcut({
   open,
-  pinned,
-  onTogglePin,
   onClose,
 }: ShortcutProps) {
   const { t } = useI18n();
@@ -34,8 +32,6 @@ export function Shortcut({
       id="shortcuts-panel"
       title={t.shortcutTitle}
       open={open}
-      pinned={pinned}
-      onTogglePin={onTogglePin}
       closeLabel={t.closePanel(t.shortcutTitle)}
       ariaLabel={t.shortcutTitle}
       onClose={onClose}

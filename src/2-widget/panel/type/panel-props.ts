@@ -17,8 +17,6 @@ export type PanelProps = {
   onSaveDashboardStatusNames: ComponentProps<typeof Dashboard>["onSaveStatusNames"];
   openPanel: ViewPanel | null;
   backgroundPanel: ViewPanel | null;
-  pinned: boolean;
-  onTogglePin: () => void;
   bookmarks: BookmarkEntry[];
   activeGroupTabs: NoteTab[];
   activeTabId?: string;

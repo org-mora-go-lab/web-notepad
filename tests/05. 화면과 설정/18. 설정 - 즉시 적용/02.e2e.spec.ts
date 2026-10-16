@@ -4,6 +4,7 @@ import { openSettingsPanel } from "../../__util__";
 import { settingsPanel } from "../__util__";
 
 test("2. Panel Slide 선택을 현재 설정 패널의 전환 시간에 즉시 반영한다", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await openSettingsPanel(page);
 

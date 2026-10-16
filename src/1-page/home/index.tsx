@@ -39,8 +39,6 @@ export function Home() {
     activeGroupName,
     hasBookmarkUpdateToday,
     hasGroupUpdateToday,
-    panelPinned,
-    togglePanelPin,
     columns,
     removeBookmark,
     createGroupAndRecord,
@@ -86,7 +84,7 @@ export function Home() {
     <I18nContext value={language}>
       <MobileTapFeedback />
       <main
-        className={`home ${panelPinned && (backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
+        className={`home ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}
@@ -119,8 +117,6 @@ export function Home() {
           activeTabId={activeTab?.id}
           openPanel={openPanel}
           backgroundPanel={backgroundPanel}
-          pinned={panelPinned}
-          onTogglePin={togglePanelPin}
           bookmarks={bookmarks}
           activeGroupTabs={activeGroupTabs}
           tabColorCycle={tabColorCycle}

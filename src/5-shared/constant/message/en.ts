@@ -40,8 +40,6 @@ export const en = {
   addBookmark: "Bookmark",
   removeBookmark: "Remove bookmark",
   moveGroup: "Move Group",
-  pinPanel: "Pin panel",
-  unpinPanel: "Unpin panel",
   resizePanel: "Resize panel",
   resizeGroupMenu: "Resize group panel",
   expandDashboard: "Expand dashboard",

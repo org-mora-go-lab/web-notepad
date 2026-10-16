@@ -11,8 +11,6 @@ import type { BookmarkProps } from "./type";
 export function Bookmark({
   bookmarks,
   open,
-  pinned,
-  onTogglePin,
   onClose,
   onOpen,
   onRemove,
@@ -25,8 +23,6 @@ export function Bookmark({
       id="bookmarks-panel"
       title={t.bookmarksTitle}
       open={open}
-      pinned={pinned}
-      onTogglePin={onTogglePin}
       closeLabel={t.closePanel(t.bookmarksTitle)}
       ariaLabel={t.bookmarksTitle}
       onClose={onClose}

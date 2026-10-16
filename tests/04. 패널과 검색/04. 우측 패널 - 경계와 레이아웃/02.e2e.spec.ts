@@ -14,9 +14,7 @@ test("2. 경계 음영은 카드 클릭과 패널 크기 조절을 막지 않는
   await panel
     .getByRole("button", { name: "Clickable dashboard card", exact: true })
     .click();
-  await expect(panel).toHaveAttribute("aria-hidden", "true");
-
-  await openPanel(page, "dashboard-panel");
+  await expect(panel).toHaveAttribute("aria-hidden", "false");
   const before = (await panel.boundingBox())!.width;
   await dragPanelEdgeTo(page, "dashboard-panel", 700);
   await expect

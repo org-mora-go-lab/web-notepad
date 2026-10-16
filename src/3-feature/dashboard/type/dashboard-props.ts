@@ -11,8 +11,6 @@ export type DashboardProps = {
   showGroupNames: boolean;
   tabColorCycle: TabColor[];
   open: boolean;
-  pinned: boolean;
-  onTogglePin: () => void;
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;

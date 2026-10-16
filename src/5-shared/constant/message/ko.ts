@@ -42,8 +42,6 @@ export const ko: Messages = {
   addBookmark: "북마크",
   removeBookmark: "북마크 해제",
   moveGroup: "그룹 이동",
-  pinPanel: "패널 고정",
-  unpinPanel: "패널 고정 해제",
   resizePanel: "패널 크기 조절",
   resizeGroupMenu: "그룹 패널 크기 조절",
   expandDashboard: "대시보드 확장",
