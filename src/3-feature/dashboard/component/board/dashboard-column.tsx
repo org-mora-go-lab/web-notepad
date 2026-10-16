@@ -69,7 +69,6 @@ export function DashboardColumn({
           <div className={`dashboard-empty dashboard-empty-${status}`}>
             <p>{status === "todo" ? t.emptyReady : status === "in-progress" ? t.emptyDoing : t.emptyDone}</p>
             {status === "todo" && <button type="button" onClick={onAddTask}><Plus size={16} aria-hidden="true" />{t.addDashboardTask}</button>}
-            {status === "in-progress" && <p className="dashboard-empty-hint">{t.emptyDoingHint}</p>}
           </div>
         )}
         {cardEntries.map((tab) => (

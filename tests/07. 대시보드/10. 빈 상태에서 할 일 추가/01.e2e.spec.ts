@@ -12,7 +12,7 @@ test("1. 할 일 추가는 현재 그룹에 빈 노트를 열고 입력한 내�
       createGroupFixture("work", "Work", [createTabFixture("tab-2", "")]),
     ], nextTabNumber: 3 });
     await openPanel(page, "dashboard-panel");
-    await dashboardColumn(page, "todo").getByRole("button", { name: "Add task", exact: true }).click();
+    await dashboardColumn(page, "todo").getByRole("button", { name: "Add", exact: true }).click();
     await expect(dashboardPanel(page)).toHaveAttribute("aria-hidden", "true");
     const editor = page.locator("textarea").first();
     await expect(editor).toHaveValue("");
