@@ -32,6 +32,8 @@
 
 html,
 body {
+  -webkit-user-select: none;
+  user-select: none;
   height: 100%;
   min-height: 100%;
 }
@@ -58,6 +60,15 @@ textarea {
 input,
 textarea {
   caret-color: v.$saved;
+}
+
+// Keep editing and copying note content available on desktop and mobile.
+input,
+textarea,
+[contenteditable="true"],
+pre {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 button {
