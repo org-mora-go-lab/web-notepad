@@ -3,7 +3,6 @@ import { expect, test } from "@playwright/test";
 import { openPanel } from "../../__util__";
 import {
   dragPanelEdgeTo,
-  panelPinButton,
   workspaceBounds,
 } from "../../04. 패널과 검색/__util__";
 
@@ -13,7 +12,6 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 북마크와 대�
   await page.setViewportSize({ width: 1280, height: 844 });
   await page.goto("/");
   await openPanel(page, "dashboard-panel");
-  await panelPinButton(page, "dashboard-panel").click();
   await dragPanelEdgeTo(page, "dashboard-panel", 120);
   await expect.poll(async () => (await workspaceBounds(page)).width).toBeLessThanOrEqual(512);
 

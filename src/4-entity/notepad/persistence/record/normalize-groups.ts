@@ -73,6 +73,7 @@ export function normalizeGroups(
         id,
         name: typeof group.name === "string" ? group.name : "Untitled Group",
         pinned: id !== UNGROUPED_GROUP_ID && group.pinned === true,
+        ...(typeof group.sortOrder === "number" && Number.isFinite(group.sortOrder) ? { sortOrder: group.sortOrder } : {}),
         createdAt,
         updatedAt: finiteNumberOr(group.updatedAt, createdAt),
         tabs,

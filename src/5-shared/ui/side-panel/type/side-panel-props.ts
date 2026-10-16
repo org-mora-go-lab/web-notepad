@@ -8,12 +8,9 @@ export type SidePanelProps = {
   open: boolean;
   closeLabel: string;
   ariaLabel?: string;
-  // PC only: docks the drawer to the right edge beside the workspace.
-  pinned?: boolean;
   // Fills the browser viewport without entering the browser Fullscreen API.
   expanded?: boolean;
-  onTogglePin?: () => void;
-  // Extra header buttons shown before the pin and close buttons.
+  // Extra header buttons shown before the close button.
   headerActions?: ReactNode;
   onClose: () => void;
   children: ReactNode;

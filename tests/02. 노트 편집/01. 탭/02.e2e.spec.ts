@@ -4,7 +4,7 @@ import { BOTH_VIEWPORTS } from "../../__constant__";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { addTabButton, dashboardColumn, openPanel, readStoredState, writeStoredState } from "../../__util__";
 
-test("2. 새 탭은 현재 탭의 Memo·Closed 상태를 이어받지 않고 Ready로 생성한다", async ({ page }) => {
+test("2. 새 탭은 현재 탭의 Note·Closed 상태를 이어받지 않고 To do로 생성한다", async ({ page }) => {
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     for (const dashboardStatus of ["icebox", "closed"] as const) {

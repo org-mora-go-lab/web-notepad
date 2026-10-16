@@ -1,24 +1,33 @@
 import { expect, test } from "@playwright/test";
 
-import { DESKTOP_VIEWPORT } from "../../__constant__";
+import { BOTH_VIEWPORTS } from "../../__constant__";
 import { openGlobalSearchPanel } from "../../__util__";
 
-test("7. 전체 검색 팝업은 912×640px로 중앙에 표시하고 Escape와 배경 클릭으로 닫는다", async ({ page }) => {
-  await page.setViewportSize(DESKTOP_VIEWPORT);
+test("7. 검색은 아이콘 아래의 비모달 팝오버로 열리고 Escape와 바깥 클릭으로 닫는다", async ({ page }) => {
   await page.goto("/");
-  await openGlobalSearchPanel(page);
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    await openGlobalSearchPanel(page);
 
-  const popup = page.locator("#global-search-popup");
-  const bounds = (await popup.boundingBox())!;
-  expect(bounds.width).toBeCloseTo(912, 0);
-  expect(bounds.height).toBeCloseTo(640, 0);
-  expect(bounds.x).toBeCloseTo((DESKTOP_VIEWPORT.width - bounds.width) / 2, 0);
-  expect(bounds.y).toBeCloseTo((DESKTOP_VIEWPORT.height - bounds.height) / 2, 0);
+    const popup = page.locator("#global-search-popup");
+    const bounds = (await popup.boundingBox())!;
+    const trigger = page.locator('.header [aria-controls="global-search-popup"]');
+    const anchor = (await trigger.boundingBox())!;
+    expect(bounds.width).toBeCloseTo(Math.min(420, viewport.width - 16), 0);
+    expect(bounds.height).toBeCloseTo(180, 0);
+    expect(bounds.y).toBeCloseTo(anchor.y + anchor.height + 6, 0);
+    expect(bounds.x).toBeGreaterThanOrEqual(8);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(viewport.width - 8);
+    expect(await popup.evaluate((element) => element.matches(":modal"))).toBe(false);
+    await expect(popup.getByRole("searchbox")).toBeFocused();
+    await expect(popup.locator(".global-search-preview-pane")).toBeHidden();
 
-  await page.keyboard.press("Escape");
-  await expect(popup).not.toHaveAttribute("open", "");
+    await page.keyboard.press("Escape");
+    await expect(popup).not.toHaveAttribute("open", "");
+    await expect(trigger).toBeFocused();
 
-  await openGlobalSearchPanel(page);
-  await page.mouse.click(4, 4);
-  await expect(popup).not.toHaveAttribute("open", "");
+    await openGlobalSearchPanel(page);
+    await page.mouse.click(4, 4);
+    await expect(popup).not.toHaveAttribute("open", "");
+  }
 });

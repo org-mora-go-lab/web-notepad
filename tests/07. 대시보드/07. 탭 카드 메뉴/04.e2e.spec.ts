@@ -24,7 +24,7 @@ test("4. Todo·Doing·Done 카드 우클릭 메뉴에는 Closed 기능을 표시
     page.getByRole("menu").getByRole("menuitem", { name: "Closed" }),
   ).toHaveCount(0);
   await page.keyboard.press("Escape");
-  await openPanel(page, "dashboard-panel");
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute("aria-hidden", "false");
 
   await dashboardColumn(page, "done")
     .locator(".dashboard-card", { hasText: "Done task" })

@@ -45,8 +45,8 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
       description: "Choose DARK or LIGHT in THEME, and change font size, tab colors and language in SETTINGS.",
     },
     {
-      title: "Pin panels",
-      description: "On PC, pin a right panel to keep it open beside the editor while you write.",
+      title: "Panels beside the editor",
+      description: "On PC, panels stay open beside the editor while you write. Close them with X.",
     },
   ],
   ko: [
@@ -87,8 +87,8 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
       description: "테마에서 다크·라이트를 고르고, 설정에서 폰트 크기·탭 색상·언어를 바꿉니다.",
     },
     {
-      title: "패널 고정",
-      description: "PC에서는 우측 패널을 고정해 편집기 옆에 띄워 둔 채로 작성할 수 있습니다.",
+      title: "편집기 옆 패널",
+      description: "PC에서는 패널이 항상 편집기 옆에 고정됩니다. X 버튼으로 닫을 수 있습니다.",
     },
   ],
 };

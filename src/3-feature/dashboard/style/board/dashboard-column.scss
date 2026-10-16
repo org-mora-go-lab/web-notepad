@@ -53,46 +53,26 @@
   }
 
   .dashboard-empty {
-    min-height: 144px;
+    width: 100%;
+    min-height: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 12px;
     padding: 20px 10px;
-    border: 1px solid color-mix(in srgb, v.$line 60%, transparent);
+    border: 1px dashed color-mix(in srgb, v.$signal 25%, v.$line);
+    border-radius: 5px;
     background: color-mix(in srgb, v.$raised 35%, transparent);
     text-align: center;
     color: v.$muted;
     font-size: v.font(14px);
 
     p { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
-
-    button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      max-width: 100%;
-      min-height: 38px;
-      padding: 8px;
-      border: 1px solid v.$signal;
-      border-radius: 4px;
-      background: transparent;
-      color: v.$signal;
-      font: inherit;
-      cursor: pointer;
-      &:hover { background: color-mix(in srgb, v.$signal 8%, transparent); }
-      &:focus-visible { outline: 2px solid v.$signal; outline-offset: 3px; }
-      svg { flex-shrink: 0; }
-    }
   }
 
-  .dashboard-empty-in-progress {
-    min-height: 120px;
-    border-style: dashed;
-    border-color: color-mix(in srgb, v.$signal 25%, v.$line);
-    border-radius: 5px;
+  .dashboard-column.is-empty .dashboard-cards {
+    padding-block: 12px;
   }
 
   @media (max-width: 512px) {
@@ -127,19 +107,18 @@
 
     .dashboard-column.is-empty:has(.dashboard-empty) {
       row-gap: 0;
-      border-left-color: transparent;
+      border-left: 0;
       padding-left: 0;
       outline: 1px solid color-mix(in srgb, v.$line 55%, transparent);
       outline-offset: -1px;
 
       .dashboard-column-status {
-        margin-left: -3px;
+        margin-left: 0;
         border-left: 3px solid var(--dashboard-accent, v.$line);
       }
 
-      .dashboard-cards { margin: 0; padding: 0; }
-      .dashboard-empty { border: 0; min-height: 140px; font-size: v.font(16px); }
-      .dashboard-empty-in-progress { margin: 12px; min-height: 104px; border: 1px dashed color-mix(in srgb, v.$signal 25%, v.$line); }
+      .dashboard-cards { margin: 0; padding: 12px 0; }
+      .dashboard-empty { min-height: 104px; font-size: v.font(16px); }
     }
   }
 }

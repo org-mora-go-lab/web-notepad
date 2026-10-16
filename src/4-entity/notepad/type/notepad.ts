@@ -63,6 +63,7 @@ export type ClosedTabEntry = {
 };
 
 export type GroupEntry = {
+  sortOrder?: number;
   dashboardStatusNames?: DashboardStatusNames;
   id: string;
   name: string;
@@ -91,7 +92,7 @@ export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
 
 export type PaneColumn = "left" | "right";
 
-export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames">;
+export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames" | "sortOrder">;
 
 export type NotepadState = {
   nextTabNumber: number;
@@ -135,6 +136,7 @@ export type NotepadState = {
   renameGroup: (groupId: string, name: string) => void;
   setGroupStatusNames: (groupId: string, names: DashboardStatusNames) => void;
   toggleGroupPin: (groupId: string) => void;
+  moveGroup: (groupId: string, targetId: string) => void;
   removeGroup: (groupId: string) => void;
   selectGroup: (groupId: string) => void;
   restoreClosedTab: (entryId: string) => void;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
+import { Check, EllipsisVertical, GripVertical, Pencil, Pin, Trash2, X } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -9,6 +9,11 @@ import type { GroupItemProps } from "../../type";
 
 // One group row: click the name to switch; pin / edit / delete are inline icon buttons.
 export function GroupItem({
+  groupId,
+  dragging,
+  dropTarget,
+  onReorderStart,
+  onReorderKey,
   name,
   active,
   pinned,
@@ -73,7 +78,25 @@ export function GroupItem({
   }
 
   return (
-    <article className={`group-item ${active ? "is-active" : ""}`}>
+    <article
+      data-group-id={groupId}
+      data-pinned={pinned}
+      className={`group-item ${active ? "is-active" : ""} ${dragging ? "is-dragging" : ""} ${dropTarget ? "is-drop-target" : ""}`}
+    >
+      <button
+        className="group-reorder"
+        type="button"
+        aria-label={t.reorderGroup(name)}
+        title={t.reorderGroup(name)}
+        onPointerDown={onReorderStart}
+        onKeyDown={(event) => {
+          if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+          event.preventDefault();
+          onReorderKey(event.key === "ArrowUp" ? -1 : 1);
+        }}
+      >
+        <GripVertical size={14} />
+      </button>
       <button
         className="group-select"
         type="button"

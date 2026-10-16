@@ -1,4 +1,4 @@
-import { Check, EllipsisVertical, Ghost, Pencil, Snowflake } from "lucide-react";
+import { Check, EllipsisVertical, Ghost, Pencil, StickyNote } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
@@ -72,7 +72,7 @@ export function DashboardOptions({
             aria-pressed={iceboxVisible}
             onClick={onToggleIcebox}
           >
-            <Snowflake size={18} strokeWidth={1.8} />
+            <StickyNote size={18} strokeWidth={1.8} />
             <span>{statusNames.icebox ?? t.icebox}</span>
             {iceboxVisible && <Check className="dashboard-option-check" size={16} />}
           </button>

@@ -4,10 +4,11 @@
   width: 100%;
   min-width: 0;
   display: grid;
-  gap: 5px;
-  padding: 12px;
-  border: 1px solid v.$line;
-  background: var(--color-field);
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
   color: v.$ink;
   text-align: left;
   cursor: pointer;
@@ -16,7 +17,12 @@
   &:focus-visible {
     border-color: v.$hover-line;
     outline: none;
-    background: v.$raised;
+    background: var(--color-field);
+  }
+
+  &.is-selected {
+    border-color: color-mix(in srgb, v.$signal 35%, v.$line);
+    background: color-mix(in srgb, v.$signal 8%, var(--color-field));
   }
 
   strong {
@@ -41,8 +47,12 @@
 }
 
 .global-search-result-category {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   color: v.$muted;
   font-size: v.font(12px);
+  svg { flex-shrink: 0; }
 }
 @media (max-width: 512px) {
   .global-search-result {

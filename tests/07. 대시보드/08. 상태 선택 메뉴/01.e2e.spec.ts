@@ -14,6 +14,7 @@ test("1. PC와 모바일에서 우측 세로 점 메뉴로 상태를 전환하�
     await expect(panel.locator(".side-panel-header").locator(".dashboard-options-trigger")).toBeVisible();
     await trigger.click();
     const menu = panel.getByRole("dialog", { name: "Dashboard options" });
+    await expect(menu.locator(".dashboard-icebox-command > svg")).toHaveClass(/lucide-sticky-note/);
     const menuBox = (await menu.boundingBox())!;
     expect(menuBox.x).toBeGreaterThanOrEqual(0);
     expect(menuBox.x + menuBox.width).toBeLessThanOrEqual(viewport.width);

@@ -19,16 +19,14 @@ import { useViewHistory } from "./use-view-history";
 
 type Options = {
   hydrated: boolean;
-  panelPinned: boolean;
   addTabToPane: (pane: PaneId) => void;
 };
 
-// Pinning only applies to the PC layout; mobile keeps the overlay drawer.
+// Docking only applies to the PC layout; mobile keeps the overlay drawer.
 const isPinLayout = () => window.matchMedia("(min-width: 641px)").matches;
 
 export function useHomeNavigation({
   hydrated,
-  panelPinned,
   addTabToPane,
 }: Options) {
   const [openPanel, setOpenPanel] = useState<ViewPanel | null>(null);
@@ -36,12 +34,11 @@ export function useHomeNavigation({
   // A pinned panel stays open until its X button closes it.
   const keepsPanelOpen = useCallback(
     () =>
-      panelPinned &&
       openPanel !== null &&
       openPanel !== "global-search" &&
       openPanel !== "closed" &&
       isPinLayout(),
-    [openPanel, panelPinned],
+    [openPanel],
   );
   const keepsPanelOpenRef = useRef(keepsPanelOpen);
   useEffect(() => {

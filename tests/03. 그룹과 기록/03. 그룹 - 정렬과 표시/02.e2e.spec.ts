@@ -2,15 +2,13 @@ import { expect, test } from "@playwright/test";
 
 import { groupsCommand, seedSortableGroups } from "../../__util__";
 
-test("2. 이름 있는 그룹은 한글 이름을 먼저 배치하고 한국어 기준 문자순으로 정렬한다", async ({ page }) => {
+test("2. 변경한 그룹 순서를 새로고침 후 복원한다", async ({ page }) => {
   await seedSortableGroups(page);
   await groupsCommand(page).click();
-
-  await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "가방",
-    "나무",
-    "다람쥐",
-    "Alpha",
-    "Zulu",
-  ]);
+  const handle = page.locator('[data-group-id="zulu"] .group-reorder');
+  await handle.focus();
+  await handle.press("ArrowUp");
+  await page.reload();
+  await groupsCommand(page).click();
+  await expect(page.locator(".group-item .group-select strong")).toHaveText(["가방", "나무", "다람쥐", "Zulu", "Alpha"]);
 });

@@ -1,12 +1,12 @@
 "use client";
 
-import { Pin, X } from "lucide-react";
+import { X } from "lucide-react";
 
 import { useI18n } from "../../hook";
 import { useSidePanelResize } from "./hook";
 import type { SidePanelProps } from "./type";
 
-// Right drawer shell: backdrop, sliding aside and a header with pin and close buttons.
+// Panels dock beside the editor on PC and use the overlay drawer on mobile.
 export function SidePanel({
   className,
   id,
@@ -14,9 +14,7 @@ export function SidePanel({
   open,
   closeLabel,
   ariaLabel,
-  pinned = false,
   expanded = false,
-  onTogglePin,
   headerActions,
   onClose,
   children,
@@ -26,7 +24,7 @@ export function SidePanel({
 
   return (
     <div
-      className={`side-panel ${className} ${pinned ? "is-pinned" : ""} ${expanded ? "is-expanded" : ""}`}
+      className={`side-panel ${className} is-pinned ${expanded ? "is-expanded" : ""}`}
     >
       <div
         className={`side-panel-backdrop ${open ? "is-visible" : ""}`}
@@ -51,18 +49,6 @@ export function SidePanel({
           <h2>{title}</h2>
           <div className="side-panel-header-actions">
             {headerActions}
-            {onTogglePin && (
-              <button
-                className="side-panel-pin"
-                type="button"
-                onClick={onTogglePin}
-                aria-pressed={pinned}
-                aria-label={pinned ? t.unpinPanel : t.pinPanel}
-                title={pinned ? t.unpinPanel : t.pinPanel}
-              >
-                <Pin size={14} />
-              </button>
-            )}
             <button
               className="side-panel-close"
               type="button"

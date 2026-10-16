@@ -2,7 +2,7 @@ import type { StateCreator } from "zustand";
 
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
-import { assignTabToPane, normalizeDashboardStatusNames, normalizeLayout } from "../../util";
+import { assignTabToPane, compareGroups, normalizeDashboardStatusNames, normalizeLayout } from "../../util";
 import { allocateTab, createGroupEntry } from "./workspace";
 
 type GroupActions = Pick<
@@ -11,6 +11,7 @@ type GroupActions = Pick<
   | "renameGroup"
   | "setGroupStatusNames"
   | "toggleGroupPin"
+  | "moveGroup"
   | "removeGroup"
   | "selectGroup"
   | "moveTabToGroup"
@@ -22,6 +23,16 @@ export const createGroupActions: StateCreator<
   [],
   GroupActions
 > = (set, get) => ({
+  moveGroup: (groupId, targetId) => set((state) => {
+    const ordered = state.groups.filter((group) => group.id !== UNGROUPED_GROUP_ID).sort(compareGroups);
+    const source = ordered.findIndex((group) => group.id === groupId);
+    const target = ordered.findIndex((group) => group.id === targetId);
+    if (source < 0 || target < 0 || source === target || ordered[source].pinned !== ordered[target].pinned) return state;
+    const [moving] = ordered.splice(source, 1);
+    ordered.splice(target, 0, moving);
+    const ranks = new Map(ordered.map((group, index) => [group.id, index]));
+    return { groups: state.groups.map((group) => ranks.has(group.id) ? { ...group, sortOrder: ranks.get(group.id) } : group) };
+  }),
   setGroupStatusNames: (groupId, names) => set((state) => {
     if (groupId === ALL_GROUP_ID || !state.groups.some((group) => group.id === groupId)) return state;
     return {

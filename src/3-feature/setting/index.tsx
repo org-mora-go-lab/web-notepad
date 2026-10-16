@@ -11,7 +11,7 @@ import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
 import { RadioSetting, TabColorSetting } from "./component";
 import type { SettingProps } from "./type";
 
-export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
+export function Setting({ open, onClose }: SettingProps) {
   const { language, t } = useI18n();
   const settings = useNotepadStore((state) => state.settings);
   const setFontScale = useNotepadStore((state) => state.setFontScale);
@@ -39,8 +39,6 @@ export function Setting({ open, pinned, onTogglePin, onClose }: SettingProps) {
       id="settings-panel"
       title={t.settingsTitle}
       open={open}
-      pinned={pinned}
-      onTogglePin={onTogglePin}
       headerActions={
         <button
           className="side-panel-action setting-reset"

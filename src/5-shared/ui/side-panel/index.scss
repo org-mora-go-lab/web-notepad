@@ -43,8 +43,8 @@
     }
   }
 
-  // A gradual edge shade separates an unpinned drawer from the workspace.
-  &:not(.is-pinned) .side-panel-drawer.is-open::before {
+  // A gradual edge shade separates the mobile overlay from the workspace.
+  .side-panel-drawer.is-open::before {
     content: "";
     position: absolute;
     top: 0;
@@ -72,7 +72,7 @@
       &.is-open { transform: translateX(0); }
     }
     .side-panel-resizer { left: auto; right: -5px; }
-    &:not(.is-pinned) .side-panel-drawer.is-open::before {
+    .side-panel-drawer.is-open::before {
       right: auto; left: 100%;
     }
   }
@@ -134,7 +134,6 @@
     gap: 8px;
   }
 
-  .side-panel-pin,
   .side-panel-action,
   .side-panel-close {
     width: 33.6px;
@@ -156,21 +155,6 @@
     }
   }
 
-  .side-panel-pin {
-    svg {
-      width: 16.8px;
-      height: 16.8px;
-    }
-
-    &[aria-pressed="true"] {
-      border-color: v.$hover-line;
-      color: v.$signal;
-
-      svg {
-        fill: currentColor;
-      }
-    }
-  }
 
   // The Panel Slide setting can turn the slide off everywhere.
   [data-panel-slide="off"] & .side-panel-drawer {
@@ -180,6 +164,7 @@
   // A pinned drawer docks beside the workspace instead of covering it.
   @media (min-width: 641px) {
     &.is-pinned {
+      .side-panel-drawer.is-open::before { content: none; }
       .side-panel-backdrop {
         display: none;
       }
@@ -228,8 +213,5 @@
       font-size: v.font(22px * v.$mobile-scale);
     }
 
-    .side-panel-pin {
-      display: none;
-    }
   }
 }

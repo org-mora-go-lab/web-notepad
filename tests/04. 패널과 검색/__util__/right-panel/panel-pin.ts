@@ -1,10 +1,7 @@
 import type { Page } from "@playwright/test";
 
-// The pin toggle in the header of an open right panel.
-export const panelPinButton = (page: Page, panelId: string) =>
-  page.locator(`#${panelId} .side-panel-pin`);
 
-// The X button, the only way to close a pinned panel.
+// Close a docked panel with its X button.
 export const closePanelWithX = (page: Page, panelId: string) =>
   page.locator(`#${panelId} .side-panel-close`).click();
 
