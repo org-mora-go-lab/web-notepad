@@ -8,8 +8,8 @@ test("1. 모바일 아이콘 클릭은 파동을 표시하면서 버튼 기능�
   await page.goto("/");
   const menu = page.getByRole("button", { name: "MENU", exact: true });
   const icon = (await menu.locator("svg").boundingBox())!;
-  await page.clock.install();
-  await page.clock.pauseAt(new Date());
+  await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-01-02T00:00:00Z"));
   await page.evaluate(() => {
     document.addEventListener("click", () => {
       document.querySelector(".mobile-tap-feedback")?.getAnimations().forEach((animation) => animation.pause());
