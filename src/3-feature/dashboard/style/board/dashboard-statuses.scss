@@ -18,7 +18,6 @@
       right: var(--dashboard-scrollbar-width, 0px);
       height: 48px;
       backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
       opacity: 0;
       transition: opacity 180ms ease;
       pointer-events: none;
@@ -132,7 +131,6 @@
         right: 0;
         height: 5px;
         backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
         pointer-events: none;
       }
 
