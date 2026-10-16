@@ -5,7 +5,7 @@ export const en = {
   light: "LIGHT",
   shortcut: "SHORTCUT",
   settings: "SETTINGS",
-  icebox: "Memo",
+  icebox: "Note",
   closed: "CLOSED",
   search: "SEARCH",
   bookmark: "BOOKMARK",

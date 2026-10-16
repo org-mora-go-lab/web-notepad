@@ -7,7 +7,7 @@ export const ko: Messages = {
   light: "라이트",
   shortcut: "단축키",
   settings: "설정",
-  icebox: "메모",
+  icebox: "노트",
   closed: "닫은 탭",
   search: "검색",
   bookmark: "북마크",
