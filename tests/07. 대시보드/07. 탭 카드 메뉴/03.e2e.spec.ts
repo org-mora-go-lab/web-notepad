@@ -7,7 +7,7 @@ test("3. PC에서 열린 탭 카드 메뉴로 다른 그룹에 이동한다", as
   await writeStoredState(page, {
     activeGroupId: "source",
     groups: [
-      createGroupFixture("source", "Source", [createTabFixture("source-tab", "Alpha task")]),
+      createGroupFixture("source", "Source", [createTabFixture("source-tab", "Alpha task", { tabColor: "gray" })]),
       createGroupFixture("work", "Work", [createTabFixture("work-tab", "Work task")]),
     ],
   });
