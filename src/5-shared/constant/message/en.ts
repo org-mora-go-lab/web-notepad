@@ -16,6 +16,8 @@ export const en = {
   statusInProgress: "Doing",
   statusDone: "Done",
   group: "GROUP",
+  allGroup: "All Group",
+  ungrouped: "Ungrouped",
   selectGroup: "Select group",
   selectGroupNamed: (name: string) => `Select group: ${name}`,
   noteTabs: "Note tabs",

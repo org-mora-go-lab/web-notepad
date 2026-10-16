@@ -18,6 +18,8 @@ export const ko: Messages = {
   statusInProgress: "진행 중",
   statusDone: "완료",
   group: "그룹",
+  allGroup: "모든 그룹",
+  ungrouped: "미지정 그룹",
   selectGroup: "그룹 선택",
   selectGroupNamed: (name: string) => `그룹 선택: ${name}`,
   noteTabs: "메모 탭",

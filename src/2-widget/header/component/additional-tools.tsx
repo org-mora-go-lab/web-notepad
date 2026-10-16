@@ -14,7 +14,6 @@ import { useEffect, useRef, useState } from "react";
 import { Theme, UserGuide } from "@/src/3-feature";
 import {
   ALL_GROUP_ID,
-  ALL_GROUP_NAME,
   UNGROUPED_GROUP_ID,
 } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
@@ -176,7 +175,7 @@ export function AdditionalTools({
           }}
         >
           <Layers3 size={16} />
-          <span>{ALL_GROUP_NAME}</span>
+          <span>{t.allGroup}</span>
         </button>
         <button
           className="additional-tools-ungrouped"
@@ -188,7 +187,7 @@ export function AdditionalTools({
           }}
         >
           <FolderOpen size={16} />
-          <span>Ungrouped</span>
+          <span>{t.ungrouped}</span>
         </button>
       </div>
       {guideOpen && <UserGuide onClose={() => setGuideOpen(false)} />}
