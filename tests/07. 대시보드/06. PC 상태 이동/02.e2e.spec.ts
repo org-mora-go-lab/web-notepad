@@ -10,5 +10,5 @@ test("2. PC에서 드래그로 바꾼 대시보드 상태를 새로고침 후 �
   await card().dragTo(dashboardColumn(page, "in-progress"));
   await page.reload();
   await expect(dashboardColumn(page, "in-progress")).toContainText("Alpha task");
-  await expect(card()).toHaveAttribute("data-tab-color", "green");
+  await expect(card()).toHaveAttribute("data-tab-color", "indigo");
 });

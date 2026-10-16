@@ -4,7 +4,7 @@ import { BOTH_VIEWPORTS } from "../../__constant__";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { dashboardColumn, openClosedPanel, readStoredState, writeStoredState } from "../../__util__";
 
-test("2. Closed 카드를 에디터로 열면 헤더 제목에 취소선과 짙은 그린색을 표시한다", async ({ page }) => {
+test("2. Closed 카드를 에디터로 열면 헤더 제목에 취소선과 그린색을 표시한다", async ({ page }) => {
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await writeStoredState(page, { groups: [createGroupFixture("ungrouped", "Ungrouped", [
@@ -20,7 +20,18 @@ test("2. Closed 카드를 에디터로 열면 헤더 제목에 취소선과 짙�
     await expect(page.getByRole("tab", { name: "Normal note", exact: true }).locator(".tab-title")).toHaveCSS("text-decoration-line", "none");
     for (const theme of ["dark", "light"]) {
       await page.evaluate((value) => document.documentElement.dataset.theme = value, theme);
-      expect(await tab.locator(".dirty-dot").evaluate((element) => getComputedStyle(element, "::before").backgroundColor)).toBe("rgb(40, 96, 68)");
+      const colors = await tab.locator(".dirty-dot").evaluate((element) => ({
+        actual: getComputedStyle(element, "::before").backgroundColor,
+        expected: (() => {
+          const sample = document.createElement("span");
+          sample.style.color = "var(--color-tab-green)";
+          document.body.append(sample);
+          const color = getComputedStyle(sample).color;
+          sample.remove();
+          return color;
+        })(),
+      }));
+      expect(colors.actual).toBe(colors.expected);
     }
     const saved = await readStoredState(page);
     const closed = saved.groups[0].tabs.find((item) => item.id === "tab-2")!;

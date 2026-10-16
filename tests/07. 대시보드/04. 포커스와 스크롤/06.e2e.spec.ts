@@ -11,7 +11,7 @@ test("6. 모바일 상태 제목은 자신의 세로선 끝까지 이동한 뒤 
     activeGroupId: "ungrouped",
     groups: [createGroupFixture("ungrouped", "Ungrouped", Array.from(
       { length: 20 },
-      (_, index) => createTabFixture(`tab-${index}`, `Done task ${index}\nBody`, { tabColor: "purple" }),
+      (_, index) => createTabFixture(`tab-${index}`, `Done task ${index}\nBody`, { tabColor: "teal" }),
     ))],
   });
   await openPanel(page, "dashboard-panel");

@@ -15,5 +15,5 @@ test("5. 앞 순번에서 사용 중인 탭 색상은 뒤 순번에서 키보드
   await expect.poll(() => page.evaluate(
     (key) => JSON.parse(localStorage.getItem(key)!).state.settings.tabColorCycle,
     STORAGE_KEY,
-  )).toEqual(["gray", "green", "purple"]);
+  )).toEqual(["gray", "indigo", "teal"]);
 });

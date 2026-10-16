@@ -10,6 +10,7 @@ test("6. Icebox와 Closed 상태를 양쪽에 구분되는 색상의 컬럼으�
   await toggleDashboardStatus(page, "icebox");
   const icebox = page.locator(".dashboard-icebox-column");
   const todo = page.locator('.dashboard-column[data-status="todo"]');
+  const doing = page.locator('.dashboard-column[data-status="in-progress"]');
   const done = page.locator('.dashboard-column[data-status="done"]');
   const closed = page.locator(".dashboard-closed-column");
   const [iceboxBox, todoBox, doneBox, closedBox] = await Promise.all([
@@ -24,14 +25,16 @@ test("6. Icebox와 Closed 상태를 양쪽에 구분되는 색상의 컬럼으�
   await expect(
     page.locator(".dashboard-statuses > h3 .dashboard-status-label"),
   ).toHaveText(["Note", "To Do", "Doing", "Done", "Closed"]);
-  const [iceboxColor, todoColor, doneColor, closedColor] = await Promise.all([
+  const [iceboxColor, todoColor, doingColor, doneColor, closedColor] = await Promise.all([
     icebox.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
     todo.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
+    doing.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
     done.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
     closed.evaluate((element) => getComputedStyle(element).getPropertyValue("--dashboard-accent")),
   ]);
   expect(iceboxColor.trim()).toBe("#666");
   expect(todoColor.trim()).toBe("#b8b8b0");
-  expect(doneColor.trim()).toBe("#c3a6f5");
-  expect(closedColor.trim()).toBe("#286044");
+  expect(doingColor.trim()).toBe("#a5b4fc");
+  expect(doneColor.trim()).toBe("#7fd8d0");
+  expect(closedColor.trim()).toBe("#8fe3b0");
 });

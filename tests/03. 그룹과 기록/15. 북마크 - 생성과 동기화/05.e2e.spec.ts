@@ -8,5 +8,5 @@ test("5. 원본 탭의 색상이 바뀌면 연결된 북마크의 탭 색상을 
   await cycleActiveTabColor(page, 2);
 
   await expect.poll(async () => (await readStoredState(page)).groups[0].bookmarks[0].tabColor)
-    .toBe("purple");
+    .toBe("teal");
 });

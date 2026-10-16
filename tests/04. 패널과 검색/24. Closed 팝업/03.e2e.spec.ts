@@ -20,11 +20,11 @@ test("3. Todo·Doing·Done과 Icebox 사이에서 카드를 자유롭게 이동�
   await card("todo").dragTo(dashboardColumn(page, "icebox"));
   expect((await storedTab())?.dashboardStatus).toBe("icebox");
   await card("icebox").dragTo(dashboardColumn(page, "in-progress"));
-  expect(await storedTab()).toMatchObject({ tabColor: "green" });
+  expect(await storedTab()).toMatchObject({ tabColor: "indigo" });
 
   await card("in-progress").dragTo(dashboardColumn(page, "icebox"));
   await card("icebox").dragTo(dashboardColumn(page, "done"));
-  expect(await storedTab()).toMatchObject({ tabColor: "purple" });
+  expect(await storedTab()).toMatchObject({ tabColor: "teal" });
 
   await card("done").dragTo(dashboardColumn(page, "icebox"));
   await card("icebox").dragTo(dashboardColumn(page, "todo"));

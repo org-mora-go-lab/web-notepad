@@ -9,12 +9,12 @@ test("4. 카드는 고정, 북마크, 일반 순서로 표시한다", async ({ p
     activeGroupId: "ungrouped",
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [
-        createTabFixture("tab-1", "Plain first"),
-        createTabFixture("tab-2", "Bookmarked first", { bookmarked: true }),
-        createTabFixture("tab-3", "Pinned first", { pinned: true }),
-        createTabFixture("tab-4", "Pinned second", { pinned: true, bookmarked: true }),
-        createTabFixture("tab-5", "Bookmarked second", { bookmarked: true }),
-        createTabFixture("tab-6", "Plain second"),
+        createTabFixture("tab-1", "Plain first", { tabColor: "indigo" }),
+        createTabFixture("tab-2", "Bookmarked first", { bookmarked: true, tabColor: "indigo" }),
+        createTabFixture("tab-3", "Pinned first", { pinned: true, tabColor: "indigo" }),
+        createTabFixture("tab-4", "Pinned second", { pinned: true, bookmarked: true, tabColor: "indigo" }),
+        createTabFixture("tab-5", "Bookmarked second", { bookmarked: true, tabColor: "indigo" }),
+        createTabFixture("tab-6", "Plain second", { tabColor: "indigo" }),
       ]),
     ],
     nextTabNumber: 7,
