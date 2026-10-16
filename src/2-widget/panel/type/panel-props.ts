@@ -14,6 +14,7 @@ import type {
 import type { ViewPanel } from "@/src/5-shared";
 
 export type PanelProps = {
+  onSaveDashboardStatusNames: ComponentProps<typeof Dashboard>["onSaveStatusNames"];
   openPanel: ViewPanel | null;
   backgroundPanel: ViewPanel | null;
   pinned: boolean;

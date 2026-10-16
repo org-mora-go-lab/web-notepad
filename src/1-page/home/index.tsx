@@ -44,6 +44,7 @@ export function Home() {
     removeBookmark,
     createGroupAndRecord,
     renameGroup,
+    setGroupStatusNames,
     toggleGroupPin,
     removeGroupAndRecord,
     fontScale,
@@ -140,6 +141,7 @@ export function Home() {
           onSelectGroup={selectGroupAndClosePanel}
           onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
+          onSaveDashboardStatusNames={(names) => setGroupStatusNames(activeGroupId, names)}
           onToggleGroupPin={toggleGroupPin}
         />
       </main>

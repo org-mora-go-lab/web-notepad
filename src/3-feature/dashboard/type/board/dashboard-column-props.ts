@@ -9,6 +9,7 @@ export type DashboardColumnProps = Pick<
   | "groups"
   | "showGroupNames"
   | "tabColorCycle"
+  | "statusNames"
   | "onOpenTab"
 > & {
   column: DashboardColumnData;

@@ -1,11 +1,17 @@
-import { Check, EllipsisVertical, Ghost, Snowflake } from "lucide-react";
+import { Check, EllipsisVertical, Ghost, Pencil, Snowflake } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { DashboardOptionsProps } from "../type";
+import { DashboardStatusEditor } from "./dashboard-status-editor";
 
 export function DashboardOptions({
+  groupId,
+  groupName,
+  statusNames,
+  onSaveStatusNames,
   iceboxVisible,
   closedVisible,
   onToggleIcebox,
@@ -13,6 +19,7 @@ export function DashboardOptions({
 }: DashboardOptionsProps) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -66,7 +73,7 @@ export function DashboardOptions({
             onClick={onToggleIcebox}
           >
             <Snowflake size={18} strokeWidth={1.8} />
-            <span>{t.icebox}</span>
+            <span>{statusNames.icebox ?? t.icebox}</span>
             {iceboxVisible && <Check className="dashboard-option-check" size={16} />}
           </button>
           <button
@@ -76,11 +83,27 @@ export function DashboardOptions({
             onClick={onToggleClosed}
           >
             <Ghost size={18} strokeWidth={1.8} />
-            <span>{t.closed}</span>
+            <span>{statusNames.closed ?? t.closed}</span>
             {closedVisible && <Check className="dashboard-option-check" size={16} />}
           </button>
+          <button
+            className="dashboard-edit-status-command"
+            type="button"
+            disabled={groupId === ALL_GROUP_ID}
+            onClick={() => { setOpen(false); setEditing(true); }}
+          >
+            <Pencil size={18} />
+            <span>{t.editStatus}</span>
+          </button>
+          {groupId === ALL_GROUP_ID && <p className="dashboard-status-edit-hint">{t.selectGroupToEditStatus}</p>}
         </div>
       )}
+      {editing && <DashboardStatusEditor
+        statusNames={statusNames}
+        groupName={groupName}
+        onSaveStatusNames={onSaveStatusNames}
+        onClose={() => { setEditing(false); triggerRef.current?.focus(); }}
+      />}
     </div>
   );
 }

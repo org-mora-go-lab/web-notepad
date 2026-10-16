@@ -35,6 +35,7 @@
       font-size: v.font(15px);
       text-align: left;
       cursor: pointer;
+      &:disabled { opacity: 0.4; cursor: default; }
 
       &:hover,
       &:focus-visible {
@@ -51,6 +52,7 @@
   .dashboard-option-check {
     margin-left: auto;
   }
+  .dashboard-status-edit-hint { margin: 4px 10px; color: v.$muted; font-size: v.font(12px); }
 
   @media (max-width: 512px) {
     .dashboard-options-menu button {

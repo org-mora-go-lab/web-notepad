@@ -7,6 +7,7 @@ import { DashboardStatus } from "./dashboard-status";
 export function DashboardStatuses({
   columns,
   tabColorCycle,
+  statusNames,
   iceboxVisible,
   closedVisible,
   iceboxCount,
@@ -29,7 +30,7 @@ export function DashboardStatuses({
           id="dashboard-status-icebox"
           className="dashboard-icebox-status"
           status="icebox"
-          label={t.icebox}
+          label={statusNames.icebox ?? t.icebox}
           count={iceboxCount}
           tabColor="gray"
         />
@@ -39,7 +40,7 @@ export function DashboardStatuses({
           key={status}
           id={`dashboard-status-${status}`}
           status={status}
-          label={statusLabels[status]}
+          label={statusNames[status] ?? statusLabels[status]}
           count={tabs.length}
           tabColor={getStatusColor(status, tabColorCycle)}
         />
@@ -49,7 +50,7 @@ export function DashboardStatuses({
           id="dashboard-status-closed"
           className="dashboard-closed-status"
           status="closed"
-          label={t.closedTitle}
+          label={statusNames.closed ?? t.closedTitle}
           count={closedCount}
           tabColor="purple"
         />

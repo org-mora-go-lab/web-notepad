@@ -12,6 +12,7 @@ export function DashboardColumn({
   groups,
   showGroupNames,
   tabColorCycle,
+  statusNames,
   contextMenuTabId,
   onOpenTab,
   onOpenContextMenu,
@@ -56,7 +57,7 @@ export function DashboardColumn({
       <DashboardStatus
         className="dashboard-column-status"
         status={status}
-        label={statusLabel}
+        label={statusNames[status] ?? statusLabel}
         count={columnTabs.length}
         tabColor={getStatusColor(status, tabColorCycle)}
       />

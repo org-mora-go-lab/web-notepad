@@ -2,13 +2,14 @@ import type { StateCreator } from "zustand";
 
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
-import { assignTabToPane, normalizeLayout } from "../../util";
+import { assignTabToPane, normalizeDashboardStatusNames, normalizeLayout } from "../../util";
 import { allocateTab, createGroupEntry } from "./workspace";
 
 type GroupActions = Pick<
   NotepadState,
   | "createGroup"
   | "renameGroup"
+  | "setGroupStatusNames"
   | "toggleGroupPin"
   | "removeGroup"
   | "selectGroup"
@@ -21,6 +22,14 @@ export const createGroupActions: StateCreator<
   [],
   GroupActions
 > = (set, get) => ({
+  setGroupStatusNames: (groupId, names) => set((state) => {
+    if (groupId === ALL_GROUP_ID || !state.groups.some((group) => group.id === groupId)) return state;
+    return {
+      groups: state.groups.map((group) => group.id === groupId
+        ? { ...group, dashboardStatusNames: normalizeDashboardStatusNames(names), updatedAt: Date.now() }
+        : group),
+    };
+  }),
   moveTabToGroup: (tabId, groupId) =>
     set((state) => {
       const source = state.groups.find((group) =>

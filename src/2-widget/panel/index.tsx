@@ -32,6 +32,7 @@ export function Panel({
   onRemoveBookmark,
   onOpenDashboardTab,
   onChangeTabStatus,
+  onSaveDashboardStatusNames,
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
@@ -54,6 +55,9 @@ export function Panel({
         onRemove={onRemoveBookmark}
       />
       <Dashboard
+        groupId={activeGroupId}
+        statusNames={groups.find((group) => group.id === activeGroupId)?.dashboardStatusNames ?? {}}
+        onSaveStatusNames={onSaveDashboardStatusNames}
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
         groups={groups}

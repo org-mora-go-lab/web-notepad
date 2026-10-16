@@ -12,6 +12,9 @@ import { useDashboardDrag, useDashboardScroll } from "./hook";
 import type { DashboardProps } from "./type";
 
 export function Dashboard({
+  groupId,
+  statusNames,
+  onSaveStatusNames,
   tabs,
   activeTabId,
   groups,
@@ -78,6 +81,11 @@ export function Dashboard({
           </button>
           {open && (
             <DashboardOptions
+              key={groupId}
+              groupId={groupId}
+              groupName={groups.find((group) => group.id === groupId)?.name ?? t.ungrouped}
+              statusNames={statusNames}
+              onSaveStatusNames={onSaveStatusNames}
               iceboxVisible={iceboxVisible}
               closedVisible={closedVisible}
               onToggleIcebox={() => setIceboxVisible((current) => !current)}
@@ -92,6 +100,7 @@ export function Dashboard({
     >
       <div className="dashboard-content" ref={contentRef}>
         <DashboardStatuses
+          statusNames={statusNames}
           columns={columns}
           tabColorCycle={tabColorCycle}
           iceboxVisible={iceboxVisible}
@@ -106,6 +115,7 @@ export function Dashboard({
           >
             {iceboxVisible && (
               <DashboardColumn
+                statusNames={statusNames}
                 column={{ status: "icebox", tabs: iceboxTabs }}
                 drag={drag}
                 activeTabId={activeTabId}
@@ -122,6 +132,7 @@ export function Dashboard({
             {columns.map((column) => (
               <DashboardColumn
                 key={column.status}
+                statusNames={statusNames}
                 column={column}
                 drag={drag}
                 activeTabId={activeTabId}
@@ -137,6 +148,7 @@ export function Dashboard({
             ))}
             {closedVisible && (
               <DashboardColumn
+                statusNames={statusNames}
                 column={{ status: "closed", tabs: closedTabs }}
                 drag={drag}
                 activeTabId={activeTabId}
