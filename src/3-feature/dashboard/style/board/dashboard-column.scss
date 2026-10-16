@@ -23,7 +23,7 @@
   }
 
   .dashboard-column.dashboard-closed-column {
-    --dashboard-accent: #888;
+    --dashboard-accent: var(--color-status-closed);
     --dashboard-focus-accent: var(--dashboard-accent);
   }
 

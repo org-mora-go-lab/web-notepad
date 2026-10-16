@@ -1,14 +1,30 @@
 import { expect, test } from "@playwright/test";
 
-import { openClosedPanel } from "../../__util__";
-import { seedClosedPanelState } from "./__fixture__";
+import { BOTH_VIEWPORTS } from "../../__constant__";
+import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { dashboardColumn, openClosedPanel, readStoredState, writeStoredState } from "../../__util__";
 
-test("2. Closed 카드를 기본 대시보드 탭 카드 형식으로 표시한다", async ({ page }) => {
-  await seedClosedPanelState(page);
-  await openClosedPanel(page);
-  const card = page.locator(".dashboard-closed-column .dashboard-card");
-  await expect(card).toContainText("Archived note");
-  await expect(card.locator(".dashboard-card-preview")).toHaveText("Archived body");
-  await expect(page.getByRole("button", { name: "Reopen" })).toHaveCount(0);
-  await expect(page.locator(".dashboard-closed-actions")).toHaveCount(0);
+test("2. Closed 카드를 에디터로 열면 헤더 제목에 취소선과 짙은 그린색을 표시한다", async ({ page }) => {
+  for (const viewport of BOTH_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    await writeStoredState(page, { groups: [createGroupFixture("ungrouped", "Ungrouped", [
+      createTabFixture("tab-1", "Normal note", { tabColor: "gray" }),
+      createTabFixture("tab-2", "Closed note", { dashboardStatus: "closed", tabColor: "purple", open: false }),
+    ])] });
+    await openClosedPanel(page);
+    await dashboardColumn(page, "closed").locator(".dashboard-card-open").click();
+    const tab = page.locator('.tab-item[data-dashboard-status="closed"]');
+    await expect(tab.getByRole("tab", { name: "Closed note", exact: true })).toHaveAttribute("aria-selected", "true");
+    await expect(tab.locator(".tab-title")).toHaveCSS("text-decoration-line", "line-through");
+    await expect(tab.locator(".tab-title")).toHaveCSS("text-decoration-thickness", "1px");
+    await expect(page.getByRole("tab", { name: "Normal note", exact: true }).locator(".tab-title")).toHaveCSS("text-decoration-line", "none");
+    for (const theme of ["dark", "light"]) {
+      await page.evaluate((value) => document.documentElement.dataset.theme = value, theme);
+      expect(await tab.locator(".dirty-dot").evaluate((element) => getComputedStyle(element, "::before").backgroundColor)).toBe("rgb(40, 96, 68)");
+    }
+    const saved = await readStoredState(page);
+    const closed = saved.groups[0].tabs.find((item) => item.id === "tab-2")!;
+    expect(closed.dashboardStatus).toBe("closed");
+    expect(closed.tabColor).toBe("purple");
+  }
 });

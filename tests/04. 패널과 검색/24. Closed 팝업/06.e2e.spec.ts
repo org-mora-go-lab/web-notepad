@@ -33,5 +33,5 @@ test("6. Icebox와 Closed 상태를 양쪽에 구분되는 색상의 컬럼으�
   expect(iceboxColor.trim()).toBe("#666");
   expect(todoColor.trim()).toBe("#b8b8b0");
   expect(doneColor.trim()).toBe("#c3a6f5");
-  expect(closedColor.trim()).toBe("#888");
+  expect(closedColor.trim()).toBe("#286044");
 });

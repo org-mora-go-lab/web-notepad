@@ -33,6 +33,7 @@
   --color-alert: #ff5c5c;
   --color-tab-gray: var(--color-saved);
   --color-tab-green: var(--color-signal);
+  --color-status-closed: #286044;
 
   @each $name, $accents in v.$extra-tab-colors {
     --color-tab-#{$name}: #{list.nth($accents, 1)};
