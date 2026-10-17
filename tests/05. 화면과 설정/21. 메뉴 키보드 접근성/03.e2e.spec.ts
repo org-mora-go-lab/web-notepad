@@ -1,7 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("3. 메뉴를 열면 PC의 첫 번째 SHORTCUT 항목에 포커스를 둔다", async ({ page }) => {
+test("3. 헤더 검색 버튼은 검색 팝업을 제어한다", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await expect(page.getByRole("menuitem", { name: "SHORTCUT", exact: true })).toBeFocused();
+  await expect(page.locator(".global-search-command")).toHaveAttribute("aria-controls", "global-search-popup");
 });

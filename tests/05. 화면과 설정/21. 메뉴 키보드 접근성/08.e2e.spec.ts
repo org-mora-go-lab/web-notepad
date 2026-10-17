@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("8. End는 마지막 메뉴 항목으로 포커스를 이동한다", async ({ page }) => {
+test("8. 검색 팝업이 열리면 검색 버튼의 펼침 상태는 true다", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await page.keyboard.press("End");
-  await expect(page.getByRole("menuitem", { name: "GUIDE", exact: true })).toBeFocused();
+  const search = page.locator(".global-search-command");
+  await search.click();
+  await expect(search).toHaveAttribute("aria-expanded", "true");
 });

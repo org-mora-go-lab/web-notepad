@@ -1,10 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("1. MENU 명령은 menu 팝업 제어 대상과 펼침 상태를 제공한다", async ({ page }) => {
+test("1. PC 헤더에는 MENU 버튼을 표시하지 않는다", async ({ page }) => {
   await page.goto("/");
-  const trigger = page.getByRole("button", { name: "MENU", exact: true });
-  await expect(trigger).toHaveAttribute("aria-controls", "additional-tools-menu");
-  await expect(trigger).toHaveAttribute("aria-haspopup", "menu");
-  await trigger.click();
-  await expect(trigger).toHaveAttribute("aria-expanded", "true");
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await expect(page.locator(".header").getByRole("button", { name: "MENU", exact: true })).toHaveCount(0);
 });

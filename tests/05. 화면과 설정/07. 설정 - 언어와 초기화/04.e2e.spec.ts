@@ -6,6 +6,7 @@ import {
   groupsCommand,
   groupStatusName,
   openSettingsPanel,
+  openSidebarTools,
   readStoredState,
 } from "../../__util__";
 import { languageRadio, settingsPanel } from "../__util__";
@@ -33,9 +34,9 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await expect(page.locator(".note-area")).toHaveAttribute("placeholder", "메모를 입력하세요..");
 
   await page.getByRole("button", { name: "설정 닫기" }).click();
-  await page.getByRole("button", { name: "메뉴", exact: true }).click();
-  await expect(page.getByRole("menuitem", { name: "설정" })).toContainText("설정");
-  await expect(page.getByRole("menuitem", { name: "닫은 탭" })).toHaveCount(0);
+  const tools = await openSidebarTools(page);
+  await expect(tools.getByRole("button", { name: "설정" })).toContainText("설정");
+  await expect(tools.getByRole("button", { name: "닫은 탭" })).toHaveCount(0);
   await page.keyboard.press("Escape");
 
   for (const viewport of BOTH_VIEWPORTS) {

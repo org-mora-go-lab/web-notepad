@@ -142,7 +142,7 @@ export function useHome() {
       moveTabsToPane: moveTabToPaneAndRecord,
     });
 
-  // The MENU sits on the top pane of the rightmost column.
+  // The search command sits on the top pane of the rightmost column.
   const menuPane: PaneId = paneTabs.right.length > 0 ? "right" : "left";
 
   const createPaneProps = (pane: PaneId): PaneViewProps | null => {

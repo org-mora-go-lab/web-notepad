@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-test("3. MENU의 GUIDE는 드롭다운을 닫고 User Guide 팝업을 연다", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await page.getByRole("menuitem", { name: "GUIDE" }).click();
-  await expect(page.getByRole("menu", { name: "MENU", exact: true })).toBeHidden();
+import { openSidebarTools } from "../../__util__";
 
+test("3. 그룹 사이드바 MENU의 GUIDE는 User Guide 팝업을 연다", async ({ page }) => {
+  await page.goto("/");
+  const tools = await openSidebarTools(page);
+  await tools.getByRole("button", { name: "GUIDE" }).click();
   const guide = page.getByRole("dialog");
   await expect(guide).toBeVisible();
   await expect(guide.getByRole("heading", { name: "User Guide" })).toBeVisible();

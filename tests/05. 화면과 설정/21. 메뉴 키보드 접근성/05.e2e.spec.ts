@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("5. ArrowDown은 다음 메뉴 항목으로 포커스를 이동한다", async ({ page }) => {
+test("5. 검색 버튼은 키보드 Tab 순서에 포함한다", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await page.keyboard.press("ArrowDown");
-  await expect(page.getByRole("menuitem", { name: "SETTINGS", exact: true })).toBeFocused();
+  const search = page.locator(".global-search-command");
+  await search.focus();
+  await expect(search).toBeFocused();
 });

@@ -2,7 +2,7 @@
 
 .header {
   --tools-right-padding: 26px;
-  --tools-buttons-width: 90px;
+  --tools-buttons-width: 45px;
 
   .additional-tools {
     position: absolute;
@@ -29,23 +29,6 @@
     }
   }
 
-  .additional-tools-trigger {
-    position: absolute;
-    right: var(--tools-right-padding);
-    width: 45px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-
-    svg {
-      width: 24px;
-      height: 24px;
-      flex: 0 0 24px;
-    }
-  }
-
   .global-search-command {
     position: absolute;
     left: 0;
@@ -65,91 +48,13 @@
     }
   }
 
-  .additional-tools-menu {
-    position: absolute;
-    top: calc(100% + 5px);
-    right: 8px;
-    width: min(200px, calc(100vw - 16px));
-    padding: 4px;
-    border: 1px solid v.$line;
-    border-radius: 4px;
-    background: v.$strip;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-
-    button {
-      width: 100%;
-      min-height: 38px;
-      padding: 8px 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: v.font(15px);
-      text-align: left;
-
-      > svg:first-child {
-        width: 18px;
-        height: 18px;
-        flex: 0 0 18px;
-      }
-
-      > svg:last-child:not(:first-child) { margin-left: auto; }
-      .is-expanded { transform: rotate(90deg); }
-      &[aria-checked="true"] { color: v.$ink; background: v.$raised; }
-    }
-
-    .closed-count {
-      margin-left: auto;
-      padding: 0 5px;
-      border-radius: 3px;
-      background: v.$raised;
-      color: v.$ink;
-      font-size: v.font(12px);
-      line-height: 18px;
-    }
-
-  }
-
   &.has-menu { padding-right: calc(var(--tools-buttons-width) + var(--tools-right-padding)); }
 
   @media (min-width: 641px) {
-    --tools-buttons-width: 78px;
-
-    .additional-tools-trigger {
-      width: 39px;
-      font-family: v.$sans;
-      padding: 0;
-
-      > svg {
-        width: 20px;
-        height: 20px;
-        flex-basis: 20px;
-      }
-
-      &[aria-expanded="true"] {
-        background: v.$raised;
-        color: v.$ink;
-      }
-    }
+    --tools-buttons-width: 39px;
 
     .global-search-command {
       width: 39px;
-    }
-
-    .additional-tools-menu {
-      top: calc(100% + 8px);
-      right: 10px;
-      width: 208px;
-      padding: 6px;
-      border-radius: 6px;
-      font-family: v.$sans;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
-
-      button {
-        min-height: 36px;
-        border-radius: 3px;
-        font-weight: 500;
-      }
-
     }
 
   }
@@ -158,41 +63,5 @@
     --tools-right-padding: 21px;
 
     .additional-tools { height: 45px; }
-    .additional-tools-trigger {
-      padding: 0;
-
-      svg {
-        width: 22px * v.$mobile-scale + 2px;
-        height: 22px * v.$mobile-scale + 2px;
-        flex-basis: 22px * v.$mobile-scale + 2px;
-      }
-    }
-
-    .additional-tools-menu {
-      width: min(200px * v.$mobile-scale, calc(100vw - 16px));
-
-      button {
-        min-height: 38px * v.$mobile-scale;
-        font-size: v.font(15px * v.$mobile-scale);
-
-        > svg:first-child {
-          width: 18px * v.$mobile-scale;
-          height: 18px * v.$mobile-scale;
-          flex-basis: 18px * v.$mobile-scale;
-        }
-
-        > svg:last-child:not(:first-child) {
-          width: 14px * v.$mobile-scale;
-          height: 14px * v.$mobile-scale;
-        }
-      }
-
-      .closed-count {
-        font-size: v.font(12px * v.$mobile-scale);
-        line-height: 18px * v.$mobile-scale;
-      }
-    }
-
-    .additional-tools-menu .additional-tools-shortcut { display: none; }
   }
 }

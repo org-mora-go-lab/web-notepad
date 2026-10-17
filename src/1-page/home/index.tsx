@@ -60,7 +60,7 @@ export function Home() {
     document.documentElement.lang = language;
   }, [language]);
 
-  // MENU commands open their side panels.
+  // Header and sidebar commands open their panels.
   const withMenu = (pane: PaneViewProps): PaneViewProps =>
     pane.hasMenu
       ? {

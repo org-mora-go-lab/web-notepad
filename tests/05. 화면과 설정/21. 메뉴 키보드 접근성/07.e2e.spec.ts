@@ -1,9 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("7. Home은 첫 번째 메뉴 항목으로 포커스를 이동한다", async ({ page }) => {
+test("7. 검색 팝업이 닫혀 있으면 검색 버튼의 펼침 상태는 false다", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await page.keyboard.press("End");
-  await page.keyboard.press("Home");
-  await expect(page.getByRole("menuitem", { name: "SHORTCUT", exact: true })).toBeFocused();
+  await expect(page.locator(".global-search-command")).toHaveAttribute("aria-expanded", "false");
 });

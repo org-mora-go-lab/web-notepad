@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("2. 열린 메뉴는 MENU 이름의 menu 역할로 제공한다", async ({ page }) => {
+test("2. 모바일 헤더에도 MENU 버튼을 표시하지 않는다", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await expect(page.getByRole("menu", { name: "MENU", exact: true })).toBeVisible();
+  await expect(page.locator(".header").getByRole("button", { name: "MENU", exact: true })).toHaveCount(0);
 });

@@ -14,6 +14,14 @@ export const groupStatusName = (page: Page) =>
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
+export async function openSidebarTools(page: Page) {
+  await groupsCommand(page).click();
+  const sidebar = page.locator("#groups-menu");
+  const menu = sidebar.locator('button[aria-controls="group-sidebar-tools"]');
+  if (await menu.getAttribute("aria-expanded") !== "true") await menu.click();
+  return sidebar.locator("#group-sidebar-tools");
+}
+
 export async function openPanel(page: Page, panelId: string) {
   const command = page
     .locator(`button[aria-controls="${panelId}"]:visible`)
@@ -22,11 +30,12 @@ export async function openPanel(page: Page, panelId: string) {
     panelId === "shortcuts-panel" ||
     panelId === "settings-panel"
   ) {
-    const menu = page.locator(".additional-tools-trigger");
-    await menu.click();
-    await expect(menu).toHaveAttribute("aria-expanded", "true");
-    await expect(command).toBeVisible();
-    await command.click();
+    const tools = await openSidebarTools(page);
+    const sidebarCommand = tools.getByRole("button", {
+      name: panelId === "shortcuts-panel" ? /SHORTCUT|단축키/i : /SETTINGS|설정/i,
+    });
+    await expect(sidebarCommand).toBeVisible();
+    await sidebarCommand.click();
   } else if (
     await page.locator('.side-panel-drawer[aria-hidden="false"]').count()
   ) {
