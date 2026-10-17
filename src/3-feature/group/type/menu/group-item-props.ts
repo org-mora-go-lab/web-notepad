@@ -4,7 +4,7 @@ export type GroupItemProps = {
   groupId: string;
   dragging: boolean;
   dropTarget: boolean;
-  onReorderStart: PointerEventHandler<HTMLButtonElement>;
+  onReorderStart: PointerEventHandler<HTMLElement>;
   onReorderKey: (direction: number) => void;
   name: string;
   active: boolean;

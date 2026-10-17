@@ -2,9 +2,9 @@
 
 import "./index.scss";
 
-import { type CSSProperties, useCallback, useEffect, useState } from "react";
+import { type CSSProperties, useEffect } from "react";
 
-import { useHome } from "@/src/1-page/home/hook";
+import { useGroupMenuOpen, useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
 import { I18nContext } from "@/src/5-shared/hook";
 import { MobileTapFeedback } from "@/src/5-shared/ui";
@@ -53,8 +53,8 @@ export function Home() {
     panelPosition,
   } = useHome();
 
-  const [groupMenuOpen, setGroupMenuOpen] = useState(false);
-  const closeGroupMenu = useCallback(() => setGroupMenuOpen(false), []);
+  const { groupMenuOpen, closeGroupMenu, toggleGroupMenu } =
+    useGroupMenuOpen();
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -109,7 +109,7 @@ export function Home() {
             groupsOpen={groupMenuOpen}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
-            onToggleGroups={() => setGroupMenuOpen((current) => !current)}
+            onToggleGroups={toggleGroupMenu}
           />
         </section>
 

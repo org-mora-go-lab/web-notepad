@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, EllipsisVertical, GripVertical, Pencil, Pin, Trash2, X } from "lucide-react";
+import { Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -82,27 +82,37 @@ export function GroupItem({
       data-group-id={groupId}
       data-pinned={pinned}
       className={`group-item ${active ? "is-active" : ""} ${dragging ? "is-dragging" : ""} ${dropTarget ? "is-drop-target" : ""}`}
+      onPointerDown={(event) => {
+        const target = event.target as Element;
+        if (target.closest(".group-actions, .group-reorder")) return;
+        onReorderStart(event);
+      }}
     >
       <button
         className="group-reorder"
         type="button"
         aria-label={t.reorderGroup(name)}
         title={t.reorderGroup(name)}
-        onPointerDown={onReorderStart}
         onKeyDown={(event) => {
           if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
           event.preventDefault();
           onReorderKey(event.key === "ArrowUp" ? -1 : 1);
         }}
       >
-        <GripVertical size={14} />
       </button>
       <button
         className="group-select"
         type="button"
         aria-pressed={active}
         title={name}
-        onClick={onSelect}
+        onClick={(event) => {
+          const row = event.currentTarget.closest<HTMLElement>("[data-group-id]");
+          if (row?.dataset.reorderDragged === "true") {
+            delete row.dataset.reorderDragged;
+            return;
+          }
+          onSelect();
+        }}
       >
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>

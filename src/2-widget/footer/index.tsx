@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Layers, LayoutDashboard, PanelLeft } from "lucide-react";
+import { Bookmark, Layers, LayoutDashboard, Menu } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -77,7 +77,7 @@ export function Footer({
             title={t.sidebarTitle}
           >
             <span className="status-icon">
-              <PanelLeft size={16} strokeWidth={1.8} />
+              <Menu size={16} strokeWidth={1.8} />
               {hasGroupUpdateToday && (
                 <span
                   className="status-dot"

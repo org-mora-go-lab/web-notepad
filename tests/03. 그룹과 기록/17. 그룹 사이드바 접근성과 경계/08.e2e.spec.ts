@@ -8,6 +8,7 @@ test("8. 조절한 PC 사이드바 너비를 새로고침 후 복원한다", asy
   await page.mouse.down();
   await page.mouse.move(360, handle.y + 30);
   await page.mouse.up();
+  await page.getByRole("button", { name: "Close Menu" }).click();
   await page.reload();
   await page.getByRole("button", { name: "Toggle menu" }).click();
   expect((await page.locator("#groups-menu").boundingBox())!.width).toBeCloseTo(360, 0);
