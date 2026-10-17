@@ -19,6 +19,7 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await languageRadio(page, "한국어").check();
   await expect(panel.locator("h2")).toHaveText("설정");
   await expect(headings).toHaveText([
+    "테마",
     "전체 폰트 크기",
     "탭 색상",
     "언어",

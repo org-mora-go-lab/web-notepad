@@ -8,7 +8,6 @@ import { ALL_GROUP_ID, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/
 import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
-import { Theme } from "../theme";
 import { UserGuide } from "../user-guide";
 import { GroupCreateForm, GroupItem } from "./component";
 import { useGroupMenuResize, useGroupReorder } from "./hook";
@@ -157,7 +156,6 @@ function GroupSidebar({
           </button>
           {menuExpanded && (
             <div className="group-tools-list" id="group-sidebar-tools">
-              <Theme />
               <button type="button" onClick={() => { onClose(); onOpenShortcuts(); }}>
                 <Keyboard aria-hidden="true" />
                 <span>{t.shortcut}</span>

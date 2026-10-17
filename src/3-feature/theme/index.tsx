@@ -10,15 +10,11 @@ export function Theme() {
   const { t } = useI18n();
 
   return (
-    <div className="theme">
-      <div
-        className="theme-label"
-        role="menuitem"
-        tabIndex={0}
-      >
+    <section className="theme setting-section">
+      <h3 className="theme-label">
         {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
         <span>{t.theme}</span>
-      </div>
+      </h3>
       <label className="theme-toggle">
         <input
           type="checkbox"
@@ -29,6 +25,6 @@ export function Theme() {
         />
         <span className="theme-toggle-track" aria-hidden="true" />
       </label>
-    </div>
+    </section>
   );
 }

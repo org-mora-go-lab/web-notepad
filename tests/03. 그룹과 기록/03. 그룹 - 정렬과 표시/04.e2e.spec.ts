@@ -15,11 +15,15 @@ test("4. 사이드바 GROUP 아래의 MENU 영역을 여닫고 기존 메뉴 기
   await menuToggle.click();
   await expect(menuToggle).toHaveAttribute("aria-expanded", "true");
   const tools = page.locator("#group-sidebar-tools");
-  await expect(tools.getByRole("switch", { name: "THEME" })).toBeVisible();
+  await expect(tools.getByRole("switch", { name: "THEME" })).toHaveCount(0);
   await expect(tools.getByRole("button", { name: "SHORTCUT" })).toBeVisible();
   await expect(tools.getByRole("button", { name: "SETTINGS" })).toBeVisible();
   await expect(tools.getByRole("button", { name: "GUIDE" })).toBeVisible();
   await tools.getByRole("button", { name: "SETTINGS" }).click();
   await expect(page.locator("#groups-menu")).toHaveCount(0);
   await expect(page.locator("#settings-panel")).toHaveAttribute("aria-hidden", "false");
+  const headings = page.locator("#settings-panel .setting-section h3");
+  await expect(headings.nth(0)).toHaveText("THEME");
+  await expect(headings.nth(1)).toHaveText("Font Size");
+  await expect(page.getByRole("switch", { name: "THEME" })).toBeVisible();
 });

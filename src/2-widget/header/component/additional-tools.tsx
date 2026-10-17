@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { Theme, UserGuide } from "@/src/3-feature";
+import { UserGuide } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { AdditionalToolsProps } from "../type";
@@ -116,7 +116,6 @@ export function AdditionalTools({
           }
         }}
       >
-        <Theme />
         <button
           className="additional-tools-shortcut"
           type="button"

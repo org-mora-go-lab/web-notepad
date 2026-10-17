@@ -61,8 +61,7 @@
     padding: 4px 0;
     border-bottom: 1px solid v.$line;
 
-    > button,
-    .theme {
+    > button {
       width: 100%; min-height: 42px; display: flex; align-items: center; gap: 10px;
       padding: 0 14px; border: 0; background: transparent; color: v.$muted;
       font-size: v.font(15px); text-align: left;
@@ -73,8 +72,6 @@
       &:focus-visible { outline: 2px solid v.$signal; outline-offset: -2px; }
     }
     svg { width: 16px; height: 16px; flex: 0 0 auto; }
-    .theme { justify-content: space-between; }
-    .theme-label { display: flex; align-items: center; gap: 10px; }
   }
 
   .group-menu-resizer {
@@ -92,7 +89,7 @@
       h2 { font-size: v.font(20px * v.$mobile-scale); }
       button { width: 44px; height: 44px; }
     }
-    .group-section-toggle, .group-system-list button, .group-tools-list > button, .group-tools-list .theme { min-height: 48px; }
+    .group-section-toggle, .group-system-list button, .group-tools-list > button { min-height: 48px; }
     .group-menu-resizer { display: none; }
   }
 }

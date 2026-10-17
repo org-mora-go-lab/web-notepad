@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { openSettingsPanel } from "../../__util__";
+
 test("5. 저장소가 차단되어도 현재 화면의 테마를 전환한다", async ({ browser, baseURL }) => {
   const context = await browser.newContext();
   try {
@@ -18,8 +20,7 @@ test("5. 저장소가 차단되어도 현재 화면의 테마를 전환한다", 
     const page = await context.newPage();
     await page.goto(baseURL!);
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await page.getByRole("button", { name: "MENU", exact: true }).click();
-    await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
+    await openSettingsPanel(page);
     await page.getByRole("switch", { name: "THEME" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   } finally {
