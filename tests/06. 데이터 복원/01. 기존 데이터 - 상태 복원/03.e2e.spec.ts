@@ -23,5 +23,4 @@ test("3. 존재하지 않는 그룹과 탭 선택을 유효한 기본 선택으�
   await expect(page.locator(".body")).toHaveCount(1);
   const groupName = groupStatusName(page);
   await expect(groupName).toHaveText("Ungrouped");
-  await expect(groupName).toBeVisible();
 });

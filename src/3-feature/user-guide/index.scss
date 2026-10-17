@@ -67,12 +67,16 @@
     font-weight: 500;
   }
 
-  p {
+  .user-guide-description p {
     min-height: 3.2em;
-    margin: 8px 0 22px;
+    margin: 8px 0 12px;
     overflow-wrap: anywhere;
     font-size: v.font(14px);
     line-height: 1.6;
+  }
+
+  .user-guide-shortcut {
+    margin: 0 0 22px;
   }
 
   .user-guide-nav {
@@ -146,7 +150,7 @@
       font-size: v.font(15px * v.$mobile-scale);
     }
 
-    p {
+    .user-guide-description p {
       font-size: v.font(14px * v.$mobile-scale);
     }
 

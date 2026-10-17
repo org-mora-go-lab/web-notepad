@@ -38,7 +38,7 @@ test("6. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우�
   await deleteAllButton.click();
 
   await expect(page.locator("textarea")).toHaveValue("");
-  await expect(page.locator(".current-group-name:visible, .group-select-name:visible")).toHaveText(
+  await expect(page.locator(".group-current-value")).toHaveText(
     "Ungrouped",
   );
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");

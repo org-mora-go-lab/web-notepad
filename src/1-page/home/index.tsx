@@ -60,7 +60,7 @@ export function Home() {
     document.documentElement.lang = language;
   }, [language]);
 
-  // MENU commands open their side panels.
+  // Header and sidebar commands open their panels.
   const withMenu = (pane: PaneViewProps): PaneViewProps =>
     pane.hasMenu
       ? {
@@ -73,7 +73,6 @@ export function Home() {
           },
           onToggleSearch: () => toggleSidePanel("global-search"),
           searchOpen: openPanel === "global-search",
-          onSelectGroup: selectGroupAndClosePanel,
         }
       : pane;
 
@@ -85,7 +84,7 @@ export function Home() {
     <I18nContext value={language}>
       <MobileTapFeedback />
       <main
-        className={`home ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
+        className={`home ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}
@@ -125,6 +124,8 @@ export function Home() {
           activeGroupId={activeGroupId}
           groupMenuOpen={groupMenuOpen}
           onCloseGroupMenu={closeGroupMenu}
+          onOpenSettings={() => toggleSidePanel("settings")}
+          onOpenShortcuts={() => toggleSidePanel("shortcuts")}
           globalSearchQuery={globalSearchQuery}
           onClose={closeSidePanels}
           onGlobalSearchQueryChange={setGlobalSearchQuery}

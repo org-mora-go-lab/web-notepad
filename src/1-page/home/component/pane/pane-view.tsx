@@ -10,7 +10,6 @@ export function PaneView({
   onOpenShortcuts,
   onToggleSearch,
   searchOpen,
-  onSelectGroup,
   tabs,
   groups,
   activeGroupId,
@@ -54,7 +53,6 @@ export function PaneView({
           onOpenShortcuts={onOpenShortcuts}
           onToggleSearch={onToggleSearch}
           searchOpen={searchOpen}
-          onSelectGroup={onSelectGroup}
           tabs={tabs}
           groups={groups}
           activeGroupId={activeGroupId}

@@ -1,10 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+import { openSettingsPanel } from "../../__util__";
+
 test("3. 테마를 노트와 별도로 저장하고 새로고침·재접속 시 복원한다", async ({ page, context }) => {
   await page.goto("/");
   await page.locator("textarea").fill("Keep this note");
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await page.getByRole("menuitem", { name: "THEME", exact: true }).click();
+  await openSettingsPanel(page);
   await page.getByRole("switch", { name: "THEME" }).click();
   expect(await page.evaluate(() => localStorage.getItem("web-notepad-theme"))).toBe("light");
 

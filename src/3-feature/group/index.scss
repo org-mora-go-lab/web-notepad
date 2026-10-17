@@ -1,50 +1,94 @@
 @use "../../5-shared/style/variable" as v;
 @use "./style/menu";
 
-// Matches the tab context menu: raised surface, 39px rows, 15px labels.
 .group {
+  .group-sidebar-backdrop { display: none; }
+
   .group-menu {
     position: fixed;
+    inset: 0 auto 0 0;
     z-index: 50;
-    width: 273.7px;
-    max-width: calc(100vw - 16px);
-    max-height: calc(100dvh - 96px);
+    width: var(--group-sidebar-width, 280px);
+    min-width: 240px;
     display: flex;
     flex-direction: column;
-    border: 1px solid v.$line;
+    border-right: 1px solid v.$line;
     background: v.$raised;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    box-shadow: none;
+  }
+
+  .group-sidebar-header {
+    min-height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px 9px 18px;
+    border-bottom: 1px solid v.$line;
+
+    h2 { margin: 0; font-family: v.$sans; font-size: v.font(20px); font-weight: 500; }
+    button {
+      width: 36px; height: 36px; display: grid; place-items: center;
+      border: 1px solid v.$line; background: transparent; color: v.$dim; cursor: pointer;
+      svg { width: 15px; height: 15px; }
+      &:hover, &:focus-visible { color: v.$ink; }
+      &:focus-visible { outline: 2px solid v.$signal; outline-offset: 2px; }
+    }
+  }
+
+  .group-section { min-height: 0; flex: 1; display: flex; flex-direction: column; }
+  .group-section-toggle {
+    min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 14px;
+    border: 0; border-bottom: 1px solid v.$line; background: transparent; color: v.$ink;
+    font-size: v.font(14px); font-weight: 600; cursor: pointer;
+    svg { width: 16px; height: 16px; }
+  }
+  .group-list { flex: 1; overflow-y: auto; }
+  .group-system-list {
+    padding-bottom: 4px;
+    border-bottom: 1px solid v.$line;
+    button {
+      width: 100%; min-height: 42px; display: flex; align-items: center; gap: 10px;
+      padding: 0 14px; border: 0; background: transparent; color: v.$muted; text-align: left; cursor: pointer;
+      &:hover { background: color-mix(in srgb, #{v.$line} 50%, transparent); }
+      &.is-active { background: v.$line; color: v.$signal; }
+      svg { width: 16px; height: 16px; flex: 0 0 auto; }
+      strong { font-size: v.font(15px); font-weight: 500; }
+    }
+  }
+
+  .group-tools-list {
+    padding: 4px 0;
+    border-bottom: 1px solid v.$line;
+
+    > button {
+      width: 100%; min-height: 42px; display: flex; align-items: center; gap: 10px;
+      padding: 0 14px; border: 0; background: transparent; color: v.$muted;
+      font-size: v.font(15px); text-align: left;
+    }
+    > button {
+      cursor: pointer;
+      &:hover, &:focus-visible { background: color-mix(in srgb, #{v.$line} 50%, transparent); color: v.$ink; }
+      &:focus-visible { outline: 2px solid v.$signal; outline-offset: -2px; }
+    }
+    svg { width: 16px; height: 16px; flex: 0 0 auto; }
   }
 
   .group-menu-resizer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    width: 10px;
-    cursor: col-resize;
-    touch-action: none;
-
-    &::before {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 2px;
-      background: transparent;
-      content: "";
-      transition: background 150ms ease;
-    }
-
-    &:hover::before {
-      background: v.$hover-line;
-    }
+    position: absolute; inset: 0 -5px 0 auto; z-index: 2; width: 10px;
+    cursor: col-resize; touch-action: none;
+    &::before { position: absolute; inset: 0 auto 0 5px; width: 2px; background: transparent; content: ""; }
+    &:hover::before { background: v.$hover-line; }
   }
 
   @media (max-width: 512px) {
-    .group-menu {
-      width: 273.7px * v.$mobile-scale;
+    .group-sidebar-backdrop { position: fixed; inset: 0; z-index: 49; display: block; background: transparent; }
+    .group-menu { width: 100vw; min-width: 0; border-right: 0; }
+    .group-sidebar-header {
+      min-height: 62px;
+      h2 { font-size: v.font(20px * v.$mobile-scale); }
+      button { width: 44px; height: 44px; }
     }
+    .group-section-toggle, .group-system-list button, .group-tools-list > button { min-height: 48px; }
+    .group-menu-resizer { display: none; }
   }
 }

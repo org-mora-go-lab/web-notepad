@@ -7,13 +7,10 @@
   align-items: center;
 
   .theme-label {
-    min-height: 38px;
-    padding: 8px 10px;
+    margin: 0;
     display: flex;
     align-items: center;
     gap: 10px;
-    color: v.$muted;
-    font-size: v.font(15px);
 
     > svg {
       width: 18px;
@@ -21,23 +18,18 @@
       flex: 0 0 18px;
     }
 
-    &:focus-visible {
-      outline: 1px solid var(--color-focus);
-      outline-offset: -2px;
-    }
   }
 
   .theme-toggle {
     position: relative;
     display: block;
-    padding-right: 8px;
     cursor: pointer;
 
     input {
       position: absolute;
       inset: 0;
       z-index: 1;
-      width: calc(100% - 8px);
+      width: 100%;
       height: 100%;
       margin: 0;
       opacity: 0;
@@ -87,9 +79,6 @@
 
   @media (max-width: 512px) {
     .theme-label {
-      min-height: 38px * v.$mobile-scale;
-      font-size: v.font(15px * v.$mobile-scale);
-
       > svg {
         width: 18px * v.$mobile-scale;
         height: 18px * v.$mobile-scale;

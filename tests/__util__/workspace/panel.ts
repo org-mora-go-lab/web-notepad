@@ -10,9 +10,15 @@ export const bookmarksCommand = (page: Page) =>
 export const closedCommand = (page: Page) =>
   page.locator('button[aria-controls="closed-popup"]');
 export const groupStatusName = (page: Page) =>
-  page.locator(".group-select-name:visible, .current-group-name:visible");
+  page.locator(".group-current-value");
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
+
+export async function openSidebarTools(page: Page) {
+  await groupsCommand(page).click();
+  const sidebar = page.locator("#groups-menu");
+  return sidebar.locator("#group-sidebar-tools");
+}
 
 export async function openPanel(page: Page, panelId: string) {
   const command = page
@@ -22,11 +28,15 @@ export async function openPanel(page: Page, panelId: string) {
     panelId === "shortcuts-panel" ||
     panelId === "settings-panel"
   ) {
-    const menu = page.locator(".additional-tools-trigger");
-    await menu.click();
-    await expect(menu).toHaveAttribute("aria-expanded", "true");
-    await expect(command).toBeVisible();
-    await command.click();
+    const tools = await openSidebarTools(page);
+    if (panelId === "shortcuts-panel") {
+      await tools.getByRole("button", { name: /GUIDE|사용 가이드/i }).click();
+      await page.getByRole("dialog").getByRole("button", { name: /SHORTCUT|단축키/i }).click();
+    } else {
+      const sidebarCommand = tools.getByRole("button", { name: /SETTINGS|설정/i });
+      await expect(sidebarCommand).toBeVisible();
+      await sidebarCommand.click();
+    }
   } else if (
     await page.locator('.side-panel-drawer[aria-hidden="false"]').count()
   ) {
@@ -75,11 +85,13 @@ export async function createGroups(page: Page, ...names: string[]) {
   await page.keyboard.press("Escape");
 }
 
-// Opens the group dropdown, selects the group with the exact name and closes the dropdown.
+// Opens the group sidebar, selects the group with the exact name and closes it when needed.
 export async function switchGroup(page: Page, name: string) {
   if (name === "All Group" || name === "Ungrouped") {
-    await page.getByRole("button", { name: "MENU", exact: true }).click();
-    await page.getByRole("menuitem", { name, exact: true }).click();
+    await groupsCommand(page).click();
+    await page.getByRole("button", { name, exact: true }).click();
+    if (await groupsCommand(page).getAttribute("aria-expanded") === "true")
+      await page.keyboard.press("Escape");
     return;
   }
   await groupsCommand(page).click();

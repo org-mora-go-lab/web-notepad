@@ -11,6 +11,8 @@ async function expectIconCentered(button: Locator, withoutPadding = false) {
   const buttonBox = (await button.boundingBox())!;
   const iconBox = (await button.locator(":scope > svg:only-child").boundingBox())!;
 
+  expect(buttonBox.width).toBeGreaterThanOrEqual(44);
+  expect(buttonBox.height).toBeGreaterThanOrEqual(44);
   expect(iconBox.x + iconBox.width / 2).toBeCloseTo(
     buttonBox.x + buttonBox.width / 2,
     1,

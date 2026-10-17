@@ -145,14 +145,19 @@
     .group-item {
       min-height: 39px * v.$mobile-scale;
 
+      .group-reorder {
+        flex-basis: 44px;
+        min-height: 44px;
+      }
+
       strong {
         font-size: v.font(15px * v.$mobile-scale);
       }
 
       .group-actions button,
       .group-edit-form button {
-        width: 28px * v.$mobile-scale;
-        height: 28px * v.$mobile-scale;
+        width: 44px;
+        height: 44px;
 
         svg {
           width: 14px * v.$mobile-scale;

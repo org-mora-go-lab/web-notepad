@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Layers, LayoutDashboard } from "lucide-react";
+import { Bookmark, Layers, LayoutDashboard, PanelLeft } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -73,11 +73,11 @@ export function Footer({
             aria-expanded={groupsOpen}
             aria-haspopup="dialog"
             aria-controls="groups-menu"
-            aria-label={t.selectGroupNamed(activeGroupName)}
-            title={activeGroupName}
+            aria-label={t.toggleSidebar}
+            title={t.sidebarTitle}
           >
             <span className="status-icon">
-              <Layers size={16} strokeWidth={1.8} />
+              <PanelLeft size={16} strokeWidth={1.8} />
               {hasGroupUpdateToday && (
                 <span
                   className="status-dot"
@@ -90,9 +90,12 @@ export function Footer({
               className="status-label group-select-name"
               title={activeGroupName}
             >
+              {t.sidebar}
+            </span>
+            <span className="status-label group-command-label">{t.sidebar}</span>
+            <span className="group-current-value" aria-hidden="true">
               {activeGroupName}
             </span>
-            <span className="status-label group-command-label">{t.group}</span>
           </button>
         </div>
       </div>

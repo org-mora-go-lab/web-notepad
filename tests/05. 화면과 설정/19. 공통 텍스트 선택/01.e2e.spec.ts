@@ -10,7 +10,7 @@ test("1. UI 문구의 선택을 막고 입력과 본문 복사를 위한 선택�
   })] });
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    await expect(page.getByRole("button", { name: "MENU", exact: true })).toHaveCSS("user-select", "none");
+    await expect(page.locator(".global-search-command")).toHaveCSS("user-select", "none");
     const editor = page.locator("textarea").first();
     await expect(editor).toHaveCSS("user-select", "text");
     await editor.fill("Selectable note");

@@ -13,6 +13,7 @@ export {
   openPanel,
   openSettingsPanel,
   openShortcutsPanel,
+  openSidebarTools,
   shortcutsCommand,
   switchGroup,
   toggleDashboardStatus,

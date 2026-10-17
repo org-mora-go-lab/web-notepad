@@ -14,11 +14,8 @@ import type { HeaderProps } from "./type";
 type ContextMenuState = { tabId: string; left: number; top: number };
 
 export function Header({
-  onOpenSettings,
-  onOpenShortcuts,
   onToggleSearch,
   searchOpen = false,
-  onSelectGroup,
   tabs,
   groups,
   activeGroupId,
@@ -75,7 +72,7 @@ export function Header({
 
   return (
     <div
-      className={`header ${onOpenShortcuts ? "has-menu" : ""} ${tabsCanScrollLeft ? "has-left-overflow" : ""} ${tabsCanScrollRight ? "has-right-overflow" : ""}`}
+      className={`header ${onToggleSearch ? "has-menu" : ""} ${tabsCanScrollLeft ? "has-left-overflow" : ""} ${tabsCanScrollRight ? "has-right-overflow" : ""}`}
       role="tablist"
       aria-label={t.noteTabs}
       onDragEnter={(event) => {
@@ -159,13 +156,10 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenSettings && onToggleSearch && onSelectGroup && (
+      {onToggleSearch && (
         <AdditionalTools
-          onOpenSettings={onOpenSettings}
-          onOpenShortcuts={onOpenShortcuts}
           onToggleSearch={onToggleSearch}
           searchOpen={searchOpen}
-          onSelectGroup={onSelectGroup}
         />
       )}
     </div>

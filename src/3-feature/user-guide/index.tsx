@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Keyboard, X } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -9,7 +9,7 @@ import { USER_GUIDE_STEPS } from "./constant";
 import type { UserGuideProps } from "./type";
 
 // Modal walkthrough: one step at a time with Previous/Next, closed by the header button or Escape.
-export function UserGuide({ onClose }: UserGuideProps) {
+export function UserGuide({ onClose, onOpenShortcuts }: UserGuideProps) {
   const { language, t } = useI18n();
   const steps = USER_GUIDE_STEPS[language];
   const [index, setIndex] = useState(0);
@@ -70,7 +70,15 @@ export function UserGuide({ onClose }: UserGuideProps) {
         </div>
       </div>
       <h4 id={`${guideId}-title`}>{step.title}</h4>
-      <p id={`${guideId}-description`}>{step.description}</p>
+      <div className="user-guide-description" id={`${guideId}-description`}>
+        <p>{step.description}</p>
+        {step.shortcutEntry && (
+          <button className="user-guide-shortcut" type="button" onClick={onOpenShortcuts}>
+            <Keyboard aria-hidden="true" />
+            <span>{t.shortcut}</span>
+          </button>
+        )}
+      </div>
       <div className="user-guide-actions">
         <div className="user-guide-nav">
           <button
