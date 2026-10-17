@@ -5,7 +5,6 @@ export type HeaderProps = {
   onOpenShortcuts?: () => void;
   onToggleSearch?: () => void;
   searchOpen?: boolean;
-  onSelectGroup?: (groupId: string) => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;

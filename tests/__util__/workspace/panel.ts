@@ -75,11 +75,13 @@ export async function createGroups(page: Page, ...names: string[]) {
   await page.keyboard.press("Escape");
 }
 
-// Opens the group dropdown, selects the group with the exact name and closes the dropdown.
+// Opens the group sidebar, selects the group with the exact name and closes it when needed.
 export async function switchGroup(page: Page, name: string) {
   if (name === "All Group" || name === "Ungrouped") {
-    await page.getByRole("button", { name: "MENU", exact: true }).click();
-    await page.getByRole("menuitem", { name, exact: true }).click();
+    await groupsCommand(page).click();
+    await page.getByRole("button", { name, exact: true }).click();
+    if (await groupsCommand(page).getAttribute("aria-expanded") === "true")
+      await page.keyboard.press("Escape");
     return;
   }
   await groupsCommand(page).click();

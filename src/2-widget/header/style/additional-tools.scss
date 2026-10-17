@@ -107,11 +107,6 @@
       line-height: 18px;
     }
 
-    .additional-tools-divider {
-      height: 1px;
-      margin: 4px 6px;
-      background: v.$line;
-    }
   }
 
   &.has-menu { padding-right: calc(var(--tools-buttons-width) + var(--tools-right-padding)); }

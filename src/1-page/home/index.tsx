@@ -73,7 +73,6 @@ export function Home() {
           },
           onToggleSearch: () => toggleSidePanel("global-search"),
           searchOpen: openPanel === "global-search",
-          onSelectGroup: selectGroupAndClosePanel,
         }
       : pane;
 

@@ -3,5 +3,4 @@ export type AdditionalToolsProps = {
   onOpenShortcuts: () => void;
   onToggleSearch: () => void;
   searchOpen: boolean;
-  onSelectGroup: (groupId: string) => void;
 };

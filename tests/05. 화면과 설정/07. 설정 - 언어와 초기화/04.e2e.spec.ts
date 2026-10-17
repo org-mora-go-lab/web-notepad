@@ -1,7 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
-import { bookmarksCommand, groupStatusName, openSettingsPanel, readStoredState } from "../../__util__";
+import {
+  bookmarksCommand,
+  groupsCommand,
+  groupStatusName,
+  openSettingsPanel,
+  readStoredState,
+} from "../../__util__";
 import { languageRadio, settingsPanel } from "../__util__";
 
 test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문구에 즉시 적용한다", async ({ page }) => {
@@ -33,13 +39,14 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
 
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    await page.getByRole("button", { name: "메뉴", exact: true }).click();
-    await expect(page.getByRole("menuitem", { name: "미지정 그룹", exact: true })).toBeVisible();
-    await page.getByRole("menuitem", { name: "모든 그룹", exact: true }).click();
+    await groupsCommand(page).click();
+    await expect(page.getByRole("button", { name: "미지정 그룹", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "모든 그룹", exact: true }).click();
     await expect(groupStatusName(page)).toHaveText("모든 그룹");
-    await page.getByRole("button", { name: "메뉴", exact: true }).click();
-    await page.getByRole("menuitem", { name: "미지정 그룹", exact: true }).click();
+    if (viewport.width <= 512) await groupsCommand(page).click();
+    await page.getByRole("button", { name: "미지정 그룹", exact: true }).click();
     await expect(groupStatusName(page)).toHaveText("미지정 그룹");
+    if (viewport.width > 512) await page.keyboard.press("Escape");
   }
   expect((await readStoredState(page)).groups.find((group) => group.id === "ungrouped")!.name).toBe("Ungrouped");
 
@@ -49,7 +56,7 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await expect(bookmarksCommand(page).locator(".status-label")).toHaveText("BOOKMARK");
   await expect(groupStatusName(page)).toHaveText("Ungrouped");
   await page.getByRole("button", { name: "Close Settings" }).click();
-  await page.getByRole("button", { name: "MENU", exact: true }).click();
-  await expect(page.getByRole("menuitem", { name: "All Group", exact: true })).toBeVisible();
-  await expect(page.getByRole("menuitem", { name: "Ungrouped", exact: true })).toBeVisible();
+  await groupsCommand(page).click();
+  await expect(page.getByRole("button", { name: "All Group", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ungrouped", exact: true })).toBeVisible();
 });

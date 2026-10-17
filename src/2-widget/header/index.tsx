@@ -18,7 +18,6 @@ export function Header({
   onOpenShortcuts,
   onToggleSearch,
   searchOpen = false,
-  onSelectGroup,
   tabs,
   groups,
   activeGroupId,
@@ -159,13 +158,12 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {onOpenShortcuts && onOpenSettings && onToggleSearch && onSelectGroup && (
+      {onOpenShortcuts && onOpenSettings && onToggleSearch && (
         <AdditionalTools
           onOpenSettings={onOpenSettings}
           onOpenShortcuts={onOpenShortcuts}
           onToggleSearch={onToggleSearch}
           searchOpen={searchOpen}
-          onSelectGroup={onSelectGroup}
         />
       )}
     </div>

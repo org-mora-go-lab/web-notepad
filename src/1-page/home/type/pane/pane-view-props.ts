@@ -11,7 +11,6 @@ export type PaneViewProps = {
   onOpenShortcuts?: () => void;
   onToggleSearch?: () => void;
   searchOpen?: boolean;
-  onSelectGroup?: (groupId: string) => void;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;

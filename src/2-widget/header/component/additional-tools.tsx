@@ -2,9 +2,7 @@
 
 import {
   BookOpen,
-  FolderOpen,
   Keyboard,
-  Layers3,
   Menu,
   Search,
   Settings,
@@ -12,10 +10,6 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 import { Theme, UserGuide } from "@/src/3-feature";
-import {
-  ALL_GROUP_ID,
-  UNGROUPED_GROUP_ID,
-} from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { AdditionalToolsProps } from "../type";
@@ -25,7 +19,6 @@ export function AdditionalTools({
   onOpenShortcuts,
   onToggleSearch,
   searchOpen,
-  onSelectGroup,
 }: AdditionalToolsProps) {
   const [open, setOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
@@ -163,31 +156,6 @@ export function AdditionalTools({
         >
           <BookOpen size={16} />
           <span>{t.guide}</span>
-        </button>
-        <div className="additional-tools-divider" role="separator" />
-        <button
-          className="additional-tools-all-group"
-          type="button"
-          role="menuitem"
-          onClick={() => {
-            close();
-            onSelectGroup(ALL_GROUP_ID);
-          }}
-        >
-          <Layers3 size={16} />
-          <span>{t.allGroup}</span>
-        </button>
-        <button
-          className="additional-tools-ungrouped"
-          type="button"
-          role="menuitem"
-          onClick={() => {
-            close();
-            onSelectGroup(UNGROUPED_GROUP_ID);
-          }}
-        >
-          <FolderOpen size={16} />
-          <span>{t.ungrouped}</span>
         </button>
       </div>
       {guideOpen && <UserGuide onClose={() => setGuideOpen(false)} />}
