@@ -13,7 +13,8 @@
   font-size: v.font(14px);
 
   .current-group-panel,
-  .group-command-label {
+  .group-command-label,
+  .group-current-value {
     display: none;
   }
 
@@ -104,6 +105,10 @@
   .group-select-command {
     order: -1;
     gap: 12px;
+
+    &.is-active svg {
+      fill: none;
+    }
   }
 
   .bookmark-command {

@@ -85,7 +85,7 @@ export function Home() {
     <I18nContext value={language}>
       <MobileTapFeedback />
       <main
-        className={`home ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
+        className={`home ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}

@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ChevronDown, ChevronRight, Layers, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import {
-  compareGroups,
-  UNGROUPED_GROUP_ID,
-} from "@/src/4-entity/notepad";
+import { ALL_GROUP_ID, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
@@ -17,10 +15,7 @@ import type { GroupMenuProps, GroupProps } from "./type";
 const ANCHOR_SELECTOR = ".group-select-command";
 const MOBILE_QUERY = "(max-width: 512px)";
 
-// Group switcher dropdown that opens above the bottom bar's group button, styled like the tab context menu.
-// Pick a group, or pin / rename / delete / create one right in the list.
-// Portaled to the body (inside a `.group` wrapper for styles) like the other floating menus.
-function GroupMenu({
+function GroupSidebar({
   groups,
   activeGroupId,
   onClose,
@@ -32,112 +27,117 @@ function GroupMenu({
   onMoveGroup,
 }: GroupMenuProps) {
   const { t } = useI18n();
-  const menuRef = useRef<HTMLDivElement>(null);
-  const handleResizeStart = useGroupMenuResize(menuRef);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const handleResizeStart = useGroupMenuResize(sidebarRef);
   const reorder = useGroupReorder(onMoveGroup);
+  const [groupsExpanded, setGroupsExpanded] = useState(true);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
-  // The row whose pin / edit / delete buttons are shown (opened with its … button).
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
-  // The delete button that opened the popup, focused again when the popup is cancelled.
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
+  const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
   const otherRows = [...groups]
     .sort(compareGroups)
     .filter((group) => group.id !== UNGROUPED_GROUP_ID);
 
-  const renderRow = (group: (typeof groups)[number]) => {
-    return (
-      <GroupItem
-        key={group.id}
-        groupId={group.id}
-        dragging={reorder.draggingId === group.id}
-        dropTarget={reorder.targetId === group.id}
-        onReorderStart={(event) => reorder.start(group.id, event)}
-        onReorderKey={(direction) => {
-          const peers = otherRows.filter((item) => item.pinned === group.pinned);
-          const target = peers[peers.findIndex((item) => item.id === group.id) + direction];
-          if (target) onMoveGroup(group.id, target.id);
-        }}
-        name={group.name}
-        active={group.id === activeGroupId}
-        pinned={group.pinned}
-        editable
-        muted={false}
-        actionsOpen={actionsGroupId === group.id}
-        onToggleActions={() =>
-          setActionsGroupId((current) =>
-            current === group.id ? null : group.id,
-          )
-        }
-        onSelect={() => {
-          onSelect(group.id);
-          // Mobile closes the dropdown right after a group is picked.
-          if (window.matchMedia(MOBILE_QUERY).matches) onClose();
-        }}
-        onRename={(name) => onRename(group.id, name)}
-        onTogglePin={() => onTogglePinGroup(group.id)}
-        onDelete={(anchor) => {
-          deleteAnchorRef.current = anchor;
-          setDeletingGroupId(group.id);
-        }}
-      />
-    );
+  const selectGroup = (groupId: string) => {
+    onSelect(groupId);
+    if (window.matchMedia(MOBILE_QUERY).matches) onClose();
   };
 
-  useLayoutEffect(() => {
-    const menu = menuRef.current;
-    if (!menu) return;
-    const position = () => {
-      const anchor = document.querySelector<HTMLElement>(
-        window.matchMedia(MOBILE_QUERY).matches
-          ? ".current-group-panel"
-          : ANCHOR_SELECTOR,
-      );
-      if (!anchor) return;
-      const rect = anchor.getBoundingClientRect();
-      menu.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - menu.offsetWidth - 8))}px`;
-      menu.style.bottom = `${window.innerHeight - rect.top + 4}px`;
-    };
-    position();
-    window.addEventListener("resize", position);
-    return () => window.removeEventListener("resize", position);
-  }, []);
-
   useEffect(() => {
-    if (groupToDelete) return;
-    const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (!menuRef.current?.contains(target) && !anchor?.contains(target))
-        onClose();
-    };
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
+      if (event.key !== "Escape" || event.defaultPrevented) return;
       event.preventDefault();
-      anchor?.focus();
       onClose();
+      document.querySelector<HTMLElement>(ANCHOR_SELECTOR)?.focus();
     };
-    window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("keydown", onKeyDown);
-    return () => {
-      window.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [groupToDelete, onClose]);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
 
   return createPortal(
     <div className="group">
-      <div
-        ref={menuRef}
+      <div className="group-sidebar-backdrop" onClick={onClose} aria-hidden="true" />
+      <aside
+        ref={sidebarRef}
         className="group-menu"
         id="groups-menu"
-        role="dialog"
-        aria-label={t.selectGroup}
+        aria-label={t.sidebarTitle}
       >
-        <div className="group-list">
-          <GroupCreateForm onCreate={onCreate} />
-          {otherRows.map(renderRow)}
-        </div>
+        <header className="group-sidebar-header">
+          <h2>{t.sidebarTitle}</h2>
+          <button type="button" onClick={onClose} aria-label={t.closePanel(t.sidebarTitle)}>
+            <X aria-hidden="true" />
+          </button>
+        </header>
+        <section className="group-section">
+          <button
+            className="group-section-toggle"
+            type="button"
+            aria-expanded={groupsExpanded}
+            aria-controls="group-sidebar-list"
+            onClick={() => setGroupsExpanded((current) => !current)}
+          >
+            {groupsExpanded ? <ChevronDown aria-hidden="true" /> : <ChevronRight aria-hidden="true" />}
+            <span>{t.group}</span>
+          </button>
+          {groupsExpanded && (
+            <div className="group-list" id="group-sidebar-list">
+              <div className="group-system-list">
+                <button
+                  className={activeGroupId === ALL_GROUP_ID ? "is-active" : ""}
+                  type="button"
+                  aria-pressed={activeGroupId === ALL_GROUP_ID}
+                  onClick={() => selectGroup(ALL_GROUP_ID)}
+                >
+                  <Layers aria-hidden="true" />
+                  <strong>{t.allGroup}</strong>
+                </button>
+                {ungrouped && (
+                  <button
+                    className={activeGroupId === UNGROUPED_GROUP_ID ? "is-active" : ""}
+                    type="button"
+                    aria-pressed={activeGroupId === UNGROUPED_GROUP_ID}
+                    onClick={() => selectGroup(UNGROUPED_GROUP_ID)}
+                  >
+                    <Layers aria-hidden="true" />
+                    <strong>{ungrouped.name}</strong>
+                  </button>
+                )}
+              </div>
+              <GroupCreateForm onCreate={onCreate} />
+              {otherRows.map((group) => (
+                <GroupItem
+                  key={group.id}
+                  groupId={group.id}
+                  dragging={reorder.draggingId === group.id}
+                  dropTarget={reorder.targetId === group.id}
+                  onReorderStart={(event) => reorder.start(group.id, event)}
+                  onReorderKey={(direction) => {
+                    const peers = otherRows.filter((item) => item.pinned === group.pinned);
+                    const target = peers[peers.findIndex((item) => item.id === group.id) + direction];
+                    if (target) onMoveGroup(group.id, target.id);
+                  }}
+                  name={group.name}
+                  active={group.id === activeGroupId}
+                  pinned={group.pinned}
+                  editable
+                  muted={false}
+                  actionsOpen={actionsGroupId === group.id}
+                  onToggleActions={() => setActionsGroupId((current) => current === group.id ? null : group.id)}
+                  onSelect={() => selectGroup(group.id)}
+                  onRename={(name) => onRename(group.id, name)}
+                  onTogglePin={() => onTogglePinGroup(group.id)}
+                  onDelete={(anchor) => {
+                    deleteAnchorRef.current = anchor;
+                    setDeletingGroupId(group.id);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </section>
         <div
           className="group-menu-resizer"
           role="separator"
@@ -145,7 +145,7 @@ function GroupMenu({
           aria-label={t.resizeGroupMenu}
           onPointerDown={handleResizeStart}
         />
-      </div>
+      </aside>
       {groupToDelete && (
         <ConfirmPopup
           title={t.deleteGroupTitle}
@@ -167,7 +167,6 @@ function GroupMenu({
   );
 }
 
-// The menu content mounts only while open, so row / popup state resets every time it closes.
 export function Group({ open, ...props }: GroupProps) {
-  return open ? <GroupMenu open={open} {...props} /> : null;
+  return open ? <GroupSidebar open={open} {...props} /> : null;
 }
