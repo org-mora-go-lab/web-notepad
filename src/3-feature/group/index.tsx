@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Layers, X } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Keyboard, Layers, Settings, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -8,6 +8,8 @@ import { ALL_GROUP_ID, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/
 import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
+import { Theme } from "../theme";
+import { UserGuide } from "../user-guide";
 import { GroupCreateForm, GroupItem } from "./component";
 import { useGroupMenuResize, useGroupReorder } from "./hook";
 import type { GroupMenuProps, GroupProps } from "./type";
@@ -25,12 +27,16 @@ function GroupSidebar({
   onRename,
   onTogglePinGroup,
   onMoveGroup,
+  onOpenSettings,
+  onOpenShortcuts,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const handleResizeStart = useGroupMenuResize(sidebarRef);
   const reorder = useGroupReorder(onMoveGroup);
   const [groupsExpanded, setGroupsExpanded] = useState(true);
+  const [menuExpanded, setMenuExpanded] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
@@ -138,6 +144,35 @@ function GroupSidebar({
             </div>
           )}
         </section>
+        <section className="group-section group-tools-section">
+          <button
+            className="group-section-toggle"
+            type="button"
+            aria-expanded={menuExpanded}
+            aria-controls="group-sidebar-tools"
+            onClick={() => setMenuExpanded((current) => !current)}
+          >
+            {menuExpanded ? <ChevronDown aria-hidden="true" /> : <ChevronRight aria-hidden="true" />}
+            <span>{t.menu}</span>
+          </button>
+          {menuExpanded && (
+            <div className="group-tools-list" id="group-sidebar-tools">
+              <Theme />
+              <button type="button" onClick={() => { onClose(); onOpenShortcuts(); }}>
+                <Keyboard aria-hidden="true" />
+                <span>{t.shortcut}</span>
+              </button>
+              <button type="button" onClick={() => { onClose(); onOpenSettings(); }}>
+                <Settings aria-hidden="true" />
+                <span>{t.settings}</span>
+              </button>
+              <button type="button" onClick={() => setGuideOpen(true)}>
+                <BookOpen aria-hidden="true" />
+                <span>{t.guide}</span>
+              </button>
+            </div>
+          )}
+        </section>
         <div
           className="group-menu-resizer"
           role="separator"
@@ -162,6 +197,7 @@ function GroupSidebar({
           }}
         />
       )}
+      {guideOpen && <UserGuide onClose={() => setGuideOpen(false)} />}
     </div>,
     document.body,
   );

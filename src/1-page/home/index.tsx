@@ -124,6 +124,8 @@ export function Home() {
           activeGroupId={activeGroupId}
           groupMenuOpen={groupMenuOpen}
           onCloseGroupMenu={closeGroupMenu}
+          onOpenSettings={() => toggleSidePanel("settings")}
+          onOpenShortcuts={() => toggleSidePanel("shortcuts")}
           globalSearchQuery={globalSearchQuery}
           onClose={closeSidePanels}
           onGlobalSearchQueryChange={setGlobalSearchQuery}
