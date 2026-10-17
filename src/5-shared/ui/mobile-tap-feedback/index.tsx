@@ -35,7 +35,7 @@ export function MobileTapFeedback() {
       // The top layer avoids toolbar clipping and keeps feedback above existing dialogs.
       ripple.showPopover?.();
       ripple.addEventListener("animationend", () => remove(ripple), { once: true });
-      active.set(ripple, window.setTimeout(() => remove(ripple), 600));
+      active.set(ripple, window.setTimeout(() => remove(ripple), 500));
     };
     document.addEventListener("click", onClick, true);
     return () => {
