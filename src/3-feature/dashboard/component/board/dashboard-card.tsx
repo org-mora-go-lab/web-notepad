@@ -32,6 +32,7 @@ export function DashboardCard({
   onDragEnd,
 }: DashboardCardProps) {
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastDragAtRef = useRef<number | null>(null);
   const preview = getPreview(tab);
   const { t } = useI18n();
   const touchLayout = () =>
@@ -41,6 +42,14 @@ export function DashboardCard({
     openTimerRef.current = null;
   };
   const openCard = (event: MouseEvent<HTMLButtonElement>) => {
+    if (
+      lastDragAtRef.current !== null &&
+      performance.now() - lastDragAtRef.current < 500
+    ) {
+      event.preventDefault();
+      cancelPendingOpen();
+      return;
+    }
     if (!onOpenContextMenu || !touchLayout()) {
       onOpen(tab.id);
       return;
@@ -62,8 +71,18 @@ export function DashboardCard({
         event.preventDefault();
         onOpenContextMenu(tab.id, event.clientX, event.clientY);
       }}
-      onDragStart={(event) => onDragStart(tab.id, event)}
-      onDragEnd={onDragEnd}
+      onDragStart={(event) => {
+        cancelPendingOpen();
+        lastDragAtRef.current = performance.now();
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+        onDragStart(tab.id, event);
+      }}
+      onDragEnd={() => {
+        lastDragAtRef.current = performance.now();
+        onDragEnd();
+      }}
     >
       <button
         className="dashboard-card-open"
