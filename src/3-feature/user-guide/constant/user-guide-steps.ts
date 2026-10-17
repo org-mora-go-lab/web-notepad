@@ -3,11 +3,17 @@ import type { Language } from "@/src/5-shared/type";
 export type UserGuideStep = {
   title: string;
   description: string;
+  shortcutEntry?: boolean;
 };
 
-// Ten steps shown one at a time in the user guide popup.
+// Eleven steps shown one at a time in the user guide popup.
 export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
   en: [
+    {
+      title: "Keyboard shortcuts",
+      description: "Open the shortcut panel to see every keyboard command available while editing.",
+      shortcutEntry: true,
+    },
     {
       title: "Write notes",
       description: "Type in the editor and your note is saved in this browser automatically.",
@@ -50,6 +56,11 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
     },
   ],
   ko: [
+    {
+      title: "키보드 단축키",
+      description: "단축키 패널을 열어 편집 중 사용할 수 있는 모든 키보드 명령을 확인하세요.",
+      shortcutEntry: true,
+    },
     {
       title: "메모 작성",
       description: "편집기에 입력하면 내용이 이 브라우저에 자동으로 저장됩니다.",

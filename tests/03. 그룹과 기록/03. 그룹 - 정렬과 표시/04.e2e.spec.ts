@@ -2,28 +2,21 @@ import { expect, test } from "@playwright/test";
 
 import { groupsCommand } from "../../__util__";
 
-test("4. 사이드바 GROUP 아래의 MENU 영역을 여닫고 기존 메뉴 기능을 제공한다", async ({ page }) => {
+test("4. 사이드바는 SETTINGS·GUIDE·GROUP 순서로 구성하고 단축키는 가이드에서 연다", async ({ page }) => {
   await page.goto("/");
   await groupsCommand(page).click();
   const sidebar = page.locator("#groups-menu");
+  const tools = sidebar.locator("#group-sidebar-tools");
   const groupToggle = sidebar.getByRole("button", { name: "GROUP", exact: true });
-  const menuToggle = sidebar.getByRole("button", { name: "MENU", exact: true });
+  await expect(tools.getByRole("button")).toHaveText(["SETTINGS", "GUIDE"]);
+  await expect(sidebar.getByRole("button", { name: "SHORTCUT" })).toHaveCount(0);
+  const guideBox = (await tools.getByRole("button", { name: "GUIDE" }).boundingBox())!;
   const groupBox = (await groupToggle.boundingBox())!;
-  const menuBox = (await menuToggle.boundingBox())!;
-  expect(menuBox.y).toBeGreaterThanOrEqual(groupBox.y + groupBox.height);
-  await expect(menuToggle).toHaveAttribute("aria-expanded", "false");
-  await menuToggle.click();
-  await expect(menuToggle).toHaveAttribute("aria-expanded", "true");
-  const tools = page.locator("#group-sidebar-tools");
-  await expect(tools.getByRole("switch", { name: "THEME" })).toHaveCount(0);
-  await expect(tools.getByRole("button", { name: "SHORTCUT" })).toBeVisible();
-  await expect(tools.getByRole("button", { name: "SETTINGS" })).toBeVisible();
-  await expect(tools.getByRole("button", { name: "GUIDE" })).toBeVisible();
-  await tools.getByRole("button", { name: "SETTINGS" }).click();
-  await expect(page.locator("#groups-menu")).toHaveCount(0);
-  await expect(page.locator("#settings-panel")).toHaveAttribute("aria-hidden", "false");
-  const headings = page.locator("#settings-panel .setting-section h3");
-  await expect(headings.nth(0)).toHaveText("THEME");
-  await expect(headings.nth(1)).toHaveText("Font Size");
-  await expect(page.getByRole("switch", { name: "THEME" })).toBeVisible();
+  expect(groupBox.y).toBeGreaterThanOrEqual(guideBox.y + guideBox.height);
+  await tools.getByRole("button", { name: "GUIDE" }).click();
+  const guide = page.getByRole("dialog");
+  await expect(guide.locator(".user-guide-progress")).toHaveText("1 / 11");
+  await guide.getByRole("button", { name: "SHORTCUT" }).click();
+  await expect(sidebar).toHaveCount(0);
+  await expect(page.locator("#shortcuts-panel")).toHaveAttribute("aria-hidden", "false");
 });

@@ -35,14 +35,14 @@
     }
   }
 
-  .group-section { min-height: 0; display: flex; flex-direction: column; }
+  .group-section { min-height: 0; flex: 1; display: flex; flex-direction: column; }
   .group-section-toggle {
     min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 14px;
     border: 0; border-bottom: 1px solid v.$line; background: transparent; color: v.$ink;
     font-size: v.font(14px); font-weight: 600; cursor: pointer;
     svg { width: 16px; height: 16px; }
   }
-  .group-list { flex: 1; }
+  .group-list { flex: 1; overflow-y: auto; }
   .group-system-list {
     padding-bottom: 4px;
     border-bottom: 1px solid v.$line;
@@ -56,7 +56,6 @@
     }
   }
 
-  .group-tools-section { flex: 0 0 auto; }
   .group-tools-list {
     padding: 4px 0;
     border-bottom: 1px solid v.$line;
