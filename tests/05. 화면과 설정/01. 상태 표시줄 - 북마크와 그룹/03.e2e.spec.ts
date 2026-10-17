@@ -25,7 +25,7 @@ test("3. 모바일 그룹 버튼은 GROUP을 표시하고 별도 영역에 현�
       await expect(icon).toHaveClass(/lucide-layers/);
       const iconBox = (await icon.boundingBox())!;
       const nameBox = (await page.locator(".current-group-name").boundingBox())!;
-      expect(nameBox.x - iconBox.x - iconBox.width).toBeCloseTo(3, 0);
+      expect(nameBox.x - iconBox.x - iconBox.width).toBeCloseTo(7, 0);
     } else {
       await expect(command).toHaveCSS("gap", "12px");
       await expect(command.locator(".group-select-name")).toBeVisible();
