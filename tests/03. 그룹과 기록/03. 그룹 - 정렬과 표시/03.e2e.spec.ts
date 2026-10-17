@@ -10,7 +10,7 @@ test("3. 하단 메뉴는 MENU를 표시하고 모바일은 별도 영역에 현
   await createGroup(page, name);
   for (const viewport of [DESKTOP_VIEWPORT, MOBILE_VIEWPORT]) {
     await page.setViewportSize(viewport);
-    await expect(groupsCommand(page).locator("svg")).toHaveCount(1);
+    await expect(groupsCommand(page).locator("svg.lucide-menu")).toHaveCount(1);
     await expect(groupsCommand(page)).toHaveAttribute("aria-label", "Toggle menu");
     await expect(groupsCommand(page).locator(".group-select-name:visible, .group-command-label:visible")).toHaveText("MENU");
   }

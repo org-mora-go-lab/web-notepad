@@ -9,6 +9,7 @@
   }
 
   .group-item {
+    position: relative;
     min-height: 39px;
     display: flex;
     align-items: center;
@@ -19,18 +20,14 @@
     &.is-drop-target { outline: 1px solid v.$signal; outline-offset: -1px; }
 
     .group-reorder {
-      display: grid;
-      place-items: center;
-      flex: 0 0 24px;
-      min-height: 32px;
+      position: absolute;
+      width: 1px;
+      height: 1px;
       padding: 0;
       border: 0;
-      background: transparent;
-      color: v.$dim;
-      cursor: grab;
-      touch-action: none;
-      &:active { cursor: grabbing; }
-      &:focus-visible { outline: 1px solid v.$signal; }
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
     }
 
     // Hover is lighter than the selected group.
@@ -53,6 +50,15 @@
       background: transparent;
       text-align: left;
       cursor: pointer;
+      touch-action: none;
+    }
+
+    &:not(:has(.group-actions button:hover)) {
+      cursor: grab;
+    }
+
+    &.is-dragging {
+      cursor: grabbing;
     }
 
     strong {
@@ -144,11 +150,6 @@
   @media (max-width: 512px) {
     .group-item {
       min-height: 39px * v.$mobile-scale;
-
-      .group-reorder {
-        flex-basis: 44px;
-        min-height: 44px;
-      }
 
       strong {
         font-size: v.font(15px * v.$mobile-scale);

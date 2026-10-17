@@ -5,10 +5,10 @@ import { groupsCommand, seedSortableGroups } from "../../__util__";
 
 test.use({ viewport: MOBILE_VIEWPORT, hasTouch: true, isMobile: true });
 
-test("5. 모바일 터치로 그룹 이동 손잡이를 끌어 순서를 변경한다", async ({ page }) => {
+test("5. 모바일에서 그룹 항목을 직접 터치해 끌어 순서를 변경한다", async ({ page }) => {
   await seedSortableGroups(page);
   await groupsCommand(page).click();
-  const source = (await page.locator('[data-group-id="zulu"] .group-reorder').boundingBox())!;
+  const source = (await page.locator('[data-group-id="zulu"]').boundingBox())!;
   const target = (await page.locator('[data-group-id="gabang"]').boundingBox())!;
   const session = await page.context().newCDPSession(page);
   await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: source.x + source.width / 2, y: source.y + source.height / 2 }] });
