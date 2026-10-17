@@ -75,16 +75,6 @@ function GroupSidebar({
             <X aria-hidden="true" />
           </button>
         </header>
-        <div className="group-tools-list" id="group-sidebar-tools">
-          <button type="button" onClick={() => { onClose(); onOpenSettings(); }}>
-            <Settings aria-hidden="true" />
-            <span>{t.settings}</span>
-          </button>
-          <button type="button" onClick={() => setGuideOpen(true)}>
-            <BookOpen aria-hidden="true" />
-            <span>{t.guide}</span>
-          </button>
-        </div>
         <section className="group-section">
           <button
             className="group-section-toggle"
@@ -152,6 +142,16 @@ function GroupSidebar({
             </div>
           )}
         </section>
+        <div className="group-tools-list" id="group-sidebar-tools">
+          <button type="button" onClick={() => { onClose(); onOpenSettings(); }}>
+            <Settings aria-hidden="true" />
+            <span>{t.settings}</span>
+          </button>
+          <button type="button" onClick={() => setGuideOpen(true)}>
+            <BookOpen aria-hidden="true" />
+            <span>{t.guide}</span>
+          </button>
+        </div>
         <div
           className="group-menu-resizer"
           role="separator"

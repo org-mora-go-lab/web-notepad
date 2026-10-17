@@ -58,7 +58,7 @@
 
   .group-tools-list {
     padding: 4px 0;
-    border-bottom: 1px solid v.$line;
+    border-top: 1px solid v.$line;
 
     > button {
       width: 100%; min-height: 42px; display: flex; align-items: center; gap: 10px;
