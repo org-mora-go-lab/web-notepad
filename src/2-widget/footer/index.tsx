@@ -28,6 +28,30 @@ export function Footer({
       </div>
       <div className="status-meta">
         <div className="status-controls">
+          <button
+            className={`status-command group-select-command ${groupsOpen ? "is-active" : ""}`}
+            type="button"
+            onClick={onToggleGroups}
+            aria-expanded={groupsOpen}
+            aria-haspopup="dialog"
+            aria-controls="groups-menu"
+            aria-label={t.toggleSidebar}
+            title={t.sidebarTitle}
+          >
+            <span className="status-icon">
+              <Layers size={16} strokeWidth={1.8} />
+              {hasGroupUpdateToday && (
+                <span className="status-dot" role="img" aria-label={t.updatedToday} />
+              )}
+            </span>
+            <span className="status-label group-select-name" title={activeGroupName}>
+              {t.group}
+            </span>
+            <span className="status-label group-command-label">{t.group}</span>
+            <span className="group-current-value" aria-hidden="true">
+              {activeGroupName}
+            </span>
+          </button>
           <div className="status-scroll-area">
             <div className="status-actions">
               <button
@@ -66,37 +90,6 @@ export function Footer({
               </button>
             </div>
           </div>
-          <button
-            className={`status-command group-select-command ${groupsOpen ? "is-active" : ""}`}
-            type="button"
-            onClick={onToggleGroups}
-            aria-expanded={groupsOpen}
-            aria-haspopup="dialog"
-            aria-controls="groups-menu"
-            aria-label={t.toggleSidebar}
-            title={t.sidebarTitle}
-          >
-            <span className="status-icon">
-              <Layers size={16} strokeWidth={1.8} />
-              {hasGroupUpdateToday && (
-                <span
-                  className="status-dot"
-                  role="img"
-                  aria-label={t.updatedToday}
-                />
-              )}
-            </span>
-            <span
-              className="status-label group-select-name"
-              title={activeGroupName}
-            >
-              {t.group}
-            </span>
-            <span className="status-label group-command-label">{t.group}</span>
-            <span className="group-current-value" aria-hidden="true">
-              {activeGroupName}
-            </span>
-          </button>
         </div>
       </div>
     </footer>

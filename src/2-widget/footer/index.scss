@@ -107,7 +107,7 @@
     display: none;
   }
 
-  // The group command follows the other footer commands on the right.
+  // Keep the group command at the left edge of the footer.
   .group-select-command {
     gap: 7px;
 
@@ -207,18 +207,18 @@
     }
 
     .group-select-command {
-      grid-column: 3;
+      grid-column: 1;
 
       .group-current-value { display: none; }
     }
 
     .bookmark-command {
-      grid-column: 1;
+      grid-column: 2;
       margin-left: 0;
     }
 
     .dashboard-command {
-      grid-column: 2;
+      grid-column: 3;
     }
 
     .status-command > span.group-select-name {
