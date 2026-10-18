@@ -1,0 +1,30 @@
+import { NextResponse } from "next/server";
+
+import { getKakaoConfig } from "../../_lib/kakao";
+import { createOAuthState, KAKAO_STATE_COOKIE } from "../../_lib/session";
+
+export async function GET(request: Request) {
+  try {
+    const { clientId, redirectUri } = getKakaoConfig();
+    const state = createOAuthState();
+    const authorizeUrl = new URL("https://kauth.kakao.com/oauth/authorize");
+    authorizeUrl.search = new URLSearchParams({
+      response_type: "code",
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      state,
+    }).toString();
+
+    const response = NextResponse.redirect(authorizeUrl);
+    response.cookies.set(KAKAO_STATE_COOKIE, state, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: new URL(request.url).protocol === "https:",
+      path: "/",
+      maxAge: 60 * 10,
+    });
+    return response;
+  } catch {
+    return NextResponse.redirect(new URL("/?auth_error=configuration", request.url));
+  }
+}

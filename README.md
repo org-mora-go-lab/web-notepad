@@ -16,6 +16,19 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Kakao Login
+
+Copy `.env.example` to `.env.local` and configure the Kakao REST API key,
+the registered OAuth callback URL, and a long random session secret.
+`KAKAO_CLIENT_SECRET` is optional and is only required when client secret is
+enabled in the Kakao Developers console.
+
+The production callback URL is:
+
+```text
+https://web-notepad-smoky.vercel.app/api/auth/oauth/kakao/callback
+```
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

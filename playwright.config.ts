@@ -19,7 +19,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    command:
+      "KAKAO_REST_API_KEY=test-rest-key KAKAO_REDIRECT_URI=http://localhost:3000/api/auth/oauth/kakao/callback AUTH_SECRET=test-auth-secret npm run dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
