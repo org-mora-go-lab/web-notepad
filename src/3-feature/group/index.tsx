@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, ChevronDown, ChevronRight, Layers, Settings, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Layers, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -8,7 +8,6 @@ import { ALL_GROUP_ID, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/
 import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
-import { UserGuide } from "../user-guide";
 import { GroupCreateForm, GroupItem } from "./component";
 import { useGroupMenuResize, useGroupReorder } from "./hook";
 import type { GroupMenuProps, GroupProps } from "./type";
@@ -26,15 +25,12 @@ function GroupSidebar({
   onRename,
   onTogglePinGroup,
   onMoveGroup,
-  onOpenSettings,
-  onOpenShortcuts,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const handleResizeStart = useGroupMenuResize(sidebarRef);
   const reorder = useGroupReorder(onMoveGroup);
   const [groupsExpanded, setGroupsExpanded] = useState(true);
-  const [guideOpen, setGuideOpen] = useState(false);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
@@ -88,28 +84,6 @@ function GroupSidebar({
           </button>
           {groupsExpanded && (
             <div className="group-list" id="group-sidebar-list">
-              <div className="group-system-list">
-                <button
-                  className={activeGroupId === ALL_GROUP_ID ? "is-active" : ""}
-                  type="button"
-                  aria-pressed={activeGroupId === ALL_GROUP_ID}
-                  onClick={() => selectGroup(ALL_GROUP_ID)}
-                >
-                  <Layers aria-hidden="true" />
-                  <strong>{t.allGroup}</strong>
-                </button>
-                {ungrouped && (
-                  <button
-                    className={activeGroupId === UNGROUPED_GROUP_ID ? "is-active" : ""}
-                    type="button"
-                    aria-pressed={activeGroupId === UNGROUPED_GROUP_ID}
-                    onClick={() => selectGroup(UNGROUPED_GROUP_ID)}
-                  >
-                    <Layers aria-hidden="true" />
-                    <strong>{ungrouped.name}</strong>
-                  </button>
-                )}
-              </div>
               <GroupCreateForm onCreate={onCreate} />
               {otherRows.map((group) => (
                 <GroupItem
@@ -142,15 +116,27 @@ function GroupSidebar({
             </div>
           )}
         </section>
-        <div className="group-tools-list" id="group-sidebar-tools">
-          <button type="button" onClick={() => { onClose(); onOpenSettings(); }}>
-            <Settings aria-hidden="true" />
-            <span>{t.settings}</span>
+        <div className="group-system-list">
+          <button
+            className={activeGroupId === ALL_GROUP_ID ? "is-active" : ""}
+            type="button"
+            aria-pressed={activeGroupId === ALL_GROUP_ID}
+            onClick={() => selectGroup(ALL_GROUP_ID)}
+          >
+            <Layers aria-hidden="true" />
+            <strong>{t.allGroup}</strong>
           </button>
-          <button type="button" onClick={() => setGuideOpen(true)}>
-            <BookOpen aria-hidden="true" />
-            <span>{t.guide}</span>
-          </button>
+          {ungrouped && (
+            <button
+              className={activeGroupId === UNGROUPED_GROUP_ID ? "is-active" : ""}
+              type="button"
+              aria-pressed={activeGroupId === UNGROUPED_GROUP_ID}
+              onClick={() => selectGroup(UNGROUPED_GROUP_ID)}
+            >
+              <Layers aria-hidden="true" />
+              <strong>{ungrouped.name}</strong>
+            </button>
+          )}
         </div>
         <div
           className="group-menu-resizer"
@@ -173,16 +159,6 @@ function GroupSidebar({
           onConfirm={() => {
             onRemove(groupToDelete.id);
             setDeletingGroupId(null);
-          }}
-        />
-      )}
-      {guideOpen && (
-        <UserGuide
-          onClose={() => setGuideOpen(false)}
-          onOpenShortcuts={() => {
-            setGuideOpen(false);
-            onClose();
-            onOpenShortcuts();
           }}
         />
       )}

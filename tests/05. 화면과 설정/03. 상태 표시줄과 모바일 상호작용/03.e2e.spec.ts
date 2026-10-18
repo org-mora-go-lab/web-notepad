@@ -16,5 +16,5 @@ test("3. 모바일에서 그룹을 전환하면 별도 그룹 이름 영역과 �
   const command = page.locator(".group-select-command");
   await switchGroup(page, "Work");
   await expect(page.locator(".current-group-name")).toHaveText("Work");
-  await expect(command).toHaveAttribute("aria-label", "Toggle menu");
+  await expect(command).toHaveAttribute("aria-label", "Toggle groups");
 });

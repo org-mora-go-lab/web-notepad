@@ -14,6 +14,8 @@ import type { HeaderProps } from "./type";
 type ContextMenuState = { tabId: string; left: number; top: number };
 
 export function Header({
+  onOpenSettings,
+  onOpenShortcuts,
   onToggleSearch,
   searchOpen = false,
   tabs,
@@ -158,6 +160,8 @@ export function Header({
       )}
       {onToggleSearch && (
         <AdditionalTools
+          onOpenSettings={onOpenSettings!}
+          onOpenShortcuts={onOpenShortcuts!}
           onToggleSearch={onToggleSearch}
           searchOpen={searchOpen}
         />

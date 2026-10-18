@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { openGlobalSearchPanel } from "../../__util__";
 
-test("7. 검색은 아이콘 아래의 비모달 팝오버로 열리고 Escape와 바깥 클릭으로 닫는다", async ({ page }) => {
+test("7. 메뉴 검색은 비모달 팝오버로 열리고 Escape와 바깥 클릭으로 닫는다", async ({ page }) => {
   await page.goto("/");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);

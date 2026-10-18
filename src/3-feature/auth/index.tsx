@@ -53,6 +53,7 @@ export function Auth() {
       >
         <CircleUserRound aria-hidden="true" />
         <LogOut className="auth-command-action" aria-hidden="true" />
+        <span>{t.logout}</span>
       </button>
     );
   }
@@ -69,6 +70,7 @@ export function Auth() {
       }}
     >
       <LogIn aria-hidden="true" />
+      <span>{t.kakaoLogin}</span>
     </a>
   );
 }
