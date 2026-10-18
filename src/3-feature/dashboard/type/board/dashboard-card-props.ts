@@ -1,6 +1,6 @@
 import type { DragEvent } from "react";
 
-import type { NoteTab } from "@/src/4-entity/notepad";
+import type { NoteTab, TabStatus } from "@/src/4-entity/notepad";
 
 export type DashboardCardProps = {
   tab: NoteTab;
@@ -12,4 +12,7 @@ export type DashboardCardProps = {
   onOpenContextMenu?: (tabId: string, clientX: number, clientY: number) => void;
   onDragStart: (tabId: string, event: DragEvent<HTMLElement>) => void;
   onDragEnd: () => void;
+  onTouchDragStart: (tabId: string) => void;
+  onTouchDragOver: (status: TabStatus | null) => void;
+  onTouchDrop: (tabId: string, status: TabStatus | null) => void;
 };

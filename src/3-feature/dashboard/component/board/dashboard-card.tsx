@@ -3,7 +3,7 @@
 import { Bookmark, Pin } from "lucide-react";
 import { type MouseEvent, useEffect, useRef } from "react";
 
-import { type NoteTab } from "@/src/4-entity/notepad";
+import { type NoteTab, type TabStatus } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { DashboardCardProps } from "../../type";
@@ -30,9 +30,13 @@ export function DashboardCard({
   onOpenContextMenu,
   onDragStart,
   onDragEnd,
+  onTouchDragStart,
+  onTouchDragOver,
+  onTouchDrop,
 }: DashboardCardProps) {
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastDragAtRef = useRef<number | null>(null);
+  const touchCleanupRef = useRef<(() => void) | null>(null);
   const preview = getPreview(tab);
   const { t } = useI18n();
   const touchLayout = () =>
@@ -59,19 +63,86 @@ export function DashboardCard({
     openTimerRef.current = setTimeout(() => onOpen(tab.id), 250);
   };
 
-  useEffect(() => cancelPendingOpen, []);
+  useEffect(() => () => {
+    cancelPendingOpen();
+    touchCleanupRef.current?.();
+  }, []);
+
+  const startTouch = (event: React.TouchEvent<HTMLElement>) => {
+    if (event.touches.length !== 1) return;
+    touchCleanupRef.current?.();
+    const touch = event.touches[0];
+    const identifier = touch.identifier;
+    const origin = { x: touch.clientX, y: touch.clientY };
+    let started = false;
+    let overStatus: TabStatus | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+      started = true;
+      timer = null;
+      cancelPendingOpen();
+      lastDragAtRef.current = performance.now();
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+      onTouchDragStart(tab.id);
+    }, 300);
+    const clear = () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener("touchmove", move);
+      window.removeEventListener("touchend", end);
+      window.removeEventListener("touchcancel", cancel);
+      touchCleanupRef.current = null;
+    };
+    const move = (moveEvent: TouchEvent) => {
+      const point = Array.from(moveEvent.touches).find((item) => item.identifier === identifier);
+      if (!point) return;
+      if (!started) {
+        if (Math.hypot(point.clientX - origin.x, point.clientY - origin.y) > 10) {
+          clear();
+        }
+        return;
+      }
+      moveEvent.preventDefault();
+      const column = document.elementFromPoint(point.clientX, point.clientY)?.closest<HTMLElement>(".dashboard-column[data-status]");
+      overStatus = (column?.dataset.status as TabStatus | undefined) ?? null;
+      onTouchDragOver(overStatus);
+    };
+    const end = (endEvent: TouchEvent) => {
+      if (!Array.from(endEvent.changedTouches).some((item) => item.identifier === identifier)) return;
+      clear();
+      if (started) {
+        lastDragAtRef.current = performance.now();
+        onTouchDrop(tab.id, overStatus);
+      }
+    };
+    const cancel = () => {
+      clear();
+      if (started) onTouchDrop(tab.id, null);
+    };
+    window.addEventListener("touchmove", move, { passive: false });
+    window.addEventListener("touchend", end);
+    window.addEventListener("touchcancel", cancel);
+    touchCleanupRef.current = clear;
+  };
 
   return (
     <article
       className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""} ${contextMenuTarget ? "is-context-menu-target" : ""}`}
       data-tab-color={tab.tabColor}
       draggable
+      onTouchStart={startTouch}
       onContextMenu={(event) => {
-        if (!onOpenContextMenu || touchLayout()) return;
+        if (touchLayout()) {
+          event.preventDefault();
+          return;
+        }
+        if (!onOpenContextMenu) return;
         event.preventDefault();
         onOpenContextMenu(tab.id, event.clientX, event.clientY);
       }}
       onDragStart={(event) => {
+        if (touchLayout()) {
+          event.preventDefault();
+          return;
+        }
         cancelPendingOpen();
         lastDragAtRef.current = performance.now();
         if (document.activeElement instanceof HTMLElement) {

@@ -87,6 +87,9 @@ export function DashboardColumn({
             }
             onDragStart={drag.startDrag}
             onDragEnd={drag.endDrag}
+            onTouchDragStart={drag.startTouchDrag}
+            onTouchDragOver={drag.setOverStatus}
+            onTouchDrop={drag.touchDrop}
           />
         ))}
       </div>
