@@ -8,6 +8,8 @@ export const en = {
   icebox: "Note",
   closed: "CLOSED",
   search: "SEARCH",
+  kakaoLogin: "Continue with Kakao",
+  logout: "Log out",
   bookmark: "BOOKMARK",
   dashboard: "DASHBOARD",
   dashboardTitle: "Dashboard",

@@ -1,0 +1,29 @@
+@use "../../5-shared/style/variable" as v;
+
+.auth-command {
+  display: grid;
+  place-items: center;
+  color: v.$muted;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: v.$raised;
+    color: v.$ink;
+  }
+
+  &[aria-disabled="true"],
+  &:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+
+  .auth-command-action {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    right: 4px;
+    bottom: 4px;
+  }
+}
