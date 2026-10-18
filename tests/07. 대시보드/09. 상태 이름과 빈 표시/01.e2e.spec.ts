@@ -38,12 +38,12 @@ test("1. Edit Status로 수정한 다섯 상태 이름은 해당 그룹에만 �
     expect(saved.groups.find((group) => group.id === "ungrouped")!.dashboardStatusNames).toBeUndefined();
     expect(saved.groups.find((group) => group.id === "work")!.tabs[0].tabColor).toBe("gray");
     await page.reload();
-    await toggleDashboardStatus(page, "icebox");
-    await toggleDashboardStatus(page, "closed");
     await expect(titles).toHaveText(renamed);
     await panel.locator(".side-panel-close").click();
     await switchGroup(page, "Ungrouped");
     await openPanel(page, "dashboard-panel");
+    await toggleDashboardStatus(page, "icebox");
+    await toggleDashboardStatus(page, "closed");
     await expect(titles).toHaveText(original);
     await panel.locator(".side-panel-close").click();
     await switchGroup(page, "Work");

@@ -25,6 +25,10 @@ export type NotepadSettings = {
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
 export type TabStatus = "icebox" | "todo" | "in-progress" | "done" | "closed";
 export type DashboardStatusNames = Partial<Record<TabStatus, string>>;
+export type DashboardVisibility = {
+  icebox: boolean;
+  closed: boolean;
+};
 
 export type NoteTab = {
   id: string;
@@ -65,6 +69,7 @@ export type ClosedTabEntry = {
 export type GroupEntry = {
   sortOrder?: number;
   dashboardStatusNames?: DashboardStatusNames;
+  dashboardVisibility?: DashboardVisibility;
   id: string;
   name: string;
   // Pinned groups sort first in the group lists.
@@ -92,7 +97,7 @@ export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
 
 export type PaneColumn = "left" | "right";
 
-export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames" | "sortOrder">;
+export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames" | "dashboardVisibility" | "sortOrder">;
 
 export type NotepadState = {
   nextTabNumber: number;
@@ -102,6 +107,7 @@ export type NotepadState = {
   // All keeps its view layout separate from the tabs' owning groups.
   allGroupActiveTabId: string | null;
   allGroupLayout: PaneLayout | null;
+  allGroupDashboardVisibility: DashboardVisibility;
   settings: NotepadSettings;
   setFontScale: (fontScale: number) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;
@@ -135,6 +141,7 @@ export type NotepadState = {
   createGroup: (name: string) => void;
   renameGroup: (groupId: string, name: string) => void;
   setGroupStatusNames: (groupId: string, names: DashboardStatusNames) => void;
+  setGroupDashboardVisibility: (groupId: string, visibility: DashboardVisibility) => void;
   toggleGroupPin: (groupId: string) => void;
   moveGroup: (groupId: string, targetId: string) => void;
   removeGroup: (groupId: string) => void;

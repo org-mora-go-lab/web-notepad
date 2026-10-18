@@ -33,6 +33,8 @@ export function Panel({
   onOpenDashboardTab,
   onChangeTabStatus,
   onSaveDashboardStatusNames,
+  dashboardVisibility,
+  onDashboardVisibilityChange,
   onMoveDashboardTabToGroup,
   onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
@@ -57,6 +59,8 @@ export function Panel({
         groupId={activeGroupId}
         statusNames={groups.find((group) => group.id === activeGroupId)?.dashboardStatusNames ?? {}}
         onSaveStatusNames={onSaveDashboardStatusNames}
+        visibility={dashboardVisibility}
+        onVisibilityChange={onDashboardVisibilityChange}
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
         groups={groups}

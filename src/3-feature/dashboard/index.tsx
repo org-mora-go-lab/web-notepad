@@ -15,6 +15,8 @@ export function Dashboard({
   groupId,
   statusNames,
   onSaveStatusNames,
+  visibility,
+  onVisibilityChange,
   tabs,
   activeTabId,
   groups,
@@ -30,8 +32,8 @@ export function Dashboard({
   onDeleteTab,
 }: DashboardProps) {
   const [expanded, setExpanded] = useState(false);
-  const [iceboxVisible, setIceboxVisible] = useState(false);
-  const [closedVisible, setClosedVisible] = useState(false);
+  const iceboxVisible = visibility.icebox;
+  const closedVisible = visibility.closed;
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
     left: number;
@@ -75,8 +77,8 @@ export function Dashboard({
               onSaveStatusNames={onSaveStatusNames}
               iceboxVisible={iceboxVisible}
               closedVisible={closedVisible}
-              onToggleIcebox={() => setIceboxVisible((current) => !current)}
-              onToggleClosed={() => setClosedVisible((current) => !current)}
+              onToggleIcebox={() => onVisibilityChange({ ...visibility, icebox: !iceboxVisible })}
+              onToggleClosed={() => onVisibilityChange({ ...visibility, closed: !closedVisible })}
             />
           )}
           <button

@@ -2,6 +2,7 @@ export type {
   BookmarkEntry,
   ClosedTabEntry,
   DashboardStatusNames,
+  DashboardVisibility,
   GroupEntry,
   NotepadSettings,
   NotepadState,

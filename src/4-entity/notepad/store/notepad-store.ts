@@ -7,7 +7,7 @@ import {
   normalizePersistedState,
 } from "../persistence";
 import type { NotepadState } from "../type";
-import { createNoteTab } from "../util";
+import { createNoteTab, DEFAULT_DASHBOARD_VISIBILITY } from "../util";
 import { createBookmarkActions, createClosedTabActions } from "./archive";
 import { createSettingActions } from "./setting-actions";
 import { createTabActions } from "./tab";
@@ -42,6 +42,7 @@ export const useNotepadStore = create<NotepadState>()(
       closedTabs: [],
       allGroupActiveTabId: null,
       allGroupLayout: null,
+      allGroupDashboardVisibility: DEFAULT_DASHBOARD_VISIBILITY,
       settings: DEFAULT_SETTINGS,
     }),
     {
