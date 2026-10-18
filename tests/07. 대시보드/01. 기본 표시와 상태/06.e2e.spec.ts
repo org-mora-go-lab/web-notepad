@@ -1,11 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-import { dashboardPanel, groupsCommand, openPanel } from "../../__util__";
+import {
+  dashboardPanel,
+  groupsCommand,
+  openPanel,
+  openSettingsPanel,
+} from "../../__util__";
 
 test("6. PC 대시보드를 페이지 전체 영역으로 확장하고 기존 크기로 축소한다", async ({
   page,
 }) => {
   await page.goto("/");
+  await openSettingsPanel(page);
+  const settings = page.locator("#settings-panel");
+  await settings.getByRole("radio", { name: "Left", exact: true }).check();
+  await settings.getByRole("button", { name: "Close Settings", exact: true }).click();
   await groupsCommand(page).click();
   await expect(page.locator("#groups-menu")).toBeVisible();
   await openPanel(page, "dashboard-panel");

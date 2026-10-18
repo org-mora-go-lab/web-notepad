@@ -188,6 +188,9 @@
 
   // Page-level expansion fills the viewport but does not request browser fullscreen.
   &.is-expanded {
+    position: relative;
+    z-index: 60;
+
     .side-panel-backdrop {
       display: none;
     }

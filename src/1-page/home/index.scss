@@ -85,7 +85,7 @@
       margin-left: calc(var(--group-sidebar-width, 280px) + #{v.$side-panel-width});
     }
 
-    &.is-group-sidebar-open[data-panel-position="left"] .side-panel .side-panel-drawer {
+    &.is-group-sidebar-open[data-panel-position="left"] .side-panel:not(.is-expanded) .side-panel-drawer {
       left: var(--group-sidebar-width, 280px);
     }
   }
