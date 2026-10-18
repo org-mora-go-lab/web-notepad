@@ -188,6 +188,9 @@
 
   // Page-level expansion fills the viewport but does not request browser fullscreen.
   &.is-expanded {
+    position: relative;
+    z-index: 60;
+
     .side-panel-backdrop {
       display: none;
     }
@@ -195,6 +198,7 @@
     .side-panel-drawer,
     .side-panel-drawer.is-open {
       inset: 0;
+      z-index: 60;
       width: 100vw;
       max-width: none;
       height: 100vh;

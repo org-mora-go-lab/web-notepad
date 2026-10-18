@@ -1,9 +1,11 @@
-import type { DashboardStatusNames, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
+import type { DashboardStatusNames, DashboardVisibility, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
 
 export type DashboardProps = {
   groupId: string;
   statusNames: DashboardStatusNames;
   onSaveStatusNames: (names: DashboardStatusNames) => void;
+  visibility: DashboardVisibility;
+  onVisibilityChange: (visibility: DashboardVisibility) => void;
   tabs: NoteTab[];
   activeTabId?: string;
   groups: GroupEntry[];

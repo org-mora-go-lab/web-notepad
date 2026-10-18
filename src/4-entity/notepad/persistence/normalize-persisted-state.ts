@@ -1,6 +1,6 @@
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState, NoteTab } from "../type";
-import { createNoteTab } from "../util";
+import { createNoteTab, normalizeDashboardVisibility } from "../util";
 import { finiteNumberOr } from "./read-value";
 import {
   normalizeBookmarks,
@@ -94,6 +94,9 @@ export function normalizePersistedState(
         ? persisted.allGroupActiveTabId
         : null,
     allGroupLayout,
+    allGroupDashboardVisibility: normalizeDashboardVisibility(
+      persisted.allGroupDashboardVisibility,
+    ),
     nextTabNumber,
     closedTabs: normalizeClosedTabs(persisted.closedTabs),
     settings,

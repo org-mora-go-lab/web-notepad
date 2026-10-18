@@ -15,6 +15,8 @@ import type { ViewPanel } from "@/src/5-shared";
 
 export type PanelProps = {
   onSaveDashboardStatusNames: ComponentProps<typeof Dashboard>["onSaveStatusNames"];
+  dashboardVisibility: ComponentProps<typeof Dashboard>["visibility"];
+  onDashboardVisibilityChange: ComponentProps<typeof Dashboard>["onVisibilityChange"];
   openPanel: ViewPanel | null;
   backgroundPanel: ViewPanel | null;
   bookmarks: BookmarkEntry[];

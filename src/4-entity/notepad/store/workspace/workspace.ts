@@ -30,6 +30,7 @@ const buildAllGroup = (state: NotepadState): GroupEntry => {
     updatedAt: 0,
     tabs,
     bookmarks: [],
+    dashboardVisibility: state.allGroupDashboardVisibility,
     ...EMPTY_SPLIT_LAYOUT,
     activeTabId: activeTab?.id ?? "",
     ...state.allGroupLayout,
@@ -117,6 +118,7 @@ export const createGroupEntry = (
   updatedAt: createdAt,
   tabs: [tab],
   bookmarks: [],
+  dashboardVisibility: { icebox: false, closed: false },
   ...EMPTY_SPLIT_LAYOUT,
   activeTabId: tab.id,
 });

@@ -2,7 +2,7 @@ import type { StateCreator } from "zustand";
 
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
-import { assignTabToPane, compareGroups, normalizeDashboardStatusNames, normalizeLayout } from "../../util";
+import { assignTabToPane, compareGroups, normalizeDashboardStatusNames, normalizeDashboardVisibility, normalizeLayout } from "../../util";
 import { allocateTab, createGroupEntry } from "./workspace";
 
 type GroupActions = Pick<
@@ -10,6 +10,7 @@ type GroupActions = Pick<
   | "createGroup"
   | "renameGroup"
   | "setGroupStatusNames"
+  | "setGroupDashboardVisibility"
   | "toggleGroupPin"
   | "moveGroup"
   | "removeGroup"
@@ -38,6 +39,18 @@ export const createGroupActions: StateCreator<
     return {
       groups: state.groups.map((group) => group.id === groupId
         ? { ...group, dashboardStatusNames: normalizeDashboardStatusNames(names), updatedAt: Date.now() }
+        : group),
+    };
+  }),
+  setGroupDashboardVisibility: (groupId, visibility) => set((state) => {
+    const normalized = normalizeDashboardVisibility(visibility);
+    if (groupId === ALL_GROUP_ID) {
+      return { allGroupDashboardVisibility: normalized };
+    }
+    if (!state.groups.some((group) => group.id === groupId)) return state;
+    return {
+      groups: state.groups.map((group) => group.id === groupId
+        ? { ...group, dashboardVisibility: normalized }
         : group),
     };
   }),

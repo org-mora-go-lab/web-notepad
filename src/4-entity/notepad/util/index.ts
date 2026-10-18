@@ -1,4 +1,8 @@
 export { normalizeDashboardStatusNames } from "./dashboard-status-names";
+export {
+  DEFAULT_DASHBOARD_VISIBILITY,
+  normalizeDashboardVisibility,
+} from "./dashboard-visibility";
 export { compareGroups } from "./group-sort";
 export type { DashboardColumnData } from "./note";
 export {

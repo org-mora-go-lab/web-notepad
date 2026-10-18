@@ -44,6 +44,8 @@ export function Home() {
     createGroupAndRecord,
     renameGroup,
     setGroupStatusNames,
+    setGroupDashboardVisibility,
+    dashboardVisibility,
     toggleGroupPin,
     moveGroup,
     removeGroupAndRecord,
@@ -142,6 +144,8 @@ export function Home() {
           onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
           onSaveDashboardStatusNames={(names) => setGroupStatusNames(activeGroupId, names)}
+          dashboardVisibility={dashboardVisibility}
+          onDashboardVisibilityChange={(visibility) => setGroupDashboardVisibility(activeGroupId, visibility)}
           onToggleGroupPin={toggleGroupPin}
           onMoveGroup={moveGroup}
         />
