@@ -11,6 +11,4 @@ export type GroupProps = {
   onRename: (groupId: string, name: string) => void;
   onTogglePinGroup: (groupId: string) => void;
   onMoveGroup: (groupId: string, targetId: string) => void;
-  onOpenSettings: () => void;
-  onOpenShortcuts: () => void;
 };

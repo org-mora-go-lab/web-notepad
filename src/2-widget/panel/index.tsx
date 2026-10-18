@@ -25,8 +25,6 @@ export function Panel({
   globalSearchQuery,
   onClose,
   onCloseGroupMenu,
-  onOpenSettings,
-  onOpenShortcuts,
   onGlobalSearchQueryChange,
   onOpenBookmark,
   onRemoveBookmark,
@@ -86,8 +84,6 @@ export function Panel({
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
         onMoveGroup={onMoveGroup}
-        onOpenSettings={onOpenSettings}
-        onOpenShortcuts={onOpenShortcuts}
       />
       <GlobalSearch
         groups={groups}

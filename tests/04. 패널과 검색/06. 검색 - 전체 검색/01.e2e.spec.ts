@@ -3,8 +3,9 @@ import { expect, test } from "@playwright/test";
 import { seedStoredStateOnLoad } from "../../__util__";
 import { createGlobalSearchState } from "./__fixture__";
 
-test("1. 헤더 검색 아이콘을 선택하면 전체 검색 팝업을 연다", async ({ page }) => {
+test("1. 헤더 MENU의 SEARCH를 선택하면 전체 검색 팝업을 연다", async ({ page }) => {
   await seedStoredStateOnLoad(page, createGlobalSearchState());
+  await page.locator(".additional-tools-trigger").click();
   const search = page.locator(".header .global-search-command");
   await expect(search).toBeVisible();
   await expect(page.locator('.footer button[aria-controls="global-search-popup"]')).toHaveCount(0);

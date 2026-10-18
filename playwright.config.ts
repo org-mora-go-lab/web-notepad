@@ -9,7 +9,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: "line",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3100",
     trace: "on-first-retry",
   },
   projects: [
@@ -19,9 +19,13 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command:
-      "KAKAO_REST_API_KEY=test-rest-key KAKAO_REDIRECT_URI=http://localhost:3000/api/auth/oauth/kakao/callback AUTH_SECRET=test-auth-secret npm run dev",
-    url: "http://localhost:3000",
+    command: "npm run dev -- -p 3100",
+    env: {
+      KAKAO_REST_API_KEY: "test-rest-key",
+      KAKAO_REDIRECT_URI: "http://localhost:3100/api/auth/oauth/kakao/callback",
+      AUTH_SECRET: "test-auth-secret",
+    },
+    url: "http://localhost:3100",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

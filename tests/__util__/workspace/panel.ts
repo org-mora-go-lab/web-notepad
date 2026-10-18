@@ -14,10 +14,10 @@ export const groupStatusName = (page: Page) =>
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
-export async function openSidebarTools(page: Page) {
-  await groupsCommand(page).click();
-  const sidebar = page.locator("#groups-menu");
-  return sidebar.locator("#group-sidebar-tools");
+export async function openHeaderMenu(page: Page) {
+  const menu = page.locator("#additional-tools-menu");
+  if (!(await menu.isVisible())) await page.locator(".header .additional-tools-trigger").click();
+  return menu;
 }
 
 export async function openPanel(page: Page, panelId: string) {
@@ -28,14 +28,14 @@ export async function openPanel(page: Page, panelId: string) {
     panelId === "shortcuts-panel" ||
     panelId === "settings-panel"
   ) {
-    const tools = await openSidebarTools(page);
+    const tools = await openHeaderMenu(page);
     if (panelId === "shortcuts-panel") {
       await tools.getByRole("button", { name: /GUIDE|사용 가이드/i }).click();
       await page.getByRole("dialog").getByRole("button", { name: /SHORTCUT|단축키/i }).click();
     } else {
-      const sidebarCommand = tools.getByRole("button", { name: /SETTINGS|설정/i });
-      await expect(sidebarCommand).toBeVisible();
-      await sidebarCommand.click();
+      const settingsCommand = tools.getByRole("button", { name: /SETTINGS|설정/i });
+      await expect(settingsCommand).toBeVisible();
+      await settingsCommand.click();
     }
   } else if (
     await page.locator('.side-panel-drawer[aria-hidden="false"]').count()
@@ -68,6 +68,7 @@ export const openShortcutsPanel = (page: Page) =>
 export const openSettingsPanel = (page: Page) =>
   openPanel(page, "settings-panel");
 export async function openGlobalSearchPanel(page: Page) {
+  await openHeaderMenu(page);
   await page.locator('button[aria-controls="global-search-popup"]').click();
   await expect(page.locator("#global-search-popup")).toBeVisible();
 }

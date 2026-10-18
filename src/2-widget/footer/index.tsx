@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Layers, LayoutDashboard, Menu } from "lucide-react";
+import { Bookmark, Layers, LayoutDashboard } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -77,7 +77,7 @@ export function Footer({
             title={t.sidebarTitle}
           >
             <span className="status-icon">
-              <Menu size={16} strokeWidth={1.8} />
+              <Layers size={16} strokeWidth={1.8} />
               {hasGroupUpdateToday && (
                 <span
                   className="status-dot"
@@ -90,9 +90,9 @@ export function Footer({
               className="status-label group-select-name"
               title={activeGroupName}
             >
-              {t.sidebar}
+              {t.group}
             </span>
-            <span className="status-label group-command-label">{t.sidebar}</span>
+            <span className="status-label group-command-label">{t.group}</span>
             <span className="group-current-value" aria-hidden="true">
               {activeGroupName}
             </span>

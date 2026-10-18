@@ -3,74 +3,78 @@
 .header {
   --tools-right-padding: 26px;
   --tools-button-width: 45px;
-  --tools-buttons-width: calc(var(--tools-button-width) * 2);
 
   .additional-tools {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 5;
-    width: calc(var(--tools-buttons-width) + var(--tools-right-padding));
+    width: calc(var(--tools-button-width) + var(--tools-right-padding));
     height: 39px;
     padding-right: var(--tools-right-padding);
     background: v.$strip;
     border-bottom: 1px solid v.$line;
-
-    button,
-    a {
-      border: 0;
-      background: transparent;
-      color: v.$muted;
-      cursor: pointer;
-
-      &:hover,
-      &:focus-visible {
-        background: v.$raised;
-        color: v.$ink;
-      }
-    }
   }
 
-  .global-search-command {
-    position: absolute;
-    left: var(--tools-button-width);
+  .additional-tools-trigger {
     width: var(--tools-button-width);
     height: 100%;
     display: grid;
     place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: v.$muted;
+    cursor: pointer;
 
-    svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    &.is-active {
-      background: v.$raised;
-      color: v.$ink;
-    }
+    svg { width: 24px; height: 24px; }
+    &:hover, &:focus-visible, &[aria-expanded="true"] { background: v.$raised; color: v.$ink; }
   }
 
-  .auth-command {
+  .additional-tools-menu {
     position: absolute;
-    left: 0;
-    width: var(--tools-button-width);
-    height: 100%;
+    top: calc(100% + 8px);
+    right: var(--tools-right-padding);
+    width: min(220px, calc(100vw - 16px));
+    padding: 5px;
+    border: 1px solid v.$line;
+    background: v.$raised;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 
-    > svg {
-      width: 20px;
-      height: 20px;
+    button, a {
+      width: 100%;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 0 10px;
+      border: 0;
+      background: transparent;
+      color: v.$ink;
+      font: inherit;
+      font-size: v.font(15px);
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover, &:focus-visible { background: v.$line; }
+      > svg { width: 18px; height: 18px; flex: 0 0 18px; }
     }
+
+    .auth-command { position: relative; }
+    .auth-command-action { right: auto; left: 22px; bottom: 8px; }
   }
 
-  &.has-menu { padding-right: calc(var(--tools-buttons-width) + var(--tools-right-padding)); }
+  &.has-menu { padding-right: calc(var(--tools-button-width) + var(--tools-right-padding)); }
 
   @media (min-width: 641px) {
     --tools-button-width: 39px;
+    .additional-tools-trigger svg { width: 20px; height: 20px; }
   }
 
   @media (max-width: 512px) {
     --tools-right-padding: 21px;
-
     .additional-tools { height: 45px; }
   }
 }

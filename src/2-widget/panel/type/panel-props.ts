@@ -29,8 +29,6 @@ export type PanelProps = {
   globalSearchQuery: string;
   onClose: () => void;
   onCloseGroupMenu: () => void;
-  onOpenSettings: ComponentProps<typeof Group>["onOpenSettings"];
-  onOpenShortcuts: ComponentProps<typeof Group>["onOpenShortcuts"];
   onGlobalSearchQueryChange: (query: string) => void;
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];

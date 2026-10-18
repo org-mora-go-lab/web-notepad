@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("6. 사이드바의 열림과 닫힘 상태를 새로고침 후 복원한다", async ({ page }) => {
   await page.goto("/");
-  const menuButton = page.getByRole("button", { name: "Toggle menu" });
+  const menuButton = page.getByRole("button", { name: "Toggle groups" });
 
   await menuButton.click();
   await expect(page.locator("#groups-menu")).toBeVisible();
@@ -18,7 +18,7 @@ test("6. 사이드바의 열림과 닫힘 상태를 새로고침 후 복원한�
   await expect(page.locator("#groups-menu")).toBeVisible();
   await expect(menuButton).toHaveAttribute("aria-expanded", "true");
 
-  await page.getByRole("button", { name: "Close Menu" }).click();
+  await page.getByRole("button", { name: "Close Groups" }).click();
   await expect(page.locator("#groups-menu")).toHaveCount(0);
   await page.reload();
   await expect(page.locator("#groups-menu")).toHaveCount(0);
