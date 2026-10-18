@@ -2,6 +2,7 @@
 
 import { Search } from "lucide-react";
 
+import { Auth } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { AdditionalToolsProps } from "../type";
@@ -14,6 +15,7 @@ export function AdditionalTools({
 
   return (
     <div className="additional-tools">
+      <Auth />
       <button
         className={`global-search-command ${searchOpen ? "is-active" : ""}`}
         type="button"

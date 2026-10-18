@@ -2,7 +2,8 @@
 
 .header {
   --tools-right-padding: 26px;
-  --tools-buttons-width: 45px;
+  --tools-button-width: 45px;
+  --tools-buttons-width: calc(var(--tools-button-width) * 2);
 
   .additional-tools {
     position: absolute;
@@ -15,7 +16,8 @@
     background: v.$strip;
     border-bottom: 1px solid v.$line;
 
-    button {
+    button,
+    a {
       border: 0;
       background: transparent;
       color: v.$muted;
@@ -31,8 +33,8 @@
 
   .global-search-command {
     position: absolute;
-    left: 0;
-    width: 45px;
+    left: var(--tools-button-width);
+    width: var(--tools-button-width);
     height: 100%;
     display: grid;
     place-items: center;
@@ -48,15 +50,22 @@
     }
   }
 
+  .auth-command {
+    position: absolute;
+    left: 0;
+    width: var(--tools-button-width);
+    height: 100%;
+
+    > svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
   &.has-menu { padding-right: calc(var(--tools-buttons-width) + var(--tools-right-padding)); }
 
   @media (min-width: 641px) {
-    --tools-buttons-width: 39px;
-
-    .global-search-command {
-      width: 39px;
-    }
-
+    --tools-button-width: 39px;
   }
 
   @media (max-width: 512px) {

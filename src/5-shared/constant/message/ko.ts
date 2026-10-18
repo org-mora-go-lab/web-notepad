@@ -10,6 +10,8 @@ export const ko: Messages = {
   icebox: "노트",
   closed: "닫은 탭",
   search: "검색",
+  kakaoLogin: "카카오로 로그인",
+  logout: "로그아웃",
   bookmark: "북마크",
   dashboard: "대시보드",
   dashboardTitle: "대시보드",
