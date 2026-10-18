@@ -1,13 +1,13 @@
 "use client";
 
 import { Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { GroupItemProps } from "../../type";
 
-// One group row: click the name to switch; pin / edit / delete are inline icon buttons.
+// One group row: click the name to switch; use the right-side menu for actions.
 export function GroupItem({
   groupId,
   dragging,
@@ -28,6 +28,27 @@ export function GroupItem({
 }: GroupItemProps) {
   const { t } = useI18n();
   const [editingName, setEditingName] = useState<string | null>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const [menuPosition, setMenuPosition] = useState({ left: 0, top: 0 });
+
+  useEffect(() => {
+    if (!actionsOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!actionsRef.current?.contains(event.target as Node)) onToggleActions();
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        onToggleActions();
+      }
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape, true);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", closeOnEscape, true);
+    };
+  }, [actionsOpen, onToggleActions]);
 
   const handleRename = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -116,8 +137,8 @@ export function GroupItem({
       >
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>
-      {editable && !actionsOpen && (
-        <div className="group-actions">
+      {editable && (
+        <div className="group-actions" ref={actionsRef}>
           {pinned && (
             <Pin
               className="group-pin-indicator"
@@ -129,16 +150,25 @@ export function GroupItem({
           <button
             type="button"
             aria-label={t.groupActionsFor(name)}
-            aria-expanded={false}
+            aria-expanded={actionsOpen}
+            aria-controls={`group-actions-${groupId}`}
             title={t.groupActions}
-            onClick={onToggleActions}
+            onClick={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              setMenuPosition({
+                left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
+                top: rect.bottom + 8 + 128 > window.innerHeight ? rect.top - 136 : rect.bottom + 8,
+              });
+              onToggleActions();
+            }}
           >
             <EllipsisVertical size={14} />
           </button>
-        </div>
-      )}
-      {editable && actionsOpen && (
-        <div className="group-actions">
+          {actionsOpen && <div
+            className="group-action-dropdown"
+            id={`group-actions-${groupId}`}
+            style={{ left: menuPosition.left, top: menuPosition.top }}
+          >
           <button
             className={`group-pin ${pinned ? "is-pinned" : ""}`}
             type="button"
@@ -150,7 +180,8 @@ export function GroupItem({
               onToggleActions();
             }}
           >
-            <Pin size={14} />
+            <Pin size={16} />
+            <span>{pinned ? t.unpin : t.pin}</span>
           </button>
           <button
             type="button"
@@ -161,16 +192,19 @@ export function GroupItem({
               setEditingName(name);
             }}
           >
-            <Pencil size={14} />
+            <Pencil size={16} />
+            <span>{t.edit}</span>
           </button>
           <button
             type="button"
             aria-label={t.deleteGroupFor(name)}
             title={t.delete}
-            onClick={(event) => onDelete(event.currentTarget)}
+            onClick={(event) => onDelete(actionsRef.current?.querySelector("button") ?? event.currentTarget)}
           >
-            <Trash2 size={14} />
+            <Trash2 size={16} />
+            <span>{t.delete}</span>
           </button>
+          </div>}
         </div>
       )}
     </article>

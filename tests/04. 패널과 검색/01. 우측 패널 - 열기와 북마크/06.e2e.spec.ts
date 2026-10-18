@@ -1,7 +1,7 @@
 import { expect, type Locator, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { bookmarksCommand, groupsCommand } from "../../__util__";
+import { groupsCommand,openBookmarksPanel } from "../../__util__";
 
 async function expectIconCentered(button: Locator, withoutPadding = false) {
   if (withoutPadding) {
@@ -27,7 +27,7 @@ test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
 
-  await bookmarksCommand(page).click();
+  await openBookmarksPanel(page);
   await expectIconCentered(page.locator("#bookmarks-panel .side-panel-close"));
   await page.locator("#bookmarks-panel .side-panel-close").click();
 
@@ -40,8 +40,7 @@ test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중
   );
   await page.getByRole("button", { name: "Create group" }).click();
   await page.getByRole("button", { name: "Work group actions" }).click();
-  await expectIconCentered(
-    page.getByRole("button", { name: "Delete Work group" }),
-    true,
-  );
+  const deleteAction = page.getByRole("button", { name: "Delete Work group" });
+  await expect(deleteAction).toBeVisible();
+  expect((await deleteAction.boundingBox())!.height).toBeGreaterThanOrEqual(44);
 });

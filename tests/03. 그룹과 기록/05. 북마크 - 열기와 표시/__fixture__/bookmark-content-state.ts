@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../../__fixture__";
-import { bookmarksCommand, seedStoredStateOnLoad } from "../../../__util__";
+import { openBookmarksPanel, seedStoredStateOnLoad } from "../../../__util__";
 
 export async function seedBookmarkContentItems(page: Page) {
   const detailLines = Array.from({ length: 12 }, (_, index) => `line ${index}`);
@@ -25,6 +25,6 @@ export async function seedBookmarkContentItems(page: Page) {
       }),
     ],
   });
-  await bookmarksCommand(page).click();
+  await openBookmarksPanel(page);
   return { detailLines };
 }

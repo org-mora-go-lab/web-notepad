@@ -13,9 +13,9 @@ test("3. 하단 왼쪽 그룹 버튼은 PC에서 그룹명을 함께 표시하�
     await expect(page.locator(".group-status-command")).toHaveCount(0);
     await expect(command).toHaveAttribute("aria-label", "Toggle groups");
     const groupBox = (await command.boundingBox())!;
-    const bookmarkBox = (await page.locator(".bookmark-command").boundingBox())!;
+    const moreBox = (await page.locator(".more-command").boundingBox())!;
     const dashboardBox = (await page.locator(".dashboard-command").boundingBox())!;
-    expect(groupBox.x).toBeLessThan(bookmarkBox.x);
+    expect(groupBox.x).toBeLessThan(moreBox.x);
     expect(groupBox.x).toBeLessThan(dashboardBox.x);
 
     if (viewport.width <= 512) {

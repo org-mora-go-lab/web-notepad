@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { bookmarksCommand, openPanel } from "../../__util__";
+import { openBookmarksPanel, openPanel } from "../../__util__";
 
-test("1. 하단 BOOKMARK·DASHBOARD 명령으로 각 우측 패널을 연다", async ({ page }) => {
+test("1. 하단 더보기의 BOOKMARK와 DASHBOARD 명령으로 각 우측 패널을 연다", async ({ page }) => {
   await page.goto("/");
-  await bookmarksCommand(page).click();
+  await openBookmarksPanel(page);
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
   await page.getByRole("button", { name: "Close Bookmarks" }).click();
 

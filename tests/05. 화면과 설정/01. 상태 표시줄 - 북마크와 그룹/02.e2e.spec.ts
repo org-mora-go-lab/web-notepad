@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { bookmarksCommand, chooseTabMenuItem } from "../../__util__";
+import { chooseTabMenuItem,moreCommand } from "../../__util__";
 
 test("2. BOOKMARK는 개수를 표시하지 않고 오늘 생성된 북마크가 있으면 붉은 점을 표시한다", async ({ page }) => {
   await page.goto("/");
-  const command = bookmarksCommand(page);
+  const command = moreCommand(page);
   const dot = command.locator(".status-dot");
   await expect(dot).toHaveCount(0);
 

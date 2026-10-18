@@ -1,6 +1,7 @@
 "use client";
 
-import { Bookmark, Layers, LayoutDashboard } from "lucide-react";
+import { Bookmark, Ellipsis, Layers, LayoutDashboard } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -18,6 +19,23 @@ export function Footer({
   onToggleGroups,
 }: FooterProps) {
   const { t } = useI18n();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!moreOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!moreRef.current?.contains(event.target as Node)) setMoreOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMoreOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [moreOpen]);
   return (
     <footer className="footer">
       <div className="current-group-panel" title={activeGroupName}>
@@ -55,28 +73,6 @@ export function Footer({
           <div className="status-scroll-area">
             <div className="status-actions">
               <button
-                className={`status-command bookmark-command ${bookmarksOpen ? "is-active" : ""}`}
-                type="button"
-                onClick={onToggleBookmarks}
-                aria-expanded={bookmarksOpen}
-                aria-controls="bookmarks-panel"
-              >
-                <span className="status-icon">
-                  <Bookmark size={16} strokeWidth={1.8} />
-                  {hasBookmarkUpdateToday && (
-                    <span
-                      className="status-dot"
-                      role="img"
-                      aria-label={t.updatedToday}
-                    />
-                  )}
-                </span>
-                <span className="status-label">{t.bookmark}</span>
-                <span className="status-separator" aria-hidden="true">
-                  |
-                </span>
-              </button>
-              <button
                 className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}
                 type="button"
                 onClick={onToggleDashboard}
@@ -88,6 +84,41 @@ export function Footer({
                 </span>
                 <span className="status-label">{t.dashboard}</span>
               </button>
+              <div className="footer-more" ref={moreRef}>
+                <button
+                  className={`status-command more-command ${moreOpen || bookmarksOpen ? "is-active" : ""}`}
+                  type="button"
+                  aria-expanded={moreOpen}
+                  aria-controls="footer-more-menu"
+                  onClick={() => setMoreOpen((current) => !current)}
+                >
+                  <span className="status-icon">
+                    <Ellipsis size={16} strokeWidth={1.8} />
+                    {hasBookmarkUpdateToday && (
+                      <span className="status-dot" role="img" aria-label={t.updatedToday} />
+                    )}
+                  </span>
+                  <span className="status-label">{t.more}</span>
+                </button>
+                {moreOpen && (
+                  <div className="footer-more-menu" id="footer-more-menu" role="menu">
+                    <button
+                      className="bookmark-command"
+                      type="button"
+                      role="menuitem"
+                      aria-controls="bookmarks-panel"
+                      aria-expanded={bookmarksOpen}
+                      onClick={() => {
+                        setMoreOpen(false);
+                        onToggleBookmarks();
+                      }}
+                    >
+                      <Bookmark size={18} strokeWidth={1.8} />
+                      <span className="status-label">{t.bookmark}</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

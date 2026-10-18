@@ -3,11 +3,11 @@ import { expect, test } from "@playwright/test";
 import {
   activeTabItem,
   bookmarkActiveTab,
-  bookmarksCommand,
   closeActiveTab,
   cycleActiveTabColor,
   expectSelectedLines,
   lineButtons,
+  openBookmarksPanel,
 } from "../../__util__";
 
 test("3. 원본 탭이 없는 북마크를 열면 탭 상태를 복원한다", async ({ page }) => {
@@ -20,7 +20,7 @@ test("3. 원본 탭이 없는 북마크를 열면 탭 상태를 복원한다", a
 
   await expect(page.locator("textarea")).toHaveValue("");
   await page.reload();
-  await bookmarksCommand(page).click();
+  await openBookmarksPanel(page);
   await page.getByRole("button", { name: "Open", exact: true }).click();
 
   await expect(page.locator("textarea")).toHaveValue("restored bookmark\nsecond\nthird");

@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS, DESKTOP_VIEWPORT } from "../../__constant__";
 import {
   bookmarkActiveTab,
-  bookmarksCommand,
   createGroups,
+  openBookmarksPanel,
   openShortcutsPanel,
   readStoredState,
 } from "../../__util__";
@@ -22,7 +22,7 @@ test("5. PC는 X, 모바일은 Escape로 우측 패널을 닫고 메모·그룹�
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
 
-    await bookmarksCommand(page).click();
+    await openBookmarksPanel(page);
     await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "false");
     await bookmarkAction.focus();
     await expect(bookmarkAction).toBeFocused();

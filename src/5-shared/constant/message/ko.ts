@@ -13,6 +13,7 @@ export const ko: Messages = {
   kakaoLogin: "카카오로 로그인",
   logout: "로그아웃",
   bookmark: "북마크",
+  more: "더보기",
   dashboard: "대시보드",
   dashboardTitle: "대시보드",
   dashboardOptions: "대시보드 옵션",

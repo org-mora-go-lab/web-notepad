@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import {
   activeTabItem,
-  bookmarksCommand,
   expectSelectedLines,
+  openBookmarksPanel,
   readStoredState,
   seedMoveGroupState,
   switchGroup,
@@ -30,7 +30,7 @@ test("1. 그룹 이동 시 탭 ID, 내용, 색상, 고정, 줄 선택과 연결 
     await expect(movedTabItem).toHaveClass(/is-bookmarked/);
     await expect(movedTabItem).toHaveAttribute("data-tab-color", "red");
     await expectSelectedLines(page, [false, true]);
-    await bookmarksCommand(page).click();
+    await openBookmarksPanel(page);
     await expect(page.locator("#bookmarks-panel strong")).toHaveText("Move me");
     await page.getByRole("button", { name: "Open", exact: true }).click();
     await expect(page.getByRole("tab")).toHaveCount(2);
