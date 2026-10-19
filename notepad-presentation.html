@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Web Notepad 제품 소개 프레젠테이션" />
+  <title>Notepad — 제품 소개</title>
+  <style>
+    :root {
+      --ink: #17231d;
+      --muted: #627269;
+      --paper: #f5f2e9;
+      --surface: #fffdf7;
+      --green: #1d6949;
+      --green-2: #71a589;
+      --lime: #dcedb0;
+      --coral: #ef755f;
+      --line: rgba(23, 35, 29, .14);
+      --shadow: 0 24px 80px rgba(25, 48, 37, .16);
+      font-family: Inter, Pretendard, "Noto Sans KR", system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #dfe6dc; color: var(--ink); }
+    button { font: inherit; }
+
+    .deck { position: relative; width: 100%; height: 100%; }
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100%;
+      padding: clamp(28px, 4.2vw, 72px) clamp(28px, 6vw, 100px) clamp(24px, 3vw, 52px);
+      background:
+        radial-gradient(circle at 88% 12%, rgba(220, 237, 176, .9), transparent 26%),
+        linear-gradient(135deg, var(--paper), #eef3e9);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(5%);
+      transition: opacity .55s ease, transform .65s cubic-bezier(.22,.8,.25,1), visibility .55s;
+    }
+    .slide.active { opacity: 1; visibility: visible; transform: translateX(0); z-index: 2; }
+    .slide.before { transform: translateX(-5%); }
+    .slide::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(29,105,73,.12);
+      border-radius: 26px;
+      pointer-events: none;
+    }
+
+    .eyebrow { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--green); }
+    .eyebrow::before { content: ""; width: 34px; height: 3px; border-radius: 10px; background: var(--coral); }
+    h1, h2, h3, p { margin: 0; }
+    h1 { max-width: 900px; font-size: clamp(58px, 8.4vw, 132px); line-height: .92; letter-spacing: -.075em; }
+    h2 { max-width: 840px; font-size: clamp(40px, 5.1vw, 78px); line-height: 1.02; letter-spacing: -.055em; }
+    h3 { font-size: clamp(18px, 1.65vw, 27px); letter-spacing: -.025em; }
+    .lead { max-width: 720px; margin-top: 24px; font-size: clamp(17px, 1.55vw, 25px); line-height: 1.55; color: var(--muted); }
+    .accent { color: var(--green); }
+    .coral { color: var(--coral); }
+
+    .slide-body { display: grid; align-items: center; min-height: 0; padding: 3vh 0; }
+    .hero-grid { grid-template-columns: 1.05fr .95fr; gap: 5vw; }
+    .two-col { grid-template-columns: .85fr 1.15fr; gap: 5vw; }
+    .reverse { grid-template-columns: 1.12fr .88fr; }
+    .hero-copy { align-self: center; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .pill { padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.56); font-size: 13px; font-weight: 750; }
+
+    .app-window { position: relative; overflow: hidden; border: 1px solid rgba(23,35,29,.14); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); transform: rotate(1.2deg); }
+    .window-top { height: 46px; display: flex; align-items: center; gap: 7px; padding: 0 16px; background: #ecf0e8; border-bottom: 1px solid var(--line); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #bac5bb; }
+    .dot:first-child { background: var(--coral); }
+    .window-body { display: grid; grid-template-columns: 94px 1fr; min-height: 390px; }
+    .mini-side { padding: 18px 12px; background: #173e2d; color: #fff; }
+    .mini-side strong { display: block; font-size: 13px; margin-bottom: 22px; }
+    .side-line { height: 8px; border-radius: 8px; margin: 12px 0; background: rgba(255,255,255,.22); }
+    .side-line.on { width: 76%; background: var(--lime); }
+    .editor { padding: 22px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 22px; }
+    .tab { padding: 8px 12px; border-radius: 9px 9px 0 0; background: #e7ece5; font-size: 11px; }
+    .tab.on { background: var(--lime); color: #29422f; }
+    .note-title { width: 56%; height: 17px; border-radius: 10px; background: var(--ink); margin-bottom: 25px; }
+    .text-line { height: 8px; border-radius: 8px; background: #d8ded7; margin: 13px 0; }
+    .text-line:nth-child(2n) { width: 76%; }
+    .text-line:nth-child(3n) { width: 88%; }
+    .cursor { display: inline-block; width: 3px; height: 20px; margin-top: 16px; background: var(--coral); animation: blink 1s steps(1) infinite; }
+
+    .feature-stack { display: grid; gap: 13px; margin-top: 30px; }
+    .feature { display: grid; grid-template-columns: 42px 1fr; gap: 14px; padding: 15px 16px; border-top: 1px solid var(--line); }
+    .feature:first-child { border-top: 0; }
+    .num { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: var(--green); color: #fff; font-weight: 850; }
+    .feature p { margin-top: 4px; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+    .split-demo { position: relative; display: grid; grid-template-columns: 1fr 8px 1fr; min-height: 410px; padding: 16px; border-radius: 24px; background: #183d2e; box-shadow: var(--shadow); }
+    .pane { padding: 24px; border-radius: 15px; background: var(--surface); }
+    .divider { width: 3px; height: 85%; place-self: center; border-radius: 8px; background: var(--lime); box-shadow: 0 0 0 5px rgba(220,237,176,.14); }
+    .floating-key { position: absolute; right: 26px; bottom: 24px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.24); border-radius: 10px; background: rgba(23,35,29,.9); color: white; font: 700 12px ui-monospace, SFMono-Regular, monospace; }
+
+    .map { position: relative; min-height: 430px; display: grid; place-items: center; }
+    .center-node { z-index: 2; display: grid; place-items: center; width: 150px; height: 150px; border-radius: 50%; background: var(--green); color: white; box-shadow: 0 22px 50px rgba(29,105,73,.28); font-size: 22px; font-weight: 850; }
+    .orbit { position: absolute; width: 122px; padding: 17px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,247,.9); box-shadow: 0 15px 35px rgba(23,35,29,.09); text-align: center; font-weight: 800; }
+    .orbit small { display: block; margin-top: 6px; color: var(--muted); font-weight: 550; }
+    .o1 { transform: translate(-170px,-120px); }
+    .o2 { transform: translate(180px,-100px); }
+    .o3 { transform: translate(-175px,125px); }
+    .o4 { transform: translate(175px,130px); }
+    .ring { position: absolute; width: 360px; height: 360px; border: 1px dashed rgba(29,105,73,.32); border-radius: 50%; animation: rotate 24s linear infinite; }
+
+    .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px; min-height: 420px; border-radius: 24px; background: #e2e8de; box-shadow: var(--shadow); }
+    .column { padding: 14px; border-radius: 16px; background: rgba(255,253,247,.82); }
+    .col-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 12px; font-weight: 850; }
+    .count { display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%; background: #e5eadf; color: var(--muted); }
+    .card { padding: 14px; margin-top: 10px; border: 1px solid var(--line); border-radius: 12px; background: white; box-shadow: 0 8px 18px rgba(23,35,29,.07); font-size: 11px; line-height: 1.35; }
+    .card b { display: block; margin-bottom: 8px; font-size: 12px; }
+    .card.highlight { border-color: var(--coral); transform: rotate(-2deg); animation: float 3s ease-in-out infinite; }
+    .tag { display: inline-block; margin-top: 7px; padding: 3px 7px; border-radius: 20px; background: var(--lime); color: #31523e; font-size: 9px; font-weight: 800; }
+
+    .closing-grid { grid-template-columns: 1fr 1fr; gap: 5vw; }
+    .metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .metric { min-height: 150px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: rgba(255,253,247,.75); }
+    .metric strong { display: block; margin-bottom: 10px; color: var(--green); font-size: clamp(26px, 3vw, 44px); letter-spacing: -.05em; }
+    .metric span { color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .cta { margin-top: 28px; display: inline-flex; align-items: center; gap: 10px; padding: 13px 18px; border-radius: 14px; background: var(--ink); color: white; font-weight: 800; }
+    .cta::after { content: "↗"; color: var(--lime); font-size: 20px; }
+
+    .footer { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding-right: 112px; font-size: 12px; color: var(--muted); }
+    .brand { color: var(--green); font-weight: 900; letter-spacing: .12em; }
+    .nav { position: fixed; z-index: 20; right: 34px; bottom: 28px; display: flex; gap: 8px; }
+    .nav button { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.3); border-radius: 50%; background: rgba(23,35,29,.88); color: white; cursor: pointer; transition: transform .2s, background .2s; }
+    .nav button:hover { transform: translateY(-2px); background: var(--green); }
+    .progress { position: fixed; z-index: 20; left: 0; bottom: 0; width: 100%; height: 5px; background: rgba(23,35,29,.08); }
+    .progress span { display: block; width: 20%; height: 100%; background: var(--coral); transition: width .45s ease; }
+
+    .reveal { opacity: 0; transform: translateY(18px); }
+    .active .reveal { animation: reveal .65s ease forwards; animation-delay: var(--delay, .12s); }
+    @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes rotate { to { transform: rotate(360deg); } }
+    @keyframes float { 50% { transform: rotate(-2deg) translateY(-7px); } }
+
+    @media (max-width: 800px) {
+      .slide { padding: 34px 28px 74px; overflow: auto; }
+      .hero-grid, .two-col, .reverse, .closing-grid { grid-template-columns: 1fr; gap: 28px; }
+      .slide-body { align-items: start; }
+      .app-window, .split-demo, .map, .board { min-height: 320px; }
+      .window-body { min-height: 280px; }
+      .board { grid-template-columns: repeat(2, 1fr); }
+      .map { transform: scale(.78); margin: -35px; }
+      .footer { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-live="polite">
+    <section class="slide active" aria-label="1. 표지">
+      <div class="eyebrow reveal">Web Notepad · v1.8.9</div>
+      <div class="slide-body hero-grid">
+        <div class="hero-copy">
+          <h1 class="reveal" style="--delay:.16s">Web<br><span class="accent">Notepad</span></h1>
+          <p class="lead reveal" style="--delay:.28s">빠른 노트 편집과 상태별 작업 관리를 한 화면에서 제공합니다. 기록한 내용을 그룹으로 정리하고 필요한 순간에 다시 찾을 수 있습니다.</p>
+          <div class="pill-row reveal" style="--delay:.4s"><span class="pill">빠른 기록</span><span class="pill">멀티 패널</span><span class="pill">그룹 관리</span><span class="pill">대시보드</span></div>
+        </div>
+        <div class="app-window reveal" style="--delay:.24s" aria-label="노트패드 화면 모형">
+          <div class="window-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="window-body">
+            <aside class="mini-side"><strong>NOTEPAD</strong><div class="side-line on"></div><div class="side-line"></div><div class="side-line"></div><div class="side-line"></div></aside>
+            <div class="editor"><div class="tabs"><span class="tab on">아이디어</span><span class="tab">프로젝트</span><span class="tab">오늘</span></div><div class="note-title"></div><div class="text-line"></div><div class="text-line"></div><div class="text-line"></div><div class="text-line"></div><span class="cursor"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span class="brand">NOTEPAD</span><span>01 / 05</span></div>
+    </section>
+
+    <section class="slide" aria-label="2. 편집 경험">
+      <div class="eyebrow reveal">01 · Write without friction</div>
+      <div class="slide-body two-col">
+        <div>
+          <h2 class="reveal">탭과<br><span class="accent">분할 편집</span></h2>
+          <div class="feature-stack reveal" style="--delay:.22s">
+            <div class="feature"><span class="num">A</span><div><h3>탭 중심 편집</h3><p>여러 노트를 빠르게 전환하고 색상·고정·북마크로 맥락을 유지합니다.</p></div></div>
+            <div class="feature"><span class="num">B</span><div><h3>분할 패널</h3><p>두 노트를 동시에 열고 경계를 직접 조절해 비교와 정리를 단축합니다.</p></div></div>
+            <div class="feature"><span class="num">C</span><div><h3>키보드 흐름</h3><p>새 탭, 검색, 패널 이동 등 반복 작업을 단축키로 이어갑니다.</p></div></div>
+          </div>
+        </div>
+        <div class="split-demo reveal" style="--delay:.18s">
+          <div class="pane"><div class="tabs"><span class="tab on">회의 메모</span></div><div class="note-title" style="width:70%"></div><div class="text-line"></div><div class="text-line"></div><div class="text-line"></div><div class="text-line"></div></div>
+          <div class="divider"></div>
+          <div class="pane"><div class="tabs"><span class="tab on">실행 항목</span></div><div class="note-title" style="width:48%"></div><div class="text-line"></div><div class="text-line"></div><div class="text-line"></div><div class="text-line"></div></div>
+          <span class="floating-key">⌘ + \</span>
+        </div>
+      </div>
+      <div class="footer"><span class="brand">NOTEPAD</span><span>02 / 05</span></div>
+    </section>
+
+    <section class="slide" aria-label="3. 그룹과 탐색">
+      <div class="eyebrow reveal">02 · Organize your context</div>
+      <div class="slide-body two-col reverse">
+        <div class="map reveal" style="--delay:.18s" aria-label="정보 구조 도식">
+          <div class="ring"></div><div class="center-node">NOTES</div>
+          <div class="orbit o1">그룹<small>업무·개인·아이디어</small></div>
+          <div class="orbit o2">검색<small>전체 맥락 탐색</small></div>
+          <div class="orbit o3">북마크<small>중요 노트 고정</small></div>
+          <div class="orbit o4">Closed<small>닫은 탭 복원</small></div>
+        </div>
+        <div>
+          <h2 class="reveal">그룹과<br><span class="accent">통합 검색</span></h2>
+          <p class="lead reveal" style="--delay:.22s">그룹은 노트를 맥락별로 묶고, 검색과 북마크는 필요한 순간까지의 거리를 줄입니다. 닫은 탭 기록은 실수도 되돌릴 수 있게 합니다.</p>
+          <div class="pill-row reveal" style="--delay:.34s"><span class="pill">All Group</span><span class="pill">Ungrouped</span><span class="pill">정렬</span><span class="pill">접기·펼치기</span><span class="pill">상태 기억</span></div>
+        </div>
+      </div>
+      <div class="footer"><span class="brand">NOTEPAD</span><span>03 / 05</span></div>
+    </section>
+
+    <section class="slide" aria-label="4. 대시보드">
+      <div class="eyebrow reveal">03 · Turn notes into momentum</div>
+      <div class="slide-body two-col">
+        <div>
+          <h2 class="reveal">상태별<br><span class="coral">대시보드</span></h2>
+          <p class="lead reveal" style="--delay:.22s">대시보드는 노트를 상태별 카드로 펼칩니다. 드래그 한 번으로 흐름을 바꾸고, 전체화면에서는 작업의 큰 그림에 집중합니다.</p>
+          <div class="pill-row reveal" style="--delay:.34s"><span class="pill">카드 드래그</span><span class="pill">그룹 필터</span><span class="pill">전체화면</span><span class="pill">모바일 대응</span></div>
+        </div>
+        <div class="board reveal" style="--delay:.18s" aria-label="칸반 대시보드 모형">
+          <div class="column"><div class="col-head">Note <span class="count">2</span></div><div class="card"><b>런칭 메시지</b>핵심 가치 한 문장 정리<span class="tag">Marketing</span></div><div class="card"><b>사용자 피드백</b>모바일 진입 동선 확인</div></div>
+          <div class="column"><div class="col-head">To Do <span class="count">2</span></div><div class="card highlight"><b>온보딩 개선</b>첫 노트 생성 경험 단축<span class="tag">Product</span></div><div class="card"><b>키보드 가이드</b>단축키 진입점 추가</div></div>
+          <div class="column"><div class="col-head">Doing <span class="count">1</span></div><div class="card"><b>그룹 메뉴</b>정렬과 상태 저장 검증<span class="tag">UX</span></div></div>
+          <div class="column"><div class="col-head">Done <span class="count">2</span></div><div class="card"><b>분할 편집</b>패널 리사이즈 완료</div><div class="card"><b>통합 검색</b>노트 탐색 완료</div></div>
+        </div>
+      </div>
+      <div class="footer"><span class="brand">NOTEPAD</span><span>04 / 05</span></div>
+    </section>
+
+    <section class="slide" aria-label="5. 안정성과 확장성">
+      <div class="eyebrow reveal">04 · Built to stay dependable</div>
+      <div class="slide-body closing-grid">
+        <div>
+          <h2 class="reveal">반응형 화면과<br><span class="accent">상태 복원</span></h2>
+          <p class="lead reveal" style="--delay:.22s">반응형 화면, 상태 복원, 테마·글자 크기 설정, 요구사항과 연결된 E2E 검증으로 매일 쓰는 도구의 신뢰를 쌓습니다.</p>
+          <div class="cta reveal" style="--delay:.34s">기록에서 실행까지, 한 화면에서</div>
+        </div>
+        <div class="metrics reveal" style="--delay:.2s">
+          <div class="metric"><strong>01</strong><span>모바일과 PC를 아우르는 반응형 경험</span></div>
+          <div class="metric"><strong>02</strong><span>새로고침 후에도 이어지는 작업 상태</span></div>
+          <div class="metric"><strong>03</strong><span>PRD와 일대일로 연결된 E2E 검증 구조</span></div>
+          <div class="metric"><strong>04</strong><span>카카오 로그인으로 확장되는 개인 작업공간</span></div>
+        </div>
+      </div>
+      <div class="footer"><span class="brand">NOTEPAD</span><span>05 / 05</span></div>
+    </section>
+  </main>
+
+  <div class="nav" aria-label="슬라이드 이동">
+    <button type="button" id="prev" aria-label="이전 슬라이드">←</button>
+    <button type="button" id="next" aria-label="다음 슬라이드">→</button>
+  </div>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const progress = document.getElementById('progress');
+    let current = 0;
+
+    function show(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === current);
+        slide.classList.toggle('before', i < current);
+        slide.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+      });
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      history.replaceState(null, '', `#${current + 1}`);
+    }
+
+    document.getElementById('prev').addEventListener('click', () => show(current - 1));
+    document.getElementById('next').addEventListener('click', () => show(current + 1));
+    window.addEventListener('hashchange', () => {
+      const requested = Number(location.hash.slice(1)) - 1;
+      if (Number.isInteger(requested) && requested >= 0 && requested < slides.length && requested !== current) show(requested);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (['ArrowRight', 'PageDown', ' '].includes(event.key)) { event.preventDefault(); show(current + 1); }
+      if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); show(current - 1); }
+      if (event.key === 'Home') show(0);
+      if (event.key === 'End') show(slides.length - 1);
+    });
+
+    const initial = Number(location.hash.slice(1)) - 1;
+    show(Number.isInteger(initial) && initial >= 0 ? initial : 0);
+  </script>
+</body>
+</html>
