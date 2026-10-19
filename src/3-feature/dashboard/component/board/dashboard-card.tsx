@@ -74,8 +74,35 @@ export function DashboardCard({
     const touch = event.touches[0];
     const identifier = touch.identifier;
     const origin = { x: touch.clientX, y: touch.clientY };
+    const scrollList = event.currentTarget.closest<HTMLElement>(".dashboard-list");
     let started = false;
     let overStatus: TabStatus | null = null;
+    let lastPoint = origin;
+    let scrollFrame: number | null = null;
+    const updateTarget = () => {
+      const column = document.elementFromPoint(lastPoint.x, lastPoint.y)?.closest<HTMLElement>(".dashboard-column[data-status]");
+      overStatus = (column?.dataset.status as TabStatus | undefined) ?? null;
+      onTouchDragOver(overStatus);
+    };
+    const scrollAtEdge = () => {
+      scrollFrame = null;
+      if (!scrollList || !started) return;
+      const bounds = scrollList.getBoundingClientRect();
+      if (lastPoint.x < bounds.left || lastPoint.x > bounds.right) return;
+      const edge = 64;
+      const direction = lastPoint.y < bounds.top + edge
+        ? -Math.min(1, (bounds.top + edge - lastPoint.y) / edge)
+        : lastPoint.y > bounds.bottom - edge
+          ? Math.min(1, (lastPoint.y - (bounds.bottom - edge)) / edge)
+          : 0;
+      if (!direction) return;
+      const before = scrollList.scrollTop;
+      scrollList.scrollTop += direction * 14;
+      if (scrollList.scrollTop !== before) {
+        updateTarget();
+        scrollFrame = requestAnimationFrame(scrollAtEdge);
+      }
+    };
     let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
       started = true;
       timer = null;
@@ -86,6 +113,7 @@ export function DashboardCard({
     }, 300);
     const clear = () => {
       if (timer) clearTimeout(timer);
+      if (scrollFrame !== null) cancelAnimationFrame(scrollFrame);
       window.removeEventListener("touchmove", move);
       window.removeEventListener("touchend", end);
       window.removeEventListener("touchcancel", cancel);
@@ -101,9 +129,9 @@ export function DashboardCard({
         return;
       }
       moveEvent.preventDefault();
-      const column = document.elementFromPoint(point.clientX, point.clientY)?.closest<HTMLElement>(".dashboard-column[data-status]");
-      overStatus = (column?.dataset.status as TabStatus | undefined) ?? null;
-      onTouchDragOver(overStatus);
+      lastPoint = { x: point.clientX, y: point.clientY };
+      updateTarget();
+      if (scrollFrame === null) scrollFrame = requestAnimationFrame(scrollAtEdge);
     };
     const end = (endEvent: TouchEvent) => {
       if (!Array.from(endEvent.changedTouches).some((item) => item.identifier === identifier)) return;

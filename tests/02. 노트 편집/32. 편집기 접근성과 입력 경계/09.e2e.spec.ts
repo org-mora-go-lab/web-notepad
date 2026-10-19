@@ -1,10 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("9. Tab 키는 편집기에 탭 문자를 삽입한다", async ({ page }) => {
+test("9. 첫 줄이 비어 있어도 다음 유효한 줄을 탭 제목으로 사용한다", async ({ page }) => {
   await page.goto("/");
-  const editor = page.locator("textarea");
-  await editor.fill("ab");
-  await editor.press("End");
-  await editor.press("Tab");
-  await expect(editor).toHaveValue("ab\t");
+  await page.locator("textarea").fill("\nsecond line");
+  await expect(page.locator(".tab-title")).toHaveText("second line");
 });

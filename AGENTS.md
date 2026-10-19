@@ -14,7 +14,7 @@ After completing code changes, suggest a Korean commit message that matches the 
 
 ## E2E Test Structure
 
-Keep the E2E suite at exactly 400 independently registered test cases. Prioritize data integrity, core user flows, accessibility, and confirmed regressions. Replace redundant or low-value coverage when adding a necessary case; do not pad the count or combine unrelated scenarios just to meet the limit. Keep product behavior and untested visual specifications intact when removing a test.
+Keep the E2E suite focused on independently testable behavior. Prioritize data integrity, core user flows, accessibility, and confirmed regressions. Remove redundant coverage without padding the count or combining unrelated scenarios. Keep product behavior and untested visual specifications intact when removing a test.
 
 Every E2E test code file (`*.e2e.spec.ts`) must contain exactly one top-level `test(...)` declaration and register exactly one test case. Do not generate multiple tests from loops or parameterized declarations in one file. Split separate scenarios into their own numbered PRD requirements and matching E2E files. Shared resource files must not declare tests.
 
