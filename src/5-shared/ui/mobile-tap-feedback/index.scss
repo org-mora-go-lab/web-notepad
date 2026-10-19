@@ -5,19 +5,19 @@
   display: block;
   margin: 0;
   padding: 0;
-  border: 1px solid color-mix(in srgb, var(--color-signal) 40%, transparent);
+  border: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, transparent 25%, color-mix(in srgb, var(--color-signal) 22%, transparent) 70%);
+  background: color-mix(in srgb, var(--color-ink) 14%, transparent);
   pointer-events: none;
   user-select: none;
-  animation: mobile-tap-wave 292ms ease-out forwards;
+  animation: mobile-tap-press 180ms ease-out forwards;
 
   &::backdrop { background: transparent; pointer-events: none; }
 }
 
-@keyframes mobile-tap-wave {
-  from { transform: scale(0.224); opacity: 0.8; }
-  to { transform: scale(0.768); opacity: 0; }
+@keyframes mobile-tap-press {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
