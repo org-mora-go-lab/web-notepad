@@ -14,6 +14,7 @@ test("9. 모바일에서 Icebox와 Closed를 반복 전환해도 상태 영역�
   const columns = panel.locator(".dashboard-column");
   const icebox = panel.locator(".dashboard-icebox-command");
   const closed = panel.locator(".dashboard-closed-command");
+  await icebox.click();
 
   const expectSingleColumn = async (count: number) => {
     await expect(columns).toHaveCount(count);

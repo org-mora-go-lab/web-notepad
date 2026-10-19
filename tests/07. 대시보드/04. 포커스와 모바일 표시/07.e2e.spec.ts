@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { openPanel } from "../../__util__";
+import { openPanel, toggleDashboardStatus } from "../../__util__";
 import { dashboardColumn, dashboardPanel, seedDashboardTabs } from "../../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
@@ -10,6 +10,7 @@ test("7. 모바일 카드를 화면 밖 상태까지 자동 스크롤해 옮겨�
   await seedDashboardTabs(page);
   await page.setViewportSize({ width: 390, height: 500 });
   await openPanel(page, "dashboard-panel");
+  await toggleDashboardStatus(page, "icebox");
 
   const card = dashboardColumn(page, "todo").locator(".dashboard-card", { hasText: "Alpha task" });
   const source = (await card.boundingBox())!;

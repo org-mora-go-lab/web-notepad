@@ -27,7 +27,7 @@ test("1. PC와 모바일에서 우측 세로 점 메뉴로 상태를 전환하�
     expect(menuBox.x + menuBox.width).toBeLessThanOrEqual(viewport.width);
     for (const status of ["icebox", "closed"] as const) {
       const command = menu.locator(`.dashboard-${status}-command`);
-      const initiallyVisible = status === "icebox";
+      const initiallyVisible = false;
       await expect(command).toHaveAttribute("aria-pressed", String(initiallyVisible));
       await command.click();
       await expect(menu).toBeVisible();
