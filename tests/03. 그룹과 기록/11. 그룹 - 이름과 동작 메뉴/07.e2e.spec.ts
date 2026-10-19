@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { createGroup, groupActionsButton, groupsCommand } from "../../__util__";
+import { createGroup, groupActionsButton, groupsCommand, moreCommand } from "../../__util__";
 
 test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·북마크·수정·삭제 명령을 연다", async ({ page }) => {
   await page.goto("/");
@@ -21,4 +21,27 @@ test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·북마크·수정·삭제
   }
   expect(tops[0]).toBeLessThan(tops[1]);
   expect(tops[1]).toBeLessThan(tops[2]);
+
+  const surfaceProperties = ["background-color", "border", "border-radius", "box-shadow", "padding"];
+  const itemProperties = ["min-height", "padding", "border", "border-radius", "font-size", "gap", "align-items"];
+  const groupSurface = await page.locator(".group-action-dropdown").evaluate((element, properties) => {
+    const style = getComputedStyle(element);
+    return properties.map((property) => style.getPropertyValue(property));
+  }, surfaceProperties);
+  const groupItem = await page.getByRole("button", { name: actions[0], exact: true }).evaluate((element, properties) => {
+    const style = getComputedStyle(element);
+    return properties.map((property) => style.getPropertyValue(property));
+  }, itemProperties);
+
+  await moreCommand(page).click();
+  const menu = page.locator(".footer-more-menu");
+  await expect(menu).toBeVisible();
+  expect(await menu.evaluate((element, properties) => {
+    const style = getComputedStyle(element);
+    return properties.map((property) => style.getPropertyValue(property));
+  }, surfaceProperties)).toEqual(groupSurface);
+  expect(await menu.locator("button").first().evaluate((element, properties) => {
+    const style = getComputedStyle(element);
+    return properties.map((property) => style.getPropertyValue(property));
+  }, itemProperties)).toEqual(groupItem);
 });
