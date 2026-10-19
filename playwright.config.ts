@@ -19,7 +19,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev -- -p 3100",
+    command: "npm run dev",
     env: {
       KAKAO_REST_API_KEY: "test-rest-key",
       KAKAO_REDIRECT_URI: "http://localhost:3100/api/auth/oauth/kakao/callback",
