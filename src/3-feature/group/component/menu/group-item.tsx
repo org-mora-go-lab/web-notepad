@@ -30,6 +30,13 @@ export function GroupItem({
   const [editingName, setEditingName] = useState<string | null>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const [menuPosition, setMenuPosition] = useState({ left: 0, top: 0 });
+  const positionActions = (anchor: HTMLElement) => {
+    const rect = anchor.getBoundingClientRect();
+    setMenuPosition({
+      left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
+      top: rect.bottom + 8 + 128 > window.innerHeight ? rect.top - 136 : rect.bottom + 8,
+    });
+  };
 
   useEffect(() => {
     if (!actionsOpen) return;
@@ -104,6 +111,7 @@ export function GroupItem({
       data-pinned={pinned}
       className={`group-item ${active ? "is-active" : ""} ${dragging ? "is-dragging" : ""} ${dropTarget ? "is-drop-target" : ""}`}
       onPointerDown={(event) => {
+        if (event.button !== 0) return;
         const target = event.target as Element;
         if (target.closest(".group-actions, .group-reorder")) return;
         onReorderStart(event);
@@ -134,6 +142,12 @@ export function GroupItem({
           }
           onSelect();
         }}
+        onContextMenu={(event) => {
+          if (!editable || window.matchMedia("(max-width: 512px)").matches) return;
+          event.preventDefault();
+          positionActions(event.currentTarget);
+          if (!actionsOpen) onToggleActions();
+        }}
       >
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>
@@ -154,11 +168,7 @@ export function GroupItem({
             aria-controls={`group-actions-${groupId}`}
             title={t.groupActions}
             onClick={(event) => {
-              const rect = event.currentTarget.getBoundingClientRect();
-              setMenuPosition({
-                left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
-                top: rect.bottom + 8 + 128 > window.innerHeight ? rect.top - 136 : rect.bottom + 8,
-              });
+              positionActions(event.currentTarget);
               onToggleActions();
             }}
           >

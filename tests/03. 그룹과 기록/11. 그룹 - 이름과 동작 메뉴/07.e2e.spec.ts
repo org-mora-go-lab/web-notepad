@@ -13,6 +13,10 @@ test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·수정·삭제 명령을 
   for (const name of actions) {
     const button = page.getByRole("button", { name, exact: true });
     await expect(button).toBeVisible();
+    const icon = (await button.locator("svg").boundingBox())!;
+    const label = (await button.locator("span").boundingBox())!;
+    expect(label.x).toBeGreaterThan(icon.x + icon.width);
+    expect(Math.abs(label.y + label.height / 2 - icon.y - icon.height / 2)).toBeLessThan(2);
     tops.push((await button.boundingBox())!.y);
   }
   expect(tops[0]).toBeLessThan(tops[1]);
