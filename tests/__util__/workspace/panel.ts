@@ -10,7 +10,7 @@ export async function openBookmarksPanel(page: Page) {
   await groupsCommand(page).click();
   const activeGroup = page.locator("[data-group-id].is-active");
   await activeGroup.locator(".group-actions > button").click();
-  await activeGroup.getByRole("button", { name: /BOOKMARK|북마크/i }).click();
+  await activeGroup.getByRole("button", { name: /Bookmark|북마크/i }).click();
   await expect(groupsCommand(page)).toHaveAttribute("aria-expanded", "false");
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
 }
