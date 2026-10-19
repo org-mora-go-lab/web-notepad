@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../../__fixture__";
-import { bookmarksCommand, seedStoredStateOnLoad } from "../../../__util__";
+import { openBookmarksPanel, seedStoredStateOnLoad } from "../../../__util__";
 
 // Seeds a short-titled and a long-titled bookmark created at 2026-10-11 11:30 UTC and opens the bookmark panel.
 export async function seedTimedBookmarks(page: Page) {
@@ -20,5 +20,5 @@ export async function seedTimedBookmarks(page: Page) {
       })),
     })],
   });
-  await bookmarksCommand(page).click();
+  await openBookmarksPanel(page);
 }

@@ -12,7 +12,7 @@ export type GroupItemProps = {
   // The default and virtual groups only support selecting.
   editable: boolean;
   muted: boolean;
-  // Pin / edit / delete appear in place of the … button once it is pressed.
+  // Pin / edit / delete appear in a dropdown opened by the … button.
   actionsOpen: boolean;
   onToggleActions: () => void;
   onSelect: () => void;

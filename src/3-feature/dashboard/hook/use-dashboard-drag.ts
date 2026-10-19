@@ -23,6 +23,7 @@ export function useDashboardDrag({
     event.dataTransfer.setData("text/plain", tabId);
     setDraggingTabId(tabId);
   };
+  const startTouchDrag = (tabId: string) => setDraggingTabId(tabId);
   const moveToStatus = (itemId: string, status: TabStatus) => {
     if (visibleTabs.some((item) => item.id === itemId))
       onChangeStatus(itemId, status);
@@ -37,7 +38,12 @@ export function useDashboardDrag({
     overStatus,
     setOverStatus,
     startDrag,
+    startTouchDrag,
     moveToStatus,
+    touchDrop: (tabId: string, status: TabStatus | null) => {
+      if (status) moveToStatus(tabId, status);
+      endDrag();
+    },
     endDrag,
     drop,
   };

@@ -6,7 +6,7 @@ import {
   workspaceBounds,
 } from "../../04. 패널과 검색/__util__";
 
-test("5. 넓은 고정 패널로 작업 영역이 좁아지면 북마크와 대시보드 라벨만 숨긴다", async ({
+test("5. 넓은 고정 패널로 작업 영역이 좁아지면 더보기와 대시보드 라벨만 숨긴다", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 844 });
@@ -19,7 +19,7 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 북마크와 대�
   const commands = footer.locator(".status-command");
   await expect(footer.locator(".current-group-panel")).toBeHidden();
   await expect(footer.locator(".group-select-name")).toBeVisible();
-  await expect(footer.locator(".bookmark-command > .status-label")).toBeHidden();
+  await expect(footer.locator(".more-command > .status-label")).toBeHidden();
   await expect(footer.locator(".dashboard-command > .status-label")).toBeHidden();
   for (const command of await commands.all())
     expect((await command.boundingBox())!.height).toBeCloseTo(35, 1);
@@ -28,7 +28,7 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 북마크와 대�
   await expect.poll(async () => (await workspaceBounds(page)).width).toBeGreaterThan(512);
   await expect(footer.locator(".current-group-panel")).toBeHidden();
   await expect(footer.locator(".group-select-name")).toBeVisible();
-  await expect(footer.locator(".bookmark-command > .status-label")).toBeVisible();
+  await expect(footer.locator(".more-command > .status-label")).toBeVisible();
   await expect(footer.locator(".dashboard-command > .status-label")).toBeVisible();
   for (const command of await commands.all())
     expect((await command.boundingBox())!.height).toBeCloseTo(35, 1);

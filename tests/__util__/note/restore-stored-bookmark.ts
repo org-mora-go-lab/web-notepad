@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
 import { seedStoredStateOnLoad } from "../state";
-import { bookmarksCommand } from "../workspace";
+import { openBookmarksPanel } from "../workspace";
 
 type BookmarkMetadata = {
   tabColor?: string;
@@ -26,6 +26,6 @@ export async function restoreStoredBookmark(page: Page, { tabColor, selectedLine
       }],
     }],
   });
-  await bookmarksCommand(page).click();
+  await openBookmarksPanel(page);
   await page.getByRole("button", { name: "Open", exact: true }).click();
 }

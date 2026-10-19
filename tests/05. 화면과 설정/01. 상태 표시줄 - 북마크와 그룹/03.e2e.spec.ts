@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { groupsCommand } from "../../__util__";
 
-test("3. 하단 그룹 버튼은 PC에서 그룹명을 함께 표시하고 모바일은 아이콘과 GROUP을 표시한다", async ({ page }) => {
+test("3. 하단 왼쪽 그룹 버튼은 PC에서 그룹명을 함께 표시하고 모바일은 아이콘과 GROUP을 표시한다", async ({ page }) => {
   await page.goto("/");
   const command = groupsCommand(page);
   for (const viewport of BOTH_VIEWPORTS) {
@@ -12,6 +12,11 @@ test("3. 하단 그룹 버튼은 PC에서 그룹명을 함께 표시하고 모�
     await expect(command.locator(".status-count")).toHaveCount(0);
     await expect(page.locator(".group-status-command")).toHaveCount(0);
     await expect(command).toHaveAttribute("aria-label", "Toggle groups");
+    const groupBox = (await command.boundingBox())!;
+    const moreBox = (await page.locator(".more-command").boundingBox())!;
+    const dashboardBox = (await page.locator(".dashboard-command").boundingBox())!;
+    expect(groupBox.x).toBeLessThan(moreBox.x);
+    expect(groupBox.x).toBeLessThan(dashboardBox.x);
 
     if (viewport.width <= 512) {
       await expect(command).toHaveCSS("gap", "4px");

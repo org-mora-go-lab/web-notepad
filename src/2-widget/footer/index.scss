@@ -107,7 +107,7 @@
     display: none;
   }
 
-  // The group command follows the other footer commands on the right.
+  // Keep the group command at the left edge of the footer.
   .group-select-command {
     gap: 7px;
 
@@ -116,13 +116,49 @@
     }
   }
 
-  .bookmark-command {
+  .dashboard-command {
     margin-left: auto;
   }
 
-  .bookmark-command,
-  .dashboard-command {
+  .dashboard-command,
+  .more-command {
     --status-icon-growth: 1px;
+  }
+
+  .footer-more {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .footer-more-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 7px);
+    z-index: 70;
+    min-width: 160px;
+    padding: 5px;
+    border: 1px solid v.$line;
+    border-radius: 6px;
+    background: v.$raised;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+    button {
+      width: 100%;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: v.$ink;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+
+      &:hover, &:focus-visible { background: v.$line; }
+    }
   }
 
   .status-command > span.group-select-name {
@@ -192,8 +228,8 @@
 
     // Mobile footer commands use the same icon-over-label layout.
     .group-select-command,
-    .bookmark-command,
-    .dashboard-command {
+    .dashboard-command,
+    .more-command {
       flex-direction: column;
       justify-content: center;
       gap: 4px;
@@ -207,18 +243,23 @@
     }
 
     .group-select-command {
-      grid-column: 3;
+      grid-column: 1;
 
       .group-current-value { display: none; }
     }
 
-    .bookmark-command {
-      grid-column: 1;
+    .dashboard-command {
+      grid-column: 2;
       margin-left: 0;
     }
 
-    .dashboard-command {
-      grid-column: 2;
+    .footer-more {
+      grid-column: 3;
+      min-width: 0;
+    }
+
+    .footer-more-menu {
+      min-width: 140px;
     }
 
     .status-command > span.group-select-name {
@@ -240,8 +281,8 @@
 @media (min-width: 513px) {
   @container workspace (max-width: 512px) {
     .footer {
-      .bookmark-command > .status-label,
-      .dashboard-command > .status-label {
+      .dashboard-command > .status-label,
+      .more-command > .status-label {
         display: none;
       }
     }

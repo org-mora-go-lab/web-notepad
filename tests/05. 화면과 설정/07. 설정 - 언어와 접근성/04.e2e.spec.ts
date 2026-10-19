@@ -2,9 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import {
-  bookmarksCommand,
   groupsCommand,
   groupStatusName,
+  moreCommand,
   openHeaderMenu,
   openSettingsPanel,
   readStoredState,
@@ -29,7 +29,7 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
     "데이터",
   ]);
   await expect(panel.locator(".setting-hint")).toContainText("새 탭은 첫 번째 색상으로 시작합니다.그레이 → 인디고 → 틸");
-  await expect(bookmarksCommand(page).locator(".status-label")).toHaveText("북마크");
+  await expect(moreCommand(page).locator(".status-label")).toHaveText("더보기");
   await expect(page.locator(".additional-tools-trigger")).toHaveAccessibleName("메뉴");
   await expect(page.locator(".note-area")).toHaveAttribute("placeholder", "메모를 입력하세요..");
 
@@ -56,7 +56,7 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await openSettingsPanel(page);
   await languageRadio(page, "English").check();
   await expect(panel.locator("h2")).toHaveText("Settings");
-  await expect(bookmarksCommand(page).locator(".status-label")).toHaveText("BOOKMARK");
+  await expect(moreCommand(page).locator(".status-label")).toHaveText("MORE");
   await expect(groupStatusName(page)).toHaveText("Ungrouped");
   await page.getByRole("button", { name: "Close Settings" }).click();
   await groupsCommand(page).click();

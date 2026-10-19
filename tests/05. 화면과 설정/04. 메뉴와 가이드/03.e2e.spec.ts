@@ -9,4 +9,5 @@ test("3. 헤더 MENU의 GUIDE는 User Guide 팝업을 연다", async ({ page }) 
   const guide = page.getByRole("dialog");
   await expect(guide).toBeVisible();
   await expect(guide.getByRole("heading", { name: "User Guide" })).toBeVisible();
+  await expect(page.locator(".user-guide-progress")).toHaveText("1 / 11");
 });

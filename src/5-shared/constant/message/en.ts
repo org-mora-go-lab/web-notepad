@@ -11,6 +11,7 @@ export const en = {
   kakaoLogin: "Continue with Kakao",
   logout: "Log out",
   bookmark: "BOOKMARK",
+  more: "MORE",
   dashboard: "DASHBOARD",
   dashboardTitle: "Dashboard",
   dashboardOptions: "Dashboard options",

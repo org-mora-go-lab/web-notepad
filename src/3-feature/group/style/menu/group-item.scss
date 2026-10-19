@@ -81,6 +81,36 @@
       gap: 2px;
     }
 
+    .group-action-dropdown {
+      position: fixed;
+      z-index: 60;
+      width: 164px;
+      display: grid;
+      gap: 2px;
+      padding: 5px;
+      border: 1px solid v.$line;
+      border-radius: 6px;
+      background: v.$raised;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+      button {
+        width: 100%;
+        min-height: 38px;
+        height: auto;
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 0 10px;
+        border-radius: 4px;
+        color: v.$ink;
+        font-size: v.font(14px);
+        text-align: left;
+
+        &:hover, &:focus-visible { background: v.$line; }
+        svg { flex: 0 0 auto; }
+      }
+    }
+
     .group-pin-indicator {
       align-self: center;
       color: v.$signal;
@@ -164,6 +194,11 @@
           width: 14px * v.$mobile-scale;
           height: 14px * v.$mobile-scale;
         }
+      }
+
+      .group-action-dropdown button {
+        width: 100%;
+        min-height: 44px;
       }
     }
 

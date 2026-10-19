@@ -8,7 +8,13 @@ test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·수정·삭제 명령을 
   await createGroup(page, "Work");
   await groupActionsButton(page, "Work").click();
 
-  await expect(page.getByRole("button", { name: "Pin Work group", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Edit Work group", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Delete Work group", exact: true })).toBeVisible();
+  const actions = ["Pin Work group", "Edit Work group", "Delete Work group"];
+  const tops = [];
+  for (const name of actions) {
+    const button = page.getByRole("button", { name, exact: true });
+    await expect(button).toBeVisible();
+    tops.push((await button.boundingBox())!.y);
+  }
+  expect(tops[0]).toBeLessThan(tops[1]);
+  expect(tops[1]).toBeLessThan(tops[2]);
 });

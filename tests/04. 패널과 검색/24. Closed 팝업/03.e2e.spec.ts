@@ -1,13 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-import { toggleDashboardStatus } from "../../__util__";
 import { dashboardColumn, openPanel, readStoredState } from "../../__util__";
 import { seedClosedPanelState } from "./__fixture__";
 
 test("3. Todo·Doing·Done과 Icebox 사이에서 카드를 자유롭게 이동한다", async ({ page }) => {
   await seedClosedPanelState(page);
   await openPanel(page, "dashboard-panel");
-  await toggleDashboardStatus(page, "icebox");
   const card = (status: "icebox" | "todo" | "in-progress" | "done") =>
     dashboardColumn(page, status).locator(".dashboard-card", {
       hasText: "Open note",

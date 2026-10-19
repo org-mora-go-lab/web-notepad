@@ -1,11 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { dashboardColumn, openPanel, seedDashboardTabs, toggleDashboardStatus } from "../../__util__";
+import { dashboardColumn, openPanel, seedDashboardTabs } from "../../__util__";
 
 test("1. To Do 카드 메뉴 맨 아래의 Note를 선택하면 Note 상태로 이동한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
-  await toggleDashboardStatus(page, "icebox");
   await dashboardColumn(page, "todo").locator(".dashboard-card", { hasText: "Alpha task" }).click({ button: "right" });
   const menu = page.getByRole("menu");
   await expect(menu.getByRole("menuitem").last()).toHaveText("Note");

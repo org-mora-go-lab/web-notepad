@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { bookmarksCommand, seedStoredStateOnLoad } from "../../__util__";
+import { moreCommand, seedStoredStateOnLoad } from "../../__util__";
 
 test("5. 오래된 북마크와 연결된 탭 색상을 바꾸면 BOOKMARK 붉은 점을 표시한다", async ({ page }) => {
   const yesterday = Date.now() - 24 * 60 * 60 * 1000;
@@ -22,7 +22,7 @@ test("5. 오래된 북마크와 연결된 탭 색상을 바꾸면 BOOKMARK 붉�
     })],
   });
 
-  const dot = bookmarksCommand(page).locator(".status-dot");
+  const dot = moreCommand(page).locator(".status-dot");
   await expect(dot).toHaveCount(0);
   await page.locator(".tab-item.is-active .dirty-dot").click();
   await expect(dot).toBeVisible();

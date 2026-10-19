@@ -8,6 +8,8 @@ export {
   groupsCommand,
   groupSelectCommand,
   groupStatusName,
+  moreCommand,
+  openBookmarksPanel,
   openClosedPanel,
   openGlobalSearchPanel,
   openHeaderMenu,

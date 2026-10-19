@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-test("8. 여러 줄 입력은 논리 줄마다 줄 번호를 표시한다", async ({ page }) => {
+test("8. Tab 키는 편집기에 탭 문자를 삽입한다", async ({ page }) => {
   await page.goto("/");
-  await page.locator("textarea").fill("one\ntwo\nthree");
-  await expect(page.locator(".line-rail").getByRole("button")).toHaveCount(3);
+  const editor = page.locator("textarea");
+  await editor.fill("ab");
+  await editor.press("End");
+  await editor.press("Tab");
+  await expect(editor).toHaveValue("ab\t");
 });

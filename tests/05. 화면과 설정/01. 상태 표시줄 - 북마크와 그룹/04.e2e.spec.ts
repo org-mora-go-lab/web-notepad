@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { bookmarksCommand, seedStoredStateOnLoad } from "../../__util__";
+import { moreCommand, seedStoredStateOnLoad } from "../../__util__";
 
 test("4. 오늘 생성·갱신된 북마크가 없으면 붉은 점을 숨기고, 연결된 탭을 오늘 수정하면 다시 표시한다", async ({ page }) => {
   const yesterday = Date.now() - 24 * 60 * 60 * 1000;
@@ -22,8 +22,8 @@ test("4. 오늘 생성·갱신된 북마크가 없으면 붉은 점을 숨기고
     })],
   });
 
-  const dot = bookmarksCommand(page).locator(".status-dot");
-  await expect(bookmarksCommand(page).locator(".status-label")).toBeVisible();
+  const dot = moreCommand(page).locator(".status-dot");
+  await expect(moreCommand(page).locator(".status-label")).toBeVisible();
   await expect(dot).toHaveCount(0);
 
   const editor = page.locator(".note-area");

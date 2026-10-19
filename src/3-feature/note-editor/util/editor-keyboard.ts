@@ -1,6 +1,6 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 
-import { insertAtSelection, isImeComposing } from "./editor-content";
+import { insertAtSelection, isImeComposing, removeTabIndent } from "./editor-content";
 import { restoreEditorHistory } from "./editor-history";
 
 type MutableRef<T> = { current: T };
@@ -77,7 +77,24 @@ export function handleEditorKeyDown(
   // Option+Tab creates a note tab in the workspace shortcut handler.
   // Do not queue the regular Tab insertion: its animation-frame callback can
   // run after the active tab changes and read the new tab's textarea value.
-  if (event.key !== "Tab" || event.altKey || event.shiftKey) return;
+  if (event.key !== "Tab" || event.altKey || event.ctrlKey || event.metaKey) return;
+
+  if (event.shiftKey) {
+    if (isImeComposing(event.nativeEvent, composingRef.current)) return;
+    const textarea = event.currentTarget;
+    const result = removeTabIndent(
+      textarea.value,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+    if (!result) return;
+    event.preventDefault();
+    commitContent(result.content);
+    window.requestAnimationFrame(() => {
+      textarea.setSelectionRange(result.selectionStart, result.selectionEnd);
+    });
+    return;
+  }
 
   event.preventDefault();
   const textarea = event.currentTarget;

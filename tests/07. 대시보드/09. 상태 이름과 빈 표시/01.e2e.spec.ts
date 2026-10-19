@@ -16,7 +16,6 @@ test("1. Edit Status로 수정한 다섯 상태 이름은 해당 그룹에만 �
       settings: { dashboardStatusNames: { todo: "Old global label" } },
     });
     await openPanel(page, "dashboard-panel");
-    await toggleDashboardStatus(page, "icebox");
     await toggleDashboardStatus(page, "closed");
     const panel = dashboardPanel(page);
     const titles = panel.locator(viewport.width <= 512 ? ".dashboard-column-status .dashboard-status-label" : ".dashboard-statuses h3 .dashboard-status-label");
@@ -42,7 +41,6 @@ test("1. Edit Status로 수정한 다섯 상태 이름은 해당 그룹에만 �
     await panel.locator(".side-panel-close").click();
     await switchGroup(page, "Ungrouped");
     await openPanel(page, "dashboard-panel");
-    await toggleDashboardStatus(page, "icebox");
     await toggleDashboardStatus(page, "closed");
     await expect(titles).toHaveText(original);
     await panel.locator(".side-panel-close").click();

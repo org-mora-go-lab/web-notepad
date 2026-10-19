@@ -1,12 +1,18 @@
 import { expect, type Page } from "@playwright/test";
 
-// The group button on the right of the bottom bar (icon + current group name).
+// The group button on the left of the bottom bar (icon + current group name).
 export const groupsCommand = (page: Page) =>
   page.locator(".group-select-command");
 export const groupSelectCommand = (page: Page) =>
   page.locator(".group-select-command");
 export const bookmarksCommand = (page: Page) =>
   page.locator('button[aria-controls="bookmarks-panel"]');
+export const moreCommand = (page: Page) => page.locator(".footer .more-command");
+export async function openBookmarksPanel(page: Page) {
+  await moreCommand(page).click();
+  await bookmarksCommand(page).click();
+  await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
+}
 export const closedCommand = (page: Page) =>
   page.locator('button[aria-controls="closed-popup"]');
 export const groupStatusName = (page: Page) =>
@@ -21,6 +27,10 @@ export async function openHeaderMenu(page: Page) {
 }
 
 export async function openPanel(page: Page, panelId: string) {
+  if (panelId === "bookmarks-panel") {
+    await openBookmarksPanel(page);
+    return;
+  }
   const command = page
     .locator(`button[aria-controls="${panelId}"]:visible`)
     .first();

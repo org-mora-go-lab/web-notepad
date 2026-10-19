@@ -21,6 +21,8 @@ test("1. 우측 상단 메뉴는 가이드·설정·검색·카카오 로그인�
     const menu = page.locator("#additional-tools-menu");
     await expect(menu.getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH"]);
     await expect(menu.getByRole("link", { name: "Continue with Kakao" })).toBeVisible();
+    await expect(menu.getByRole("switch", { name: "THEME" })).toHaveCount(0);
+    await expect(menu.getByRole("button", { name: "SHORTCUT" })).toHaveCount(0);
     await page.keyboard.press("Escape");
   }
 });

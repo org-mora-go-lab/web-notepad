@@ -15,7 +15,7 @@ test("6. 하단 패널 버튼은 X로 닫은 뒤에도 Tab 탐색에서 포커�
 
   const toggle = page.locator('button[aria-controls="dashboard-panel"]:visible');
   await close.click();
-  await page.locator('button[aria-controls="bookmarks-panel"]:visible').focus();
+  await page.locator(".group-select-command").focus();
   await page.keyboard.press("Tab");
 
   await expect(toggle).toBeFocused();
