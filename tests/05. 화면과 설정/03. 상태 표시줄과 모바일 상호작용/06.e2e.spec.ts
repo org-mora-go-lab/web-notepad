@@ -10,15 +10,15 @@ test("6. UI 문구의 선택을 막고 입력과 본문 복사를 위한 선택�
   })] });
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    if (!(await page.locator("#additional-tools-menu").isVisible()))
-      await page.locator(".additional-tools-trigger").click();
+    if (!(await page.locator("#footer-more-menu").isVisible()))
+      await page.locator(".more-command").click();
     await expect(page.locator(".global-search-command")).toHaveCSS("user-select", "none");
     const editor = page.locator("textarea").first();
     await expect(editor).toHaveCSS("user-select", "text");
     await editor.fill("Selectable note");
     await editor.selectText();
     expect(await editor.evaluate((element: HTMLTextAreaElement) => element.value.slice(element.selectionStart, element.selectionEnd))).toBe("Selectable note");
-    await page.locator(".header .global-search-command").click();
+    await page.locator(".footer .global-search-command").click();
     const dialog = page.getByRole("dialog");
     const input = dialog.getByRole("searchbox");
     await expect(input).toHaveCSS("user-select", "text");

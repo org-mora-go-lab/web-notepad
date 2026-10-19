@@ -10,7 +10,6 @@ import { I18nContext } from "@/src/5-shared/hook";
 import { MobileTapFeedback } from "@/src/5-shared/ui";
 
 import { Loading, PaneColumn } from "./component";
-import type { PaneViewProps } from "./type";
 
 export function Home() {
   const {
@@ -37,7 +36,6 @@ export function Home() {
     deleteDashboardTab,
     groups,
     activeGroupName,
-    hasBookmarkUpdateToday,
     hasGroupUpdateToday,
     columns,
     removeBookmark,
@@ -62,22 +60,6 @@ export function Home() {
     document.documentElement.lang = language;
   }, [language]);
 
-  // Header and sidebar commands open their panels.
-  const withMenu = (pane: PaneViewProps): PaneViewProps =>
-    pane.hasMenu
-      ? {
-          ...pane,
-          onOpenSettings: () => {
-            if (openPanel !== "settings") toggleSidePanel("settings");
-          },
-          onOpenShortcuts: () => {
-            if (openPanel !== "shortcuts") toggleSidePanel("shortcuts");
-          },
-          onToggleSearch: () => toggleSidePanel("global-search"),
-          searchOpen: openPanel === "global-search",
-        }
-      : pane;
-
   if (!hydrated || !activeTab) {
     return <Loading />;
   }
@@ -97,21 +79,22 @@ export function Home() {
               <PaneColumn
                 key={column.column}
                 {...column}
-                panes={column.panes.map(withMenu)}
+                panes={column.panes}
               />
             ))}
           </div>
 
           <Footer
-            hasBookmarkUpdateToday={hasBookmarkUpdateToday}
             hasGroupUpdateToday={hasGroupUpdateToday}
-            bookmarksOpen={openPanel === "bookmarks" || backgroundPanel === "bookmarks"}
             dashboardOpen={openPanel === "dashboard" || backgroundPanel === "dashboard"}
             activeGroupName={activeGroupName}
             groupsOpen={groupMenuOpen}
-            onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
             onToggleGroups={toggleGroupMenu}
+            onOpenSettings={() => toggleSidePanel("settings")}
+            onOpenShortcuts={() => toggleSidePanel("shortcuts")}
+            onToggleSearch={() => toggleSidePanel("global-search")}
+            searchOpen={openPanel === "global-search"}
           />
         </section>
 
@@ -146,6 +129,10 @@ export function Home() {
           onDashboardVisibilityChange={(visibility) => setGroupDashboardVisibility(activeGroupId, visibility)}
           onToggleGroupPin={toggleGroupPin}
           onMoveGroup={moveGroup}
+          onOpenGroupBookmarks={(groupId) => {
+            selectGroupAndClosePanel(groupId);
+            toggleSidePanel("bookmarks");
+          }}
         />
       </main>
     </I18nContext>

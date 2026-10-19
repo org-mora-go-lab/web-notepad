@@ -1,25 +1,28 @@
 "use client";
 
-import { Bookmark, Ellipsis, Layers, LayoutDashboard } from "lucide-react";
+import { BookOpen, Ellipsis, Layers, LayoutDashboard, Search, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { UserGuide } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { FooterProps } from "./type";
 
 export function Footer({
-  hasBookmarkUpdateToday,
   hasGroupUpdateToday,
-  bookmarksOpen,
   dashboardOpen,
   activeGroupName,
   groupsOpen,
-  onToggleBookmarks,
   onToggleDashboard,
   onToggleGroups,
+  onOpenSettings,
+  onOpenShortcuts,
+  onToggleSearch,
+  searchOpen,
 }: FooterProps) {
   const { t } = useI18n();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!moreOpen) return;
@@ -86,7 +89,7 @@ export function Footer({
               </button>
               <div className="footer-more" ref={moreRef}>
                 <button
-                  className={`status-command more-command ${moreOpen || bookmarksOpen ? "is-active" : ""}`}
+                  className={`status-command more-command ${moreOpen || searchOpen ? "is-active" : ""}`}
                   type="button"
                   aria-expanded={moreOpen}
                   aria-controls="footer-more-menu"
@@ -94,27 +97,44 @@ export function Footer({
                 >
                   <span className="status-icon">
                     <Ellipsis size={16} strokeWidth={1.8} />
-                    {hasBookmarkUpdateToday && (
-                      <span className="status-dot" role="img" aria-label={t.updatedToday} />
-                    )}
                   </span>
                   <span className="status-label">{t.more}</span>
                 </button>
                 {moreOpen && (
                   <div className="footer-more-menu" id="footer-more-menu" role="menu">
                     <button
-                      className="bookmark-command"
                       type="button"
-                      role="menuitem"
-                      aria-controls="bookmarks-panel"
-                      aria-expanded={bookmarksOpen}
                       onClick={() => {
                         setMoreOpen(false);
-                        onToggleBookmarks();
+                        setGuideOpen(true);
                       }}
                     >
-                      <Bookmark size={18} strokeWidth={1.8} />
-                      <span className="status-label">{t.bookmark}</span>
+                      <BookOpen size={18} strokeWidth={1.8} />
+                      <span className="status-label">{t.guide}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMoreOpen(false);
+                        onOpenSettings();
+                      }}
+                    >
+                      <Settings size={18} strokeWidth={1.8} />
+                      <span className="status-label">{t.settings}</span>
+                    </button>
+                    <button
+                      className="global-search-command"
+                      type="button"
+                      aria-expanded={searchOpen}
+                      aria-controls="global-search-popup"
+                      aria-haspopup="dialog"
+                      onClick={() => {
+                        setMoreOpen(false);
+                        onToggleSearch();
+                      }}
+                    >
+                      <Search size={18} strokeWidth={1.8} />
+                      <span className="status-label">{t.search}</span>
                     </button>
                   </div>
                 )}
@@ -123,6 +143,15 @@ export function Footer({
           </div>
         </div>
       </div>
+      {guideOpen && (
+        <UserGuide
+          onClose={() => setGuideOpen(false)}
+          onOpenShortcuts={() => {
+            setGuideOpen(false);
+            onOpenShortcuts();
+          }}
+        />
+      )}
     </footer>
   );
 }

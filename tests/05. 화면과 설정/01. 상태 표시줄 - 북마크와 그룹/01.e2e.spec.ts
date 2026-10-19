@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
 import { moreCommand } from "../../__util__";
 
-test("1. PC와 모바일에서 더보기 버튼을 표시하고 북마크를 메뉴에 배치한다", async ({ page }) => {
+test("1. PC와 모바일에서 더보기 버튼과 가이드·설정·검색 메뉴를 표시한다", async ({ page }) => {
   await page.goto("/");
   const label = moreCommand(page).locator(".status-label");
   const icon = moreCommand(page).locator("svg").first();
@@ -31,5 +31,5 @@ test("1. PC와 모바일에서 더보기 버튼을 표시하고 북마크를 메
   const iconBox = (await icon.boundingBox())!;
   expect(labelBox.y).toBeGreaterThanOrEqual(iconBox.y + iconBox.height);
   await moreCommand(page).click();
-  await expect(page.locator("#footer-more-menu .bookmark-command")).toHaveText("BOOKMARK");
+  await expect(page.locator("#footer-more-menu").getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH"]);
 });

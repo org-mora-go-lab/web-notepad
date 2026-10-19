@@ -7,10 +7,6 @@ export type PaneViewProps = {
   pane: PaneId;
   heightRatio?: number;
   hasMenu: boolean;
-  onOpenSettings?: () => void;
-  onOpenShortcuts?: () => void;
-  onToggleSearch?: () => void;
-  searchOpen?: boolean;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;

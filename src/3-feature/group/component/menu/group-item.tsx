@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
+import { Bookmark, Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -19,11 +19,13 @@ export function GroupItem({
   pinned,
   editable,
   muted,
+  system = false,
   actionsOpen,
   onToggleActions,
   onSelect,
   onRename,
   onTogglePin,
+  onOpenBookmarks,
   onDelete,
 }: GroupItemProps) {
   const { t } = useI18n();
@@ -34,7 +36,7 @@ export function GroupItem({
     const rect = anchor.getBoundingClientRect();
     setMenuPosition({
       left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
-      top: rect.bottom + 8 + 128 > window.innerHeight ? rect.top - 136 : rect.bottom + 8,
+      top: rect.bottom + 8 + 168 > window.innerHeight ? rect.top - 176 : rect.bottom + 8,
     });
   };
 
@@ -109,9 +111,9 @@ export function GroupItem({
     <article
       data-group-id={groupId}
       data-pinned={pinned}
-      className={`group-item ${active ? "is-active" : ""} ${dragging ? "is-dragging" : ""} ${dropTarget ? "is-drop-target" : ""}`}
+      className={`${system ? "group-system-item" : "group-item"} ${active ? "is-active" : ""} ${dragging ? "is-dragging" : ""} ${dropTarget ? "is-drop-target" : ""}`}
       onPointerDown={(event) => {
-        if (event.button !== 0) return;
+        if (!editable || event.button !== 0) return;
         const target = event.target as Element;
         if (target.closest(".group-actions, .group-reorder")) return;
         onReorderStart(event);
@@ -143,7 +145,7 @@ export function GroupItem({
           onSelect();
         }}
         onContextMenu={(event) => {
-          if (!editable || window.matchMedia("(max-width: 512px)").matches) return;
+          if (window.matchMedia("(max-width: 512px)").matches) return;
           event.preventDefault();
           positionActions(event.currentTarget);
           if (!actionsOpen) onToggleActions();
@@ -151,9 +153,8 @@ export function GroupItem({
       >
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>
-      {editable && (
-        <div className="group-actions" ref={actionsRef}>
-          {pinned && (
+      <div className="group-actions" ref={actionsRef}>
+          {editable && pinned && (
             <Pin
               className="group-pin-indicator"
               size={14}
@@ -174,49 +175,68 @@ export function GroupItem({
           >
             <EllipsisVertical size={14} />
           </button>
-          {actionsOpen && <div
-            className="group-action-dropdown"
-            id={`group-actions-${groupId}`}
-            style={{ left: menuPosition.left, top: menuPosition.top }}
-          >
-          <button
-            className={`group-pin ${pinned ? "is-pinned" : ""}`}
-            type="button"
-            aria-label={pinned ? t.unpinGroup(name) : t.pinGroup(name)}
-            aria-pressed={pinned}
-            title={pinned ? t.unpin : t.pin}
-            onClick={() => {
-              onTogglePin();
-              onToggleActions();
-            }}
-          >
-            <Pin size={16} />
-            <span>{pinned ? t.unpin : t.pin}</span>
-          </button>
-          <button
-            type="button"
-            aria-label={t.editGroupFor(name)}
-            title={t.edit}
-            onClick={() => {
-              onToggleActions();
-              setEditingName(name);
-            }}
-          >
-            <Pencil size={16} />
-            <span>{t.edit}</span>
-          </button>
-          <button
-            type="button"
-            aria-label={t.deleteGroupFor(name)}
-            title={t.delete}
-            onClick={(event) => onDelete(actionsRef.current?.querySelector("button") ?? event.currentTarget)}
-          >
-            <Trash2 size={16} />
-            <span>{t.delete}</span>
-          </button>
-          </div>}
+          {actionsOpen && (
+            <div
+              className="group-action-dropdown"
+              id={`group-actions-${groupId}`}
+              style={{ left: menuPosition.left, top: menuPosition.top }}
+            >
+              {editable && (
+                <button
+                  className={`group-pin ${pinned ? "is-pinned" : ""}`}
+                  type="button"
+                  aria-label={pinned ? t.unpinGroup(name) : t.pinGroup(name)}
+                  aria-pressed={pinned}
+                  title={pinned ? t.unpin : t.pin}
+                  onClick={() => {
+                    onTogglePin();
+                    onToggleActions();
+                  }}
+                >
+                  <Pin size={16} />
+                  <span>{pinned ? t.unpin : t.pin}</span>
+                </button>
+              )}
+              <button
+              type="button"
+                aria-label={`${name} · ${t.bookmark}`}
+                onClick={onOpenBookmarks}
+              >
+                <Bookmark size={16} />
+                <span>{t.bookmark}</span>
+              </button>
+              {editable && (
+                <>
+                  <button
+                    type="button"
+                    aria-label={t.editGroupFor(name)}
+                    title={t.edit}
+                    onClick={() => {
+                      onToggleActions();
+                      setEditingName(name);
+                    }}
+                  >
+                    <Pencil size={16} />
+                    <span>{t.edit}</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={t.deleteGroupFor(name)}
+                    title={t.delete}
+                    onClick={(event) =>
+                      onDelete(
+                        actionsRef.current?.querySelector("button") ?? event.currentTarget,
+                      )
+                    }
+                  >
+                    <Trash2 size={16} />
+                    <span>{t.delete}</span>
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
-      )}
     </article>
   );
 }

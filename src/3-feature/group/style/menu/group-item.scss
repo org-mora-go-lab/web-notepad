@@ -8,7 +8,7 @@
     overflow-y: auto;
   }
 
-  .group-item {
+  :is(.group-item, .group-system-item) {
     position: relative;
     min-height: 39px;
     display: flex;
@@ -180,7 +180,7 @@
   }
 
   @media (max-width: 512px) {
-    .group-item {
+    :is(.group-item, .group-system-item) {
       min-height: 39px * v.$mobile-scale;
 
       strong {

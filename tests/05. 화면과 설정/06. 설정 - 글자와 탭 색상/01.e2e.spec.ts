@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { openHeaderMenu } from "../../__util__";
 import { settingsPanel } from "../__util__";
 
-test("1. 헤더 MENU의 SETTINGS를 선택하면 메뉴를 닫고 설정 패널을 연다", async ({ page }) => {
+test("1. 하단 더보기의 SETTINGS를 선택하면 메뉴를 닫고 설정 패널을 연다", async ({ page }) => {
   await page.goto("/");
   const tools = await openHeaderMenu(page);
   const settings = tools.getByRole("button", { name: "SETTINGS" });
@@ -13,7 +13,7 @@ test("1. 헤더 MENU의 SETTINGS를 선택하면 메뉴를 닫고 설정 패널�
 
   await expect(settingsPanel(page)).toHaveAttribute("aria-hidden", "false");
   await expect(settingsPanel(page)).toBeInViewport();
-  await expect(page.locator("#additional-tools-menu")).toHaveCount(0);
+  await expect(page.locator("#footer-more-menu")).toHaveCount(0);
   await expect(settingsPanel(page).getByRole("heading", { name: "Settings" })).toBeVisible();
   await expect(settingsPanel(page).getByRole("heading", { name: "Font Size" })).toBeVisible();
   await expect(settingsPanel(page).getByRole("heading", { name: "Tab Colors" })).toBeVisible();

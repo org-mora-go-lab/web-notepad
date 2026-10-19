@@ -1,35 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { moreCommand, seedStoredStateOnLoad } from "../../__util__";
+import { chooseTabMenuItem, groupsCommand } from "../../__util__";
 
-test("4. 오늘 생성·갱신된 북마크가 없으면 붉은 점을 숨기고, 연결된 탭을 오늘 수정하면 다시 표시한다", async ({ page }) => {
-  const yesterday = Date.now() - 24 * 60 * 60 * 1000;
-  const tab = createTabFixture("tab-old", "Old note", { bookmarked: true });
-  await seedStoredStateOnLoad(page, {
-    activeGroupId: "ungrouped",
-    groups: [createGroupFixture("ungrouped", "Ungrouped", [tab], {
-      bookmarks: [{
-        id: "bookmark-tab-old",
-        sourceTabId: tab.id,
-        title: tab.title,
-        content: tab.content,
-        tabColor: tab.tabColor,
-        selectedLines: [],
-        createdAt: yesterday,
-        updatedAt: yesterday,
-      }],
-    })],
-  });
+test("4. 그룹 오른쪽 아이콘의 BOOKMARK는 해당 그룹의 북마크 패널을 연다", async ({ page }) => {
+  await page.goto("/");
+  await chooseTabMenuItem(page, "Bookmark");
+  await groupsCommand(page).click();
+  const row = page.locator(".group-system-item", { has: page.getByRole("button", { name: "Ungrouped", exact: true }) });
+  await row.locator(".group-actions > button").click();
+  await row.getByRole("button", { name: "Ungrouped · BOOKMARK" }).click();
 
-  const dot = moreCommand(page).locator(".status-dot");
-  await expect(moreCommand(page).locator(".status-label")).toBeVisible();
-  await expect(dot).toHaveCount(0);
-
-  const editor = page.locator(".note-area");
-  await editor.focus();
-  await page.keyboard.press("End");
-  await page.keyboard.type(" updated");
-  await expect(editor).toHaveValue("Old note updated");
-  await expect(dot).toBeVisible();
+  await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator("#bookmarks-panel")).toContainText("Empty note");
 });

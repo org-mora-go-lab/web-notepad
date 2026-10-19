@@ -5,12 +5,13 @@ export const groupsCommand = (page: Page) =>
   page.locator(".group-select-command");
 export const groupSelectCommand = (page: Page) =>
   page.locator(".group-select-command");
-export const bookmarksCommand = (page: Page) =>
-  page.locator('button[aria-controls="bookmarks-panel"]');
 export const moreCommand = (page: Page) => page.locator(".footer .more-command");
 export async function openBookmarksPanel(page: Page) {
-  await moreCommand(page).click();
-  await bookmarksCommand(page).click();
+  await groupsCommand(page).click();
+  const activeGroup = page.locator("[data-group-id].is-active");
+  await activeGroup.locator(".group-actions > button").click();
+  await activeGroup.getByRole("button", { name: /BOOKMARK|북마크/i }).click();
+  await expect(groupsCommand(page)).toHaveAttribute("aria-expanded", "false");
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
 }
 export const closedCommand = (page: Page) =>
@@ -20,11 +21,13 @@ export const groupStatusName = (page: Page) =>
 export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
-export async function openHeaderMenu(page: Page) {
-  const menu = page.locator("#additional-tools-menu");
-  if (!(await menu.isVisible())) await page.locator(".header .additional-tools-trigger").click();
+export async function openMoreMenu(page: Page) {
+  const menu = page.locator("#footer-more-menu");
+  if (!(await menu.isVisible())) await moreCommand(page).click();
   return menu;
 }
+
+export const openHeaderMenu = openMoreMenu;
 
 export async function openPanel(page: Page, panelId: string) {
   if (panelId === "bookmarks-panel") {
@@ -38,7 +41,7 @@ export async function openPanel(page: Page, panelId: string) {
     panelId === "shortcuts-panel" ||
     panelId === "settings-panel"
   ) {
-    const tools = await openHeaderMenu(page);
+    const tools = await openMoreMenu(page);
     if (panelId === "shortcuts-panel") {
       await tools.getByRole("button", { name: /GUIDE|사용 가이드/i }).click();
       await page.getByRole("dialog").getByRole("button", { name: /SHORTCUT|단축키/i }).click();
@@ -78,7 +81,7 @@ export const openShortcutsPanel = (page: Page) =>
 export const openSettingsPanel = (page: Page) =>
   openPanel(page, "settings-panel");
 export async function openGlobalSearchPanel(page: Page) {
-  await openHeaderMenu(page);
+  await openMoreMenu(page);
   await page.locator('button[aria-controls="global-search-popup"]').click();
   await expect(page.locator("#global-search-popup")).toBeVisible();
 }
