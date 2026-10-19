@@ -9,7 +9,7 @@ test("3. 빈 상태에 상태별 안내를 표시하고 카드가 있는 상태�
     await page.setViewportSize(viewport);
     await writeStoredState(page, { groups: [createGroupFixture("ungrouped", "Ungrouped", [createTabFixture("tab-1", "", { tabColor: "gray" })])] });
     await openPanel(page, "dashboard-panel");
-    await expect(dashboardPanel(page).locator(".dashboard-empty")).toHaveText(["None", "None", "None"]);
+    await expect(dashboardPanel(page).locator(".dashboard-empty")).toHaveText(["None", "None", "None", "None"]);
     await dashboardPanel(page).locator(".side-panel-close").click();
     await page.locator("textarea").first().fill("To Do task");
     await openPanel(page, "dashboard-panel");

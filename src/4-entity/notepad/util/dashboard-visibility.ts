@@ -1,7 +1,7 @@
 import type { DashboardVisibility } from "../type";
 
 export const DEFAULT_DASHBOARD_VISIBILITY: DashboardVisibility = {
-  icebox: false,
+  icebox: true,
   closed: false,
 };
 
@@ -11,7 +11,7 @@ export function normalizeDashboardVisibility(value: unknown): DashboardVisibilit
   }
   const source = value as Record<string, unknown>;
   return {
-    icebox: source.icebox === true,
+    icebox: source.icebox !== false,
     closed: source.closed === true,
   };
 }

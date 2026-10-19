@@ -8,6 +8,7 @@ import type {
 } from "../../type";
 import {
   createNoteTab,
+  DEFAULT_DASHBOARD_VISIBILITY,
   getNextTabNumber,
   getPaneActiveTabId,
   getPaneLayout,
@@ -118,7 +119,7 @@ export const createGroupEntry = (
   updatedAt: createdAt,
   tabs: [tab],
   bookmarks: [],
-  dashboardVisibility: { icebox: false, closed: false },
+  dashboardVisibility: { ...DEFAULT_DASHBOARD_VISIBILITY },
   ...EMPTY_SPLIT_LAYOUT,
   activeTabId: tab.id,
 });

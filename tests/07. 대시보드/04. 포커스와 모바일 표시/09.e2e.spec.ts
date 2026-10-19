@@ -34,19 +34,19 @@ test("9. 모바일에서 Icebox와 Closed를 반복 전환해도 상태 영역�
     }
   };
 
-  await expectSingleColumn(3);
+  await expectSingleColumn(4);
   for (let cycle = 0; cycle < 2; cycle += 1) {
     await icebox.click();
-    await expectSingleColumn(4);
-    await closed.click();
-    await expectSingleColumn(5);
-    await icebox.click();
-    await expectSingleColumn(4);
-    await icebox.click();
-    await expectSingleColumn(5);
-    await closed.click();
-    await expectSingleColumn(4);
-    await icebox.click();
     await expectSingleColumn(3);
+    await closed.click();
+    await expectSingleColumn(4);
+    await icebox.click();
+    await expectSingleColumn(5);
+    await icebox.click();
+    await expectSingleColumn(4);
+    await closed.click();
+    await expectSingleColumn(3);
+    await icebox.click();
+    await expectSingleColumn(4);
   }
 });

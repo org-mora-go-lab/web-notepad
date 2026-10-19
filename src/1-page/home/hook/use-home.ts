@@ -4,6 +4,7 @@ import { useCallback } from "react";
 
 import {
   ALL_GROUP_ID,
+  DEFAULT_DASHBOARD_VISIBILITY,
   getActiveGroup,
   getBottomPane,
   getPaneWorkspace,
@@ -239,7 +240,7 @@ export function useHome() {
     renameGroup,
     setGroupStatusNames,
     setGroupDashboardVisibility,
-    dashboardVisibility: activeGroup?.dashboardVisibility ?? { icebox: false, closed: false },
+    dashboardVisibility: activeGroup?.dashboardVisibility ?? DEFAULT_DASHBOARD_VISIBILITY,
     toggleGroupPin,
     moveGroup,
     removeGroup,

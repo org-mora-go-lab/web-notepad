@@ -13,7 +13,6 @@ test("4. 다섯 상태의 빈 영역은 동일한 디자인과 None 문구를 �
         settings: { language },
       });
       await openPanel(page, "dashboard-panel");
-      await toggleDashboardStatus(page, "icebox");
       await toggleDashboardStatus(page, "closed");
       const empty = dashboardPanel(page).locator(".dashboard-empty");
       await expect(empty).toHaveText(["None", "None", "None", "None", "None"]);
