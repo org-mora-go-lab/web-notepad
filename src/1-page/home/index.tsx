@@ -4,7 +4,7 @@ import "./index.scss";
 
 import { type CSSProperties, useEffect } from "react";
 
-import { useGroupMenuOpen, useHome } from "@/src/1-page/home/hook";
+import { useHome } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
 import { I18nContext } from "@/src/5-shared/hook";
 import { MobileTapFeedback } from "@/src/5-shared/ui";
@@ -14,6 +14,9 @@ import { Loading, PaneColumn } from "./component";
 export function Home() {
   const {
     hydrated,
+    groupMenuOpen,
+    closeGroupMenu,
+    toggleGroupMenu,
     globalSearchQuery,
     setGlobalSearchQuery,
     openPanel,
@@ -52,9 +55,6 @@ export function Home() {
     panelSlide,
     panelPosition,
   } = useHome();
-
-  const { groupMenuOpen, closeGroupMenu, toggleGroupMenu } =
-    useGroupMenuOpen();
 
   useEffect(() => {
     document.documentElement.lang = language;

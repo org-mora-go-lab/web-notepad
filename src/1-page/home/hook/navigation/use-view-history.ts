@@ -28,8 +28,12 @@ export function useViewHistory(
   useEffect(() => {
     if (!ready || initialized.current) return;
     const storedView = readStoredView(window.history.state);
-    const snapshot =
+    const initialView =
       readViewFromUrl() ?? storedView?.snapshot ?? initialSnapshotRef.current;
+    const snapshot = {
+      ...initialView,
+      groupMenuOpen: initialView.groupMenuOpen ?? storedView?.snapshot.groupMenuOpen ?? initialSnapshotRef.current.groupMenuOpen,
+    };
     snapshotRef.current = snapshot;
     restoreRef.current(snapshot);
     window.history.replaceState(

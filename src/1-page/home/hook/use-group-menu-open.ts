@@ -43,14 +43,5 @@ export function useGroupMenuOpen() {
     window.dispatchEvent(new Event(GROUP_MENU_OPEN_EVENT));
   }, []);
 
-  const closeGroupMenu = useCallback(
-    () => updateGroupMenuOpen(false),
-    [updateGroupMenuOpen],
-  );
-  const toggleGroupMenu = useCallback(
-    () => updateGroupMenuOpen(!groupMenuOpen),
-    [groupMenuOpen, updateGroupMenuOpen],
-  );
-
-  return { groupMenuOpen, closeGroupMenu, toggleGroupMenu };
+  return { groupMenuOpen, updateGroupMenuOpen, getGroupMenuOpen: readGroupMenuOpen };
 }
