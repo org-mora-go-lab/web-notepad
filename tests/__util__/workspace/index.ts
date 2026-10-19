@@ -1,7 +1,6 @@
 export { divider, dividerDistanceFromCenter, dragDividerBy, dragDividerTo } from "./divider";
 export { chooseGroupAction, groupActionsButton, groupMenu } from "./group-menu";
 export {
-  bookmarksCommand,
   closedCommand,
   createGroup,
   createGroups,
@@ -13,6 +12,7 @@ export {
   openClosedPanel,
   openGlobalSearchPanel,
   openHeaderMenu,
+  openMoreMenu,
   openPanel,
   openSettingsPanel,
   openShortcutsPanel,

@@ -8,6 +8,7 @@ import { useI18n } from "@/src/5-shared/hook";
 type AuthUser = {
   id: string;
   nickname: string;
+  profileImageUrl?: string;
 };
 
 export function Auth() {
@@ -51,9 +52,15 @@ export function Auth() {
         disabled={loading}
         onClick={logout}
       >
-        <CircleUserRound aria-hidden="true" />
+        {user.profileImageUrl ? (
+          // Kakao profile hosts are dynamic, so a plain image avoids an unsafe remote-host allowlist.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={user.profileImageUrl} alt="" referrerPolicy="no-referrer" />
+        ) : (
+          <CircleUserRound aria-hidden="true" />
+        )}
         <LogOut className="auth-command-action" aria-hidden="true" />
-        <span>{t.logout}</span>
+        <span>{user.nickname}</span>
       </button>
     );
   }
@@ -70,7 +77,7 @@ export function Auth() {
       }}
     >
       <LogIn aria-hidden="true" />
-      <span>{t.kakaoLogin}</span>
+      <span>{t.login}</span>
     </a>
   );
 }

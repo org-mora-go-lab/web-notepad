@@ -6,10 +6,7 @@ import type { PaneViewProps } from "../../type";
 
 export function PaneView({
   pane,
-  onOpenSettings,
-  onOpenShortcuts,
-  onToggleSearch,
-  searchOpen,
+  hasMenu,
   tabs,
   groups,
   activeGroupId,
@@ -49,10 +46,7 @@ export function PaneView({
         onPointerDownCapture={onActivate}
       >
         <Header
-          onOpenSettings={onOpenSettings}
-          onOpenShortcuts={onOpenShortcuts}
-          onToggleSearch={onToggleSearch}
-          searchOpen={searchOpen}
+          showAuth={hasMenu}
           tabs={tabs}
           groups={groups}
           activeGroupId={activeGroupId}

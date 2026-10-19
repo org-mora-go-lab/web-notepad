@@ -46,4 +46,5 @@ export type PanelProps = {
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onMoveGroup: ComponentProps<typeof Group>["onMoveGroup"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
+  onOpenGroupBookmarks: ComponentProps<typeof Group>["onOpenBookmarks"];
 };

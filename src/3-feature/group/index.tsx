@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Layers, X } from "lucide-react";
+import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -25,6 +25,7 @@ function GroupSidebar({
   onRename,
   onTogglePinGroup,
   onMoveGroup,
+  onOpenBookmarks,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -107,6 +108,11 @@ function GroupSidebar({
                   onSelect={() => selectGroup(group.id)}
                   onRename={(name) => onRename(group.id, name)}
                   onTogglePin={() => onTogglePinGroup(group.id)}
+                  onOpenBookmarks={() => {
+                    setActionsGroupId(null);
+                    onClose();
+                    onOpenBookmarks(group.id);
+                  }}
                   onDelete={(anchor) => {
                     deleteAnchorRef.current = anchor;
                     setDeletingGroupId(group.id);
@@ -117,25 +123,57 @@ function GroupSidebar({
           )}
         </section>
         <div className="group-system-list">
-          <button
-            className={activeGroupId === ALL_GROUP_ID ? "is-active" : ""}
-            type="button"
-            aria-pressed={activeGroupId === ALL_GROUP_ID}
-            onClick={() => selectGroup(ALL_GROUP_ID)}
-          >
-            <Layers aria-hidden="true" />
-            <strong>{t.allGroup}</strong>
-          </button>
+          <GroupItem
+            groupId={ALL_GROUP_ID}
+            dragging={false}
+            dropTarget={false}
+            onReorderStart={() => undefined}
+            onReorderKey={() => undefined}
+            name={t.allGroup}
+            active={activeGroupId === ALL_GROUP_ID}
+            pinned={false}
+            editable={false}
+            muted={false}
+            system
+            actionsOpen={actionsGroupId === ALL_GROUP_ID}
+            onToggleActions={() =>
+              setActionsGroupId((current) => current === ALL_GROUP_ID ? null : ALL_GROUP_ID)
+            }
+            onSelect={() => selectGroup(ALL_GROUP_ID)}
+            onRename={() => undefined}
+            onTogglePin={() => undefined}
+            onOpenBookmarks={() => {
+              setActionsGroupId(null);
+              onClose();
+              onOpenBookmarks(ALL_GROUP_ID);
+            }}
+            onDelete={() => undefined}
+          />
           {ungrouped && (
-            <button
-              className={activeGroupId === UNGROUPED_GROUP_ID ? "is-active" : ""}
-              type="button"
-              aria-pressed={activeGroupId === UNGROUPED_GROUP_ID}
-              onClick={() => selectGroup(UNGROUPED_GROUP_ID)}
-            >
-              <Layers aria-hidden="true" />
-              <strong>{ungrouped.name}</strong>
-            </button>
+            <GroupItem
+              groupId={ungrouped.id}
+              dragging={false}
+              dropTarget={false}
+              onReorderStart={() => undefined}
+              onReorderKey={() => undefined}
+              name={ungrouped.name}
+              active={activeGroupId === UNGROUPED_GROUP_ID}
+              pinned={false}
+              editable={false}
+              muted
+              system
+              actionsOpen={actionsGroupId === ungrouped.id}
+              onToggleActions={() => setActionsGroupId((current) => current === ungrouped.id ? null : ungrouped.id)}
+              onSelect={() => selectGroup(UNGROUPED_GROUP_ID)}
+              onRename={() => undefined}
+              onTogglePin={() => undefined}
+              onOpenBookmarks={() => {
+                setActionsGroupId(null);
+                onClose();
+                onOpenBookmarks(ungrouped.id);
+              }}
+              onDelete={() => undefined}
+            />
           )}
         </div>
         <div

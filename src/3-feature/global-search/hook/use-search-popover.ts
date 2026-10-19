@@ -10,18 +10,27 @@ export function useSearchPopover(open: boolean, onClose: () => void) {
       if (dialog.open) dialog.close();
       return;
     }
-    const triggers = Array.from(document.querySelectorAll<HTMLElement>('[aria-controls="global-search-popup"]'));
+    const triggers = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '[aria-controls="global-search-popup"], .more-command',
+      ),
+    );
     const anchor = triggers.find((element) => element === document.activeElement) ??
       triggers.find((element) => element.getBoundingClientRect().width > 0);
     const firstOpen = !dialog.open;
     if (firstOpen) dialog.show();
     const position = () => {
       const viewport = window.visualViewport;
-      const top = (anchor?.getBoundingClientRect().bottom ?? 40) + 6;
-      const right = anchor?.getBoundingClientRect().right ?? window.innerWidth - 8;
+      const anchorRect = anchor?.getBoundingClientRect();
+      const viewportBottom = (viewport?.height ?? window.innerHeight) + (viewport?.offsetTop ?? 0);
+      const preferredTop = (anchorRect?.bottom ?? 40) + 6;
+      const top = anchorRect && anchorRect.top > window.innerHeight / 2
+        ? Math.max(8, anchorRect.top - dialog.offsetHeight - 6)
+        : preferredTop;
+      const right = anchorRect?.right ?? window.innerWidth - 8;
       dialog.style.top = `${top}px`;
       dialog.style.left = `${Math.max(8, Math.min(right - dialog.offsetWidth, window.innerWidth - dialog.offsetWidth - 8))}px`;
-      dialog.style.setProperty("--global-search-available-height", `${Math.max(100, (viewport?.height ?? window.innerHeight) + (viewport?.offsetTop ?? 0) - top - 8)}px`);
+      dialog.style.setProperty("--global-search-available-height", `${Math.max(100, viewportBottom - top - 8)}px`);
     };
     position();
     if (firstOpen) dialog.querySelector<HTMLInputElement>('input[type="search"]')?.focus({ preventScroll: true });

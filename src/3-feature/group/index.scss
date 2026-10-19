@@ -26,7 +26,7 @@
     border-bottom: 1px solid v.$line;
 
     h2 { margin: 0; font-family: v.$sans; font-size: v.font(20px); font-weight: 500; }
-    button {
+    > button {
       width: 36px; height: 36px; display: grid; place-items: center;
       border: 1px solid v.$line; background: transparent; color: v.$dim; cursor: pointer;
       svg { width: 15px; height: 15px; }
@@ -46,14 +46,8 @@
   .group-system-list {
     padding: 4px 0;
     border-top: 1px solid v.$line;
-    button {
-      width: 100%; min-height: 42px; display: flex; align-items: center; gap: 10px;
-      padding: 0 14px; border: 0; background: transparent; color: v.$muted; text-align: left; cursor: pointer;
-      &:hover { background: color-mix(in srgb, #{v.$line} 50%, transparent); }
-      &.is-active { background: v.$line; color: v.$signal; }
-      svg { width: 16px; height: 16px; flex: 0 0 auto; }
-      strong { font-size: v.font(15px); font-weight: 500; }
-    }
+
+    .group-system-item { min-height: 42px; }
   }
 
   .group-menu-resizer {
@@ -71,7 +65,7 @@
       h2 { font-size: v.font(20px * v.$mobile-scale); }
       button { width: 44px; height: 44px; }
     }
-    .group-section-toggle, .group-system-list button { min-height: 48px; }
+    .group-section-toggle, .group-system-list .group-system-item { min-height: 48px; }
     .group-menu-resizer { display: none; }
   }
 }
