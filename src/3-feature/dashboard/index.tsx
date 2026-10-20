@@ -1,9 +1,9 @@
 "use client";
 
-import { Ghost, Maximize2, Minimize2, StickyNote } from "lucide-react";
+import { CircleCheck, CircleDot, Ghost, ListTodo, Maximize2, Minimize2, StickyNote } from "lucide-react";
 import { useState } from "react";
 
-import { compareGroups, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import { compareGroups, DASHBOARD_STATUSES, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
@@ -173,15 +173,21 @@ export function Dashboard({
           moveGroupFirst={getTabStatus(contextTab, tabColorCycle) !== "closed"}
           deleteOnly={getTabStatus(contextTab, tabColorCycle) === "closed"}
           bookmarked={contextTab.bookmarked}
-          footerAction={(contextStatus === "todo" || contextStatus === "done") && (
-            <button type="button" role="menuitem" onClick={() => {
-              onChangeStatus(contextTab.id, contextStatus === "todo" ? "icebox" : "closed");
-              setContextMenu(null);
-            }}>
-              {contextStatus === "todo" ? <StickyNote size={14} /> : <Ghost size={14} />}
-              <span>{contextStatus === "todo" ? statusNames.icebox ?? t.icebox : statusNames.closed ?? t.closedTitle}</span>
-            </button>
-          )}
+          footerAction={DASHBOARD_STATUSES.filter((status) => status !== contextStatus).map((status) => {
+            const Icon = { icebox: StickyNote, todo: ListTodo, "in-progress": CircleDot, done: CircleCheck, closed: Ghost }[status];
+            const label = statusNames[status] ?? {
+              icebox: t.icebox, todo: t.statusTodo, "in-progress": t.statusInProgress, done: t.statusDone, closed: t.closedTitle,
+            }[status];
+            return (
+              <button key={status} type="button" role="menuitem" onClick={() => {
+                onChangeStatus(contextTab.id, status);
+                setContextMenu(null);
+              }}>
+                <Icon size={14} />
+                <span>{label}</span>
+              </button>
+            );
+          })}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id && group.id !== UNGROUPED_GROUP_ID)
             .sort(compareGroups)}
