@@ -11,6 +11,13 @@ test("1. 우측 상단은 로그인, 하단 더보기는 가이드·설정·검�
     await expect(login).toBeVisible();
     await expect(login).toContainText("LOGIN");
     const bounds = (await login.boundingBox())!;
+    expect(bounds.x + bounds.width).toBeCloseTo(viewport.width, 1);
+    const icon = (await login.locator("svg").boundingBox())!;
+    const label = (await login.locator("span").boundingBox())!;
+    expect((icon.x + label.x + label.width) / 2).toBeCloseTo(bounds.x + bounds.width / 2, 1);
+    for (const item of [icon, label]) {
+      expect(item.y + item.height / 2).toBeCloseTo(bounds.y + bounds.height / 2, 1);
+    }
     const tabsBounds = (await page.locator(".tabs-scroll").first().boundingBox())!;
     expect(tabsBounds.x + tabsBounds.width).toBeLessThanOrEqual(bounds.x + 1);
     await trigger.click();

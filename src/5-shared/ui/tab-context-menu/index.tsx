@@ -144,9 +144,9 @@ export function TabContextMenu({
             </button>
           )}
           {!moveGroupFirst && moveGroupButton}
-          {footerAction}
             </>
           )}
+          {footerAction && <div className="tab-context-menu-footer">{footerAction}</div>}
         </>
       )}
     </div>,

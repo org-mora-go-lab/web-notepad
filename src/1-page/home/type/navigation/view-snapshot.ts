@@ -9,4 +9,5 @@ export type ViewSnapshot = {
   rightBottomTabId: string | null;
   pane: PaneId;
   panel: ViewPanel | null;
+  groupMenuOpen?: boolean;
 };

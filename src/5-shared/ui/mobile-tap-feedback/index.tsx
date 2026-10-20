@@ -20,7 +20,7 @@ export function MobileTapFeedback() {
       if (!icon) return;
       const bounds = icon.getBoundingClientRect();
       if (!bounds.width || !bounds.height) return;
-      const size = Math.max(bounds.width, bounds.height) + 36;
+      const size = Math.max(40, Math.max(bounds.width, bounds.height) + 16);
       const ripple = document.createElement("span");
       ripple.className = "mobile-tap-feedback";
       ripple.setAttribute("aria-hidden", "true");

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { openBookmarksPanel, openPanel } from "../../__util__";
 
-test("1. 하단 더보기의 BOOKMARK와 DASHBOARD 명령으로 각 우측 패널을 연다", async ({ page }) => {
+test("1. 하단 더보기의 Bookmark와 DASHBOARD 명령으로 각 우측 패널을 연다", async ({ page }) => {
   await page.goto("/");
   await openBookmarksPanel(page);
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");

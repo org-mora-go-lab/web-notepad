@@ -14,6 +14,7 @@ import {
 import type { ViewPanel } from "@/src/5-shared";
 
 import type { ViewSnapshot } from "../../type";
+import { useGroupMenuOpen } from "../use-group-menu-open";
 import { useViewActions } from "./use-view-actions";
 import { useViewHistory } from "./use-view-history";
 
@@ -31,6 +32,7 @@ export function useHomeNavigation({
 }: Options) {
   const [openPanel, setOpenPanel] = useState<ViewPanel | null>(null);
   const [backgroundPanel, setBackgroundPanel] = useState<ViewPanel | null>(null);
+  const { groupMenuOpen, updateGroupMenuOpen, getGroupMenuOpen } = useGroupMenuOpen();
   // A pinned panel stays open until its X button closes it.
   const keepsPanelOpen = useCallback(
     () =>
@@ -60,12 +62,18 @@ export function useHomeNavigation({
           : null,
         pane: group?.activePane ?? "left",
         panel,
+        groupMenuOpen: typeof window !== "undefined" && window.matchMedia("(max-width: 512px)").matches
+          ? getGroupMenuOpen()
+          : undefined,
       };
     },
-    [openPanel],
+    [getGroupMenuOpen, openPanel],
   );
 
   const restoreView = useCallback((snapshot: ViewSnapshot) => {
+    if (window.matchMedia("(max-width: 512px)").matches) {
+      updateGroupMenuOpen(snapshot.groupMenuOpen ?? false);
+    }
     const state = useNotepadStore.getState();
     const exists =
       snapshot.groupId === ALL_GROUP_ID ||
@@ -96,7 +104,7 @@ export function useHomeNavigation({
         ? current
         : snapshot.panel,
     );
-  }, []);
+  }, [updateGroupMenuOpen]);
 
   const { pushView, replaceView } = useViewHistory(
     hydrated,
@@ -108,6 +116,20 @@ export function useHomeNavigation({
     () => replaceView(getCurrentView()),
     [getCurrentView, replaceView],
   );
+
+  const closeGroupMenu = useCallback(() => {
+    updateGroupMenuOpen(false);
+    if (window.matchMedia("(max-width: 512px)").matches) replaceView(getCurrentView());
+  }, [getCurrentView, replaceView, updateGroupMenuOpen]);
+
+  const toggleGroupMenu = useCallback(() => {
+    const open = !getGroupMenuOpen();
+    updateGroupMenuOpen(open);
+    if (window.matchMedia("(max-width: 512px)").matches) {
+      if (open) pushView(getCurrentView());
+      else replaceView(getCurrentView());
+    }
+  }, [getCurrentView, getGroupMenuOpen, pushView, replaceView, updateGroupMenuOpen]);
 
   const closeSidePanels = useCallback(() => {
     if (openPanel === null) return;
@@ -188,6 +210,9 @@ export function useHomeNavigation({
   }, [closeSidePanels, keepsPanelOpen, openPanel]);
 
   return {
+    groupMenuOpen,
+    closeGroupMenu,
+    toggleGroupMenu,
     openPanel,
     backgroundPanel,
     globalSearchQuery,

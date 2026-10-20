@@ -30,6 +30,7 @@ const isViewSnapshot = (value: unknown): value is ViewSnapshot => {
     isOptionalTabId(snapshot.leftBottomTabId) &&
     isOptionalTabId(snapshot.rightBottomTabId) &&
     PANE_IDS.includes(snapshot.pane as PaneId) &&
+    (snapshot.groupMenuOpen === undefined || typeof snapshot.groupMenuOpen === "boolean") &&
     (snapshot.panel === null || PANEL_IDS.includes(snapshot.panel as ViewPanel))
   );
 };
@@ -78,6 +79,7 @@ export const readViewFromUrl = (): ViewSnapshot | null => {
     rightBottomTabId,
     pane,
     panel,
+    groupMenuOpen: params.get("groups") === "open" ? true : undefined,
   };
 };
 
@@ -97,6 +99,8 @@ export const getViewHref = (snapshot: ViewSnapshot) => {
   url.searchParams.set("pane", snapshot.pane);
   if (snapshot.panel) url.searchParams.set("panel", snapshot.panel);
   else url.searchParams.delete("panel");
+  if (snapshot.groupMenuOpen) url.searchParams.set("groups", "open");
+  else url.searchParams.delete("groups");
   return `${url.pathname}${url.search}${url.hash}`;
 };
 

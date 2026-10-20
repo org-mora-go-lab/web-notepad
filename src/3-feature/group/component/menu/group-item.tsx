@@ -1,7 +1,7 @@
 "use client";
 
 import { Bookmark, Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
-import { type FormEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -31,14 +31,24 @@ export function GroupItem({
   const { t } = useI18n();
   const [editingName, setEditingName] = useState<string | null>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuAnchorRef = useRef<HTMLElement | null>(null);
   const [menuPosition, setMenuPosition] = useState({ left: 0, top: 0 });
-  const positionActions = (anchor: HTMLElement) => {
+  const positionActions = useCallback((anchor: HTMLElement) => {
+    menuAnchorRef.current = anchor;
     const rect = anchor.getBoundingClientRect();
+    const rowHeight = window.matchMedia("(max-width: 512px)").matches ? 44 : 40;
+    const menuHeight = dropdownRef.current?.getBoundingClientRect().height ?? (editable ? 4 : 1) * rowHeight + 12;
+    const below = rect.bottom + 8;
     setMenuPosition({
       left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
-      top: rect.bottom + 8 + 168 > window.innerHeight ? rect.top - 176 : rect.bottom + 8,
+      top: below + menuHeight <= window.innerHeight - 8 ? below : Math.max(8, rect.top - menuHeight - 8),
     });
-  };
+  }, [editable]);
+
+  useLayoutEffect(() => {
+    if (actionsOpen && menuAnchorRef.current) positionActions(menuAnchorRef.current);
+  }, [actionsOpen, positionActions]);
 
   useEffect(() => {
     if (!actionsOpen) return;
@@ -177,6 +187,7 @@ export function GroupItem({
           </button>
           {actionsOpen && (
             <div
+              ref={dropdownRef}
               className="group-action-dropdown"
               id={`group-actions-${groupId}`}
               style={{ left: menuPosition.left, top: menuPosition.top }}

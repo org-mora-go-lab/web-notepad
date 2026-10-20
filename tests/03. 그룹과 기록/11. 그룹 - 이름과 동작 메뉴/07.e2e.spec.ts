@@ -8,7 +8,7 @@ test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·북마크·수정·삭제
   await createGroup(page, "Work");
   await groupActionsButton(page, "Work").click();
 
-  const actions = ["Pin Work group", "Work · BOOKMARK", "Edit Work group", "Delete Work group"];
+  const actions = ["Pin Work group", "Work · Bookmark", "Edit Work group", "Delete Work group"];
   const tops = [];
   for (const name of actions) {
     const button = page.getByRole("button", { name, exact: true });
