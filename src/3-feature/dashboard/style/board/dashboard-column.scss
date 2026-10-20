@@ -18,8 +18,12 @@
   }
 
   .dashboard-column.dashboard-icebox-column {
-    --dashboard-accent: #666;
+    --dashboard-accent: var(--color-tab-yellow);
     --dashboard-focus-accent: var(--dashboard-accent);
+  }
+
+  .dashboard-icebox-column .dashboard-card[data-tab-color] {
+    --dashboard-accent: var(--color-tab-yellow);
   }
 
   .dashboard-column.dashboard-closed-column {

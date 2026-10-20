@@ -37,7 +37,7 @@
   }
 
   .dashboard-statuses h3.dashboard-icebox-status {
-    --dashboard-accent: #666;
+    --dashboard-accent: var(--color-tab-yellow);
   }
 
   .dashboard-statuses h3.dashboard-closed-status {
