@@ -5,20 +5,21 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
-import { USER_GUIDE_STEPS } from "./constant";
+import { useGuideSteps } from "./hook";
 import type { UserGuideProps } from "./type";
 
 // Modal walkthrough: one step at a time with Previous/Next, closed by the header button or Escape.
 export function UserGuide({ onClose, onOpenShortcuts }: UserGuideProps) {
   const { language, t } = useI18n();
-  const steps = USER_GUIDE_STEPS[language];
+  const steps = useGuideSteps(language);
   const [index, setIndex] = useState(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
   const guideId = useId();
-  const step = steps[index];
-  const isFirst = index === 0;
-  const isLast = index === steps.length - 1;
+  const currentIndex = Math.min(index, steps.length - 1);
+  const step = steps[currentIndex];
+  const isFirst = currentIndex === 0;
+  const isLast = currentIndex === steps.length - 1;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -57,7 +58,7 @@ export function UserGuide({ onClose, onOpenShortcuts }: UserGuideProps) {
         </div>
         <div className="user-guide-header-actions">
           <span className="user-guide-progress" aria-live="polite">
-            {index + 1} / {steps.length}
+            {currentIndex + 1} / {steps.length}
           </span>
           <button
             className="user-guide-stop"
@@ -85,7 +86,7 @@ export function UserGuide({ onClose, onOpenShortcuts }: UserGuideProps) {
             className="user-guide-prev"
             type="button"
             disabled={isFirst}
-            onClick={() => setIndex(index - 1)}
+            onClick={() => setIndex(currentIndex - 1)}
           >
             <ChevronLeft size={14} aria-hidden="true" />
             <span>{t.previous}</span>
@@ -95,7 +96,7 @@ export function UserGuide({ onClose, onOpenShortcuts }: UserGuideProps) {
             className={isLast ? "user-guide-close" : "user-guide-next"}
             ref={nextButtonRef}
             type="button"
-            onClick={() => (isLast ? close() : setIndex(index + 1))}
+            onClick={() => (isLast ? close() : setIndex(currentIndex + 1))}
           >
             <span>{isLast ? t.close : t.next}</span>
             {isLast ? (

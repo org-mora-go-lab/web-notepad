@@ -1,4 +1,9 @@
-import type { ClosedTabEntry, GroupEntry, NoteTab } from "@/src/4-entity/notepad";
+import type {
+  BookmarkEntry,
+  ClosedTabEntry,
+  GroupEntry,
+  NoteTab,
+} from "@/src/4-entity/notepad";
 
 // A saved note tab whose title is its first line, as the app stores it.
 export const createTabFixture = (
@@ -52,3 +57,20 @@ export const createClosedTabFixture = (
   groupId: string,
   tab: NoteTab,
 ): ClosedTabEntry => ({ id, groupId, tab, closedAt: 1 });
+
+export const createBookmarkFixture = (
+  id: string,
+  sourceTabId: string,
+  content: string,
+  overrides: Partial<BookmarkEntry> = {},
+): BookmarkEntry => ({
+  id,
+  sourceTabId,
+  content,
+  title: content.split("\n")[0],
+  tabColor: "gray",
+  selectedLines: [],
+  createdAt: 1,
+  updatedAt: 1,
+  ...overrides,
+});

@@ -2,10 +2,10 @@ import { expect, test } from "@playwright/test";
 
 import { openSettingsPanel } from "../../__util__";
 
-test("7. 글자 크기 변경을 새로고침 후 복원한다", async ({ page }) => {
+test("7. 패널 위치 변경을 새로고침 후 복원한다", async ({ page }) => {
   await page.goto("/");
   await openSettingsPanel(page);
-  await page.getByRole("radiogroup", { name: "Font Size" }).getByRole("radio", { name: "130%" }).check();
+  await page.getByRole("radiogroup", { name: "Panel Position" }).getByRole("radio", { name: "Left", exact: true }).check();
   await page.reload();
-  await expect(page.locator(".home")).toHaveCSS("--font-scale", "1.3");
+  await expect(page.locator(".home")).toHaveAttribute("data-panel-position", "left");
 });

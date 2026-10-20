@@ -10,7 +10,16 @@ export type StoredState = Pick<
   NotepadState,
   "groups" | "activeGroupId" | "nextTabNumber"
 > &
-  Partial<Pick<NotepadState, "closedTabs" | "settings">>;
+  Partial<
+    Pick<
+      NotepadState,
+      | "closedTabs"
+      | "settings"
+      | "allGroupLayout"
+      | "allGroupDashboardVisibility"
+      | "allGroupActiveTabId"
+    >
+  >;
 
 // Reads the persisted Zustand state from localStorage.
 export const readStoredState = (page: Page): Promise<StoredState> =>
