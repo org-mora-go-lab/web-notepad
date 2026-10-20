@@ -1,5 +1,6 @@
 export { divider, dividerDistanceFromCenter, dragDividerBy, dragDividerTo } from "./divider";
 export { chooseGroupAction, groupActionsButton, groupMenu } from "./group-menu";
+export { openGuide } from "./guide";
 export {
   closedCommand,
   createGroup,
@@ -20,3 +21,4 @@ export {
   switchGroup,
   toggleDashboardStatus,
 } from "./panel";
+export { seedSearchWorkspace } from "./search";

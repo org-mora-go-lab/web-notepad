@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("4. 검색 버튼은 dialog 팝업임을 알린다", async ({ page }) => {
+test("4. 검색 팝업이 닫혀 있으면 검색 버튼의 펼침 상태는 false다", async ({ page }) => {
   await page.goto("/");
   await page.locator(".more-command").click();
-  await expect(page.locator(".global-search-command")).toHaveAttribute("aria-haspopup", "dialog");
+  await expect(page.locator(".global-search-command")).toHaveAttribute("aria-expanded", "false");
 });

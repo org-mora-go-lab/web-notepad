@@ -1,15 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { openHeaderMenu } from "../../__util__";
+import { openGuide } from "../../__util__";
 
 test.use({ viewport: MOBILE_VIEWPORT });
 
 test("7. 모바일 가이드는 단축키 안내 없이 10단계를 탐색하고 닫는다", async ({ page }) => {
   await page.goto("/");
-  const menu = await openHeaderMenu(page);
-  await menu.getByRole("button", { name: "GUIDE", exact: true }).click();
-  const guide = page.locator(".user-guide");
+  const guide = await openGuide(page);
   await expect(guide.getByRole("heading", { name: "Write notes", exact: true })).toBeVisible();
   for (let step = 1; step <= 10; step++) {
     await expect(guide.locator(".user-guide-progress")).toHaveText(`${step} / 10`);

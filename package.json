@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 3100",
     "lint": "eslint",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:structure": "node scripts/check-e2e-structure.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.48.0",

@@ -4,13 +4,13 @@ import { BOTH_VIEWPORTS } from "../../__constant__";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { addTabButton, dashboardColumn, openPanel, readStoredState, writeStoredState } from "../../__util__";
 
-test("2. 새 탭은 현재 탭의 Note·Closed 상태를 이어받지 않고 To Do로 생성한다", async ({ page }) => {
+test("2. 새 탭은 현재 탭의 Note·Doing·Closed 상태를 이어받지 않고 To Do로 생성한다", async ({ page }) => {
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    for (const dashboardStatus of ["icebox", "closed"] as const) {
+    for (const dashboardStatus of ["icebox", "in-progress", "closed"] as const) {
       await writeStoredState(page, {
         groups: [createGroupFixture("ungrouped", "Ungrouped", [
-          createTabFixture("tab-1", "Previous note", { dashboardStatus }),
+          createTabFixture("tab-1", "Previous note", { tabColor: "teal", dashboardStatus: dashboardStatus === "in-progress" ? undefined : dashboardStatus }),
         ])],
         settings: { tabColorCycle: ["red", "teal", "pink"] },
         nextTabNumber: 2,

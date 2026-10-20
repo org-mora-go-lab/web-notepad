@@ -1,4 +1,5 @@
 export * from "./assertion";
+export * from "./auth";
 export * from "./dashboard";
 export * from "./note";
 export * from "./state";
