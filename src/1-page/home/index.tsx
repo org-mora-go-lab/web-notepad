@@ -93,6 +93,7 @@ export function Home() {
             onToggleGroups={toggleGroupMenu}
             onOpenSettings={() => toggleSidePanel("settings")}
             onOpenShortcuts={() => toggleSidePanel("shortcuts")}
+            onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleSearch={() => toggleSidePanel("global-search")}
             searchOpen={openPanel === "global-search"}
           />
@@ -129,10 +130,6 @@ export function Home() {
           onDashboardVisibilityChange={(visibility) => setGroupDashboardVisibility(activeGroupId, visibility)}
           onToggleGroupPin={toggleGroupPin}
           onMoveGroup={moveGroup}
-          onOpenGroupBookmarks={(groupId) => {
-            selectGroupAndClosePanel(groupId);
-            toggleSidePanel("bookmarks");
-          }}
         />
       </main>
     </I18nContext>

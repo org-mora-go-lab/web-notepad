@@ -25,7 +25,6 @@ function GroupSidebar({
   onRename,
   onTogglePinGroup,
   onMoveGroup,
-  onOpenBookmarks,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -108,11 +107,6 @@ function GroupSidebar({
                   onSelect={() => selectGroup(group.id)}
                   onRename={(name) => onRename(group.id, name)}
                   onTogglePin={() => onTogglePinGroup(group.id)}
-                  onOpenBookmarks={() => {
-                    setActionsGroupId(null);
-                    onClose();
-                    onOpenBookmarks(group.id);
-                  }}
                   onDelete={(anchor) => {
                     deleteAnchorRef.current = anchor;
                     setDeletingGroupId(group.id);
@@ -142,11 +136,6 @@ function GroupSidebar({
             onSelect={() => selectGroup(ALL_GROUP_ID)}
             onRename={() => undefined}
             onTogglePin={() => undefined}
-            onOpenBookmarks={() => {
-              setActionsGroupId(null);
-              onClose();
-              onOpenBookmarks(ALL_GROUP_ID);
-            }}
             onDelete={() => undefined}
           />
           {ungrouped && (
@@ -167,11 +156,6 @@ function GroupSidebar({
               onSelect={() => selectGroup(UNGROUPED_GROUP_ID)}
               onRename={() => undefined}
               onTogglePin={() => undefined}
-              onOpenBookmarks={() => {
-                setActionsGroupId(null);
-                onClose();
-                onOpenBookmarks(ungrouped.id);
-              }}
               onDelete={() => undefined}
             />
           )}

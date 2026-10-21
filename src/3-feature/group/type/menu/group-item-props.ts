@@ -9,7 +9,7 @@ export type GroupItemProps = {
   name: string;
   active: boolean;
   pinned: boolean;
-  // The default and virtual groups expose bookmarks but not destructive actions.
+  // The default and virtual groups do not expose an action menu.
   editable: boolean;
   muted: boolean;
   system?: boolean;
@@ -19,6 +19,5 @@ export type GroupItemProps = {
   onSelect: () => void;
   onRename: (name: string) => void;
   onTogglePin: () => void;
-  onOpenBookmarks: () => void;
   onDelete: (anchor: HTMLElement) => void;
 };

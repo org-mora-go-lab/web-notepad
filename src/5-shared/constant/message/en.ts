@@ -122,6 +122,7 @@ export const en = {
   shortcutSelectAll: "Select all content",
   shortcutUndo: "Undo edit",
   shortcutRedo: "Redo edit",
+  shortcutBold: "Toggle bold text",
   shortcutToggleDashboard: "Toggle Dashboard",
   shortcutInsertTab: "Insert a tab character",
   shortcutLineRange: "Select or clear a line range",

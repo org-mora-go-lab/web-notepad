@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
+import { Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -25,7 +25,6 @@ export function GroupItem({
   onSelect,
   onRename,
   onTogglePin,
-  onOpenBookmarks,
   onDelete,
 }: GroupItemProps) {
   const { t } = useI18n();
@@ -38,13 +37,13 @@ export function GroupItem({
     menuAnchorRef.current = anchor;
     const rect = anchor.getBoundingClientRect();
     const rowHeight = window.matchMedia("(max-width: 512px)").matches ? 44 : 40;
-    const menuHeight = dropdownRef.current?.getBoundingClientRect().height ?? (editable ? 4 : 1) * rowHeight + 12;
+    const menuHeight = dropdownRef.current?.getBoundingClientRect().height ?? 3 * rowHeight + 12;
     const below = rect.bottom + 8;
     setMenuPosition({
       left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
       top: below + menuHeight <= window.innerHeight - 8 ? below : Math.max(8, rect.top - menuHeight - 8),
     });
-  }, [editable]);
+  }, []);
 
   useLayoutEffect(() => {
     if (actionsOpen && menuAnchorRef.current) positionActions(menuAnchorRef.current);
@@ -163,7 +162,7 @@ export function GroupItem({
       >
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>
-      <div className="group-actions" ref={actionsRef}>
+      {editable && <div className="group-actions" ref={actionsRef}>
           {editable && pinned && (
             <Pin
               className="group-pin-indicator"
@@ -208,14 +207,6 @@ export function GroupItem({
                   <span>{pinned ? t.unpin : t.pin}</span>
                 </button>
               )}
-              <button
-              type="button"
-                aria-label={`${name} · ${t.bookmark}`}
-                onClick={onOpenBookmarks}
-              >
-                <Bookmark size={16} />
-                <span>{t.bookmark}</span>
-              </button>
               {editable && (
                 <>
                   <button
@@ -247,7 +238,7 @@ export function GroupItem({
               )}
             </div>
           )}
-        </div>
+        </div>}
     </article>
   );
 }

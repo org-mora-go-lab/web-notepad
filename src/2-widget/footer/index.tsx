@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Ellipsis, Layers, LayoutDashboard, Search, Settings } from "lucide-react";
+import { Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, Search, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { UserGuide } from "@/src/3-feature";
@@ -17,6 +17,7 @@ export function Footer({
   onToggleGroups,
   onOpenSettings,
   onOpenShortcuts,
+  onToggleBookmarks,
   onToggleSearch,
   searchOpen,
 }: FooterProps) {
@@ -135,6 +136,16 @@ export function Footer({
                     >
                       <Search size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.search}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMoreOpen(false);
+                        onToggleBookmarks();
+                      }}
+                    >
+                      <Bookmark size={18} strokeWidth={1.8} />
+                      <span className="status-label">{t.bookmark}</span>
                     </button>
                   </div>
                 )}

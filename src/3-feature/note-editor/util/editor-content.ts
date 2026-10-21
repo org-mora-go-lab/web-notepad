@@ -10,6 +10,74 @@ export function insertAtSelection(
   };
 }
 
+export function toggleBoldAtSelection(
+  content: string,
+  start: number,
+  end: number,
+) {
+  const marker = "**";
+  const directlyWrapped =
+    start >= marker.length &&
+    content.slice(start - marker.length, start) === marker &&
+    content.slice(end, end + marker.length) === marker;
+  if (directlyWrapped) {
+    return {
+      content:
+        content.slice(0, start - marker.length) +
+        content.slice(start, end) +
+        content.slice(end + marker.length),
+      selectionStart: start - marker.length,
+      selectionEnd: end - marker.length,
+    };
+  }
+
+  const selectionIncludesMarkers =
+    end - start >= marker.length * 2 &&
+    content.slice(start, start + marker.length) === marker &&
+    content.slice(end - marker.length, end) === marker;
+  if (selectionIncludesMarkers) {
+    return {
+      content:
+        content.slice(0, start) +
+        content.slice(start + marker.length, end - marker.length) +
+        content.slice(end),
+      selectionStart: start,
+      selectionEnd: end - marker.length * 2,
+    };
+  }
+
+  if (start === end) {
+    const markerPositions: number[] = [];
+    for (let index = content.indexOf(marker); index >= 0; index = content.indexOf(marker, index + marker.length)) {
+      markerPositions.push(index);
+    }
+    for (let index = 0; index + 1 < markerPositions.length; index += 2) {
+      const opening = markerPositions[index];
+      const closing = markerPositions[index + 1];
+      if (start < opening + marker.length || start > closing) continue;
+      return {
+        content:
+          content.slice(0, opening) +
+          content.slice(opening + marker.length, closing) +
+          content.slice(closing + marker.length),
+        selectionStart: start - marker.length,
+        selectionEnd: start - marker.length,
+      };
+    }
+  }
+
+  return {
+    content:
+      content.slice(0, start) +
+      marker +
+      content.slice(start, end) +
+      marker +
+      content.slice(end),
+    selectionStart: start + marker.length,
+    selectionEnd: end + marker.length,
+  };
+}
+
 export function removeTabIndent(
   content: string,
   start: number,

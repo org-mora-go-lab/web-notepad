@@ -7,11 +7,8 @@ export const groupSelectCommand = (page: Page) =>
   page.locator(".group-select-command");
 export const moreCommand = (page: Page) => page.locator(".footer .more-command");
 export async function openBookmarksPanel(page: Page) {
-  await groupsCommand(page).click();
-  const activeGroup = page.locator("[data-group-id].is-active");
-  await activeGroup.locator(".group-actions > button").click();
-  await activeGroup.getByRole("button", { name: /Bookmark|북마크/i }).click();
-  await expect(groupsCommand(page)).toHaveAttribute("aria-expanded", "false");
+  const menu = await openMoreMenu(page);
+  await menu.getByRole("button", { name: /Bookmark|북마크/i }).click();
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
 }
 export const closedCommand = (page: Page) =>

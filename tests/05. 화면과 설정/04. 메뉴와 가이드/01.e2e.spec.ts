@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
 
-test("1. 우측 상단은 로그인, 하단 더보기는 가이드·설정·검색을 제공한다", async ({ page }) => {
+test("1. 우측 상단은 로그인, 하단 더보기는 가이드·설정·검색·북마크를 제공한다", async ({ page }) => {
   await page.goto("/");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
@@ -22,7 +22,7 @@ test("1. 우측 상단은 로그인, 하단 더보기는 가이드·설정·검�
     expect(tabsBounds.x + tabsBounds.width).toBeLessThanOrEqual(bounds.x + 1);
     await trigger.click();
     const menu = page.locator("#footer-more-menu");
-    await expect(menu.getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH"]);
+    await expect(menu.getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH", "Bookmark"]);
     await expect(menu.getByRole("link", { name: "Continue with Kakao" })).toHaveCount(0);
     await expect(menu.getByRole("switch", { name: "THEME" })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "SHORTCUT" })).toHaveCount(0);
