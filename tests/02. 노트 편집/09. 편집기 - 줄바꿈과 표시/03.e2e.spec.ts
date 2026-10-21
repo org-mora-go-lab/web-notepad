@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { addTabButton, dragDividerBy, lineButtons } from "../../__util__";
+import { dragTabToZone, paneSlot } from "../__util__";
 import { WRAPPED_NOTE as content } from "./__constant__";
 import { countWrappedLines } from "./__util__";
 
@@ -11,7 +12,12 @@ test("3. 분할 패널 너비를 조정하면 표시 줄과 LINE 번호를 다�
   const fullWidthCount = await lineButtons(page).count();
   await addTabButton(page).click();
   await editor.fill("right");
-  await editor.press("Alt+F12");
+  await dragTabToZone(
+    page,
+    page.getByRole("tab", { selected: true }).locator(".tab-title"),
+    paneSlot(page, "left"),
+    "Split right",
+  );
 
   const leftPane = page.locator(".pane-slot").nth(0);
   const leftEditor = leftPane.locator("textarea");

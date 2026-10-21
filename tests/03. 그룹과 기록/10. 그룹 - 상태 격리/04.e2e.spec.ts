@@ -1,17 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 import { addTabButton, createGroups, dragDividerBy, readStoredState, switchGroup } from "../../__util__";
+import { dragTabToZone, paneSlot } from "../../02. 노트 편집/__util__";
 
 test("4. 각 그룹은 분할 비율을 독립적으로 저장하고 다시 전환할 때 복원한다", async ({ page }) => {
   await page.goto("/");
   await addTabButton(page).click();
-  await page.locator("textarea").press("Alt+F12");
+  await dragTabToZone(page, page.getByRole("tab", { selected: true }).locator(".tab-title"), paneSlot(page, "left"), "Split right");
   await dragDividerBy(page, -120);
   const ungroupedWidth = (await page.locator(".pane-slot").first().boundingBox())!.width;
 
   await createGroups(page, "Work");
   await addTabButton(page).click();
-  await page.locator("textarea").press("Alt+F12");
+  await dragTabToZone(page, page.getByRole("tab", { selected: true }).locator(".tab-title"), paneSlot(page, "left"), "Split right");
   await dragDividerBy(page, 120);
   const workWidth = (await page.locator(".pane-slot").first().boundingBox())!.width;
   expect(workWidth).toBeGreaterThan(ungroupedWidth);

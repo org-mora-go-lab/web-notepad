@@ -1,19 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { addTabButton } from "../../__util__";
-
-test("5. Option+F12는 활성 탭을 오른쪽 열의 상단 패널로 이동한다", async ({
-  page,
-}) => {
+test("5. Option+F12는 Dashboard를 열고 닫는다", async ({ page }) => {
   await page.goto("/");
-  await page.locator("textarea").fill("existing note");
-  await addTabButton(page).click();
-  await page.locator("textarea").fill("moving note");
+  const dashboard = page.locator("#dashboard-panel");
+  const editor = page.locator("textarea");
 
-  await page.locator("textarea").press("Alt+F12");
-  await expect(page.locator(".body")).toHaveCount(2);
-  const rightPane = page.locator(".pane-slot").nth(1);
-  const rightEditor = rightPane.locator("textarea");
-  await expect(rightEditor).toHaveValue("moving note");
-  await expect(rightEditor).toBeFocused();
+  await editor.press("Alt+F12");
+  await expect(dashboard).toHaveAttribute("aria-hidden", "false");
+  await page.keyboard.press("Alt+F12");
+  await expect(dashboard).toHaveAttribute("aria-hidden", "true");
 });

@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import {
   getActiveGroup,
   getPaneActiveTabId,
-  getPaneColumn,
   getPaneTabs,
   PANE_IDS,
   type PaneId,
@@ -22,7 +21,8 @@ type Options = {
   requestCloseTab: (tabId: string) => void;
   onSelectTab: (tabId: string) => void;
   onAddTab: (pane: PaneId) => void;
-  onMoveTabToPane: (tabId: string, pane: PaneId) => void;
+  onToggleGroups: () => void;
+  onToggleDashboard: () => void;
 };
 
 const matchesKey = (event: KeyboardEvent, ...names: string[]) =>
@@ -34,12 +34,30 @@ export function useNotepadShortcuts({
   requestCloseTab,
   onSelectTab,
   onAddTab,
-  onMoveTabToPane,
+  onToggleGroups,
+  onToggleDashboard,
 }: Options) {
   useSelectAllShortcut({ editorRefs });
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
+      if (
+        event.metaKey &&
+        !event.ctrlKey &&
+        !event.altKey &&
+        !event.shiftKey &&
+        matchesKey(event, "b", "B", "KeyB")
+      ) {
+        if (
+          event.defaultPrevented ||
+          event.isComposing ||
+          document.querySelector("dialog:modal")
+        ) return;
+        event.preventDefault();
+        if (!event.repeat) onToggleGroups();
+        return;
+      }
+
       const state = useNotepadStore.getState();
       const activeGroup = getActiveGroup(state);
       if (!activeGroup) return;
@@ -85,17 +103,10 @@ export function useNotepadShortcuts({
       const isF12 = matchesKey(event, "F12");
       if (isF12 || matchesKey(event, "F11")) {
         event.preventDefault();
-        // F11/F12 move the tab between columns, into the top pane of the other column.
-        const targetPane = isF12 ? "right" : "left";
-        if (getPaneColumn(pane) === targetPane || !paneActiveId) return;
-
-        flushActiveEditor();
-        onMoveTabToPane(paneActiveId, targetPane);
-        window.requestAnimationFrame(() => {
-          const movedPane =
-            getActiveGroup(useNotepadStore.getState())?.activePane ?? "left";
-          editorRefs[movedPane].current?.focus();
-        });
+        if (!event.repeat) {
+          if (isF12) onToggleDashboard();
+          else onToggleGroups();
+        }
         return;
       }
 
@@ -120,8 +131,9 @@ export function useNotepadShortcuts({
     composingRefs,
     editorRefs,
     onAddTab,
-    onMoveTabToPane,
     onSelectTab,
+    onToggleDashboard,
+    onToggleGroups,
     requestCloseTab,
   ]);
 }
