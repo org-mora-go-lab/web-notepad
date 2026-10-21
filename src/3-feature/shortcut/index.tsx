@@ -11,6 +11,7 @@ export function Shortcut({
 }: ShortcutProps) {
   const { t } = useI18n();
   const shortcuts = [
+    { action: t.shortcutToggleGroups, keys: ["Cmd + B"] },
     { action: t.shortcutNewTab, keys: ["Option + Tab"] },
     { action: t.shortcutCloseTab, keys: ["Option + Backspace"] },
     {

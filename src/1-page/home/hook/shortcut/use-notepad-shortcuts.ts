@@ -23,6 +23,7 @@ type Options = {
   onSelectTab: (tabId: string) => void;
   onAddTab: (pane: PaneId) => void;
   onMoveTabToPane: (tabId: string, pane: PaneId) => void;
+  onToggleGroups: () => void;
 };
 
 const matchesKey = (event: KeyboardEvent, ...names: string[]) =>
@@ -35,11 +36,29 @@ export function useNotepadShortcuts({
   onSelectTab,
   onAddTab,
   onMoveTabToPane,
+  onToggleGroups,
 }: Options) {
   useSelectAllShortcut({ editorRefs });
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
+      if (
+        event.metaKey &&
+        !event.ctrlKey &&
+        !event.altKey &&
+        !event.shiftKey &&
+        matchesKey(event, "b", "B", "KeyB")
+      ) {
+        if (
+          event.defaultPrevented ||
+          event.isComposing ||
+          document.querySelector("dialog:modal")
+        ) return;
+        event.preventDefault();
+        if (!event.repeat) onToggleGroups();
+        return;
+      }
+
       const state = useNotepadStore.getState();
       const activeGroup = getActiveGroup(state);
       if (!activeGroup) return;
@@ -122,6 +141,7 @@ export function useNotepadShortcuts({
     onAddTab,
     onMoveTabToPane,
     onSelectTab,
+    onToggleGroups,
     requestCloseTab,
   ]);
 }

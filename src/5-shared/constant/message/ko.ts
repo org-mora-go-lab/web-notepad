@@ -119,6 +119,7 @@ export const ko: Messages = {
   viewClosedResult: (title: string) => `닫은 탭 ${title} 검색 결과 보기`,
   shortcutTitle: "단축키 (mac)",
   shortcutNewTab: "새 탭 추가",
+  shortcutToggleGroups: "그룹 패널 열기·닫기",
   shortcutCloseTab: "활성 탭 닫기",
   shortcutMoveTab: "탭 간 이동",
   shortcutSelectAll: "내용 전체 선택",

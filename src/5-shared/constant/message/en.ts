@@ -116,6 +116,7 @@ export const en = {
   viewClosedResult: (title: string) => `View closed tab result ${title}`,
   shortcutTitle: "Shortcut (mac)",
   shortcutNewTab: "Add a new tab",
+  shortcutToggleGroups: "Toggle group panel",
   shortcutCloseTab: "Close the active tab",
   shortcutMoveTab: "Move between tabs",
   shortcutSelectAll: "Select all content",
