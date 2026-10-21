@@ -98,6 +98,7 @@ export function useHome() {
     moveTabToPaneAndRecord,
     replaceCurrentView,
     toggleGroupMenu,
+    toggleSidePanel,
   } = navigation;
 
   const requestCloseTab = useCallback(
@@ -121,8 +122,8 @@ export function useHome() {
     requestCloseTab,
     onSelectTab: selectTabWithHistory,
     onAddTab: addTabAndRecord,
-    onMoveTabToPane: moveTabToPaneAndRecord,
     onToggleGroups: toggleGroupMenu,
+    onToggleDashboard: () => toggleSidePanel("dashboard"),
   });
   useEditorFocus(
     editorRefs,

@@ -1,6 +1,7 @@
 import { test } from "@playwright/test";
 
 import { addTabButton, expectSelectedLines, lineButtons } from "../../__util__";
+import { dragTabToZone, paneSlot } from "../__util__";
 
 test("9. 탭을 분할 패널로 이동해도 줄 선택을 유지한다", async ({ page }) => {
   await page.goto("/");
@@ -9,7 +10,12 @@ test("9. 탭을 분할 패널로 이동해도 줄 선택을 유지한다", async
   await lineButtons(page).nth(2).click();
   await addTabButton(page).click();
   await page.getByRole("tab").first().click();
-  await page.locator("textarea").press("Alt+F12");
+  await dragTabToZone(
+    page,
+    page.getByRole("tab", { selected: true }).locator(".tab-title"),
+    paneSlot(page, "left"),
+    "Split right",
+  );
   await expectSelectedLines(page.locator('.pane-slot[data-pane="right"]'), [
     false,
     true,
