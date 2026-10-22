@@ -41,23 +41,6 @@ export function useNotepadShortcuts({
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
-      if (
-        event.metaKey &&
-        !event.ctrlKey &&
-        !event.altKey &&
-        !event.shiftKey &&
-        matchesKey(event, "b", "B", "KeyB")
-      ) {
-        if (
-          event.defaultPrevented ||
-          event.isComposing ||
-          document.querySelector("dialog:modal")
-        ) return;
-        event.preventDefault();
-        if (!event.repeat) onToggleGroups();
-        return;
-      }
-
       const state = useNotepadStore.getState();
       const activeGroup = getActiveGroup(state);
       if (!activeGroup) return;

@@ -125,6 +125,7 @@ export const ko: Messages = {
   shortcutSelectAll: "내용 전체 선택",
   shortcutUndo: "편집 실행 취소",
   shortcutRedo: "편집 다시 실행",
+  shortcutBold: "굵은 글씨 적용·해제",
   shortcutToggleDashboard: "대시보드 열기·닫기",
   shortcutInsertTab: "탭 문자 삽입",
   shortcutLineRange: "라인 범위 선택 및 해제",

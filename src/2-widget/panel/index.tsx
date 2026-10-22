@@ -43,7 +43,6 @@ export function Panel({
   onRenameGroup,
   onToggleGroupPin,
   onMoveGroup,
-  onOpenGroupBookmarks,
 }: PanelProps) {
   return (
     <div className="panel">
@@ -85,7 +84,6 @@ export function Panel({
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
         onMoveGroup={onMoveGroup}
-        onOpenBookmarks={onOpenGroupBookmarks}
       />
       <GlobalSearch
         groups={groups}

@@ -59,7 +59,7 @@
   .dashboard-empty {
     width: 100%;
     min-height: 120px;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -76,6 +76,8 @@
   }
 
   @media (max-width: 512px) {
+    .dashboard-empty { display: flex; }
+
     .dashboard-board {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: repeat(3, auto);

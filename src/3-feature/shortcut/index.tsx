@@ -11,7 +11,7 @@ export function Shortcut({
 }: ShortcutProps) {
   const { t } = useI18n();
   const shortcuts = [
-    { action: t.shortcutToggleGroups, keys: ["Cmd + B", "Option + F11"] },
+    { action: t.shortcutToggleGroups, keys: ["Option + F11"] },
     { action: t.shortcutNewTab, keys: ["Option + Tab"] },
     { action: t.shortcutCloseTab, keys: ["Option + Backspace"] },
     {
@@ -21,6 +21,7 @@ export function Shortcut({
     { action: t.shortcutSelectAll, keys: ["Cmd + A", "Option + A"] },
     { action: t.shortcutUndo, keys: ["Cmd + Z"] },
     { action: t.shortcutRedo, keys: ["Cmd + Shift + Z"] },
+    { action: t.shortcutBold, keys: ["Cmd + B"] },
     { action: t.shortcutToggleDashboard, keys: ["Option + F12"] },
     { action: t.shortcutInsertTab, keys: ["Tab"] },
     { action: t.shortcutLineRange, keys: [`Shift + ${t.click}`] },

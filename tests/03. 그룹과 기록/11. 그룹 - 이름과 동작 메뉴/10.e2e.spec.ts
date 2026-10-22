@@ -15,5 +15,5 @@ test("10. PC에서 그룹명을 우클릭하면 선택을 바꾸지 않고 동�
   await expect(select).toHaveAttribute("aria-pressed", selectedBefore!);
   const dropdown = row.locator(".group-action-dropdown");
   await expect(dropdown).toBeVisible();
-  await expect(dropdown.getByRole("button")).toHaveText(["Pin", "Bookmark", "Edit", "Delete"]);
+  await expect(dropdown.getByRole("button")).toHaveText(["Pin", "Edit", "Delete"]);
 });

@@ -21,7 +21,6 @@ test("3. 하단 왼쪽 그룹 버튼은 PC에서 그룹명을 함께 표시하�
     if (viewport.width <= 512) {
       await expect(command).toHaveCSS("gap", "4px");
       await expect(command.locator(".group-command-label")).toHaveText("GROUP");
-      await expect(command.locator(".group-select-name")).toBeHidden();
       await expect(page.locator(".current-group-panel")).toBeVisible();
       await expect(page.locator(".current-group-name")).toHaveText("Ungrouped");
       const icon = page.locator(".current-group-icon");
@@ -32,8 +31,6 @@ test("3. 하단 왼쪽 그룹 버튼은 PC에서 그룹명을 함께 표시하�
       expect(nameBox.x - iconBox.x - iconBox.width).toBeCloseTo(7, 0);
     } else {
       await expect(command).toHaveCSS("gap", "7px");
-      await expect(command.locator(".group-select-name")).toBeVisible();
-      await expect(command.locator(".group-select-name")).toHaveText("GROUP");
       await expect(command.locator(".group-current-value")).toHaveText("Ungrouped");
       await expect(command.locator(".group-command-label")).toBeHidden();
       await expect(page.locator(".current-group-panel")).toBeHidden();

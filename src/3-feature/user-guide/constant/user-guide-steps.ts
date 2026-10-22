@@ -40,7 +40,7 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
     },
     {
       title: "Bookmarks",
-      description: "Choose Bookmark from a group's action menu to see its bookmarked tabs and open them again.",
+      description: "Choose Bookmark from the bottom-right More menu to see the current group's bookmarked tabs and open them again.",
     },
     {
       title: "Search and closed tabs",

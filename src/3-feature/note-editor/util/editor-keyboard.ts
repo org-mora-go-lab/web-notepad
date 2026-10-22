@@ -1,6 +1,11 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 
-import { insertAtSelection, isImeComposing, removeTabIndent } from "./editor-content";
+import {
+  insertAtSelection,
+  isImeComposing,
+  removeTabIndent,
+  toggleBoldAtSelection,
+} from "./editor-content";
 import { restoreEditorHistory } from "./editor-history";
 
 type MutableRef<T> = { current: T };
@@ -29,6 +34,29 @@ export function handleEditorKeyDown(
     queueTabInsertion,
   }: Options,
 ) {
+  const isBold =
+    event.metaKey &&
+    !event.ctrlKey &&
+    !event.altKey &&
+    !event.shiftKey &&
+    event.key.toLowerCase() === "b";
+  if (isBold) {
+    if (isImeComposing(event.nativeEvent, composingRef.current)) return;
+    event.preventDefault();
+    if (event.repeat) return;
+    const textarea = event.currentTarget;
+    const result = toggleBoldAtSelection(
+      textarea.value,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+    commitContent(result.content);
+    window.requestAnimationFrame(() => {
+      textarea.setSelectionRange(result.selectionStart, result.selectionEnd);
+    });
+    return;
+  }
+
   const isUndo =
     (event.metaKey || event.ctrlKey) &&
     !event.altKey &&

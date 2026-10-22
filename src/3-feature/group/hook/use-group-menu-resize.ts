@@ -7,7 +7,7 @@ import {
   useEffect,
 } from "react";
 
-const MIN_WIDTH = 240;
+const MIN_WIDTH = 192;
 const MAX_WIDTH_RATIO = 0.6;
 const WIDTH_PROPERTY = "--group-sidebar-width";
 const WIDTH_STORAGE_KEY = "web-notepad-group-sidebar-width";

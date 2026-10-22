@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -25,13 +25,11 @@ function GroupSidebar({
   onRename,
   onTogglePinGroup,
   onMoveGroup,
-  onOpenBookmarks,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const handleResizeStart = useGroupMenuResize(sidebarRef);
   const reorder = useGroupReorder(onMoveGroup);
-  const [groupsExpanded, setGroupsExpanded] = useState(true);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
@@ -73,18 +71,7 @@ function GroupSidebar({
           </button>
         </header>
         <section className="group-section">
-          <button
-            className="group-section-toggle"
-            type="button"
-            aria-expanded={groupsExpanded}
-            aria-controls="group-sidebar-list"
-            onClick={() => setGroupsExpanded((current) => !current)}
-          >
-            {groupsExpanded ? <ChevronDown aria-hidden="true" /> : <ChevronRight aria-hidden="true" />}
-            <span>{t.group}</span>
-          </button>
-          {groupsExpanded && (
-            <div className="group-list" id="group-sidebar-list">
+          <div className="group-list" id="group-sidebar-list">
               <GroupCreateForm onCreate={onCreate} />
               {otherRows.map((group) => (
                 <GroupItem
@@ -108,19 +95,13 @@ function GroupSidebar({
                   onSelect={() => selectGroup(group.id)}
                   onRename={(name) => onRename(group.id, name)}
                   onTogglePin={() => onTogglePinGroup(group.id)}
-                  onOpenBookmarks={() => {
-                    setActionsGroupId(null);
-                    onClose();
-                    onOpenBookmarks(group.id);
-                  }}
                   onDelete={(anchor) => {
                     deleteAnchorRef.current = anchor;
                     setDeletingGroupId(group.id);
                   }}
                 />
               ))}
-            </div>
-          )}
+          </div>
         </section>
         <div className="group-system-list">
           <GroupItem
@@ -142,11 +123,6 @@ function GroupSidebar({
             onSelect={() => selectGroup(ALL_GROUP_ID)}
             onRename={() => undefined}
             onTogglePin={() => undefined}
-            onOpenBookmarks={() => {
-              setActionsGroupId(null);
-              onClose();
-              onOpenBookmarks(ALL_GROUP_ID);
-            }}
             onDelete={() => undefined}
           />
           {ungrouped && (
@@ -167,11 +143,6 @@ function GroupSidebar({
               onSelect={() => selectGroup(UNGROUPED_GROUP_ID)}
               onRename={() => undefined}
               onTogglePin={() => undefined}
-              onOpenBookmarks={() => {
-                setActionsGroupId(null);
-                onClose();
-                onOpenBookmarks(ungrouped.id);
-              }}
               onDelete={() => undefined}
             />
           )}
