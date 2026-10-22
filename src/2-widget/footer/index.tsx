@@ -66,9 +66,6 @@ export function Footer({
                 <span className="status-dot" role="img" aria-label={t.updatedToday} />
               )}
             </span>
-            <span className="status-label group-select-name" title={activeGroupName}>
-              {t.group}
-            </span>
             <span className="status-label group-command-label">{t.group}</span>
             <span className="group-current-value" aria-hidden="true">
               {activeGroupName}

@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("4. GROUP 접기 버튼은 제어 대상 목록 ID를 제공한다", async ({ page }) => {
+test("4. 그룹 사이드바는 별도 접기 영역 없이 그룹 목록을 항상 표시한다", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Toggle groups" }).click();
-  await expect(page.getByRole("button", { name: "GROUP", exact: true })).toHaveAttribute("aria-controls", "group-sidebar-list");
+  await expect(page.locator(".group-section-toggle")).toHaveCount(0);
+  await expect(page.locator("#group-sidebar-list")).toBeVisible();
 });

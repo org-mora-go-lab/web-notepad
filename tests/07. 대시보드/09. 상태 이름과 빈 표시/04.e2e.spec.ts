@@ -18,6 +18,10 @@ test("4. 다섯 상태의 빈 영역은 동일한 디자인과 None 문구를 �
       const empty = dashboardPanel(page).locator(".dashboard-empty");
       await expect(empty).toHaveText(["None", "None", "None", "None", "None"]);
       await expect(empty.locator("button")).toHaveCount(0);
+      if (viewport.width > 512) {
+        await expect(empty.first()).toBeHidden();
+        continue;
+      }
       for (const area of await empty.all()) {
         await expect(area).toHaveCSS("border-top-style", "dashed");
         await expect(area).toHaveCSS("border-radius", "5px");

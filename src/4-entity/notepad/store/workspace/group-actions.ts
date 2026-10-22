@@ -65,7 +65,9 @@ export const createGroupActions: StateCreator<
 
       let remainingTabs = source.tabs.filter((item) => item.id !== tabId);
       let nextTabNumber = state.nextTabNumber;
-      if (remainingTabs.length === 0) {
+      // A group may still contain closed records after its last open tab moves.
+      // Keep the editor renderable by ensuring the source retains an open tab.
+      if (!remainingTabs.some((item) => item.open)) {
         const allocated = allocateTab(state);
         remainingTabs = [allocated.tab];
         nextTabNumber = allocated.nextTabNumber;

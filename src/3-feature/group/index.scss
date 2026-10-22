@@ -36,12 +36,6 @@
   }
 
   .group-section { min-height: 0; flex: 1; display: flex; flex-direction: column; }
-  .group-section-toggle {
-    min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 14px;
-    border: 0; border-bottom: 1px solid v.$line; background: transparent; color: v.$ink;
-    font-size: v.font(14px); font-weight: 600; cursor: pointer;
-    svg { width: 16px; height: 16px; }
-  }
   .group-list { flex: 1; overflow-y: auto; }
   .group-system-list {
     padding: 4px 0;
@@ -65,7 +59,7 @@
       h2 { font-size: v.font(20px * v.$mobile-scale); }
       button { width: 44px; height: 44px; }
     }
-    .group-section-toggle, .group-system-list .group-system-item { min-height: 48px; }
+    .group-system-list .group-system-item { min-height: 48px; }
     .group-menu-resizer { display: none; }
   }
 }

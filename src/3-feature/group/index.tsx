@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -30,7 +30,6 @@ function GroupSidebar({
   const sidebarRef = useRef<HTMLDivElement>(null);
   const handleResizeStart = useGroupMenuResize(sidebarRef);
   const reorder = useGroupReorder(onMoveGroup);
-  const [groupsExpanded, setGroupsExpanded] = useState(true);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
@@ -72,18 +71,7 @@ function GroupSidebar({
           </button>
         </header>
         <section className="group-section">
-          <button
-            className="group-section-toggle"
-            type="button"
-            aria-expanded={groupsExpanded}
-            aria-controls="group-sidebar-list"
-            onClick={() => setGroupsExpanded((current) => !current)}
-          >
-            {groupsExpanded ? <ChevronDown aria-hidden="true" /> : <ChevronRight aria-hidden="true" />}
-            <span>{t.group}</span>
-          </button>
-          {groupsExpanded && (
-            <div className="group-list" id="group-sidebar-list">
+          <div className="group-list" id="group-sidebar-list">
               <GroupCreateForm onCreate={onCreate} />
               {otherRows.map((group) => (
                 <GroupItem
@@ -113,8 +101,7 @@ function GroupSidebar({
                   }}
                 />
               ))}
-            </div>
-          )}
+          </div>
         </section>
         <div className="group-system-list">
           <GroupItem
