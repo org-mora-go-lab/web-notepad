@@ -50,7 +50,7 @@
       color: v.$ink;
       font-size: v.font(15px);
       text-align: left;
-      cursor: pointer;
+      cursor: default;
       &:disabled { opacity: 0.4; cursor: default; }
 
       &:hover,

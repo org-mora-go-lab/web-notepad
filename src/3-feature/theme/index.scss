@@ -23,7 +23,7 @@
   .theme-toggle {
     position: relative;
     display: block;
-    cursor: pointer;
+    cursor: default;
 
     input {
       position: absolute;
@@ -33,7 +33,7 @@
       height: 100%;
       margin: 0;
       opacity: 0;
-      cursor: pointer;
+      cursor: default;
     }
 
     .theme-toggle-track {

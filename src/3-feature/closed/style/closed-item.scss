@@ -21,7 +21,7 @@
     background: transparent;
     color: inherit;
     text-align: left;
-    cursor: pointer;
+    cursor: default;
 
     &:focus-visible {
       outline: 2px solid v.$saved;

@@ -22,7 +22,7 @@
     border: 1px solid v.$line;
     background: transparent;
     color: v.$dim;
-    cursor: pointer;
+    cursor: default;
 
     svg {
       width: 15.6px;
@@ -70,7 +70,7 @@
     background: var(--swatch-color);
     background-clip: content-box;
     padding: 2px;
-    cursor: pointer;
+    cursor: default;
 
     &:checked {
       border-color: v.$ink;
