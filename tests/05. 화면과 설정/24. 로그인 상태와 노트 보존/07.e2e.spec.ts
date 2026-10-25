@@ -26,8 +26,9 @@ test("7. 로그아웃은 로컬 노트와 줄 선택을 지우지 않는다", as
     ],
   });
   await page
-    .getByRole("button", { name: authProfile.nickname + " · Log out" })
+    .getByRole("button", { name: authProfile.nickname + " · Account menu" })
     .click();
+  await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
   await expect(page.locator("a.auth-command")).toBeVisible();
   await page.reload();
   await expect(page.locator("textarea")).toHaveValue(

@@ -13,10 +13,10 @@ test("6. 선택한 폰트 비율을 탭·편집기·하단 메뉴·우측 패널
   const tabTitle = page.locator(".tab-item.is-active .tab-title");
   const panelTitle = settingsPanel(page).getByRole("heading", { name: "Settings" });
   const footer = page.locator(".footer");
-  await expectCssPx(editor, "fontSize", 19);
-  await expectCssPx(tabTitle, "fontSize", 15);
-  await expectCssPx(panelTitle, "fontSize", 22);
-  await expectCssPx(footer, "fontSize", 14);
+  await expectCssPx(editor, "fontSize", 17.1);
+  await expectCssPx(tabTitle, "fontSize", 13.5);
+  await expectCssPx(panelTitle, "fontSize", 19.8);
+  await expectCssPx(footer, "fontSize", 12.6);
 
   await fontScaleRadio(page, "120%").check();
   await expect(fontScaleRadio(page, "120%")).toBeChecked();

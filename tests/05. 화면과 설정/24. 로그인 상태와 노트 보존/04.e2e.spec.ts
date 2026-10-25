@@ -10,8 +10,9 @@ test("4. 로그아웃 후 새로고침해도 로그인 링크를 유지한다", 
   await authenticateBrowser(context);
   await page.goto("/");
   await page
-    .getByRole("button", { name: authProfile.nickname + " · Log out" })
+    .getByRole("button", { name: authProfile.nickname + " · Account menu" })
     .click();
+  await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
   await expect(page.locator("a.auth-command")).toHaveAttribute(
     "aria-disabled",
     "false",

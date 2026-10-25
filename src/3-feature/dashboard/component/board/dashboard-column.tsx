@@ -28,7 +28,7 @@ export function DashboardColumn({
   }[status];
   const cardEntries = [...columnTabs].sort((left, right) => {
     const priority = (tab: typeof left) =>
-      tab.pinned ? 2 : tab.bookmarked ? 1 : 0;
+      tab.bookmarked ? 1 : 0;
     return (
       priority(right) - priority(left) || left.id.localeCompare(right.id)
     );

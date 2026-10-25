@@ -2,12 +2,12 @@
 
 import "./index.scss";
 
-import { type CSSProperties, useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { useCloudSave, useHome, useSharedGroups } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
 import { MESSAGES } from "@/src/5-shared/constant";
-import { I18nContext } from "@/src/5-shared/hook";
+import { AccountActionsContext, GroupSharingContext, I18nContext, SavingTabsContext } from "@/src/5-shared/hook";
 import { MobileTapFeedback } from "@/src/5-shared/ui";
 
 import { Loading, PaneColumn } from "./component";
@@ -34,7 +34,6 @@ export function Home() {
     activeGroupTabs,
     tabColorCycle,
     setTabStatus,
-    togglePin,
     toggleBookmark,
     moveToGroup,
     deleteDashboardTab,
@@ -56,8 +55,9 @@ export function Home() {
     panelSlide,
     panelPosition,
   } = useHome();
-  const cloudSaveStatus = useCloudSave(hydrated);
+  const { status: cloudSaveStatus, savingTabIds } = useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { inviteStatus, dismissInvite } = shared;
   const inviteRef = useRef<HTMLElement>(null);
   const adminBoardOpened = useRef(false);
@@ -71,7 +71,8 @@ export function Home() {
 
   useEffect(() => {
     document.documentElement.lang = language;
-  }, [language]);
+    document.documentElement.style.setProperty("--font-scale", String(fontScale));
+  }, [language, fontScale]);
 
   useEffect(() => {
     if (!hydrated || adminBoardOpened.current) return;
@@ -105,6 +106,12 @@ export function Home() {
 
   return (
     <I18nContext value={language}>
+      <AccountActionsContext value={{
+        onOpenBoard: () => { closeGroupMenu(); if (openPanel !== "board") toggleSidePanel("board"); },
+        onOpenNotifications: () => { setNotificationsOpen(true); void shared.markNotificationsRead(); },
+      }}>
+      <GroupSharingContext value={{ accessByGroup: shared.accessByGroup, changeAccess: shared.changeAccess }}>
+      <SavingTabsContext value={[...savingTabIds, ...shared.savingTabIds]}>
       <MobileTapFeedback />
       <main
         className={`home ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
@@ -137,6 +144,8 @@ export function Home() {
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleSearch={() => toggleSidePanel("global-search")}
             searchOpen={openPanel === "global-search"}
+            notificationsOpen={notificationsOpen}
+            onNotificationsOpenChange={setNotificationsOpen}
             notifications={shared.notifications}
             unreadCount={shared.unreadCount}
             onMarkNotificationsRead={() => void shared.markNotificationsRead()}
@@ -180,7 +189,6 @@ export function Home() {
           onOpenDashboardTab={openTabAndClosePanel}
           onChangeTabStatus={setTabStatus}
           onMoveDashboardTabToGroup={moveToGroup}
-          onToggleDashboardTabPin={togglePin}
           onToggleDashboardTabBookmark={toggleBookmark}
           onDeleteDashboardTab={deleteDashboardTab}
           onCreateGroup={createGroupAndRecord}
@@ -194,6 +202,9 @@ export function Home() {
           onMoveGroup={moveGroup}
         />
       </main>
+      </SavingTabsContext>
+      </GroupSharingContext>
+      </AccountActionsContext>
     </I18nContext>
   );
 }

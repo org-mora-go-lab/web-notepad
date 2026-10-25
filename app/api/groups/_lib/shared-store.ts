@@ -13,6 +13,8 @@ export type SharedRecord = {
   revision: number;
   data: SharedGroupData;
   updatedAt: number;
+  sharingActive: boolean;
+  shareVersion: number;
 };
 
 function fromRow(row: Record<string, unknown>): SharedRecord {
@@ -22,6 +24,8 @@ function fromRow(row: Record<string, unknown>): SharedRecord {
     revision: Number(row.revision),
     data: JSON.parse(String(row.snapshot)) as SharedGroupData,
     updatedAt: Number(row.updated_at),
+    sharingActive: Number(row.invite_enabled ?? 1) !== 0,
+    shareVersion: Number(row.token_version ?? 0),
   };
 }
 
@@ -38,7 +42,12 @@ export async function createOrGetSharedGroup(user: KakaoUser, group: GroupEntry)
       sql: "SELECT 1 FROM shared_group_members WHERE group_id = ? AND user_id = ?",
       args: [record.id, user.id],
     });
-    if (!member.rows.length) return null;
+    if (!member.rows.length || record.ownerId !== user.id) return null;
+    const access = await database.execute({ sql: "SELECT enabled, token_version FROM shared_group_access WHERE group_id = ?", args: [record.id] });
+    record.shareVersion = Number(access.rows[0]?.token_version ?? 0);
+    if (Number(access.rows[0]?.enabled ?? 1) === 0) {
+      await database.execute({ sql: "UPDATE shared_group_access SET enabled = 1 WHERE group_id = ?", args: [record.id] });
+    }
     return { record, group: applySharedGroupData(group.id === record.id ? group : namespaceGroup(group, record.id.slice(7)), record.data) };
   }
 
@@ -56,29 +65,31 @@ export async function createOrGetSharedGroup(user: KakaoUser, group: GroupEntry)
       args: [id, user.id, user.nickname, now],
     },
   ], "write");
-  return { record: { id, ownerId: user.id, revision: 0, data, updatedAt: now }, group: namespaced };
+  return { record: { id, ownerId: user.id, revision: 0, data, updatedAt: now, sharingActive: true, shareVersion: 0 }, group: namespaced };
 }
 
-export async function joinSharedGroup(user: KakaoUser, id: string) {
+export async function joinSharedGroup(user: KakaoUser, id: string, shareVersion = 0) {
   const database = await sharedDatabase();
-  const found = await database.execute({ sql: "SELECT * FROM shared_groups WHERE id = ?", args: [id] });
-  if (!found.rows[0]) return null;
-  const lastEvent = await database.execute({
-    sql: "SELECT COALESCE(MAX(id), 0) AS id FROM shared_group_events WHERE group_id = ?",
-    args: [id],
-  });
-  await database.execute({
-    sql: `INSERT OR IGNORE INTO shared_group_members
-      (group_id, user_id, display_name, last_seen_event_id, joined_at) VALUES (?, ?, ?, ?, ?)`,
-    args: [id, user.id, user.nickname, Number(lastEvent.rows[0]?.id ?? 0), Date.now()],
-  });
-  return fromRow(found.rows[0]);
+  const transaction = await database.transaction("write");
+  try {
+    const found = await transaction.execute({ sql: "SELECT g.*, COALESCE(a.enabled, 1) AS invite_enabled, COALESCE(a.token_version, 0) AS token_version FROM shared_groups g LEFT JOIN shared_group_access a ON a.group_id = g.id WHERE g.id = ?", args: [id] });
+    if (!found.rows[0] || Number(found.rows[0].invite_enabled) === 0 || Number(found.rows[0].token_version) !== shareVersion) return null;
+    const lastEvent = await transaction.execute({ sql: "SELECT COALESCE(MAX(id), 0) AS id FROM shared_group_events WHERE group_id = ?", args: [id] });
+    await transaction.execute({
+      sql: "INSERT OR IGNORE INTO shared_group_members (group_id, user_id, display_name, last_seen_event_id, joined_at) VALUES (?, ?, ?, ?, ?)",
+      args: [id, user.id, user.nickname, Number(lastEvent.rows[0]?.id ?? 0), Date.now()],
+    });
+    await transaction.commit();
+    return fromRow(found.rows[0]);
+  } finally { transaction.close(); }
+
 }
 
 export async function listSharedGroups(userId: string) {
   const database = await sharedDatabase();
   const result = await database.execute({
-    sql: `SELECT g.* FROM shared_groups g JOIN shared_group_members m ON m.group_id = g.id
+    sql: `SELECT g.*, COALESCE(a.enabled, 1) AS invite_enabled, COALESCE(a.token_version, 0) AS token_version FROM shared_groups g JOIN shared_group_members m ON m.group_id = g.id
+      LEFT JOIN shared_group_access a ON a.group_id = g.id
       WHERE m.user_id = ? ORDER BY g.updated_at DESC`,
     args: [userId],
   });
@@ -153,4 +164,26 @@ export async function markSharedNotificationsRead(userId: string) {
     ) WHERE user_id = ?`,
     args: [userId],
   });
+}
+
+export async function changeSharedGroupAccess(userId: string, id: string, action: "leave" | "revoke") {
+  const database = await sharedDatabase();
+  const transaction = await database.transaction("write");
+  try {
+    const result = await transaction.execute({ sql: "SELECT owner_id FROM shared_groups WHERE id = ?", args: [id] });
+    const ownerId = result.rows[0]?.owner_id;
+    if (!ownerId) return "missing" as const;
+    if (action === "revoke") {
+      if (String(ownerId) !== userId) return "forbidden" as const;
+      await transaction.execute({ sql: "INSERT INTO shared_group_access (group_id, enabled, token_version) VALUES (?, 0, 1) ON CONFLICT(group_id) DO UPDATE SET token_version = CASE WHEN shared_group_access.enabled = 1 THEN shared_group_access.token_version + 1 ELSE shared_group_access.token_version END, enabled = 0", args: [id] });
+      await transaction.execute({ sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id <> ?", args: [id, userId] });
+      await transaction.execute({ sql: "DELETE FROM shared_group_board WHERE group_id = ?", args: [id] });
+    } else {
+      if (String(ownerId) === userId) return "forbidden" as const;
+      const removed = await transaction.execute({ sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id = ?", args: [id, userId] });
+      if (!removed.rowsAffected) return "forbidden" as const;
+    }
+    await transaction.commit();
+    return "changed" as const;
+  } finally { transaction.close(); }
 }

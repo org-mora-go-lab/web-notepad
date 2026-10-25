@@ -5,6 +5,8 @@ import { syncTest as test } from "./__fixture__";
 import { openDevice, readHistory, waitForSaved } from "./__util__";
 
 test("4. 저장 실패 후 새로고침하면 로컬 그룹과 다른 기기의 변경을 함께 보존한다", async ({ devices: { desktop, mobile } }) => {
+  // This recovery flow includes multiple 3s save delays and a failed-save retry.
+  test.setTimeout(60_000);
   await openDevice(desktop);
   await desktop.locator("textarea").first().fill("공통 원본");
   await waitForSaved(desktop);

@@ -30,7 +30,6 @@ export function Header({
   onDragStart,
   onDragEnd,
   onCycleTabColor,
-  onTogglePin,
   onToggleBookmark,
   onAdd,
 }: HeaderProps) {
@@ -134,18 +133,12 @@ export function Header({
         <TabContextMenu
           left={contextMenu.left}
           top={contextMenu.top}
-          pinned={contextTab.pinned}
-          showPin={false}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter((group) => group.id !== contextGroupId && group.id !== UNGROUPED_GROUP_ID)
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);
-            setContextMenu(null);
-          }}
-          onTogglePin={() => {
-            onTogglePin(contextTab.id);
             setContextMenu(null);
           }}
           onToggleBookmark={() => {

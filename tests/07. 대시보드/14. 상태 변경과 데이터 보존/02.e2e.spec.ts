@@ -16,5 +16,5 @@ test("2. 보조 상태에서 일반 상태로 이동해도 고정된 노트는 �
     tabColor: "teal",
     open: true,
   });
-  await expect(page.locator(".tab-item").first()).toHaveClass(/is-pinned/);
+  await expect(page.locator(".tab-item").first()).not.toHaveClass(/is-pinned/);
 });

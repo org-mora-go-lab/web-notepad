@@ -6,7 +6,6 @@ import {
   ArrowRight,
   Bookmark,
   FolderInput,
-  Pin,
   Trash2,
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -18,15 +17,12 @@ import type { TabContextMenuProps } from "./type";
 export function TabContextMenu({
   left,
   top,
-  pinned,
-  showPin = true,
   moveGroupFirst = false,
   deleteOnly = false,
   footerAction,
   bookmarked,
   targetGroups,
   onMoveToGroup,
-  onTogglePin,
   onToggleBookmark,
   onCloseTab,
   onDeleteTab,
@@ -127,12 +123,6 @@ export function TabContextMenu({
           ) : (
             <>
           {moveGroupFirst && moveGroupButton}
-          {showPin && (
-            <button type="button" role="menuitem" onClick={onTogglePin}>
-              <Pin size={14} />
-              <span>{pinned ? t.unpin : t.pin}</span>
-            </button>
-          )}
           <button type="button" role="menuitem" onClick={onToggleBookmark}>
             <Bookmark size={14} />
             <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>

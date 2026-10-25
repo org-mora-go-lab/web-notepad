@@ -4,7 +4,7 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../../__util__";
 
-test("4. 카드는 고정, 북마크, 일반 순서로 표시한다", async ({ page }) => {
+test("4. 카드는 과거 고정 여부와 관계없이 북마크, 일반 순서로 표시한다", async ({ page }) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -24,11 +24,12 @@ test("4. 카드는 고정, 북마크, 일반 순서로 표시한다", async ({ p
   await expect(
     dashboardColumn(page, "in-progress").locator(".dashboard-card strong"),
   ).toHaveText([
-    "Pinned first",
-    "Pinned second",
     "Bookmarked first",
+    "Pinned second",
     "Bookmarked second",
     "Plain first",
+    "Pinned first",
     "Plain second",
   ]);
+  await expect(page.locator(".dashboard-card-pin")).toHaveCount(0);
 });

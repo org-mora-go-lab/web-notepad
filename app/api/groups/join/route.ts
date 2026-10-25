@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { readGroupShareToken } from "../../auth/_lib/session";
+import { groupShareVersion, readGroupShareToken } from "../../auth/_lib/session";
 import { currentGroupUser, isSameOrigin, readGroupPayload } from "../_lib/request";
 import { joinSharedGroup } from "../_lib/shared-store";
 
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const id = typeof token === "string" ? readGroupShareToken(token) : null;
   if (!id) return NextResponse.json({ error: "Invalid share link" }, { status: 400 });
   try {
-    const group = await joinSharedGroup(user, id);
+    const group = await joinSharedGroup(user, id, groupShareVersion(token as string));
     if (!group) return NextResponse.json({ error: "Group unavailable" }, { status: 404 });
     return NextResponse.json({ group });
   } catch {

@@ -2,6 +2,10 @@ import type { PointerEventHandler } from "react";
 
 export type GroupItemProps = {
   groupId: string;
+  shared?: boolean;
+  sharingRole?: "owner" | "member";
+  sharingActive?: boolean;
+  onChangeSharing?: (action: "leave" | "revoke", anchor: HTMLElement) => void;
   dragging: boolean;
   dropTarget: boolean;
   onReorderStart: PointerEventHandler<HTMLElement>;

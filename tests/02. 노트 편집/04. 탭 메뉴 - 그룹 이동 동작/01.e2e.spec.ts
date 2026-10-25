@@ -26,7 +26,7 @@ test("1. 그룹 이동 시 탭 ID, 내용, 색상, 고정, 줄 선택과 연결 
 
     await switchGroup(page, "Target");
     await expect(editor).toHaveValue("Move me\nselected line");
-    await expect(movedTabItem).toHaveClass(/is-pinned/);
+    await expect(movedTabItem).not.toHaveClass(/is-pinned/);
     await expect(movedTabItem).toHaveClass(/is-bookmarked/);
     await expect(movedTabItem).toHaveAttribute("data-tab-color", "red");
     await expectSelectedLines(page, [false, true]);

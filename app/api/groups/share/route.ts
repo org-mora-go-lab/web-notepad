@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const shared = await createOrGetSharedGroup(user, group);
     if (!shared) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     const url = new URL("/", request.url);
-    url.searchParams.set("share", createGroupShareToken(shared.record.id));
+    url.searchParams.set("share", createGroupShareToken(shared.record.id, shared.record.shareVersion));
     return NextResponse.json({ url: url.toString(), group: shared.group, revision: shared.record.revision });
   } catch {
     return NextResponse.json({ error: "Database unavailable" }, { status: 503 });

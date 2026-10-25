@@ -1,11 +1,11 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { ALL_GROUP_ID, compareGroups, type GroupEntry, UNGROUPED_GROUP_ID, useNotepadStore } from "@/src/4-entity/notepad";
-import { useI18n } from "@/src/5-shared/hook";
+import { ALL_GROUP_ID, compareGroups, type GroupEntry, isSharedGroupId, UNGROUPED_GROUP_ID, useNotepadStore } from "@/src/4-entity/notepad";
+import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
 import { GroupCreateForm, GroupItem, GroupShareDialog } from "./component";
@@ -27,6 +27,10 @@ function GroupSidebar({
   onMoveGroup,
 }: GroupMenuProps) {
   const { t } = useI18n();
+  const sharing = useContext(GroupSharingContext);
+  const [accessAction, setAccessAction] = useState<{ groupId: string; action: "leave" | "revoke"; anchor: HTMLElement } | null>(null);
+  const [accessError, setAccessError] = useState(false);
+  const accessBusy = useRef(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const handleResizeStart = useGroupMenuResize(sidebarRef);
   const reorder = useGroupReorder(onMoveGroup);
@@ -85,6 +89,10 @@ function GroupSidebar({
                 <GroupItem
                   key={group.id}
                   groupId={group.id}
+                  shared={isSharedGroupId(group.id)}
+                  sharingRole={sharing?.accessByGroup[group.id]?.role}
+                  sharingActive={sharing?.accessByGroup[group.id]?.active}
+                  onChangeSharing={(action, anchor) => { setAccessError(false); setAccessAction({ groupId: group.id, action, anchor }); }}
                   dragging={reorder.draggingId === group.id}
                   dropTarget={reorder.targetId === group.id}
                   onReorderStart={(event) => reorder.start(group.id, event)}
@@ -182,6 +190,28 @@ function GroupSidebar({
           }}
         />
       )}
+      {accessAction && <>
+        <ConfirmPopup
+          title={accessAction.action === "leave" ? t.leaveGroup : t.revokeGroupShare}
+          message={accessAction.action === "leave" ? t.leaveGroupMessage : t.revokeGroupShareMessage}
+          closeLabel={t.close} closeTitle={t.close}
+          confirmLabel={accessAction.action === "leave" ? t.leaveGroup : t.revokeGroupShare}
+          keepOpenOnConfirm
+          error={accessError ? t.groupAccessError : undefined}
+          onCancel={() => { setAccessAction(null); accessAction.anchor.focus(); }}
+          onConfirm={async () => {
+            if (accessBusy.current || !sharing) return;
+            accessBusy.current = true;
+            setAccessError(false);
+            try {
+              if (await sharing.changeAccess(accessAction.groupId, accessAction.action)) {
+                setAccessAction(null);
+                accessAction.anchor.focus();
+              } else setAccessError(true);
+            } finally { accessBusy.current = false; }
+          }}
+        />
+      </>}
       {sharingGroup && <GroupShareDialog
         group={sharingGroup}
         onClose={() => setSharingGroup(null)}

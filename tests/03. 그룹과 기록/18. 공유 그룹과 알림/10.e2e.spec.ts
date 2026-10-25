@@ -2,11 +2,11 @@ import { expect, test } from "@playwright/test";
 
 import { openMoreMenu, writeStoredState } from "../../__util__";
 
-test("10. 좁은 한국어 모바일의 그룹알림 행은 아이콘과 라벨을 한 줄로 표시한다", async ({ page }) => {
+test("10. 좁은 한국어 모바일의 그룹 알림 행은 아이콘과 라벨을 한 줄로 표시한다", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await writeStoredState(page, { settings: { language: "ko" } });
   const menu = await openMoreMenu(page);
-  const button = menu.getByRole("button", { name: "그룹알림", exact: true });
+  const button = menu.getByRole("button", { name: "그룹 알림", exact: true });
   await expect(button).toBeVisible();
   const label = (await button.locator(".status-label").boundingBox())!;
   const icon = (await button.locator("svg").boundingBox())!;

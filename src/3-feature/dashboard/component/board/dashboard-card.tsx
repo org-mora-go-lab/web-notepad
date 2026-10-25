@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Pin } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { type MouseEvent, useEffect, useRef } from "react";
 
 import { type NoteTab, type TabStatus } from "@/src/4-entity/notepad";
@@ -199,17 +199,8 @@ export function DashboardCard({
         {groupName && <span className="dashboard-card-group">{groupName}</span>}
         {preview && <span className="dashboard-card-preview">{preview}</span>}
       </button>
-      {(tab.pinned || tab.bookmarked) && (
+      {tab.bookmarked && (
         <span className="dashboard-card-indicators">
-          {tab.pinned && (
-            <span
-              className="dashboard-card-pin"
-              role="img"
-              aria-label={t.pinned}
-            >
-              <Pin size={14} strokeWidth={1.8} />
-            </span>
-          )}
           {tab.bookmarked && (
             <span
               className="dashboard-card-bookmark"

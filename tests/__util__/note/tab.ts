@@ -7,7 +7,7 @@ export const activeTab = (page: Page) => page.locator('.tab-item.is-active [role
 export const addTabButton = (page: Page) =>
   page.getByRole("button", { name: "New tab", exact: true });
 
-// Opens the PC tab context menu and chooses an item such as "Pin" or "Bookmark".
+// Opens the PC tab context menu and chooses an item such as "Bookmark".
 export async function chooseTabMenuItem(page: Page, itemName: string, tab = activeTab(page)) {
   await tab.click({ button: "right" });
   await page.getByRole("menuitem", { name: itemName, exact: true }).click();

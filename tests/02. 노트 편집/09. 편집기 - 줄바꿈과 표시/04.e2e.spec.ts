@@ -22,7 +22,7 @@ test("4. 자동 줄바꿈된 번호를 선택하면 원본 줄의 모든 표시 
   ]);
   const expectedSize = await editor.evaluate((element, count) => {
     const style = getComputedStyle(element);
-    return `100% ${count * Number.parseFloat(style.lineHeight) + Number.parseFloat(style.paddingTop)}px`;
+    return `100% ${Number((count * Number.parseFloat(style.lineHeight) + Number.parseFloat(style.paddingTop)).toFixed(3))}px`;
   }, firstSourceLineCount);
   await expect(editor).toHaveCSS("background-size", expectedSize);
 });

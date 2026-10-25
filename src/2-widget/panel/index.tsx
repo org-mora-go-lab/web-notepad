@@ -35,7 +35,6 @@ export function Panel({
   dashboardVisibility,
   onDashboardVisibilityChange,
   onMoveDashboardTabToGroup,
-  onToggleDashboardTabPin,
   onToggleDashboardTabBookmark,
   onDeleteDashboardTab,
   onCreateGroup,
@@ -71,7 +70,6 @@ export function Panel({
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
         onMoveToGroup={onMoveDashboardTabToGroup}
-        onToggleTabPin={onToggleDashboardTabPin}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
         onDeleteTab={onDeleteDashboardTab}
       />

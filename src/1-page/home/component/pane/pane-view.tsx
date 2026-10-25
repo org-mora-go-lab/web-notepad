@@ -29,7 +29,6 @@ export function PaneView({
   onDragStart,
   onDragEnd,
   onCycleTabColor,
-  onTogglePin,
   onToggleBookmark,
   onAdd,
   onChange,
@@ -62,7 +61,6 @@ export function PaneView({
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
           onCycleTabColor={onCycleTabColor}
-          onTogglePin={onTogglePin}
           onToggleBookmark={onToggleBookmark}
           onAdd={onAdd}
         />

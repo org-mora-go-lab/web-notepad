@@ -146,7 +146,6 @@ export type NotepadState = {
   setSplitRatio: (ratio: number) => void;
   setRowRatio: (column: PaneColumn, ratio: number) => void;
   cycleTabColor: (tabId: string) => void;
-  togglePin: (tabId: string) => void;
   setTabStatus: (tabId: string, status: TabStatus) => void;
   toggleBookmark: (tabId: string) => void;
   closeTab: (tabId: string) => void;

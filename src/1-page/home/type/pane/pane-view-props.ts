@@ -28,7 +28,6 @@ export type PaneViewProps = {
   onDragStart: (tabId: string) => void;
   onDragEnd: () => void;
   onCycleTabColor: (tabId: string) => void;
-  onTogglePin: (tabId: string) => void;
   onToggleBookmark: (tabId: string) => void;
   onAdd: () => void;
   onChange: (content: string) => void;
