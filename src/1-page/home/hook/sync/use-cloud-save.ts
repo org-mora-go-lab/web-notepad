@@ -220,13 +220,11 @@ export function useCloudSave(hydrated: boolean): CloudSaveStatus {
     window.addEventListener("focus", refresh);
     window.addEventListener("online", refresh);
     document.addEventListener("visibilitychange", refresh);
-    const interval = setInterval(refresh, RETRY_DELAY_MS);
     void refreshSession();
     return () => {
       active = false;
       unsubscribe();
       clearTimer();
-      clearInterval(interval);
       window.removeEventListener("notepad-auth-changed", refreshSession);
       window.removeEventListener("focus", refresh);
       window.removeEventListener("online", refresh);

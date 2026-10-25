@@ -1,12 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-test("10. 좁은 모바일 화면에서 알림과 대시보드 라벨은 겹치지 않는다", async ({ page }) => {
+import { openMoreMenu, writeStoredState } from "../../__util__";
+
+test("10. 좁은 한국어 모바일의 그룹알림 행은 아이콘과 라벨을 한 줄로 표시한다", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
-  await page.goto("/");
-  const alertLabel = page.locator(".notification-command .status-label");
-  const boardLabel = page.locator(".dashboard-command .status-label");
-  await expect(alertLabel).toHaveText("ALERTS");
-  const alert = (await alertLabel.boundingBox())!;
-  const board = (await boardLabel.boundingBox())!;
-  expect(alert.x + alert.width).toBeLessThan(board.x);
+  await writeStoredState(page, { settings: { language: "ko" } });
+  const menu = await openMoreMenu(page);
+  const button = menu.getByRole("button", { name: "그룹알림", exact: true });
+  await expect(button).toBeVisible();
+  const label = (await button.locator(".status-label").boundingBox())!;
+  const icon = (await button.locator("svg").boundingBox())!;
+  expect(label.x).toBeGreaterThan(icon.x + icon.width);
+  expect(Math.abs(label.y + label.height / 2 - icon.y - icon.height / 2)).toBeLessThan(2);
+  await expect(menu).toBeInViewport();
 });

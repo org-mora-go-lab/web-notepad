@@ -120,15 +120,7 @@
     margin-left: auto;
   }
 
-  .footer-notifications {
-    position: relative;
-    flex: 0 0 auto;
-  }
-
-  .notification-command .notification-count {
-    position: absolute;
-    top: -6px;
-    right: -10px;
+  .notification-count {
     min-width: 17px;
     height: 17px;
     display: grid;
@@ -141,9 +133,17 @@
     line-height: 1;
   }
 
+  .more-command .notification-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+  }
+
+  .notification-command .notification-count { margin-left: auto; }
+
   .footer-notifications-panel {
     position: absolute;
-    left: 0;
+    right: 0;
     bottom: calc(100% + 8px);
     z-index: 80;
     width: min(360px, calc(100vw - 32px));
@@ -242,7 +242,7 @@
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
     }
 
@@ -266,7 +266,6 @@
 
     // Mobile footer commands use the same icon-over-label layout.
     .group-select-command,
-    .notification-command,
     .dashboard-command,
     .more-command {
       flex-direction: column;
@@ -288,11 +287,10 @@
     }
 
     .dashboard-command {
-      grid-column: 3;
+      grid-column: 2;
       margin-left: 0;
     }
 
-    .footer-notifications { grid-column: 2; min-width: 0; }
     .footer-notifications-panel {
       position: fixed;
       left: 16px;
@@ -302,7 +300,7 @@
     }
 
     .footer-more {
-      grid-column: 4;
+      grid-column: 3;
       min-width: 0;
     }
 

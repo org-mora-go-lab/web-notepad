@@ -8,7 +8,7 @@ test("2. 더보기의 마지막 Bookmark 명령은 현재 그룹의 북마크 �
   const command = moreCommand(page);
   await command.click();
   const menu = page.locator("#footer-more-menu");
-  await expect(menu.getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH", "Bookmark", "BOARD"]);
+  await expect(menu.getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH", "Bookmark", "BOARD", "Group notifications"]);
   await menu.getByRole("button", { name: "Bookmark" }).click();
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
   await expect(page.locator("#groups-menu")).toBeVisible();

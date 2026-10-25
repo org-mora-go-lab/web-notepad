@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search, Settings, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { UserGuide } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
@@ -30,22 +30,31 @@ export function Footer({
   const [guideOpen, setGuideOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
-  const notificationsRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLElement>(null);
+  const closeNotifications = useCallback(() => {
+    setNotificationsOpen(false);
+    moreRef.current?.querySelector<HTMLButtonElement>(".more-command")?.focus();
+  }, []);
   useEffect(() => {
     if (!notificationsOpen) return;
+    notificationsRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
     const closeOutside = (event: PointerEvent) => {
-      if (!notificationsRef.current?.contains(event.target as Node)) setNotificationsOpen(false);
+      if (!moreRef.current?.contains(event.target as Node)) setNotificationsOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setNotificationsOpen(false);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        closeNotifications();
+      }
     };
     document.addEventListener("pointerdown", closeOutside);
-    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("keydown", closeOnEscape, true);
     return () => {
       document.removeEventListener("pointerdown", closeOutside);
-      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("keydown", closeOnEscape, true);
     };
-  }, [notificationsOpen]);
+  }, [closeNotifications, notificationsOpen]);
   useEffect(() => {
     if (!moreOpen) return;
     const closeOutside = (event: PointerEvent) => {
@@ -92,35 +101,6 @@ export function Footer({
               {activeGroupName}
             </span>
           </button>
-          <div className="footer-notifications" ref={notificationsRef}>
-            <button
-              className={`status-command notification-command ${notificationsOpen ? "is-active" : ""}`}
-              type="button"
-              aria-label={unreadCount ? `${t.notifications} · ${t.unreadNotifications(unreadCount)}` : t.notifications}
-              aria-expanded={notificationsOpen}
-              aria-controls="footer-notifications-panel"
-              onClick={() => {
-                setNotificationsOpen((current) => !current);
-                if (!notificationsOpen) void onMarkNotificationsRead();
-              }}
-            >
-              <span className="status-icon">
-                <Bell size={16} strokeWidth={1.8} />
-                {unreadCount > 0 && <span className="notification-count" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
-              </span>
-              <span className="status-label">{t.notificationsShort}</span>
-            </button>
-            {notificationsOpen && <section className="footer-notifications-panel" id="footer-notifications-panel" role="dialog" aria-label={t.notifications}>
-              <header><strong>{t.notifications}</strong><button type="button" onClick={() => setNotificationsOpen(false)} aria-label={t.close}><X size={16} /></button></header>
-              {notifications.length === 0 ? <p>{t.noNotifications}</p> : <ul>
-                {notifications.map((item) => <li key={item.id}>
-                  <strong>{item.actorName}</strong> · {item.groupName}
-                  <span>{item.summary}</span>
-                  <time dateTime={new Date(item.createdAt).toISOString()}>{new Date(item.createdAt).toLocaleString()}</time>
-                </li>)}
-              </ul>}
-            </section>}
-          </div>
           <div className="status-scroll-area">
             <div className="status-actions">
               <button
@@ -137,14 +117,15 @@ export function Footer({
               </button>
               <div className="footer-more" ref={moreRef}>
                 <button
-                  className={`status-command more-command ${moreOpen || searchOpen ? "is-active" : ""}`}
+                  className={`status-command more-command ${moreOpen || searchOpen || notificationsOpen ? "is-active" : ""}`}
                   type="button"
                   aria-expanded={moreOpen}
                   aria-controls="footer-more-menu"
-                  onClick={() => setMoreOpen((current) => !current)}
+                  onClick={() => { setNotificationsOpen(false); setMoreOpen((current) => !current); }}
                 >
                   <span className="status-icon">
                     <Ellipsis size={16} strokeWidth={1.8} />
+                    {unreadCount > 0 && <span className="notification-count" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
                   </span>
                   <span className="status-label">{t.more}</span>
                 </button>
@@ -198,8 +179,30 @@ export function Footer({
                       <MessageSquare size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.board}</span>
                     </button>
+                    <button
+                      type="button"
+                      className="notification-command"
+                      aria-label={unreadCount ? `${t.notifications} · ${t.unreadNotifications(unreadCount)}` : t.notifications}
+                      aria-haspopup="dialog"
+                      aria-controls="footer-notifications-panel"
+                      onClick={() => { setMoreOpen(false); setNotificationsOpen(true); void onMarkNotificationsRead(); }}
+                    >
+                      <Bell size={18} strokeWidth={1.8} />
+                      <span className="status-label">{t.notifications}</span>
+                      {unreadCount > 0 && <span className="notification-count" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
+                    </button>
                   </div>
                 )}
+                {notificationsOpen && <section ref={notificationsRef} className="footer-notifications-panel" id="footer-notifications-panel" role="dialog" aria-label={t.notifications}>
+                  <header><strong>{t.notifications}</strong><button type="button" onClick={closeNotifications} aria-label={t.close}><X size={16} /></button></header>
+                  {notifications.length === 0 ? <p>{t.noNotifications}</p> : <ul>
+                    {notifications.map((item) => <li key={item.id}>
+                      <strong>{item.actorName}</strong> · {item.groupName}
+                      <span>{item.summary}</span>
+                      <time dateTime={new Date(item.createdAt).toISOString()}>{new Date(item.createdAt).toLocaleString()}</time>
+                    </li>)}
+                  </ul>}
+                </section>}
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
-import { authenticateBrowser } from "../../__util__";
+import { authenticateBrowser, openMoreMenu } from "../../__util__";
 import { shareGroup } from "./__util__";
 
 test("3. 공유받은 사용자의 수정은 공유자에게 반영되고 알림으로 보인다", async ({ browser }) => {
@@ -19,13 +19,21 @@ test("3. 공유받은 사용자의 수정은 공유자에게 반영되고 알림
   await guestPage.goto(url);
   await expect(guestPage.getByText("Shared group added. You can edit it now.")).toBeVisible();
   await guestPage.getByRole("button", { name: "Close", exact: true }).last().click();
+  await guestPage.bringToFront();
+  const saved = guestPage.waitForResponse(response => response.url().endsWith("/api/groups/update") && response.request().method() === "POST" && response.ok());
   await guestPage.locator("textarea").first().fill("Guest wrote this note");
+  await saved;
+  await ownerPage.bringToFront();
+  await ownerPage.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect(ownerPage.locator("textarea").first()).toHaveValue("Guest wrote this note", { timeout: 20_000 });
-  const notification = ownerPage.locator(".notification-command");
+  await expect(ownerPage.locator(".more-command .notification-count")).toHaveText("1", { timeout: 15_000 });
+  const menu = await openMoreMenu(ownerPage);
+  const notification = menu.locator(".notification-command");
   await expect(notification).toHaveAttribute("aria-label", /1 unread update/, { timeout: 15_000 });
   await notification.click();
   await expect(ownerPage.locator(".footer-notifications-panel")).toContainText("Guest");
   await expect(ownerPage.locator(".footer-notifications-panel")).toContainText("글 수정");
+  await expect(ownerPage.locator(".more-command .notification-count")).toHaveCount(0);
   await guest.close();
   await owner.close();
 });

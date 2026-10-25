@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleUserRound, LogIn, LogOut } from "lucide-react";
+import { CircleUserRound, LogIn } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -45,6 +45,15 @@ export function Auth() {
     }
   };
 
+  if (loading && !user) {
+    return (
+      <div className="auth-command is-loading" role="status" aria-label={t.accountLoading} aria-busy="true">
+        <span className="auth-skeleton-avatar" aria-hidden="true" />
+        <span className="auth-skeleton-name" aria-hidden="true" />
+      </div>
+    );
+  }
+
   if (user) {
     return (
       <button
@@ -62,7 +71,6 @@ export function Auth() {
         ) : (
           <CircleUserRound aria-hidden="true" />
         )}
-        <LogOut className="auth-command-action" aria-hidden="true" />
         <span>{user.nickname}</span>
       </button>
     );

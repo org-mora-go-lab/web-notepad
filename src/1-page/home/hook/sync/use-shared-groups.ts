@@ -22,6 +22,7 @@ export function useSharedGroups(hydrated: boolean) {
     let userId: string | null = null;
     let sessionChecked = false;
     let refreshing = false;
+    let refreshQueued = false;
     let applying = false;
     const baselines = new Map<string, SharedRecord>();
     const timers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -107,11 +108,12 @@ export function useSharedGroups(hydrated: boolean) {
         if (!response.ok) return;
         const result = await response.json() as { notifications: SharedNotification[] };
         if (active) setNotifications(result.notifications);
-      } catch { /* Retry on the next poll. */ }
+      } catch { /* Retry when the screen returns or the connection recovers. */ }
     };
 
     const refreshGroups = async () => {
-      if (!userId || refreshing) return;
+      if (!userId) return;
+      if (refreshing) { refreshQueued = true; return; }
       refreshing = true;
       try {
         const response = await fetch("/api/groups", { cache: "no-store" });
@@ -151,7 +153,10 @@ export function useSharedGroups(hydrated: boolean) {
         }
         await refreshNotifications();
       } catch { /* Keep local editing available. */ }
-      finally { refreshing = false; }
+      finally {
+        refreshing = false;
+        if (active && refreshQueued) { refreshQueued = false; void refreshGroups(); }
+      }
     };
 
     const unsubscribe = useNotepadStore.subscribe((state) => {
@@ -211,25 +216,36 @@ export function useSharedGroups(hydrated: boolean) {
     };
 
     const onShared = () => void refreshGroups();
+    const onRestore = () => { if (document.visibilityState !== "hidden") void refreshGroups(); };
     window.addEventListener("shared-groups-changed", onShared);
     window.addEventListener("notepad-auth-changed", refreshSession);
-    window.addEventListener("online", onShared);
-    const interval = setInterval(() => void refreshGroups(), 5_000);
+    window.addEventListener("online", onRestore);
+    window.addEventListener("focus", onRestore);
+    document.addEventListener("visibilitychange", onRestore);
     void refreshSession();
     return () => {
       active = false;
       unsubscribe();
       timers.forEach(clearTimeout);
-      clearInterval(interval);
+      window.removeEventListener("focus", onRestore);
+      document.removeEventListener("visibilitychange", onRestore);
       window.removeEventListener("shared-groups-changed", onShared);
       window.removeEventListener("notepad-auth-changed", refreshSession);
-      window.removeEventListener("online", onShared);
+      window.removeEventListener("online", onRestore);
     };
   }, [hydrated, inviteToken]);
 
   const markNotificationsRead = async () => {
-    const response = await fetch("/api/groups/notifications/read", { method: "POST" });
-    if (response.ok) setNotifications((current) => current.map((item) => ({ ...item, unread: false })));
+    try {
+      const response = await fetch("/api/groups/notifications/read", { method: "POST" });
+      if (!response.ok) return;
+      setNotifications((current) => current.map((item) => ({ ...item, unread: false })));
+      const latest = await fetch("/api/groups/notifications", { cache: "no-store" });
+      if (latest.ok) {
+        const result = await latest.json() as { notifications: SharedNotification[] };
+        setNotifications(result.notifications);
+      }
+    } catch { /* Keep the last loaded notifications available. */ }
   };
   const dismissInvite = useCallback(() => setInviteStatus(null), []);
 
