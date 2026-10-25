@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, Search, Settings, X } from "lucide-react";
+import { Bell, Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search, Settings, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { UserGuide } from "@/src/3-feature";
@@ -16,6 +16,7 @@ export function Footer({
   onToggleDashboard,
   onToggleGroups,
   onOpenSettings,
+  onOpenBoard,
   onOpenShortcuts,
   onToggleBookmarks,
   onToggleSearch,
@@ -192,6 +193,10 @@ export function Footer({
                     >
                       <Bookmark size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.bookmark}</span>
+                    </button>
+                    <button type="button" className="board-command" aria-controls="board-panel" onClick={() => { setMoreOpen(false); onOpenBoard(); }}>
+                      <MessageSquare size={18} strokeWidth={1.8} />
+                      <span className="status-label">{t.board}</span>
                     </button>
                   </div>
                 )}

@@ -117,6 +117,11 @@ export function useHomeNavigation({
     [getCurrentView, replaceView],
   );
 
+  useEffect(() => {
+    window.addEventListener("notepad-cloud-applied", replaceCurrentView);
+    return () => window.removeEventListener("notepad-cloud-applied", replaceCurrentView);
+  }, [replaceCurrentView]);
+
   const closeGroupMenu = useCallback(() => {
     updateGroupMenuOpen(false);
     if (window.matchMedia("(max-width: 512px)").matches) replaceView(getCurrentView());
@@ -152,6 +157,7 @@ export function useHomeNavigation({
       if (openPanel === panel) {
         if (
           panel === "bookmarks" ||
+          panel === "board" ||
           panel === "dashboard" ||
           panel === "global-search" ||
           panel === "closed" ||

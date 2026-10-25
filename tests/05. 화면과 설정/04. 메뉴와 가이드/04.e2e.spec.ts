@@ -6,7 +6,7 @@ test("4. 하단 더보기는 GUIDE·SETTINGS·SEARCH·Bookmark를 순서대로 �
   await page.goto("/");
   const tools = await openHeaderMenu(page);
   const buttons = tools.getByRole("button");
-  await expect(buttons).toHaveText(["GUIDE", "SETTINGS", "SEARCH", "Bookmark"]);
+  await expect(buttons).toHaveText(["GUIDE", "SETTINGS", "SEARCH", "Bookmark", "BOARD"]);
   await buttons.first().focus();
   await page.keyboard.press("Tab");
   await expect(buttons.nth(1)).toBeFocused();

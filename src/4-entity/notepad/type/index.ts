@@ -1,3 +1,4 @@
+export type { BoardPost } from "./board-post";
 export type {
   BookmarkEntry,
   ClosedTabEntry,

@@ -9,6 +9,7 @@ export type FooterProps = {
   onToggleDashboard: () => void;
   onToggleGroups: () => void;
   onOpenSettings: () => void;
+  onOpenBoard: () => void;
   onOpenShortcuts: () => void;
   onToggleBookmarks: () => void;
   onToggleSearch: () => void;

@@ -1,0 +1,25 @@
+import { expect } from "@playwright/test";
+
+import { boardTest as test } from "../../__fixture__";
+import { openBoard, selectBoardPost } from "../../__util__";
+
+test("6. 작은 모바일과 라이트 테마에서 목록과 참여 버튼이 화면 안에 표시된다", async ({
+  page,
+  boardPost,
+}) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto("/");
+  await page.evaluate(() =>
+    document.documentElement.setAttribute("data-theme", "light"),
+  );
+  await openBoard(page);
+  await selectBoardPost(page, boardPost.title);
+  const button = page.getByRole("link", { name: "Join this group" });
+  await button.scrollIntoViewIfNeeded();
+  const box = (await button.boundingBox())!;
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(320);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(320);
+});

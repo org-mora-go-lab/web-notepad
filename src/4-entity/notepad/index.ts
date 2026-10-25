@@ -6,7 +6,7 @@ export {
   TAB_STATUSES,
 } from "./constant";
 export { useNotepadHydrated } from "./hook";
-export { createCloudSnapshot } from "./persistence";
+export { createCloudSnapshot, mergeCloudSnapshot, normalizePersistedState } from "./persistence";
 export * from "./store";
 export * from "./type";
 export type { DashboardColumnData } from "./util";
@@ -20,6 +20,7 @@ export {
   getDashboardColumns,
   getPaneActiveTabId,
   getPaneColumn,
+  getPaneLayout,
   getPaneOfTab,
   getPaneTabs,
   getPaneWorkspace,

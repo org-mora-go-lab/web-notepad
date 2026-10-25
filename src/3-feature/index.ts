@@ -1,4 +1,5 @@
 export { Auth } from "./auth";
+export { Board } from "./board";
 export { Bookmark } from "./bookmark";
 export { Closed } from "./closed";
 export { Dashboard } from "./dashboard";

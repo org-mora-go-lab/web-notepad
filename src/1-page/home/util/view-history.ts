@@ -10,6 +10,7 @@ type StoredView = {
 const HISTORY_STATE_KEY = "__webNotepadView";
 const PANEL_IDS: ViewPanel[] = [
   "bookmarks",
+  "board",
   "closed",
   "dashboard",
   "shortcuts",

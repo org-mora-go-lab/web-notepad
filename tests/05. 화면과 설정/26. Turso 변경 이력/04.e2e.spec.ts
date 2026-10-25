@@ -20,8 +20,8 @@ test("4. 저장 실패 뒤 대기 중인 변경을 자동 재시도한다", asyn
   await page.goto("/");
   await expect(page.locator("button.auth-command")).toContainText("Cloud User");
   await page.locator("textarea").first().fill("재시도할 글");
-  await expect(page.locator(".cloud-save-status.is-error")).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator(".cloud-save-status.is-saved")).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "error", { timeout: 15_000 });
+  await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "saved", { timeout: 15_000 });
   expect(attempts).toBe(2);
   expect((await readCloudHistory(page)).count).toBe(1);
 });

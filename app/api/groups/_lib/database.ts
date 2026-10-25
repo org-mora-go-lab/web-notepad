@@ -40,6 +40,13 @@ export async function sharedDatabase() {
       created_at INTEGER NOT NULL
     )`,
     "CREATE INDEX IF NOT EXISTS shared_group_events_group_id ON shared_group_events(group_id, id)",
+    `CREATE TABLE IF NOT EXISTS shared_group_board (
+      id TEXT PRIMARY KEY,
+      group_id TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      updated_at INTEGER NOT NULL
+    )`,
   ], "write").then(() => undefined).catch((error: unknown) => {
     schemaReady = undefined;
     throw error;

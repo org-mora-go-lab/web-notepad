@@ -1,0 +1,1 @@
+export { syncTest } from "./devices";
