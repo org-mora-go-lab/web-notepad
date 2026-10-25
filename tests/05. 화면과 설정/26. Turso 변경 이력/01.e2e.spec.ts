@@ -15,9 +15,13 @@ test("1. 그룹과 글 변경을 마지막 작업 3초 뒤 한 건으로 저장�
   await createGroups(page, "Batch group");
   await page.locator("textarea").first().fill("첫 번째 글");
   await page.locator("textarea").first().fill("마지막 글");
-  await expect(page.locator(".cloud-save-status.is-pending")).toBeVisible();
+  await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "pending");
+  const title = page.locator(".tab-item.is-active .tab-title").first();
+  await expect(title).toHaveCSS("animation-name", "cloud-title-shimmer");
+  await expect(page.locator(".cloud-save-status")).toHaveCount(0);
   expect((await readCloudHistory(page)).count).toBe(0);
-  await expect(page.locator(".cloud-save-status.is-saved")).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "saved", { timeout: 15_000 });
+  await expect(title).toHaveCSS("animation-name", "none");
   const history = await readCloudHistory(page);
   expect(history.count).toBe(1);
   const snapshot = JSON.parse(history.latest!.snapshot);

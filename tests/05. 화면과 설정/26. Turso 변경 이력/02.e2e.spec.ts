@@ -15,7 +15,7 @@ test("2. 노트 상태 변경을 Turso 스냅샷에 저장한다", async ({ page
   await page.locator("textarea").first().fill("상태 변경 글");
   await openPanel(page, "dashboard-panel");
   await dashboardColumn(page, "todo").locator(".dashboard-card").dragTo(dashboardColumn(page, "done"));
-  await expect(page.locator(".cloud-save-status.is-saved")).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "saved", { timeout: 15_000 });
   const history = await readCloudHistory(page);
   const snapshot = JSON.parse(history.latest!.snapshot);
   const tab = snapshot.groups.flatMap((group: { tabs: { content: string; tabColor: string }[] }) => group.tabs)

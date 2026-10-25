@@ -16,11 +16,13 @@ type KakaoUserResponse = {
     profile?: {
       nickname?: string;
       profile_image_url?: string;
+      thumbnail_image_url?: string;
     };
   };
   properties?: {
     nickname?: string;
     profile_image?: string;
+    thumbnail_image?: string;
   };
 };
 
@@ -88,6 +90,11 @@ export async function getKakaoUser(accessToken: string): Promise<KakaoUser> {
 
   const profile = result.kakao_account?.profile;
   let talkProfile: KakaoTalkProfileResponse | undefined;
+  const nickname = profile?.nickname?.trim() || result.properties?.nickname?.trim();
+  const profileImageUrl = profile?.profile_image_url?.trim()
+    || profile?.thumbnail_image_url?.trim()
+    || result.properties?.profile_image?.trim()
+    || result.properties?.thumbnail_image?.trim();
   try {
     const talkResponse = await fetch(KAKAO_TALK_PROFILE_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -103,11 +110,9 @@ export async function getKakaoUser(accessToken: string): Promise<KakaoUser> {
 
   return {
     id: String(result.id),
-    nickname: talkProfile?.nickName?.trim() || profile?.nickname || result.properties?.nickname || "Kakao user",
+    nickname: talkProfile?.nickName?.trim() || nickname || "Kakao user",
     profileImageUrl:
-      talkProfile?.profileImageURL ||
-      talkProfile?.thumbnailURL ||
-      profile?.profile_image_url ||
-      result.properties?.profile_image,
+      talkProfile?.profileImageURL?.trim() ||
+      talkProfile?.thumbnailURL?.trim() || profileImageUrl || undefined,
   };
 }

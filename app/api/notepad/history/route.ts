@@ -39,12 +39,16 @@ export async function POST(request: Request) {
   if (!input || typeof input !== "object") {
     return NextResponse.json({ error: "Invalid update" }, { status: 400 });
   }
-  const { eventId, snapshot } = input as Record<string, unknown>;
+  const { eventId, snapshot, baseEventId, userId: ownerId } = input as Record<string, unknown>;
+  if (ownerId !== undefined && ownerId !== userId) {
+    return NextResponse.json({ error: "Account changed" }, { status: 403 });
+  }
   if (
     typeof eventId !== "string" ||
     !/^[0-9a-f-]{36}$/i.test(eventId) ||
     typeof snapshot !== "string" ||
-    snapshot.length > 5_000_000
+    snapshot.length > 5_000_000 ||
+    (baseEventId !== undefined && baseEventId !== null && typeof baseEventId !== "string")
   ) {
     return NextResponse.json({ error: "Invalid update" }, { status: 400 });
   }
@@ -57,7 +61,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid snapshot" }, { status: 400 });
   }
   try {
-    await saveNotepadUpdate(userId, eventId, snapshot);
+    const result = await saveNotepadUpdate(userId, eventId, snapshot, baseEventId as string | null | undefined);
+    if (!result.saved) return NextResponse.json({ error: "Conflict", latest: result.latest }, {
+      status: 409, headers: { "Cache-Control": "private, no-store" },
+    });
     return NextResponse.json({ saved: true }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Database unavailable" }, { status: 503 });

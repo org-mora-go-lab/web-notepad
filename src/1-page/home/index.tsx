@@ -111,6 +111,7 @@ export function Home() {
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}
+        data-cloud-save={cloudSaveStatus ?? "idle"}
       >
         <section className="workspace">
           <div className={`pane-group ${split ? "is-split" : ""}`}>
@@ -143,10 +144,9 @@ export function Home() {
         </section>
 
         {cloudSaveStatus && (
-          <div className={`cloud-save-status is-${cloudSaveStatus}`} role="status" aria-live="polite">
-            <span className="cloud-save-mark" aria-hidden="true" />
-            <span>{cloudSaveText[cloudSaveStatus]}</span>
-          </div>
+          <span className="cloud-save-announcement" role="status" aria-live="polite">
+            {cloudSaveText[cloudSaveStatus]}
+          </span>
         )}
         {inviteStatus && <div className="share-invite-backdrop">
           <section ref={inviteRef} className="share-invite-dialog" role="dialog" aria-modal="true" aria-label={messages.shareGroup}>

@@ -12,6 +12,7 @@ export async function GET(request: Request) {
       response_type: "code",
       client_id: clientId,
       redirect_uri: redirectUri,
+      scope: "profile_nickname,profile_image",
       state,
     }).toString();
 

@@ -32,13 +32,32 @@ async function ensureSchema() {
   return database;
 }
 
-export async function saveNotepadUpdate(userId: string, eventId: string, snapshot: string) {
+export async function saveNotepadUpdate(userId: string, eventId: string, snapshot: string, baseEventId?: string | null) {
   const database = await ensureSchema();
-  await database.execute({
-    sql: `INSERT OR IGNORE INTO notepad_update_history
-      (event_id, user_id, snapshot, created_at) VALUES (?, ?, ?, ?)`,
-    args: [eventId, userId, snapshot, Date.now()],
-  });
+  const transaction = await database.transaction("write");
+  try {
+    const existing = await transaction.execute({
+      sql: "SELECT event_id FROM notepad_update_history WHERE event_id = ? AND user_id = ?",
+      args: [eventId, userId],
+    });
+    if (existing.rows.length) return { saved: true };
+    const result = await transaction.execute({
+      sql: "SELECT event_id, snapshot, created_at FROM notepad_update_history WHERE user_id = ? ORDER BY created_at DESC, rowid DESC LIMIT 1",
+      args: [userId],
+    });
+    const row = result.rows[0];
+    const latest = row ? { eventId: String(row.event_id), snapshot: String(row.snapshot), createdAt: Number(row.created_at) } : null;
+    if (baseEventId !== undefined && baseEventId !== (latest?.eventId ?? null)) {
+      return { saved: false, latest };
+    }
+    await transaction.execute({
+      sql: `INSERT OR IGNORE INTO notepad_update_history
+        (event_id, user_id, snapshot, created_at) VALUES (?, ?, ?, ?)`,
+      args: [eventId, userId, snapshot, Date.now()],
+    });
+    await transaction.commit();
+    return { saved: true };
+  } finally { transaction.close(); }
 }
 
 export async function getLatestNotepadUpdate(userId: string) {
