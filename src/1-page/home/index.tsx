@@ -58,7 +58,9 @@ export function Home() {
   } = useHome();
   const cloudSaveStatus = useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
+  const { inviteStatus, dismissInvite } = shared;
   const inviteRef = useRef<HTMLElement>(null);
+  const adminBoardOpened = useRef(false);
   const messages = MESSAGES[language];
   const cloudSaveText = {
     pending: messages.cloudPending,
@@ -72,12 +74,21 @@ export function Home() {
   }, [language]);
 
   useEffect(() => {
-    if (!shared.inviteStatus || shared.inviteStatus === "joining") return;
+    if (!hydrated || adminBoardOpened.current) return;
+    adminBoardOpened.current = true;
+    if (new URLSearchParams(window.location.search).get("role") === "admin") {
+      closeGroupMenu();
+      if (openPanel !== "board") toggleSidePanel("board");
+    }
+  }, [closeGroupMenu, hydrated, openPanel, toggleSidePanel]);
+
+  useEffect(() => {
+    if (!inviteStatus || inviteStatus === "joining") return;
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const controls = () => Array.from(inviteRef.current?.querySelectorAll<HTMLElement>("a[href], button") ?? []);
     controls()[0]?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { event.preventDefault(); shared.dismissInvite(); return; }
+      if (event.key === "Escape") { event.preventDefault(); dismissInvite(); return; }
       if (event.key !== "Tab") return;
       const items = controls();
       if (!items.length) return;
@@ -86,7 +97,7 @@ export function Home() {
     };
     document.addEventListener("keydown", onKeyDown);
     return () => { document.removeEventListener("keydown", onKeyDown); previous?.focus(); };
-  }, [shared.inviteStatus, shared.dismissInvite]);
+  }, [inviteStatus, dismissInvite]);
 
   if (!hydrated || !activeTab) {
     return <Loading />;
@@ -120,6 +131,7 @@ export function Home() {
             onToggleDashboard={() => toggleSidePanel("dashboard")}
             onToggleGroups={toggleGroupMenu}
             onOpenSettings={() => toggleSidePanel("settings")}
+            onOpenBoard={() => toggleSidePanel("board")}
             onOpenShortcuts={() => toggleSidePanel("shortcuts")}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleSearch={() => toggleSidePanel("global-search")}
@@ -136,16 +148,16 @@ export function Home() {
             <span>{cloudSaveText[cloudSaveStatus]}</span>
           </div>
         )}
-        {shared.inviteStatus && <div className="share-invite-backdrop">
+        {inviteStatus && <div className="share-invite-backdrop">
           <section ref={inviteRef} className="share-invite-dialog" role="dialog" aria-modal="true" aria-label={messages.shareGroup}>
-            <p>{shared.inviteStatus === "login" ? messages.shareInviteLogin
-              : shared.inviteStatus === "joining" ? messages.shareInviteJoining
-                : shared.inviteStatus === "joined" ? messages.shareInviteJoined
+            <p>{inviteStatus === "login" ? messages.shareInviteLogin
+              : inviteStatus === "joining" ? messages.shareInviteJoining
+                : inviteStatus === "joined" ? messages.shareInviteJoined
                   : messages.shareInviteError}</p>
-            {shared.inviteStatus === "login" && shared.inviteToken &&
+            {inviteStatus === "login" && shared.inviteToken &&
               <a href={`/api/auth/oauth/kakao?share=${encodeURIComponent(shared.inviteToken)}`}>{messages.kakaoLogin}</a>}
-            {shared.inviteStatus !== "joining" &&
-              <button type="button" onClick={shared.dismissInvite}>{messages.close}</button>}
+            {inviteStatus !== "joining" &&
+              <button type="button" onClick={dismissInvite}>{messages.close}</button>}
           </section>
         </div>}
 

@@ -152,6 +152,7 @@ export function useHomeNavigation({
       if (openPanel === panel) {
         if (
           panel === "bookmarks" ||
+          panel === "board" ||
           panel === "dashboard" ||
           panel === "global-search" ||
           panel === "closed" ||

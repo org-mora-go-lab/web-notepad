@@ -5,6 +5,7 @@ export {
   signedSession,
   signedSessionText,
 } from "./auth";
+export { boardTest } from "./board";
 export {
   createBookmarkFixture,
   createClosedTabFixture,
