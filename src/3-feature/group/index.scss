@@ -28,7 +28,7 @@
     h2 { margin: 0; font-family: v.$sans; font-size: v.font(20px); font-weight: 500; }
     > button {
       width: 36px; height: 36px; display: grid; place-items: center;
-      border: 1px solid v.$line; background: transparent; color: v.$dim; cursor: pointer;
+      border: 1px solid v.$line; background: transparent; color: v.$dim; cursor: default;
       svg { width: 15px; height: 15px; }
       &:hover, &:focus-visible { color: v.$ink; }
       &:focus-visible { outline: 2px solid v.$signal; outline-offset: 2px; }

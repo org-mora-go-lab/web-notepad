@@ -54,7 +54,7 @@
     background: transparent;
     color: var(--color-command);
     font-size: inherit;
-    cursor: pointer;
+    cursor: default;
     -webkit-tap-highlight-color: transparent;
 
     &:hover,
@@ -158,7 +158,7 @@
       font-size: v.font(15px);
       text-align: left;
       white-space: nowrap;
-      cursor: pointer;
+      cursor: default;
 
       &:hover, &:focus-visible { background: v.$line; }
       > svg { width: 18px; height: 18px; flex: 0 0 18px; }

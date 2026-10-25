@@ -43,7 +43,7 @@
     border: 1px solid v.$line;
     background: v.$panel;
     color: v.$ink;
-    cursor: pointer;
+    cursor: default;
     font: inherit;
     &:focus-visible { outline: 2px solid v.$signal; outline-offset: 2px; }
   }

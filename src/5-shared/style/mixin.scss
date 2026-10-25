@@ -61,7 +61,7 @@
       background: transparent;
       color: var(--color-timestamp);
       font-size: v.font(13px);
-      cursor: pointer;
+      cursor: default;
 
       &:hover {
         border-color: v.$hover-line;

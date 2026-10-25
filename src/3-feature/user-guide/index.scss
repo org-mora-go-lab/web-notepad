@@ -100,7 +100,7 @@
     color: v.$ink;
     font-size: v.font(13px);
     line-height: 1;
-    cursor: pointer;
+    cursor: default;
 
     &:hover:not(:disabled) {
       border-color: v.$hover-line;

@@ -75,6 +75,20 @@ button {
   color: inherit;
 }
 
+// Keep the hand cursor focused on the visual icon instead of applying it to
+// every clickable row, label and surrounding hit area.
+:is(button, a, [role="button"], [role="menuitem"]) {
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(button, a, [role="button"], [role="menuitem"]):hover
+    :is(svg, img),
+  button.dirty-dot:hover {
+    cursor: pointer;
+  }
+}
+
 // Keep icon-only controls optically centered across browsers, including iOS Safari.
 button:has(> svg:only-child) {
   display: grid;

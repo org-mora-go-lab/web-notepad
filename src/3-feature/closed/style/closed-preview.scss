@@ -50,7 +50,7 @@
       border: 1px solid v.$line;
       background: transparent;
       color: v.$dim;
-      cursor: pointer;
+      cursor: default;
 
       &:hover,
       &:focus-visible {

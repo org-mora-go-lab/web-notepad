@@ -66,7 +66,7 @@
     background: transparent;
     color: v.$ink;
     font-size: v.font(13px);
-    cursor: pointer;
+    cursor: default;
 
     &:hover {
       border-color: v.$hover-line;
