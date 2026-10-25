@@ -96,7 +96,7 @@ const hideTabFromEditor = (
   const state = get();
   const group = getTabGroup(state, tabId);
   const tab = group?.tabs.find((item) => item.id === tabId);
-  if (!group || !tab || tab.pinned || !tab.open) return;
+  if (!group || !tab || !tab.open) return;
 
   const pane = getPaneOfTab(group, tabId);
   const paneIds = getPaneTabs(group, pane).map((item) => item.id);

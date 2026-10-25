@@ -12,6 +12,8 @@ export function ConfirmPopup({
   closeLabel,
   closeTitle,
   confirmLabel,
+  keepOpenOnConfirm = false,
+  error,
   confirmIcon,
   onConfirm,
   onCancel,
@@ -42,6 +44,7 @@ export function ConfirmPopup({
           </button>
         </div>
         <p id={`${popupId}-message`}>{message}</p>
+        {error && <p className="confirm-popup-error" role="alert">{error}</p>}
         <div className="confirm-popup-actions">
           <button
             ref={cancelButtonRef}
@@ -54,7 +57,7 @@ export function ConfirmPopup({
           <button
             className="confirm-popup-confirm"
             type="button"
-            onClick={() => close(onConfirm)}
+            onClick={() => keepOpenOnConfirm ? onConfirm() : close(onConfirm)}
           >
             {confirmIcon ?? <Trash2 size={14} aria-hidden="true" />}
             {confirmLabel ?? t.delete}

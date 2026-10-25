@@ -4,6 +4,7 @@ import type { BoardPost, SharedGroupData } from "@/src/4-entity/notepad";
 
 import {
   createGroupShareToken,
+  groupShareVersion,
   readGroupShareToken,
 } from "../auth/_lib/session";
 import { sharedDatabase } from "../groups/_lib/database";
@@ -15,15 +16,15 @@ const response = (body: unknown, status = 200) =>
 export async function GET(request: Request) {
   try {
     const database = await sharedDatabase();
-    const result = await database.execute(`SELECT b.*, g.snapshot,
+    const result = await database.execute(`SELECT b.*, g.snapshot, COALESCE(a.token_version, 0) AS token_version,
       (SELECT COUNT(*) FROM shared_group_members m WHERE m.group_id = g.id) AS member_count
-      FROM shared_group_board b JOIN shared_groups g ON g.id = b.group_id ORDER BY b.updated_at DESC, b.id`);
+      FROM shared_group_board b JOIN shared_groups g ON g.id = b.group_id LEFT JOIN shared_group_access a ON a.group_id = g.id WHERE COALESCE(a.enabled, 1) = 1 ORDER BY b.updated_at DESC, b.id`);
     const posts: BoardPost[] = result.rows.map((row) => {
       const group = JSON.parse(String(row.snapshot)) as SharedGroupData;
       const url = new URL("/", request.url);
       url.searchParams.set(
         "share",
-        createGroupShareToken(String(row.group_id)),
+        createGroupShareToken(String(row.group_id), Number(row.token_version)),
       );
       return {
         id: String(row.id),
@@ -65,12 +66,15 @@ async function mutate(request: Request, method: "POST" | "PATCH" | "DELETE") {
   )
     return response({ error: "Invalid post" }, 400);
   let groupId: string | null = null;
+  let shareVersion = 0;
   if (method === "POST") {
     try {
       const url = new URL(String(input.inviteUrl));
       if (!/^https?:$/.test(url.protocol))
         return response({ error: "Invalid invite" }, 400);
-      groupId = readGroupShareToken(url.searchParams.get("share") ?? "");
+      const token = url.searchParams.get("share") ?? "";
+      groupId = readGroupShareToken(token);
+      shareVersion = groupShareVersion(token);
     } catch {
       return response({ error: "Invalid invite" }, 400);
     }
@@ -80,8 +84,8 @@ async function mutate(request: Request, method: "POST" | "PATCH" | "DELETE") {
     const database = await sharedDatabase();
     if (method === "POST") {
       const group = await database.execute({
-        sql: "SELECT id FROM shared_groups WHERE id = ?",
-        args: [groupId!],
+        sql: "SELECT g.id FROM shared_groups g LEFT JOIN shared_group_access a ON a.group_id = g.id WHERE g.id = ? AND COALESCE(a.enabled, 1) = 1 AND COALESCE(a.token_version, 0) = ?",
+        args: [groupId!, shareVersion],
       });
       if (!group.rows.length)
         return response({ error: "Group unavailable" }, 404);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, EllipsisVertical, Pencil, Pin, Share2, Trash2, X } from "lucide-react";
+import { Check, EllipsisVertical, LogOut, Pencil, Pin, Share2, Trash2, Unlink, X } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -10,6 +10,10 @@ import type { GroupItemProps } from "../../type";
 // One group row: click the name to switch; use the right-side menu for actions.
 export function GroupItem({
   groupId,
+  shared = false,
+  sharingRole,
+  sharingActive = true,
+  onChangeSharing,
   dragging,
   dropTarget,
   onReorderStart,
@@ -210,7 +214,7 @@ export function GroupItem({
               )}
               {editable && (
                 <>
-                  <button
+                  {(!shared || sharingRole === "owner") && <button
                     type="button"
                     aria-label={t.shareGroupFor(name)}
                     onClick={() => {
@@ -220,7 +224,7 @@ export function GroupItem({
                   >
                     <Share2 size={16} />
                     <span>{t.shareGroup}</span>
-                  </button>
+                  </button>}
                   <button
                     type="button"
                     aria-label={t.editGroupFor(name)}
@@ -233,7 +237,7 @@ export function GroupItem({
                     <Pencil size={16} />
                     <span>{t.edit}</span>
                   </button>
-                  <button
+                  {!shared && <button
                     type="button"
                     aria-label={t.deleteGroupFor(name)}
                     title={t.delete}
@@ -245,7 +249,16 @@ export function GroupItem({
                   >
                     <Trash2 size={16} />
                     <span>{t.delete}</span>
-                  </button>
+                  </button>}
+                  {shared && (sharingRole === "member" || (sharingRole === "owner" && sharingActive)) && <button type="button"
+                    onClick={event => {
+                      const anchor = actionsRef.current?.querySelector<HTMLButtonElement>("button") ?? event.currentTarget;
+                      onToggleActions();
+                      onChangeSharing?.(sharingRole === "member" ? "leave" : "revoke", anchor);
+                    }}>
+                    {sharingRole === "member" ? <LogOut size={16} /> : <Unlink size={16} />}
+                    <span>{sharingRole === "member" ? t.leaveGroup : t.revokeGroupShare}</span>
+                  </button>}
                 </>
               )}
             </div>

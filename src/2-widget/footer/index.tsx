@@ -21,6 +21,8 @@ export function Footer({
   onToggleBookmarks,
   onToggleSearch,
   searchOpen,
+  notificationsOpen,
+  onNotificationsOpenChange: setNotificationsOpen,
   notifications,
   unreadCount,
   onMarkNotificationsRead,
@@ -28,15 +30,20 @@ export function Footer({
   const { t } = useI18n();
   const [moreOpen, setMoreOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLElement>(null);
+  const notificationsTriggerRef = useRef<HTMLElement | null>(null);
   const closeNotifications = useCallback(() => {
     setNotificationsOpen(false);
-    moreRef.current?.querySelector<HTMLButtonElement>(".more-command")?.focus();
-  }, []);
+    const trigger = notificationsTriggerRef.current;
+    if (trigger?.isConnected) trigger.focus();
+    else moreRef.current?.querySelector<HTMLButtonElement>(".more-command")?.focus();
+  }, [setNotificationsOpen]);
   useEffect(() => {
     if (!notificationsOpen) return;
+    const trigger = document.activeElement;
+    notificationsTriggerRef.current = trigger instanceof HTMLElement && trigger.matches("button.auth-command")
+      ? trigger : moreRef.current?.querySelector<HTMLButtonElement>(".more-command") ?? null;
     notificationsRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
     const closeOutside = (event: PointerEvent) => {
       if (!moreRef.current?.contains(event.target as Node)) setNotificationsOpen(false);
@@ -54,7 +61,7 @@ export function Footer({
       document.removeEventListener("pointerdown", closeOutside);
       document.removeEventListener("keydown", closeOnEscape, true);
     };
-  }, [closeNotifications, notificationsOpen]);
+  }, [closeNotifications, notificationsOpen, setNotificationsOpen]);
   useEffect(() => {
     if (!moreOpen) return;
     const closeOutside = (event: PointerEvent) => {

@@ -61,7 +61,7 @@
     }
   }
 
-  // Pinned and bookmarked tabs line up their icons (pin left of bookmark) in the card's top-right corner.
+  // Keep the bookmark indicator in the card's top-right corner.
   .dashboard-card-indicators {
     position: absolute;
     top: 8px;
@@ -72,7 +72,6 @@
     pointer-events: none;
   }
 
-  .dashboard-card-pin,
   .dashboard-card-bookmark {
     display: flex;
   }

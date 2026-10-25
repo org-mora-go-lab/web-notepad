@@ -3,13 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { applySharedGroupData, createJoinedGroup, isSharedGroupId, mergeSharedGroupData, type SharedGroupData, type SharedNotification, toSharedGroupData, UNGROUPED_GROUP_ID, useNotepadStore } from "@/src/4-entity/notepad";
+import type { GroupSharingAccess } from "@/src/5-shared/type";
 
-type SharedRecord = { id: string; ownerId: string; revision: number; data: SharedGroupData; updatedAt: number };
+type SharedRecord = { id: string; ownerId: string; revision: number; data: SharedGroupData; updatedAt: number; sharingActive?: boolean };
 export type ShareInviteStatus = "login" | "joining" | "joined" | "error" | null;
 type PendingGroup = { base: SharedRecord; data: SharedGroupData };
 const same = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
 
 export function useSharedGroups(hydrated: boolean) {
+  const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
+  const [accessByGroup, setAccessByGroup] = useState<Record<string, GroupSharingAccess>>({});
   const [notifications, setNotifications] = useState<SharedNotification[]>([]);
   const [inviteStatus, setInviteStatus] = useState<ShareInviteStatus>(null);
   const [inviteToken] = useState<string | null>(() =>
@@ -27,6 +30,7 @@ export function useSharedGroups(hydrated: boolean) {
     const baselines = new Map<string, SharedRecord>();
     const timers = new Map<string, ReturnType<typeof setTimeout>>();
     const sending = new Set<string>();
+    const editedContents = new Map<string, string>();
     const changedBeforeLoad = new Set<string>();
     const pendingKey = (id: string, groupId: string) => `web-notepad-shared-pending:${id}:${groupId}`;
     const share = inviteToken;
@@ -64,6 +68,8 @@ export function useSharedGroups(hydrated: boolean) {
       const data = toSharedGroupData(group);
       if (same(data, base.data)) { persistPending(id, null); return; }
       sending.add(id);
+      const sentContents = new Map(data.tabs.filter(tab => editedContents.get(tab.id) === tab.content).map(tab => [tab.id, tab.content]));
+      setSavingTabIds(current => [...new Set([...current, ...sentContents.keys()])]);
       try {
         const response = await fetch("/api/groups/update", {
           method: "POST", headers: { "Content-Type": "application/json" },
@@ -83,11 +89,15 @@ export function useSharedGroups(hydrated: boolean) {
         const { group: saved } = await response.json() as { group: SharedRecord };
         if (!active) return;
         baselines.set(id, saved);
+        for (const [tabId, content] of sentContents) if (editedContents.get(tabId) === content) editedContents.delete(tabId);
         if (same(toSharedGroupData(currentGroup(id) ?? group), saved.data)) persistPending(id, null);
         else queue(id);
       } catch {
         if (active && userId) timers.set(id, setTimeout(() => void flush(id), 5_000));
-      } finally { sending.delete(id); }
+      } finally {
+        sending.delete(id);
+        if (active) setSavingTabIds(current => current.filter(tabId => !sentContents.has(tabId)));
+      }
     };
 
     const queue = (id: string) => {
@@ -121,6 +131,14 @@ export function useSharedGroups(hydrated: boolean) {
         const result = await response.json() as { groups: SharedRecord[] };
         if (!active) return;
         const allowedIds = new Set(result.groups.map((record) => record.id));
+        setAccessByGroup(Object.fromEntries(result.groups.map(record => [record.id, { role: record.ownerId === userId ? "owner" : "member", active: record.sharingActive !== false }])));
+        for (const id of baselines.keys()) {
+          if (allowedIds.has(id)) continue;
+          clearTimer(id);
+          persistPending(id, null);
+          baselines.delete(id);
+          changedBeforeLoad.delete(id);
+        }
         applying = true;
         try {
           useNotepadStore.setState((state) => ({
@@ -159,8 +177,19 @@ export function useSharedGroups(hydrated: boolean) {
       }
     };
 
-    const unsubscribe = useNotepadStore.subscribe((state) => {
+    const unsubscribe = useNotepadStore.subscribe((state, previous) => {
       if (applying || !userId) return;
+      const previousContents = new Map(previous.groups.filter(group => isSharedGroupId(group.id)).flatMap(group => group.tabs.map(tab => [tab.id, tab.content] as const)));
+      const changedIds: string[] = [];
+      for (const group of state.groups.filter(group => isSharedGroupId(group.id))) {
+        for (const tab of group.tabs) {
+          if (previousContents.has(tab.id) && previousContents.get(tab.id) !== tab.content) {
+            editedContents.set(tab.id, tab.content);
+            changedIds.push(tab.id);
+          }
+        }
+      }
+      if (changedIds.length) setSavingTabIds(current => current.filter(id => !changedIds.includes(id)));
       for (const group of state.groups) {
         if (!isSharedGroupId(group.id)) continue;
         if (!baselines.has(group.id)) changedBeforeLoad.add(group.id);
@@ -198,10 +227,13 @@ export function useSharedGroups(hydrated: boolean) {
         sessionChecked = true;
         userId = nextId;
         baselines.clear();
+        editedContents.clear();
+        setSavingTabIds([]);
         timers.forEach(clearTimeout);
         timers.clear();
         if (!userId) {
           setNotifications([]);
+          setAccessByGroup({});
           if (share) setInviteStatus("login");
           applying = true;
           try { useNotepadStore.setState((state) => ({
@@ -235,6 +267,17 @@ export function useSharedGroups(hydrated: boolean) {
     };
   }, [hydrated, inviteToken]);
 
+  const changeAccess = async (id: string, action: "leave" | "revoke") => {
+    try {
+      const response = await fetch("/api/groups/" + action, {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }),
+      });
+      if (!response.ok) return false;
+      window.dispatchEvent(new Event("shared-groups-changed"));
+      return true;
+    } catch { return false; }
+  };
+
   const markNotificationsRead = async () => {
     try {
       const response = await fetch("/api/groups/notifications/read", { method: "POST" });
@@ -251,6 +294,9 @@ export function useSharedGroups(hydrated: boolean) {
 
   return {
     notifications,
+    savingTabIds,
+    accessByGroup,
+    changeAccess,
     unreadCount: notifications.filter((notification) => notification.unread).length,
     inviteStatus,
     inviteToken,

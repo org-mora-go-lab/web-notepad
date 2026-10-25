@@ -118,25 +118,6 @@
       box-shadow: inset 0 3px var(--tab-accent, #{v.$saved});
     }
 
-    &.is-pinned {
-      background: var(--tab-background);
-
-      .tab-select {
-        // No close button renders on pinned tabs, so add back the trailing space it would occupy.
-        padding-right: 14px;
-        color: var(--tab-accent, #b9ddc5);
-      }
-
-      .tab-indicator.is-pin {
-        color: var(--tab-accent, #{v.$signal});
-      }
-    }
-
-    &.is-pinned.is-active {
-      background: var(--tab-background-active);
-      box-shadow: inset 0 3px var(--tab-accent, #{v.$saved});
-    }
-
     @media (max-width: 512px) {
       min-width: 114.406px * v.$mobile-scale;
       max-width: 247.65px;
@@ -156,19 +137,6 @@
     border: 0;
     background: transparent;
     color: inherit;
-    cursor: default;
-  }
-
-  .tab-pin-indicator {
-    display: grid;
-    width: 16px;
-    height: 23px;
-    flex: 0 0 auto;
-    margin-right: 4px;
-    place-items: center;
-    padding: 0;
-    border: 0;
-    background: transparent;
     cursor: default;
   }
 
@@ -267,7 +235,6 @@
       }
     }
 
-    .tab-pin-indicator,
     .tab-bookmark-indicator {
       width: 16px * v.$mobile-scale;
     }

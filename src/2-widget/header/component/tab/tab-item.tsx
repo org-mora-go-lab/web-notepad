@@ -1,7 +1,7 @@
-import { Bookmark, Pin, X } from "lucide-react";
-import type { DragEvent } from "react";
+import { Bookmark, X } from "lucide-react";
+import { type DragEvent, useContext } from "react";
 
-import { useI18n } from "@/src/5-shared/hook";
+import { SavingTabsContext, useI18n } from "@/src/5-shared/hook";
 
 import type { TabItemProps } from "../../type";
 
@@ -26,6 +26,7 @@ export function TabItem({
   onDragEnd,
 }: TabItemProps) {
   const { t } = useI18n();
+  const saving = useContext(SavingTabsContext).includes(tab.id);
   const dirty = tab.content.trim() !== "" && tab.content !== tab.savedContent;
   const markDropTarget = (event: DragEvent<HTMLDivElement>) => {
     if (!dragActive || draggingTabId === tab.id) return;
@@ -35,9 +36,9 @@ export function TabItem({
 
   return (
     <div
-      className={`tab-item ${active ? "is-active" : ""} ${dirty ? "is-dirty" : ""} ${
+      className={`tab-item ${saving ? "is-saving" : ""} ${active ? "is-active" : ""} ${dirty ? "is-dirty" : ""} ${
         draggingTabId === tab.id ? "is-dragging" : ""
-      } ${selected ? "is-range-selected" : ""} ${dropTarget ? "is-drop-target" : ""} ${tab.pinned ? "is-pinned" : ""} ${
+      } ${selected ? "is-range-selected" : ""} ${dropTarget ? "is-drop-target" : ""} ${
         tab.bookmarked ? "is-bookmarked" : ""
       }`}
       data-tab-color={tab.tabColor}
@@ -88,19 +89,6 @@ export function TabItem({
           onContextMenu(tab.id, event.clientX, event.clientY);
         }}
       >
-        {tab.pinned && (
-          <span
-            className="tab-pin-indicator"
-            aria-label={t.pinned}
-            title={t.pinned}
-          >
-            <Pin
-              className="tab-indicator is-pin"
-              size={13}
-              aria-hidden="true"
-            />
-          </span>
-        )}
         {tab.bookmarked && (
           <span className="tab-bookmark-indicator" aria-hidden="true">
             <Bookmark
@@ -112,7 +100,6 @@ export function TabItem({
         )}
         <span className="tab-title">{tab.title}</span>
       </button>
-      {!tab.pinned && (
         <button
           className="tab-close"
           type="button"
@@ -122,7 +109,6 @@ export function TabItem({
         >
           <X size={11} />
         </button>
-      )}
     </div>
   );
 }

@@ -7,6 +7,8 @@ export type ConfirmPopupProps = {
   closeTitle: string;
   // Defaults to a "Delete" action with a trash icon.
   confirmLabel?: string;
+  keepOpenOnConfirm?: boolean;
+  error?: string;
   confirmIcon?: ReactNode;
   onConfirm: () => void;
   onCancel: () => void;

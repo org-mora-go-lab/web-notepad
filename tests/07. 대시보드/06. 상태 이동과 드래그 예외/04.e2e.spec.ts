@@ -27,7 +27,7 @@ test("4. 고정 탭을 Done으로 옮기면 확인 없이 고정과 열린 상�
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
   await expect(page.locator(".tab-item", { hasText: "Pinned task" })).toHaveCount(1);
   await expect(dashboardColumn(page, "done")).toContainText("Pinned task");
-  await expect(page.locator(".tab-item", { hasText: "Pinned task" })).toHaveClass(/is-pinned/);
+  await expect(page.locator(".tab-item", { hasText: "Pinned task" })).not.toHaveClass(/is-pinned/);
   await page.reload();
   await expect(dashboardColumn(page, "done")).toContainText("Pinned task");
   expect(

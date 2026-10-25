@@ -27,7 +27,6 @@ export function Dashboard({
   onOpenTab,
   onChangeStatus,
   onMoveToGroup,
-  onToggleTabPin,
   onToggleTabBookmark,
   onDeleteTab,
 }: DashboardProps) {
@@ -168,8 +167,6 @@ export function Dashboard({
         <TabContextMenu
           left={contextMenu.left}
           top={contextMenu.top}
-          pinned={contextTab.pinned}
-          showPin={false}
           moveGroupFirst={getTabStatus(contextTab, tabColorCycle) !== "closed"}
           deleteOnly={getTabStatus(contextTab, tabColorCycle) === "closed"}
           bookmarked={contextTab.bookmarked}
@@ -193,10 +190,6 @@ export function Dashboard({
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);
-            setContextMenu(null);
-          }}
-          onTogglePin={() => {
-            onToggleTabPin(contextTab.id);
             setContextMenu(null);
           }}
           onToggleBookmark={() => {

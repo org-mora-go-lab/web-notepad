@@ -6,7 +6,7 @@ import { getTabGroup, patchTabAndBookmark, updateGroup } from "../workspace";
 
 type Actions = Pick<
   NotepadState,
-  "updateTab" | "setTabSelectedLines" | "cycleTabColor" | "togglePin"
+  "updateTab" | "setTabSelectedLines" | "cycleTabColor"
 >;
 
 export const createTabContentActions: StateCreator<
@@ -67,16 +67,6 @@ export const createTabContentActions: StateCreator<
           { tabColor: nextColor },
           { tabColor: nextColor, updatedAt: Date.now() },
         ),
-      );
-    }),
-  togglePin: (tabId) =>
-    set((state) => {
-      const group = getTabGroup(state, tabId);
-      if (!group) return state;
-      const tab = group.tabs.find((item) => item.id === tabId);
-      if (!group || !tab) return state;
-      return updateGroup(state, group.id, (current) =>
-        patchTabAndBookmark(current, tabId, { pinned: !tab.pinned }),
       );
     }),
 });

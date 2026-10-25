@@ -13,9 +13,13 @@ test("6. 로그아웃 서버 오류는 계정 표시를 보존하고 재시도�
   );
   await page.goto("/");
   const account = page.getByRole("button", {
-    name: authProfile.nickname + " · Log out",
+    name: authProfile.nickname + " · Account menu",
   });
   await account.click();
+  const failed = page.waitForResponse(response => response.url().endsWith("/api/auth/logout") && response.status() === 500);
+  await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
+  await failed;
+  await expect(page.getByRole("menuitem", { name: "Log out", exact: true })).toBeEnabled();
   await expect(account).toBeEnabled();
   await expect(page.locator("a.auth-command")).toHaveCount(0);
 });

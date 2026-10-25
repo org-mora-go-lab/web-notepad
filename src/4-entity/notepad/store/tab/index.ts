@@ -14,7 +14,6 @@ type TabActions = Pick<
   | "updateTab"
   | "setTabSelectedLines"
   | "cycleTabColor"
-  | "togglePin"
   | "setTabStatus"
   | "closeTab"
   | "archiveTab"

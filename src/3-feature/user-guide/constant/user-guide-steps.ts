@@ -28,7 +28,7 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
     },
     {
       title: "Tab menu",
-      description: "Right-click a tab on PC or double-tap it on mobile to pin, bookmark or move it to another group.",
+      description: "Right-click a tab on PC or double-tap it on mobile to bookmark or move it to another group.",
     },
     {
       title: "Select lines",
@@ -75,7 +75,7 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
     },
     {
       title: "탭 메뉴",
-      description: "PC에서는 탭을 우클릭, 모바일에서는 두 번 탭해 고정·북마크·그룹 이동을 할 수 있습니다.",
+      description: "PC에서는 탭을 우클릭, 모바일에서는 두 번 탭해 북마크·그룹 이동을 할 수 있습니다.",
     },
     {
       title: "줄 선택",

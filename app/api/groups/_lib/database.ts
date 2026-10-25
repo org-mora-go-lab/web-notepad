@@ -22,6 +22,11 @@ export async function sharedDatabase() {
       updated_at INTEGER NOT NULL,
       UNIQUE(owner_id, owner_local_id)
     )`,
+    `CREATE TABLE IF NOT EXISTS shared_group_access (
+      group_id TEXT PRIMARY KEY,
+      enabled INTEGER NOT NULL DEFAULT 1,
+      token_version INTEGER NOT NULL DEFAULT 0
+    )`,
     `CREATE TABLE IF NOT EXISTS shared_group_members (
       group_id TEXT NOT NULL,
       user_id TEXT NOT NULL,
@@ -47,7 +52,12 @@ export async function sharedDatabase() {
       description TEXT NOT NULL,
       updated_at INTEGER NOT NULL
     )`,
-  ], "write").then(() => undefined).catch((error: unknown) => {
+  ], "write").then(async () => {
+    const columns = await database.execute("PRAGMA table_info(shared_group_access)");
+    if (!columns.rows.some(column => column.name === "token_version")) {
+      await database.execute("ALTER TABLE shared_group_access ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0");
+    }
+  }).catch((error: unknown) => {
     schemaReady = undefined;
     throw error;
   });

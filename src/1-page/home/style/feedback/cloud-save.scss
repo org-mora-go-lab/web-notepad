@@ -11,15 +11,12 @@
     white-space: nowrap;
   }
 
-  &[data-cloud-save="pending"],
-  &[data-cloud-save="saving"] {
-    .header .tab-item.is-active .tab-title {
+  .header .tab-item.is-saving .tab-title {
       background-image: linear-gradient(100deg, v.$muted 35%, v.$ink 50%, v.$muted 65%);
       background-size: 240% 100%;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: cloud-title-shimmer 1.8s linear infinite;
-    }
   }
 }
 
@@ -29,7 +26,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home[data-cloud-save] .header .tab-item.is-active .tab-title {
+  .home .header .tab-item.is-saving .tab-title {
     animation: none;
     background-image: none;
     -webkit-text-fill-color: currentColor;

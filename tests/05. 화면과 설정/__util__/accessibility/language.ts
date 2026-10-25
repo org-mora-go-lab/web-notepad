@@ -5,18 +5,16 @@ import { languageRadio, settingsPanel } from "../settings";
 
 type MarkedWorkspaceOptions = {
   bookmark?: boolean;
-  pin?: boolean;
 };
 
 export async function prepareMarkedWorkspace(
   page: Page,
-  { bookmark = false, pin = false }: MarkedWorkspaceOptions = {},
+  { bookmark = false }: MarkedWorkspaceOptions = {},
 ) {
   await page.goto("/");
   await page.locator(".note-area").fill("Alpha task\nBody");
   const tab = page.getByRole("tab", { name: "Alpha task", exact: true });
   if (bookmark) await chooseTabMenuItem(page, "Bookmark", tab);
-  if (pin) await chooseTabMenuItem(page, "Pin", tab);
   return tab;
 }
 

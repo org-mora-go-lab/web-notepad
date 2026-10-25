@@ -18,7 +18,7 @@ test("5. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
     .getByRole("button", { name: "초기화", exact: true }).click();
 
   await expect(panel.locator("h2")).toHaveText("Settings");
-  await expect(fontScaleRadio(page, "100%")).toBeChecked();
+  await expect(fontScaleRadio(page, "90%")).toBeChecked();
   await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
   await expect(tabColorRadio(page, 2, "Indigo")).toBeChecked();
   await expect(tabColorRadio(page, 3, "Teal")).toBeChecked();
@@ -30,7 +30,7 @@ test("5. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
     (key) => JSON.parse(localStorage.getItem(key)!).state.settings,
     STORAGE_KEY,
   )).toEqual({
-    fontScale: 1,
+    fontScale: 0.9,
     tabColorCycle: ["gray", "indigo", "teal"],
     language: "en",
     panelSlide: false,

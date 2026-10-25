@@ -4,6 +4,8 @@ import { BOTH_VIEWPORTS } from "../../__constant__";
 import { dashboardPanel, openPanel, seedDashboardTabs, switchGroup } from "../../__util__";
 
 test("4. 그룹별 Note·Closed 선택 상태를 새로고침 후에도 복원하고 선택 영역은 닫는다", async ({ page }) => {
+  // Both viewports exercise repeated panel transitions and reloads.
+  test.setTimeout(60_000);
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await seedDashboardTabs(page);

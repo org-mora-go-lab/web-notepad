@@ -20,7 +20,7 @@ test("4. 로그인 조회 중에는 스켈레톤만 표시하고 완료 후 같�
     await expect(page.locator(".header-auth a, .header-auth button")).toHaveCount(0);
     initialBounds = await skeleton.boundingBox();
   } finally { releaseLookup(); }
-  const account = page.getByRole("button", { name: `${authProfile.nickname} · Log out`, exact: true });
+  const account = page.getByRole("button", { name: `${authProfile.nickname} · Account menu`, exact: true });
   await expect(account).toBeVisible();
   await expect(skeleton).toHaveCount(0);
   expect(await account.boundingBox()).toEqual(initialBounds);

@@ -18,6 +18,7 @@ test("3. 모바일 로그아웃 후 로그인 영역의 위치와 크기가 유�
   const logout = page.locator("button.auth-command");
   await expect(logout).toBeVisible();
   await logout.click();
+  await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
   await expect(page.locator("a.auth-command")).toBeVisible();
   expect(await page.locator(".header-auth").boundingBox()).toEqual(before);
 });

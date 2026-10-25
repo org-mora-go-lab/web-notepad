@@ -14,6 +14,8 @@ export type FooterProps = {
   onToggleBookmarks: () => void;
   onToggleSearch: () => void;
   searchOpen: boolean;
+  notificationsOpen: boolean;
+  onNotificationsOpenChange: (open: boolean) => void;
   notifications: SharedNotification[];
   unreadCount: number;
   onMarkNotificationsRead: () => void;

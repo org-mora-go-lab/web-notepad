@@ -48,7 +48,6 @@ export const createClosedTabActions: StateCreator<
     const replacesBlankTab =
       target.tabs.length === 1 &&
       target.tabs[0].content.trim() === "" &&
-      !target.tabs[0].pinned &&
       !target.tabs[0].bookmarked;
 
     set({
