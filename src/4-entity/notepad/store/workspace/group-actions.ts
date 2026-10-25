@@ -16,6 +16,7 @@ type GroupActions = Pick<
   | "removeGroup"
   | "selectGroup"
   | "moveTabToGroup"
+  | "adoptSharedGroup"
 >;
 
 export const createGroupActions: StateCreator<
@@ -24,6 +25,19 @@ export const createGroupActions: StateCreator<
   [],
   GroupActions
 > = (set, get) => ({
+  adoptSharedGroup: (originalId, sharedGroup) => set((state) => {
+    const original = state.groups.find((group) => group.id === originalId);
+    if (!original) return state;
+    const tabIds = new Map(original.tabs.map((tab, index) => [tab.id, sharedGroup.tabs[index]?.id ?? tab.id]));
+    return {
+      groups: state.groups.map((group) => group.id === originalId ? sharedGroup : group),
+      activeGroupId: state.activeGroupId === originalId ? sharedGroup.id : state.activeGroupId,
+      allGroupActiveTabId: state.allGroupActiveTabId ? tabIds.get(state.allGroupActiveTabId) ?? state.allGroupActiveTabId : null,
+      closedTabs: state.closedTabs.map((entry) => entry.groupId === originalId
+        ? { ...entry, groupId: sharedGroup.id, tab: { ...entry.tab, id: `${sharedGroup.id}-${entry.tab.id}` } }
+        : entry),
+    };
+  }),
   moveGroup: (groupId, targetId) => set((state) => {
     const ordered = state.groups.filter((group) => group.id !== UNGROUPED_GROUP_ID).sort(compareGroups);
     const source = ordered.findIndex((group) => group.id === groupId);

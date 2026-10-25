@@ -92,6 +92,22 @@ export type GroupEntry = {
   rightRowRatio: number;
 };
 
+// Content that is shared between collaborators; pane layout and pin order stay local.
+export type SharedGroupData = Pick<
+  GroupEntry,
+  "id" | "name" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames" | "dashboardVisibility"
+>;
+
+export type SharedNotification = {
+  id: number;
+  groupId: string;
+  groupName: string;
+  actorName: string;
+  summary: string;
+  createdAt: number;
+  unread: boolean;
+};
+
 // "left" and "right" are the top panes; each column can add a bottom pane.
 export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
 
@@ -151,4 +167,5 @@ export type NotepadState = {
   moveClosedTabToGroup: (entryId: string, groupId: string) => void;
   toggleClosedTabBookmark: (entryId: string) => void;
   removeClosedTab: (entryId: string) => void;
+  adoptSharedGroup: (originalId: string, sharedGroup: GroupEntry) => void;
 };

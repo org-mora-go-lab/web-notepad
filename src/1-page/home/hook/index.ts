@@ -1,3 +1,5 @@
+export { useCloudSave } from "./sync";
+export { useSharedGroups } from "./sync";
 export { useGroupMenuOpen } from "./use-group-menu-open";
 export { useHome } from "./use-home";
 export type { DividerOrientation } from "./use-pane-resize";

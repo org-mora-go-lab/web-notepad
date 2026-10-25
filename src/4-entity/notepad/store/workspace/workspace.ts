@@ -86,7 +86,12 @@ export const allocateTab = (state: NotepadState) => {
     state.nextTabNumber,
   );
   return {
-    tab: createNoteTab(number, state.settings.tabColorCycle[0]),
+    tab: {
+      ...createNoteTab(number, state.settings.tabColorCycle[0]),
+      ...(state.activeGroupId.startsWith("shared-")
+        ? { id: `${state.activeGroupId}-tab-${crypto.randomUUID()}` }
+        : {}),
+    },
     number,
     nextTabNumber: number + 1,
   };

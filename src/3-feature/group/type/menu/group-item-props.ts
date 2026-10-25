@@ -20,4 +20,5 @@ export type GroupItemProps = {
   onRename: (name: string) => void;
   onTogglePin: () => void;
   onDelete: (anchor: HTMLElement) => void;
+  onShare: () => void;
 };

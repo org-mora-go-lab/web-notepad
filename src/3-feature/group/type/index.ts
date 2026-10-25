@@ -3,4 +3,5 @@ export type {
   GroupCreateFormProps,
   GroupItemProps,
   GroupMenuProps,
+  GroupShareDialogProps,
 } from "./menu";

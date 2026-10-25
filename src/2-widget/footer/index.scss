@@ -120,6 +120,52 @@
     margin-left: auto;
   }
 
+  .footer-notifications {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .notification-command .notification-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    min-width: 17px;
+    height: 17px;
+    display: grid;
+    place-items: center;
+    padding: 0 3px;
+    border-radius: 9px;
+    background: v.$signal;
+    color: v.$pit;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .footer-notifications-panel {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px);
+    z-index: 80;
+    width: min(360px, calc(100vw - 32px));
+    max-height: min(420px, 60vh);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid v.$line;
+    border-radius: 8px;
+    background: v.$raised;
+    color: v.$ink;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+    header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid v.$line; }
+    header button { width: 28px; height: 28px; display: grid; place-items: center; border: 0; background: transparent; color: v.$ink; }
+    p { margin: 0; padding: 18px 12px; }
+    ul { margin: 0; padding: 0; overflow-y: auto; list-style: none; }
+    li { display: grid; gap: 4px; padding: 10px 12px; border-bottom: 1px solid v.$line; line-height: 1.4; }
+    li:last-child { border-bottom: 0; }
+    li span { overflow-wrap: anywhere; }
+    li time { color: v.$muted; font-size: v.font(11px); }
+  }
+
   .dashboard-command,
   .more-command {
     --status-icon-growth: 1px;
@@ -196,7 +242,7 @@
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 0;
     }
 
@@ -220,6 +266,7 @@
 
     // Mobile footer commands use the same icon-over-label layout.
     .group-select-command,
+    .notification-command,
     .dashboard-command,
     .more-command {
       flex-direction: column;
@@ -241,12 +288,21 @@
     }
 
     .dashboard-command {
-      grid-column: 2;
+      grid-column: 3;
       margin-left: 0;
     }
 
+    .footer-notifications { grid-column: 2; min-width: 0; }
+    .footer-notifications-panel {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: calc(114.8px + env(safe-area-inset-bottom) + 8px);
+      width: auto;
+    }
+
     .footer-more {
-      grid-column: 3;
+      grid-column: 4;
       min-width: 0;
     }
 

@@ -10,6 +10,8 @@ export type {
   PaneColumn,
   PaneId,
   PaneLayout,
+  SharedGroupData,
+  SharedNotification,
   TabColor,
   TabStatus,
 } from "./notepad";

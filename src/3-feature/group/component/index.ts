@@ -1,1 +1,1 @@
-export { GroupCreateForm, GroupItem } from "./menu";
+export { GroupCreateForm, GroupItem, GroupShareDialog } from "./menu";

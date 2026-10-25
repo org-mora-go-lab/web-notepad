@@ -24,8 +24,16 @@ type KakaoUserResponse = {
   };
 };
 
+type KakaoTalkProfileResponse = {
+  id?: number;
+  nickName?: string;
+  profileImageURL?: string;
+  thumbnailURL?: string;
+};
+
 const KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
 const KAKAO_USER_URL = "https://kapi.kakao.com/v2/user/me";
+const KAKAO_TALK_PROFILE_URL = "https://kapi.kakao.com/v1/api/talk/profile";
 
 export function getKakaoConfig() {
   const clientId = process.env.KAKAO_REST_API_KEY;
@@ -79,9 +87,27 @@ export async function getKakaoUser(accessToken: string): Promise<KakaoUser> {
   }
 
   const profile = result.kakao_account?.profile;
+  let talkProfile: KakaoTalkProfileResponse | undefined;
+  try {
+    const talkResponse = await fetch(KAKAO_TALK_PROFILE_URL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      cache: "no-store",
+    });
+    if (talkResponse.ok) {
+      const candidate = (await talkResponse.json()) as KakaoTalkProfileResponse;
+      if (!candidate.id || candidate.id === result.id) talkProfile = candidate;
+    }
+  } catch {
+    // KakaoTalk 연결 또는 프로필 동의가 없어도 카카오계정 로그인을 유지한다.
+  }
+
   return {
     id: String(result.id),
-    nickname: profile?.nickname ?? result.properties?.nickname ?? "Kakao user",
-    profileImageUrl: profile?.profile_image_url ?? result.properties?.profile_image,
+    nickname: talkProfile?.nickName?.trim() || profile?.nickname || result.properties?.nickname || "Kakao user",
+    profileImageUrl:
+      talkProfile?.profileImageURL ||
+      talkProfile?.thumbnailURL ||
+      profile?.profile_image_url ||
+      result.properties?.profile_image,
   };
 }

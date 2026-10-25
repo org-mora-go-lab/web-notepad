@@ -1,3 +1,5 @@
+import type { SharedNotification } from "@/src/4-entity/notepad";
+
 export type FooterProps = {
   // A group was created or changed today.
   hasGroupUpdateToday: boolean;
@@ -11,4 +13,7 @@ export type FooterProps = {
   onToggleBookmarks: () => void;
   onToggleSearch: () => void;
   searchOpen: boolean;
+  notifications: SharedNotification[];
+  unreadCount: number;
+  onMarkNotificationsRead: () => void;
 };

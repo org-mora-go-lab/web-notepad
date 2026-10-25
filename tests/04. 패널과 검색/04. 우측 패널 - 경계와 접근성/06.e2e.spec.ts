@@ -17,6 +17,8 @@ test("6. 하단 패널 버튼은 X로 닫은 뒤에도 Tab 탐색에서 포커�
   await close.click();
   await page.locator(".group-select-command").focus();
   await page.keyboard.press("Tab");
+  await expect(page.locator(".notification-command")).toBeFocused();
+  await page.keyboard.press("Tab");
 
   await expect(toggle).toBeFocused();
   await expect(toggle).not.toHaveCSS("outline-style", "none");

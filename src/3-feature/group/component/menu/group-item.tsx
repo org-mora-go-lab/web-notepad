@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, EllipsisVertical, Pencil, Pin, Trash2, X } from "lucide-react";
+import { Check, EllipsisVertical, Pencil, Pin, Share2, Trash2, X } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
@@ -26,6 +26,7 @@ export function GroupItem({
   onRename,
   onTogglePin,
   onDelete,
+  onShare,
 }: GroupItemProps) {
   const { t } = useI18n();
   const [editingName, setEditingName] = useState<string | null>(null);
@@ -37,7 +38,7 @@ export function GroupItem({
     menuAnchorRef.current = anchor;
     const rect = anchor.getBoundingClientRect();
     const rowHeight = window.matchMedia("(max-width: 512px)").matches ? 44 : 40;
-    const menuHeight = dropdownRef.current?.getBoundingClientRect().height ?? 3 * rowHeight + 12;
+    const menuHeight = dropdownRef.current?.getBoundingClientRect().height ?? 4 * rowHeight + 12;
     const below = rect.bottom + 8;
     setMenuPosition({
       left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
@@ -209,6 +210,17 @@ export function GroupItem({
               )}
               {editable && (
                 <>
+                  <button
+                    type="button"
+                    aria-label={t.shareGroupFor(name)}
+                    onClick={() => {
+                      onToggleActions();
+                      onShare();
+                    }}
+                  >
+                    <Share2 size={16} />
+                    <span>{t.shareGroup}</span>
+                  </button>
                   <button
                     type="button"
                     aria-label={t.editGroupFor(name)}
