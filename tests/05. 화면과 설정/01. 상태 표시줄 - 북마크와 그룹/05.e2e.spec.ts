@@ -10,6 +10,6 @@ test("5. PC에서 그룹명을 우클릭한 메뉴에는 Bookmark가 없다", as
   const row = page.locator(".group-item", { has: page.getByRole("button", { name: "Work", exact: true }) });
   await row.getByRole("button", { name: "Work", exact: true }).click({ button: "right" });
   await expect(row.locator(".group-action-dropdown")).toBeVisible();
-  await expect(row.locator(".group-action-dropdown").getByRole("button")).toHaveText(["Pin", "Edit", "Delete"]);
+  await expect(row.locator(".group-action-dropdown").getByRole("button")).toHaveText(["Pin", "Share", "Edit", "Delete"]);
   await expect(page.locator(".group-current-value")).toHaveText(selectedBefore!);
 });

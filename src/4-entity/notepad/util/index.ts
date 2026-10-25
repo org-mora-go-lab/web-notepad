@@ -4,6 +4,7 @@ export {
   normalizeDashboardVisibility,
 } from "./dashboard-visibility";
 export { compareGroups } from "./group-sort";
+export { mergeSharedGroupData } from "./merge-shared-group";
 export type { DashboardColumnData } from "./note";
 export {
   createNoteTab,
@@ -28,3 +29,4 @@ export {
   PANE_IDS,
   setPaneActiveTabId,
 } from "./pane";
+export { applySharedGroupData, createJoinedGroup, isSharedGroupId, namespaceGroup, sharedGroupId, toSharedGroupData } from "./shared-group";

@@ -1,0 +1,47 @@
+@use "../../../../5-shared/style/variable" as v;
+
+.home .cloud-save-status {
+  position: absolute;
+  right: 16px;
+  bottom: calc(var(--footer-height) + 12px);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 7px 10px;
+  border: 1px solid v.$line;
+  border-radius: 6px;
+  background: v.$strip;
+  color: v.$ink;
+  font-size: v.font(12px);
+  pointer-events: none;
+
+  .cloud-save-mark {
+    width: 10px;
+    height: 10px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+  }
+
+  &.is-pending .cloud-save-mark,
+  &.is-saving .cloud-save-mark {
+    animation: cloud-save-spin 0.8s linear infinite;
+  }
+
+  &.is-saved .cloud-save-mark {
+    border-color: currentColor;
+    background: currentColor;
+  }
+
+  &.is-error { color: v.$signal; }
+}
+
+@keyframes cloud-save-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home .cloud-save-status .cloud-save-mark { animation: none; }
+}

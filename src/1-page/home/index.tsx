@@ -2,10 +2,11 @@
 
 import "./index.scss";
 
-import { type CSSProperties, useEffect } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 
-import { useHome } from "@/src/1-page/home/hook";
+import { useCloudSave, useHome, useSharedGroups } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
+import { MESSAGES } from "@/src/5-shared/constant";
 import { I18nContext } from "@/src/5-shared/hook";
 import { MobileTapFeedback } from "@/src/5-shared/ui";
 
@@ -55,10 +56,37 @@ export function Home() {
     panelSlide,
     panelPosition,
   } = useHome();
+  const cloudSaveStatus = useCloudSave(hydrated);
+  const shared = useSharedGroups(hydrated);
+  const inviteRef = useRef<HTMLElement>(null);
+  const messages = MESSAGES[language];
+  const cloudSaveText = {
+    pending: messages.cloudPending,
+    saving: messages.cloudSaving,
+    saved: messages.cloudSaved,
+    error: messages.cloudError,
+  };
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
+
+  useEffect(() => {
+    if (!shared.inviteStatus || shared.inviteStatus === "joining") return;
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const controls = () => Array.from(inviteRef.current?.querySelectorAll<HTMLElement>("a[href], button") ?? []);
+    controls()[0]?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); shared.dismissInvite(); return; }
+      if (event.key !== "Tab") return;
+      const items = controls();
+      if (!items.length) return;
+      if (event.shiftKey && document.activeElement === items[0]) { event.preventDefault(); items[items.length - 1].focus(); }
+      else if (!event.shiftKey && document.activeElement === items[items.length - 1]) { event.preventDefault(); items[0].focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => { document.removeEventListener("keydown", onKeyDown); previous?.focus(); };
+  }, [shared.inviteStatus, shared.dismissInvite]);
 
   if (!hydrated || !activeTab) {
     return <Loading />;
@@ -96,8 +124,30 @@ export function Home() {
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleSearch={() => toggleSidePanel("global-search")}
             searchOpen={openPanel === "global-search"}
+            notifications={shared.notifications}
+            unreadCount={shared.unreadCount}
+            onMarkNotificationsRead={() => void shared.markNotificationsRead()}
           />
         </section>
+
+        {cloudSaveStatus && (
+          <div className={`cloud-save-status is-${cloudSaveStatus}`} role="status" aria-live="polite">
+            <span className="cloud-save-mark" aria-hidden="true" />
+            <span>{cloudSaveText[cloudSaveStatus]}</span>
+          </div>
+        )}
+        {shared.inviteStatus && <div className="share-invite-backdrop">
+          <section ref={inviteRef} className="share-invite-dialog" role="dialog" aria-modal="true" aria-label={messages.shareGroup}>
+            <p>{shared.inviteStatus === "login" ? messages.shareInviteLogin
+              : shared.inviteStatus === "joining" ? messages.shareInviteJoining
+                : shared.inviteStatus === "joined" ? messages.shareInviteJoined
+                  : messages.shareInviteError}</p>
+            {shared.inviteStatus === "login" && shared.inviteToken &&
+              <a href={`/api/auth/oauth/kakao?share=${encodeURIComponent(shared.inviteToken)}`}>{messages.kakaoLogin}</a>}
+            {shared.inviteStatus !== "joining" &&
+              <button type="button" onClick={shared.dismissInvite}>{messages.close}</button>}
+          </section>
+        </div>}
 
         <Panel
           activeTabId={activeTab?.id}

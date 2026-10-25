@@ -6,11 +6,14 @@ export {
   TAB_STATUSES,
 } from "./constant";
 export { useNotepadHydrated } from "./hook";
+export { createCloudSnapshot } from "./persistence";
 export * from "./store";
 export * from "./type";
 export type { DashboardColumnData } from "./util";
 export {
+  applySharedGroupData,
   compareGroups,
+  createJoinedGroup,
   DEFAULT_DASHBOARD_VISIBILITY,
   getBottomPane,
   getClosedTabItems,
@@ -22,5 +25,10 @@ export {
   getPaneWorkspace,
   getStatusColor,
   getTabStatus,
+  isSharedGroupId,
+  mergeSharedGroupData,
+  namespaceGroup,
   PANE_IDS,
+  sharedGroupId,
+  toSharedGroupData,
 } from "./util";

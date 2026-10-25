@@ -24,6 +24,7 @@ export default defineConfig({
       KAKAO_REST_API_KEY: "test-rest-key",
       KAKAO_REDIRECT_URI: "http://localhost:3100/api/auth/oauth/kakao/callback",
       AUTH_SECRET: "test-auth-secret",
+      TURSO_DATABASE_URL: "file:test-results/notepad-e2e.db",
     },
     url: "http://localhost:3100",
     reuseExistingServer: !process.env.CI,

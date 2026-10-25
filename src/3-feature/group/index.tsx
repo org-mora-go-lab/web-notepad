@@ -1,14 +1,14 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { ALL_GROUP_ID, compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import { ALL_GROUP_ID, compareGroups, type GroupEntry, UNGROUPED_GROUP_ID, useNotepadStore } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
 
-import { GroupCreateForm, GroupItem } from "./component";
+import { GroupCreateForm, GroupItem, GroupShareDialog } from "./component";
 import { useGroupMenuResize, useGroupReorder } from "./hook";
 import type { GroupMenuProps, GroupProps } from "./type";
 
@@ -32,12 +32,20 @@ function GroupSidebar({
   const reorder = useGroupReorder(onMoveGroup);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
+  const [sharingGroup, setSharingGroup] = useState<GroupEntry | null>(null);
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
   const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
   const otherRows = [...groups]
     .sort(compareGroups)
     .filter((group) => group.id !== UNGROUPED_GROUP_ID);
+
+  const handleShared = useCallback((originalId: string, sharedGroup: GroupEntry) => {
+    if (originalId !== sharedGroup.id) {
+      useNotepadStore.getState().adoptSharedGroup(originalId, sharedGroup);
+    }
+    window.dispatchEvent(new Event("shared-groups-changed"));
+  }, []);
 
   const selectGroup = (groupId: string) => {
     onSelect(groupId);
@@ -99,6 +107,7 @@ function GroupSidebar({
                     deleteAnchorRef.current = anchor;
                     setDeletingGroupId(group.id);
                   }}
+                  onShare={() => setSharingGroup(group)}
                 />
               ))}
           </div>
@@ -124,6 +133,7 @@ function GroupSidebar({
             onRename={() => undefined}
             onTogglePin={() => undefined}
             onDelete={() => undefined}
+            onShare={() => undefined}
           />
           {ungrouped && (
             <GroupItem
@@ -144,6 +154,7 @@ function GroupSidebar({
               onRename={() => undefined}
               onTogglePin={() => undefined}
               onDelete={() => undefined}
+              onShare={() => undefined}
             />
           )}
         </div>
@@ -171,6 +182,11 @@ function GroupSidebar({
           }}
         />
       )}
+      {sharingGroup && <GroupShareDialog
+        group={sharingGroup}
+        onClose={() => setSharingGroup(null)}
+        onShared={handleShared}
+      />}
     </div>,
     document.body,
   );

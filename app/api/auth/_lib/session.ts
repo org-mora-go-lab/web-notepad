@@ -3,6 +3,7 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import type { KakaoUser } from "./kakao";
 
 export const KAKAO_STATE_COOKIE = "web-notepad-kakao-state";
+export const SHARE_RETURN_COOKIE = "web-notepad-share-return";
 export const SESSION_COOKIE = "web-notepad-session";
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 
@@ -18,6 +19,20 @@ function getSessionSecret() {
 
 function sign(value: string) {
   return createHmac("sha256", getSessionSecret()).update(value).digest("base64url");
+}
+
+export function createGroupShareToken(groupId: string) {
+  return `${groupId}.${sign(`group-share:${groupId}`)}`;
+}
+
+export function readGroupShareToken(token: string) {
+  const [groupId, signature] = token.split(".");
+  if (!groupId || !/^shared-[0-9a-f-]{36}$/i.test(groupId) || !signature) return null;
+  const expected = Buffer.from(sign(`group-share:${groupId}`));
+  const received = Buffer.from(signature);
+  return expected.length === received.length && timingSafeEqual(expected, received)
+    ? groupId
+    : null;
 }
 
 export function createOAuthState() {

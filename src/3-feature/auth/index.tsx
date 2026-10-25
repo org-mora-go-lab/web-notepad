@@ -36,7 +36,10 @@ export function Auth() {
     setLoading(true);
     try {
       const response = await fetch("/api/auth/logout", { method: "POST" });
-      if (response.ok) setUser(null);
+      if (response.ok) {
+        setUser(null);
+        window.dispatchEvent(new Event("notepad-auth-changed"));
+      }
     } finally {
       setLoading(false);
     }
