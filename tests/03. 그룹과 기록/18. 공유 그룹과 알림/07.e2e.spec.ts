@@ -1,13 +1,23 @@
 import { expect, test } from "@playwright/test";
 
-test("7. 모바일 하단에서 알림은 대시보드 왼쪽에 보인다", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+import { moreCommand, openMoreMenu } from "../../__util__";
+
+test("7. 그룹알림은 더보기에서 열고 Escape로 닫으면 더보기로 포커스를 돌려준다", async ({ page }) => {
   await page.goto("/");
-  const notifications = page.locator(".notification-command");
-  const dashboard = page.locator(".dashboard-command");
-  await expect(notifications).toBeVisible();
-  await expect(dashboard).toBeVisible();
-  const bellBox = await notifications.boundingBox();
-  const dashboardBox = await dashboard.boundingBox();
-  expect(bellBox!.x + bellBox!.width).toBeLessThanOrEqual(dashboardBox!.x + 1);
+  for (const width of [1280, 390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(page.locator(".notification-command")).toHaveCount(0);
+    const menu = await openMoreMenu(page);
+    await menu.getByRole("button", { name: "Group notifications", exact: true }).click();
+    await expect(menu).toHaveCount(0);
+    const panel = page.getByRole("dialog", { name: "Group notifications", exact: true });
+    await expect(panel).toBeVisible();
+    await expect(panel).toContainText("No shared group updates yet.");
+    const bounds = (await panel.boundingBox())!;
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    await page.keyboard.press("Escape");
+    await expect(panel).toHaveCount(0);
+    await expect(moreCommand(page)).toBeFocused();
+  }
 });

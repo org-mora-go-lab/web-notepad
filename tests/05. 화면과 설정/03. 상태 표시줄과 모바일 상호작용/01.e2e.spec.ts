@@ -5,14 +5,12 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
   const commands = page.locator(".status-meta .status-command:visible");
   for (const width of [320, 390, 512, 513, 640, 1280]) {
     await page.setViewportSize({ width, height: 844 });
-    const count = 4;
+    const count = 3;
     await expect(commands).toHaveCount(count);
     const group = (await page.locator(".group-select-command").boundingBox())!;
-    const notifications = (await page.locator(".notification-command").boundingBox())!;
     const dashboard = (await page.locator(".dashboard-command").boundingBox())!;
     const more = (await page.locator(".more-command").boundingBox())!;
-    expect(group.x).toBeLessThan(notifications.x);
-    expect(notifications.x).toBeLessThan(dashboard.x);
+    expect(group.x).toBeLessThan(dashboard.x);
     expect(dashboard.x).toBeLessThan(more.x);
     for (const command of await commands.all()) {
       await expect(command).toBeInViewport();

@@ -20,14 +20,6 @@
     opacity: 0.55;
   }
 
-  .auth-command-action {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    right: 4px;
-    bottom: 4px;
-  }
-
   > img {
     width: 24px;
     height: 24px;
@@ -41,5 +33,41 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &.is-loading {
+    pointer-events: none;
+
+    .auth-skeleton-avatar,
+    .auth-skeleton-name {
+      background: v.$line;
+      animation: auth-skeleton-pulse 1.5s ease-in-out infinite;
+    }
+
+    .auth-skeleton-avatar {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      border-radius: 50%;
+    }
+
+    .auth-skeleton-name {
+      width: 58px;
+      height: 12px;
+      flex: 0 1 58px;
+      border-radius: 4px;
+    }
+  }
+}
+
+@keyframes auth-skeleton-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-command.is-loading {
+    .auth-skeleton-avatar,
+    .auth-skeleton-name { animation: none; }
   }
 }

@@ -40,7 +40,7 @@ export const boardTest = base.extend<{ boardPost: BoardPost }>({
     try {
       await provide(post);
     } finally {
-      await request.delete("/api/board?role=admin", { data: { id: post.id } });
+      await request.delete("/api/board?role=admin", { data: { id: post.id }, maxRetries: 2 });
     }
   },
 });

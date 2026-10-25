@@ -18,7 +18,12 @@ test("4. 공유자의 수정은 공유받은 사용자에게 반영된다", asyn
   await guestPage.goto(url);
   await expect(guestPage.getByText("Shared group added. You can edit it now.")).toBeVisible();
   await guestPage.getByRole("button", { name: "Close", exact: true }).last().click();
+  await ownerPage.bringToFront();
+  const saved = ownerPage.waitForResponse(response => response.url().endsWith("/api/groups/update") && response.request().method() === "POST" && response.ok());
   await ownerPage.locator("textarea").first().fill("Owner updated the group");
+  await saved;
+  await guestPage.bringToFront();
+  await guestPage.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect(guestPage.locator("textarea").first()).toHaveValue("Owner updated the group", { timeout: 20_000 });
   await owner.close();
   await guest.close();
