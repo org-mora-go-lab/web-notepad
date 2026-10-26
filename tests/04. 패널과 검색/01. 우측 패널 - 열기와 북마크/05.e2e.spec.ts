@@ -9,7 +9,7 @@ import {
   readStoredState,
 } from "../../__util__";
 
-test("5. PC는 X, 모바일은 Escape로 우측 패널을 닫고 메모·그룹·북마크 데이터를 유지한다", async ({ page }) => {
+test("5. Escape로 북마크 팝업을 닫고 메모·그룹·북마크 데이터를 유지한다", async ({ page }) => {
   await page.goto("/");
   const note = "Preserve this note";
   await createGroups(page, "Work");
@@ -27,7 +27,6 @@ test("5. PC는 X, 모바일은 Escape로 우측 패널을 닫고 메모·그룹�
     await bookmarkAction.focus();
     await expect(bookmarkAction).toBeFocused();
     await page.keyboard.press("Escape");
-    if (viewport === DESKTOP_VIEWPORT) await bookmarksPanel.locator(".side-panel-close").click();
     await expect(bookmarksPanel).toHaveAttribute("aria-hidden", "true");
     await expect(editor).toHaveValue(note);
 

@@ -14,7 +14,7 @@ test("7. 메뉴 검색은 비모달 팝오버로 열리고 Escape와 바깥 클�
     const trigger = page.locator(".footer .more-command");
     const anchor = (await trigger.boundingBox())!;
     expect(bounds.width).toBeCloseTo(Math.min(420, viewport.width - 16), 0);
-    expect(bounds.height).toBeCloseTo(180, 0);
+    expect(bounds.height).toBeCloseTo(Math.min(520, viewport.height - 72), 0);
     expect(bounds.y + bounds.height).toBeCloseTo(anchor.y - 6, 0);
     expect(bounds.x).toBeGreaterThanOrEqual(8);
     expect(bounds.x + bounds.width).toBeLessThanOrEqual(viewport.width - 8);

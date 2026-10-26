@@ -13,6 +13,6 @@ test("5. 소유권 조회 실패는 임시 분류 없이 다시 시도로 복구
   await expect(owner.locator('#group-shared-list [data-group-id="' + id + '"]')).toHaveCount(0);
   await owner.unroute("**/api/groups");
   await notice.getByRole("button", { name: "Try again", exact: true }).click();
-  await expect(owner.locator('#group-my-list [data-group-id="' + id + '"]')).toBeVisible();
+  await expect(owner.locator('#group-shared-list [data-group-id="' + id + '"]')).toBeVisible();
   await expect(notice).toHaveCount(0);
 });

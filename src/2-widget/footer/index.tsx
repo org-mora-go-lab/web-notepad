@@ -1,10 +1,11 @@
 "use client";
 
-import { Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { UserGuide } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
+import { CornerPopover } from "@/src/5-shared/ui";
 
 import type { FooterProps } from "./type";
 
@@ -29,37 +30,6 @@ export function Footer({
   const [moreOpen, setMoreOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
-  const notificationsRef = useRef<HTMLElement>(null);
-  const notificationsTriggerRef = useRef<HTMLElement | null>(null);
-  const closeNotifications = useCallback(() => {
-    setNotificationsOpen(false);
-    const trigger = notificationsTriggerRef.current;
-    if (trigger?.isConnected) trigger.focus();
-    else moreRef.current?.querySelector<HTMLButtonElement>(".more-command")?.focus();
-  }, [setNotificationsOpen]);
-  useEffect(() => {
-    if (!notificationsOpen) return;
-    const trigger = document.activeElement;
-    notificationsTriggerRef.current = trigger instanceof HTMLElement && trigger.matches("button.auth-command")
-      ? trigger : moreRef.current?.querySelector<HTMLButtonElement>(".more-command") ?? null;
-    notificationsRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
-    const closeOutside = (event: PointerEvent) => {
-      if (!moreRef.current?.contains(event.target as Node)) setNotificationsOpen(false);
-    };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        event.stopPropagation();
-        closeNotifications();
-      }
-    };
-    document.addEventListener("pointerdown", closeOutside);
-    document.addEventListener("keydown", closeOnEscape, true);
-    return () => {
-      document.removeEventListener("pointerdown", closeOutside);
-      document.removeEventListener("keydown", closeOnEscape, true);
-    };
-  }, [closeNotifications, notificationsOpen, setNotificationsOpen]);
   useEffect(() => {
     if (!moreOpen) return;
     const closeOutside = (event: PointerEvent) => {
@@ -175,8 +145,8 @@ export function Footer({
                     </button>
                   </div>
                 )}
-                {notificationsOpen && <section ref={notificationsRef} className="footer-notifications-panel" id="footer-notifications-panel" role="dialog" aria-label={t.notifications}>
-                  <header><strong>{t.notifications}</strong><button type="button" onClick={closeNotifications} aria-label={t.close}><X size={16} /></button></header>
+                {notificationsOpen && <CornerPopover className="footer-notifications-panel" id="footer-notifications-panel" title={t.notifications} closeLabel={t.close}
+                  open={notificationsOpen} position="top" triggerSelector="button.auth-command" onClose={() => setNotificationsOpen(false)}>
                   {notifications.length === 0 ? <p>{t.noNotifications}</p> : <ul>
                     {notifications.map((item) => <li key={item.id}>
                       <button type="button" className="notification-entry" onClick={() => { setNotificationsOpen(false); onOpenNotification(item); }}>
@@ -186,7 +156,7 @@ export function Footer({
                       </button>
                     </li>)}
                   </ul>}
-                </section>}
+                </CornerPopover>}
               </div>
             </div>
           </div>

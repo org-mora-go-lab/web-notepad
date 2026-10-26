@@ -8,10 +8,11 @@ export async function openBoard(page: Page) {
   await expect(page.locator("#board-panel")).toBeVisible();
 }
 
-export async function selectBoardPost(page: Page, title: string) {
+export async function selectBoardPost(page: Page, title: string, groupId?: string) {
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill(title);
-  await page.locator(".board-card", { hasText: title }).click();
+  const card = groupId ? page.locator(`.board-card[data-group-id="${groupId}"]`) : page.locator(".board-card", { hasText: title });
+  await card.click();
   await expect(page.locator(".board-detail h3")).toHaveText(title);
 }

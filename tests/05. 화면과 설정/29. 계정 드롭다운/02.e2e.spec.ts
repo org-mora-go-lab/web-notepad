@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { authenticateBrowser } from "../../__util__";
+import { authenticateBrowser, openBoard } from "../../__util__";
 
-test("2. 계정 메뉴의 보드는 공유 그룹 게시판을 연다", async ({ page, context }) => {
+test("2. 보드는 계정 메뉴에서 제외하고 더보기에서 열 수 있다", async ({ page, context }) => {
   await authenticateBrowser(context); await page.goto("/");
   await page.locator("button.auth-command").click();
-  await page.getByRole("menuitem", { name: "Board", exact: true }).click();
-  await expect(page.locator("#account-menu")).toHaveCount(0);
+  await expect(page.getByRole("menuitem", { name: "Board", exact: true })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await openBoard(page);
   await expect(page.locator("#board-panel")).toHaveAttribute("aria-hidden", "false");
 });

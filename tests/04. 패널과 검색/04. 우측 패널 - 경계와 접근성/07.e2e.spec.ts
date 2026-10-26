@@ -6,7 +6,7 @@ test("7. 닫힌 패널 컨트롤은 Tab 순서와 접근성 탐색에서 제외�
   await page.goto("/");
 
   const panels = page.locator(".side-panel-drawer");
-  await expect(panels).toHaveCount(4);
+  await expect(panels).toHaveCount(3);
   expect(
     await panels.evaluateAll((elements) =>
       elements.every(
@@ -28,14 +28,14 @@ test("7. 닫힌 패널 컨트롤은 Tab 순서와 접근성 탐색에서 제외�
     ),
   ).toBe(true);
 
-  await openPanel(page, "bookmarks-panel");
-  const bookmarks = page.locator("#bookmarks-panel");
+  await openPanel(page, "dashboard-panel");
+  const bookmarks = page.locator("#dashboard-panel");
   await expect(bookmarks).not.toHaveAttribute("inert", "");
   const closeButton = bookmarks.locator(".side-panel-close");
   await closeButton.focus();
   await expect(closeButton).toBeFocused();
 
-  await bookmarks.getByRole("button", { name: "Close Bookmarks" }).click();
+  await bookmarks.getByRole("button", { name: "Close Dashboard" }).click();
   await expect(bookmarks).toHaveAttribute("aria-hidden", "true");
   await expect(bookmarks).toHaveAttribute("inert", "");
   expect(

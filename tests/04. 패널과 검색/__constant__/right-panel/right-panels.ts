@@ -1,7 +1,6 @@
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../../__constant__";
 
 export const RIGHT_PANEL_IDS = [
-  "bookmarks-panel",
   "dashboard-panel",
   "shortcuts-panel",
   "settings-panel",
@@ -13,7 +12,6 @@ export const RIGHT_PANEL_VIEWPORTS = [
   {
     viewport: MOBILE_VIEWPORT,
     panelIds: [
-      "bookmarks-panel",
       "dashboard-panel",
       "settings-panel",
     ],
