@@ -37,7 +37,9 @@ export function MyPage() {
     document.documentElement.lang = settings.language;
     document.documentElement.style.setProperty("--font-scale", String(settings.fontScale));
   }, [settings.fontScale, settings.language]);
-  const workspaceLoading = !hydrated || !cloud.ready || shared.loading;
+  const workspaceLoading = !hydrated || !cloud.serverLoaded || !shared.groupsLoaded;
+  const workspaceFailed = !!user && ((!cloud.serverLoaded && cloud.ready && cloud.status === "error") || (!shared.groupsLoaded && shared.loadError));
+  const pageLoading = loading || (!!user && !failed && !workspaceFailed && workspaceLoading);
   const myGroups = groups.filter(group => group.id !== UNGROUPED_GROUP_ID && (!isSharedGroupId(group.id) || shared.accessByGroup[group.id]?.role === "owner"));
   const access = Object.values(shared.accessByGroup);
   const metrics = [
@@ -48,11 +50,16 @@ export function MyPage() {
     { key: "bookmarks", label: t.myPageBookmarks, value: groups.reduce((sum, group) => sum + group.bookmarks.length, 0), Icon: Bookmark },
   ];
   const syncText = cloud.status === "pending" ? t.cloudPending : cloud.status === "saving" ? t.cloudSaving : cloud.status === "error" ? t.cloudError : cloud.status === "saved" ? t.cloudSaved : t.myPageNeverSaved;
-  return <main className="my-page" aria-busy={loading}>
+  return <main className="my-page" aria-busy={pageLoading}>
     <div className="my-page-container">
       <header className="my-page-header"><Link href="/"><ArrowLeft size={18} />{t.myPageHome}</Link><h1>{t.myPage}</h1><p>{t.myPageIntro}</p></header>
-      {loading ? <section className="my-page-profile is-loading" role="status" aria-label={t.myPageLoading}><span className="my-page-avatar-skeleton" /><span className="my-page-name-skeleton" /></section>
-        : failed ? <section className="my-page-notice" role="alert"><p>{t.myPageLoadError}</p><button type="button" onClick={() => { setLoading(true); setAttempt(value => value + 1); }}>{t.boardRetry}</button></section>
+      {pageLoading ? <div className="my-page-skeleton" role="status" aria-label={t.myPageLoading}>
+          <section className="my-page-profile is-loading" aria-hidden="true"><span className="my-page-avatar-skeleton" /><span className="my-page-name-skeleton" /></section>
+          <div className="my-page-metrics-skeleton" aria-hidden="true">{Array.from({ length: 5 }, (_, index) => <span key={index} />)}</div>
+          <div className="my-page-sync-skeleton" aria-hidden="true"><span /><span /><span /></div>
+          <div className="my-page-actions-skeleton" aria-hidden="true"><span /><span /><span /></div>
+        </div>
+        : failed || workspaceFailed ? <section className="my-page-notice" role="alert"><p>{failed ? t.myPageLoadError : t.myPageWorkspaceError}</p><button type="button" onClick={() => { setLoading(true); setAttempt(value => value + 1); }}>{t.boardRetry}</button></section>
           : !user ? <section className="my-page-notice"><p>{t.myPageLoginHint}</p><a href="/api/auth/oauth/kakao">{t.kakaoLogin}</a></section> : <>
             <section className="my-page-profile">
               {user.profileImageUrl ? (
@@ -62,11 +69,11 @@ export function MyPage() {
               ) : <CircleUserRound size={64} aria-hidden="true" />}
               <div><h2>{user.nickname}</h2><p>{t.myPageKakao}</p></div>
             </section>
-            {workspaceLoading ? <p role="status">{t.myPageSyncLoading}</p> : <dl className="my-page-metrics">
+            <dl className="my-page-metrics">
               {metrics.map(({ key, label, value, Icon }) => <div key={key} data-metric={key}><dt><Icon size={18} />{label}</dt><dd>{value}</dd></div>)}
-            </dl>}
+            </dl>
             <section className="my-page-sync" aria-label={t.myPageSync}>
-              <h2>{t.myPageSync}</h2><p role="status" data-cloud-save={cloud.status ?? "idle"}>{workspaceLoading ? t.myPageSyncLoading : syncText}</p>
+              <h2>{t.myPageSync}</h2><p role="status" data-cloud-save={cloud.status ?? "idle"}>{syncText}</p>
               <dl><dt>{t.myPageLastSaved}</dt><dd>{cloud.lastSavedAt ? <time dateTime={new Date(cloud.lastSavedAt).toISOString()}>{new Date(cloud.lastSavedAt).toLocaleString(settings.language === "ko" ? "ko-KR" : "en-US")}</time> : t.myPageNeverSaved}</dd></dl>
               <p className="my-page-hint">{t.myPageLocalHint}</p>
             </section>

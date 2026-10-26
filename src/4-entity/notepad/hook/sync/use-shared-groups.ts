@@ -17,6 +17,8 @@ const same = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.st
 export function useSharedGroups(hydrated: boolean) {
   const groups = useNotepadStore(state => state.groups);
   const [loading, setLoading] = useState(true);
+  const [groupsLoaded, setGroupsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [checkingGroups, setCheckingGroups] = useState(false);
   const refreshRef = useRef<(() => Promise<void>) | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
@@ -138,9 +140,10 @@ export function useSharedGroups(hydrated: boolean) {
       }
       refreshing = true;
       setCheckingGroups(true);
+      setLoadError(false);
       try {
         const response = await fetch("/api/groups", { cache: "no-store" });
-        if (!response.ok) return;
+        if (!response.ok) throw Error("Groups unavailable");
         const result = await response.json() as { groups: SharedRecord[] };
         if (!active) return;
         const allowedIds = new Set(result.groups.map((record) => record.id));
@@ -183,7 +186,8 @@ export function useSharedGroups(hydrated: boolean) {
           }
         }
         await refreshNotifications();
-      } catch { /* Keep local editing available. */ }
+        if (active) setGroupsLoaded(true);
+      } catch { if (active) setLoadError(true); }
       finally {
         refreshing = false;
         if (active) setLoading(false);
@@ -241,18 +245,22 @@ export function useSharedGroups(hydrated: boolean) {
     const refreshSession = async () => {
       try {
         const response = await fetch("/api/auth/session", { cache: "no-store" });
+        if (!response.ok) throw Error("Session unavailable");
         const result = await response.json() as { user?: { id?: string } | null };
         if (!active) return;
         const nextId = result.user?.id ?? null;
-        if (sessionChecked && nextId === userId) return;
+        if (sessionChecked && nextId === userId) { if (userId) await refreshGroups(); return; }
         sessionChecked = true;
         userId = nextId;
+        setGroupsLoaded(false);
+        setLoadError(false);
         baselines.clear();
         editedContents.clear();
         setSavingTabIds([]);
         timers.forEach(clearTimeout);
         timers.clear();
         if (!userId) {
+          setGroupsLoaded(true);
           setNotifications([]);
           setLoading(false);
           setAccessByGroup({});
@@ -266,7 +274,7 @@ export function useSharedGroups(hydrated: boolean) {
         }
         if (share) await joinInvite();
         else await refreshGroups();
-      } catch { if (active) { setLoading(false); if (share) setInviteStatus("error"); } }
+      } catch { if (active) { setLoading(false); setLoadError(true); if (share) setInviteStatus("error"); } }
     };
 
     refreshRef.current = refreshGroups;
@@ -320,13 +328,15 @@ export function useSharedGroups(hydrated: boolean) {
     const group = groups.find(group => group.id === notification.groupId);
     const tab = group?.tabs.find(tab => tab.id === notification.tabId);
     // A newly notified tab may arrive with the in-flight group response.
-    return tab ? tab.open !== false : loading || checkingGroups;
+    return !!tab || loading || checkingGroups;
   });
 
   return {
     notifications: visibleNotifications,
     loading,
     checkingGroups,
+    groupsLoaded,
+    loadError,
     refreshGroups: () => refreshRef.current?.(),
     savingTabIds,
     accessByGroup,

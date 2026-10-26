@@ -35,6 +35,7 @@ function hasLocalWork(snapshot: string) {
 
 export function useCloudSave(hydrated: boolean) {
   const [ready, setReady] = useState(false);
+  const [serverLoaded, setServerLoaded] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
   const [status, setStatus] = useState<CloudSaveStatus>(null);
@@ -133,6 +134,7 @@ export function useCloudSave(hydrated: boolean) {
       next = apply(next, !first);
       rememberBase({ eventId: latest?.eventId ?? null, snapshot: latest ? (needsSave ? latest.snapshot : next) : null });
       initialized = true;
+      setServerLoaded(true);
       setReady(true);
       setLastSavedAt(latest?.createdAt ?? null);
       changedBeforeAuth = false;
@@ -149,6 +151,7 @@ export function useCloudSave(hydrated: boolean) {
       const id = userId;
       const version = generation;
       pulling = true;
+      if (!initialized) { setReady(false); setStatus(null); }
       try {
         const response = await fetch("/api/notepad/history", { cache: "no-store" });
         if (!response.ok) throw new Error("Cloud load failed");
@@ -230,12 +233,17 @@ export function useCloudSave(hydrated: boolean) {
       const requestId = ++sessionRequest;
       try {
         const response = await fetch("/api/auth/session", { cache: "no-store" });
-        if (!response.ok) return;
+        if (!response.ok) throw Error("Session unavailable");
         const result = await response.json() as { user?: { id?: string } | null };
         if (!active || requestId !== sessionRequest) return;
         const nextId = result.user?.id ?? null;
-        if (nextId === userId) { if (!nextId) setReady(true); return; }
+        if (nextId === userId) {
+          if (!nextId) { setReady(true); setServerLoaded(true); }
+          else if (!initialized) await pull();
+          return;
+        }
         setReady(false);
+        setServerLoaded(false);
         setLastSavedAt(null);
         generation += 1;
         clearTimer();
@@ -245,7 +253,7 @@ export function useCloudSave(hydrated: boolean) {
         userId = nextId;
         setStatus(null);
         setSavingTabIds([]);
-        if (!userId) return;
+        if (!userId) { setReady(true); setServerLoaded(true); return; }
         const previousOwner = readLocal<string>(OWNER_KEY);
         if (previousOwner && previousOwner !== userId) {
           editedContents.clear();
@@ -257,7 +265,7 @@ export function useCloudSave(hydrated: boolean) {
         const restored = readLocal<PendingUpdate>(pendingKey(userId));
         if (restored && typeof restored.eventId === "string" && typeof restored.snapshot === "string") pending = restored;
         await pull();
-      } catch { /* Local editing remains available while authentication is offline. */ }
+      } catch { if (active) { setReady(true); setStatus("error"); } }
     };
     const refresh = () => { if (document.visibilityState !== "hidden") void pull(); };
     window.addEventListener("notepad-auth-changed", refreshSession);
@@ -276,5 +284,5 @@ export function useCloudSave(hydrated: boolean) {
     };
   }, [hydrated]);
 
-  return { status, savingTabIds, ready, lastSavedAt };
+  return { status, savingTabIds, ready, serverLoaded, lastSavedAt };
 }

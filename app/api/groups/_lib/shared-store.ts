@@ -125,7 +125,7 @@ export async function saveSharedGroup(
     const previousTabs = new Map(current.data.tabs.map(tab => [tab.id, tab]));
     const changedTab = data.tabs.find(tab => {
       const previous = previousTabs.get(tab.id);
-      return !previous || previous.content !== tab.content || previous.open !== tab.open || previous.tabColor !== tab.tabColor || previous.dashboardStatus !== tab.dashboardStatus;
+      return !previous || previous.content !== tab.content || previous.tabColor !== tab.tabColor || previous.dashboardStatus !== tab.dashboardStatus;
     }) ?? current.data.tabs.find(tab => !data.tabs.some(next => next.id === tab.id)) ?? data.tabs.find(tab => tab.open) ?? data.tabs[0];
     await transaction.execute({
       sql: `INSERT INTO shared_group_events (group_id, revision, actor_id, actor_name, summary, created_at, tab_id)
@@ -153,7 +153,7 @@ export async function listSharedNotifications(userId: string) {
   return result.rows.flatMap(row => {
     const group = JSON.parse(String(row.snapshot)) as SharedGroupData;
     const tabId = typeof row.tab_id === "string" ? row.tab_id : group.tabs.find(tab => tab.open)?.id ?? null;
-    if (!tabId || !group.tabs.some(tab => tab.id === tabId && tab.open !== false) || String(row.summary).startsWith("글 삭제:")) return [];
+    if (!tabId || !group.tabs.some(tab => tab.id === tabId) || String(row.summary).startsWith("글 삭제:")) return [];
     return [{
     id: Number(row.id),
     groupId: String(row.group_id),

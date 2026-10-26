@@ -32,7 +32,7 @@ export function Dashboard({
 }: DashboardProps) {
   const [expanded, setExpanded] = useState(false);
   const iceboxVisible = visibility.icebox;
-  const doneVisible = visibility.done;
+  const doneVisible = visibility.done !== false;
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
     left: number;
