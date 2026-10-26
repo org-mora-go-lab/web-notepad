@@ -184,7 +184,7 @@
     flex: 0 1 auto;
     margin-left: 6px;
     overflow: hidden;
-    font-size: v.font(15px);
+    font-size: calc(#{v.font(15px)} - 3px);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -216,7 +216,7 @@
 
     .tab-title {
       // One step below the 1.2x scale so long titles fit the tab.
-      font-size: v.font(16px * v.$mobile-scale - 1px);
+      font-size: calc(#{v.font(16px * v.$mobile-scale - 1px)} - 3px);
     }
 
     .dirty-dot {

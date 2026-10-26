@@ -10,8 +10,8 @@ import {
 
 test.use({ viewport: MOBILE_VIEWPORT, isMobile: true, hasTouch: true });
 
-test("6. 터치 기기의 에디터·검색창·그룹 이름 입력란은 최소 16px를 유지한다", async ({ page }) => {
-  // The smallest font scale would otherwise push every field under 16px.
+test("6. 터치 에디터도 기존 크기에서 3px 줄이고 다른 입력란은 최소 16px를 유지한다", async ({ page }) => {
+  // At 80%, the former 16px editor floor is reduced by exactly 3px.
   await page.addInitScript((key) => {
     if (sessionStorage.getItem("touch-font-seed")) return;
     localStorage.setItem(key, JSON.stringify({ state: { settings: { fontScale: 0.8 } }, version: 0 }));
@@ -22,7 +22,7 @@ test("6. 터치 기기의 에디터·검색창·그룹 이름 입력란은 최�
 
   const fontSize = (selector: string) =>
     page.locator(selector).first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
-  expect(await fontSize(".note-area")).toBeGreaterThanOrEqual(16);
+  expect(await fontSize(".note-area")).toBe(13);
 
   await openGlobalSearchPanel(page);
   expect(await fontSize("#global-search-popup input")).toBeGreaterThanOrEqual(16);
