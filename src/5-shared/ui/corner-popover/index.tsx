@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 
 import type { CornerPopoverProps } from "./type";
 
-export function CornerPopover({ id, className, title, closeLabel, open, position, triggerSelector, outsideIgnoreSelector, onClose, children }: CornerPopoverProps) {
+export function CornerPopover({ id, className, title, closeLabel, headerActions, open, position, triggerSelector, outsideIgnoreSelector, onClose, children }: CornerPopoverProps) {
   const ref = useRef<HTMLElement>(null);
   const closeRef = useRef(onClose);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -42,7 +42,7 @@ export function CornerPopover({ id, className, title, closeLabel, open, position
   useEffect(() => {
     if (!open) return;
     triggerRef.current = document.querySelector<HTMLElement>(triggerSelector);
-    ref.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    ref.current?.querySelector<HTMLButtonElement>(".corner-popover-close")?.focus();
     const outside = (event: PointerEvent) => {
       const target = event.target as Node;
       if (!ref.current?.contains(target) && !triggerRef.current?.contains(target) && !(outsideIgnoreSelector && event.target instanceof Element && event.target.closest(outsideIgnoreSelector))) closeRef.current();
@@ -58,7 +58,7 @@ export function CornerPopover({ id, className, title, closeLabel, open, position
   if (typeof document === "undefined") return null;
   return createPortal(<section ref={ref} id={id} className={"corner-popover " + className} data-position={position}
     hidden={!open} inert={!open} aria-hidden={!open} role="dialog" aria-modal="false" aria-label={title}>
-    <header className="corner-popover-header"><h2>{title}</h2><button className="corner-popover-close" type="button" aria-label={closeLabel} onClick={() => { onClose(); restoreFocus(); }}><X size={16} aria-hidden="true" /></button></header>
+    <header className="corner-popover-header"><h2>{title}</h2>{headerActions}<button className="corner-popover-close" type="button" aria-label={closeLabel} onClick={() => { onClose(); restoreFocus(); }}><X size={16} aria-hidden="true" /></button></header>
     <div className="corner-popover-content">{children}</div>
   </section>, document.body);
 }

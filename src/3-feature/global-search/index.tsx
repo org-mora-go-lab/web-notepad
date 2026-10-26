@@ -1,13 +1,11 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 
 import {
-  useDialogHorizontalResize,
   useI18n,
   useScrollableListLayout,
-  useSplitPaneResize,
 } from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
@@ -29,11 +27,6 @@ export function GlobalSearch({
   const titleId = useId();
   const [selectedBookmarkId, setSelectedBookmarkId] = useState<string | null>(
     null,
-  );
-  const bodyRef = useRef<HTMLDivElement>(null);
-  const handleSplitResizeStart = useSplitPaneResize(
-    bodyRef,
-    "--global-search-results-width",
   );
   const { containerRef, listRef } = useScrollableListLayout(
     "--global-search-scrollbar-width",
@@ -69,11 +62,6 @@ export function GlobalSearch({
     onClose();
   };
   const dialogRef = useSearchPopover(open, closeSearch);
-  const handleResizeStart = useDialogHorizontalResize(dialogRef, {
-    minWidth: selectedBookmark ? 640 : 320,
-    viewportMargin: 16,
-    centered: false,
-  });
 
   return (
     <dialog
@@ -104,7 +92,7 @@ export function GlobalSearch({
           <X size={18} />
         </button>
       </div>
-      <div className="global-search-body" ref={bodyRef}>
+      <div className="global-search-body">
         <div className="global-search-results-pane" ref={containerRef}>
           <SearchField
             value={searchQuery}
@@ -174,13 +162,6 @@ export function GlobalSearch({
             )}
           </div>
         </div>
-        <div
-          className="global-search-split-resizer"
-          role="separator"
-          aria-orientation="vertical"
-          aria-label="Resize search results and preview"
-          onPointerDown={handleSplitResizeStart}
-        />
         <div className="global-search-preview-pane">
           {selectedBookmark ? (
             <SearchPreview
@@ -196,13 +177,6 @@ export function GlobalSearch({
           )}
         </div>
       </div>
-      <div
-        className="global-search-resizer"
-        role="separator"
-        aria-orientation="vertical"
-        aria-label={t.resizeSearch}
-        onPointerDown={handleResizeStart}
-      />
     </dialog>
   );
 }

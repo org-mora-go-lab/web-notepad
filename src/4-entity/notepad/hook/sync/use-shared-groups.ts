@@ -20,6 +20,7 @@ export function useSharedGroups(hydrated: boolean) {
   const [groupsLoaded, setGroupsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [checkingGroups, setCheckingGroups] = useState(false);
+  const notificationsRefreshRef = useRef<(() => Promise<void>) | null>(null);
   const refreshRef = useRef<(() => Promise<void>) | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
   const [accessByGroup, setAccessByGroup] = useState<Record<string, GroupSharingAccess>>({});
@@ -121,7 +122,7 @@ export function useSharedGroups(hydrated: boolean) {
       if (same(data, base.data)) { persistPending(id, null); clearTimer(id); return; }
       persistPending(id, { base, data });
       clearTimer(id);
-      timers.set(id, setTimeout(() => void flush(id), 1_000));
+      timers.set(id, setTimeout(() => void flush(id), 500));
     };
 
     const refreshNotifications = async () => {
@@ -293,6 +294,7 @@ export function useSharedGroups(hydrated: boolean) {
     };
 
     refreshRef.current = refreshGroups;
+    notificationsRefreshRef.current = refreshNotifications;
     const onShared = () => void refreshGroups();
     const onRestore = () => { if (document.visibilityState !== "hidden") void refreshGroups(); };
     window.addEventListener("shared-groups-changed", onShared);
@@ -304,6 +306,7 @@ export function useSharedGroups(hydrated: boolean) {
     return () => {
       active = false;
       refreshRef.current = null;
+      notificationsRefreshRef.current = null;
       unsubscribe();
       timers.forEach(clearTimeout);
       window.removeEventListener("focus", onRestore);
@@ -325,17 +328,29 @@ export function useSharedGroups(hydrated: boolean) {
     } catch { return false; }
   };
 
-  const markNotificationsRead = async () => {
+  const markNotificationsRead = async (id: number) => {
     try {
-      const response = await fetch("/api/groups/notifications/read", { method: "POST" });
+      const response = await fetch("/api/groups/notifications/read", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
       if (!response.ok) return;
-      setNotifications((current) => current.map((item) => ({ ...item, unread: false })));
+      setNotifications((current) => current.map((item) => item.id === id ? { ...item, unread: false } : item));
       const latest = await fetch("/api/groups/notifications", { cache: "no-store" });
       if (latest.ok) {
         const result = await latest.json() as { notifications: SharedNotification[] };
         setNotifications(result.notifications);
       }
     } catch { /* Keep the last loaded notifications available. */ }
+  };
+  const clearNotifications = async () => {
+    try {
+      const response = await fetch("/api/groups/notifications", { method: "DELETE" });
+      if (!response.ok) return false;
+      const latest = await fetch("/api/groups/notifications", { cache: "no-store" });
+      if (latest.ok) {
+        const result = await latest.json() as { notifications: SharedNotification[] };
+        setNotifications(result.notifications);
+      } else setNotifications([]);
+      return true;
+    } catch { return false; }
   };
   const dismissInvite = useCallback(() => setInviteStatus(null), []);
 
@@ -354,6 +369,7 @@ export function useSharedGroups(hydrated: boolean) {
     groupsLoaded,
     loadError,
     refreshGroups: () => refreshRef.current?.(),
+    refreshNotifications: () => notificationsRefreshRef.current?.(),
     savingTabIds,
     accessByGroup,
     changeAccess,
@@ -362,5 +378,6 @@ export function useSharedGroups(hydrated: boolean) {
     inviteToken,
     dismissInvite,
     markNotificationsRead,
+    clearNotifications,
   };
 }

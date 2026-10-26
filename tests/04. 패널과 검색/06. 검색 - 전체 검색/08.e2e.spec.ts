@@ -1,46 +1,25 @@
 import { expect, test } from "@playwright/test";
 
-import { DESKTOP_VIEWPORT } from "../../__constant__";
-import { openGlobalSearchPanel, seedStoredStateOnLoad } from "../../__util__";
+import { openBookmarksPanel, openGlobalSearchPanel, seedStoredStateOnLoad } from "../../__util__";
 import { createGlobalSearchState } from "./__fixture__";
 
-test("8. PC 검색 팝업과 내부 좌우 영역의 가로 크기를 조절한다", async ({ page }) => {
-  await page.setViewportSize(DESKTOP_VIEWPORT);
+test("8. 검색은 빈 상태와 결과와 미리보기에서도 북마크와 같은 가로 크기를 유지한다", async ({ page }) => {
   await seedStoredStateOnLoad(page, createGlobalSearchState());
-  await openGlobalSearchPanel(page);
-  await page.getByRole("searchbox").fill("Work");
-  await page.getByRole("button", { name: "Preview bookmark Work plan", exact: true }).click();
-  const popup = page.locator("#global-search-popup");
-  const resizer = popup.getByRole("separator", { name: "Resize search popup" });
-  const before = (await popup.boundingBox())!;
-  const handle = (await resizer.boundingBox())!;
-
-  await page.mouse.move(handle.x + handle.width / 2, handle.y + 100);
-  await page.mouse.down();
-  await page.mouse.move(handle.x + handle.width / 2 + 60, handle.y + 100);
-  await page.mouse.up();
-
-  const after = (await popup.boundingBox())!;
-  expect(after.width).toBeGreaterThan(before.width);
-  expect(after.width).toBeLessThanOrEqual(DESKTOP_VIEWPORT.width - 32);
-
-  const splitResizer = popup.getByRole("separator", {
-    name: "Resize search results and preview",
-  });
-  const results = popup.locator(".global-search-results-pane");
-  const resultsBefore = (await results.boundingBox())!;
-  const splitHandle = (await splitResizer.boundingBox())!;
-  await page.mouse.move(
-    splitHandle.x + splitHandle.width / 2,
-    splitHandle.y + 100,
-  );
-  await page.mouse.down();
-  await page.mouse.move(
-    splitHandle.x + splitHandle.width / 2 + 80,
-    splitHandle.y + 100,
-  );
-  await page.mouse.up();
-  expect((await results.boundingBox())!.width).toBeGreaterThan(
-    resultsBefore.width,
-  );
+  for (const width of [1280, 320]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/"); await openBookmarksPanel(page);
+    const bookmark = (await page.locator("#bookmarks-panel").boundingBox())!;
+    await page.keyboard.press("Escape"); await openGlobalSearchPanel(page);
+    const popup = page.locator("#global-search-popup");
+    for (const state of ["empty", "results", "preview"]) {
+      if (state === "results") await popup.getByRole("searchbox").fill("Work");
+      if (state === "preview") await page.getByRole("button", { name: "Preview bookmark Work plan", exact: true }).click();
+      await expect(popup).toHaveCSS("width", bookmark.width + "px");
+      expect((await popup.boundingBox())!.height).toBeCloseTo(bookmark.height, 0);
+    }
+    const results = (await popup.locator(".global-search-results-pane").boundingBox())!;
+    const preview = (await popup.locator(".global-search-preview-pane").boundingBox())!;
+    expect(preview.y).toBeGreaterThanOrEqual(results.y + results.height - 1);
+    await page.keyboard.press("Escape");
+  }
 });

@@ -288,3 +288,13 @@
   li span { display: block; overflow-wrap: anywhere; }
   li time { color: v.$muted; font-size: v.font(11px); }
 }
+
+.footer-notifications-panel {
+  .notification-clear { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--color-dim); }
+  .notification-clear:hover:not(:disabled) { background: var(--color-line); color: var(--color-ink); }
+  .notification-clear:disabled { opacity: 0.4; }
+  .notification-entry { position: relative; }
+  .notification-entry.is-unread { padding-left: 22px; background: color-mix(in srgb, var(--color-signal) 9%, transparent); font-weight: 600; }
+  .notification-entry .notification-unread { position: absolute; top: 16px; left: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--color-signal); }
+  @media (pointer: coarse) { .notification-clear { width: 44px; height: 44px; } }
+}

@@ -18,5 +18,5 @@ test("5. 설정한 폰트 크기와 탭 색상 순서는 새로고침 후에도 
   await openSettingsPanel(page);
   await expect(fontScaleRadio(page, "110%")).toBeChecked();
   await expect(tabColorRadio(page, 2, "Yellow")).toBeChecked();
-  await expectCssPx(page.locator("textarea").first(), "fontSize", 20.9);
+  await expectCssPx(page.locator("textarea").first(), "fontSize", 17.9);
 });

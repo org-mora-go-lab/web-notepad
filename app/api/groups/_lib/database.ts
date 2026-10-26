@@ -45,6 +45,13 @@ export async function sharedDatabase() {
       tab_id TEXT,
       created_at INTEGER NOT NULL
     )`,
+    `CREATE TABLE IF NOT EXISTS shared_group_notification_states (
+      user_id TEXT NOT NULL,
+      event_id INTEGER NOT NULL,
+      is_read INTEGER NOT NULL DEFAULT 0,
+      dismissed INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY(user_id, event_id)
+    )`,
     "CREATE INDEX IF NOT EXISTS shared_group_events_group_id ON shared_group_events(group_id, id)",
   ], "write").then(async () => {
     const eventColumns = await database.execute("PRAGMA table_info(shared_group_events)");

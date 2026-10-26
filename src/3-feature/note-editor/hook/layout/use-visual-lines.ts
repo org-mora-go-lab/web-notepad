@@ -17,9 +17,17 @@ export function useVisualLines(
 
     const mirror = document.createElement("div");
     mirror.setAttribute("aria-hidden", "true");
-    document.body.append(mirror);
+    const editor = textarea.closest<HTMLElement>(".note-editor");
+    if (!editor) return;
+    mirror.style.position = "fixed";
+    editor.append(mirror);
 
     const measure = () => {
+      // Native textarea line boxes can round fractional heights differently in mobile WebViews.
+      // Resolve the responsive/scaled target independently of the previous rounded override.
+      mirror.style.lineHeight = "var(--editor-target-line-height)";
+      const target = Number.parseFloat(getComputedStyle(mirror).lineHeight);
+      if (Number.isFinite(target)) editor.style.setProperty("--editor-line-height", Math.round(target) + "px");
       const style = getComputedStyle(textarea);
       Object.assign(mirror.style, {
         position: "fixed",
@@ -37,6 +45,8 @@ export function useVisualLines(
         whiteSpace: style.whiteSpace,
         overflowWrap: style.overflowWrap,
         wordBreak: style.wordBreak,
+        textSizeAdjust: style.getPropertyValue("text-size-adjust") || "100%",
+        webkitTextSizeAdjust: "100%",
       });
       const logicalLines = content.split("\n");
       const blocks = logicalLines.map((line) => {

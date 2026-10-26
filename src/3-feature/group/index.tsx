@@ -110,17 +110,6 @@ function GroupSidebar({
         <section className="group-section">
           <div className="group-list" id="group-sidebar-list">
               <GroupCreateForm onCreate={name => { if (!sectionsOpen.my) toggleSection("my"); onCreate(name); }} />
-              {pendingRows.length > 0 && <div className="group-access-status" aria-busy={!!accessLoading}>
-                {accessLoading ? <div className="group-access-skeleton" role="status" aria-label={t.sharedGroupsLoading}>
-                  <span aria-hidden="true" /><span aria-hidden="true" />
-                </div> : <div className="group-access-error" role="status">
-                  <p>{t.sharedGroupsUnavailable}</p>
-                  <button type="button" onClick={async () => {
-                    setCheckingAccess(true);
-                    try { await sharing?.refreshGroups(); } finally { setCheckingAccess(false); }
-                  }}>{t.boardRetry}</button>
-                </div>}
-              </div>}
               {(["my", "shared"] as const).map(section => {
                 const rows = otherRows.filter(group => hasAccess(group) && isShared(group) === (section === "shared"));
                 const label = section === "my" ? t.myGroup : t.shareGroupSection;
@@ -131,6 +120,17 @@ function GroupSidebar({
                     <span>{label}</span><Icon size={16} aria-hidden="true" />
                   </button></h3>
                   <div className="group-section-list" id={"group-" + section + "-list"} hidden={!sectionsOpen[section]}>
+                    {section === "shared" && (pendingRows.length > 0 || (accessLoading && rows.length === 0)) && <div className="group-access-status" aria-busy={!!accessLoading}>
+                      {accessLoading ? <div className="group-access-skeleton" role="status" aria-label={t.sharedGroupsLoading}>
+                        <span aria-hidden="true" /><span aria-hidden="true" />
+                      </div> : <div className="group-access-error" role="status">
+                        <p>{t.sharedGroupsUnavailable}</p>
+                        <button type="button" onClick={async () => {
+                          setCheckingAccess(true);
+                          try { await sharing?.refreshGroups(); } finally { setCheckingAccess(false); }
+                        }}>{t.boardRetry}</button>
+                      </div>}
+                    </div>}
                     {rows.map(group => (
                 <GroupItem
                   key={group.id}
@@ -165,7 +165,7 @@ function GroupSidebar({
                 />
 
                     ))}
-                    {rows.length === 0 && pendingRows.length === 0 && <p className="group-section-empty">{section === "my" ? t.noMyGroups : t.noSharedGroups}</p>}
+                    {rows.length === 0 && (section === "my" || (pendingRows.length === 0 && !accessLoading)) && <p className="group-section-empty">{section === "my" ? t.noMyGroups : t.noSharedGroups}</p>}
                   </div>
                 </section>;
               })}

@@ -111,7 +111,7 @@ export function Home() {
     <I18nContext value={language}>
       <AccountActionsContext value={{
         onOpenSettings: () => { closeGroupMenu(); if (openPanel !== "settings") toggleSidePanel("settings"); },
-        onOpenNotifications: () => { setNotificationsOpen(true); void shared.markNotificationsRead(); },
+        onOpenNotifications: () => { setNotificationsOpen(true); void shared.refreshNotifications(); },
       }}>
       <GroupSharingContext value={{ loading: shared.loading || shared.checkingGroups, refreshGroups: shared.refreshGroups, accessByGroup: shared.accessByGroup, changeAccess: shared.changeAccess }}>
       <SavingTabsContext value={[...savingTabIds, ...shared.savingTabIds]}>
@@ -149,14 +149,15 @@ export function Home() {
             notificationsOpen={notificationsOpen}
             onNotificationsOpenChange={setNotificationsOpen}
             notifications={shared.notifications}
+            onClearNotifications={shared.clearNotifications}
             onOpenNotification={async item => {
               await shared.refreshGroups();
               const group = useNotepadStore.getState().groups.find(group => group.id === item.groupId);
               if (!group) return;
+              void shared.markNotificationsRead(item.id);
               selectGroupAndClosePanel(group.id);
               const tab = group.tabs.find(tab => tab.id === item.tabId) ?? group.tabs.find(tab => tab.open) ?? group.tabs[0];
               if (tab) openTabAndClosePanel(tab.id);
-              closeGroupMenu();
             }}
           />
         </section>

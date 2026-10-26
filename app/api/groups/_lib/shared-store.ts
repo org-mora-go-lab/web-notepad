@@ -143,11 +143,12 @@ export async function listSharedNotifications(userId: string) {
   const database = await sharedDatabase();
   const result = await database.execute({
     sql: `SELECT e.id, e.group_id, e.tab_id, e.actor_id, e.actor_name, e.summary, e.created_at,
-      g.snapshot, m.last_seen_event_id
+      g.snapshot, m.last_seen_event_id, n.is_read
       FROM shared_group_events e
       JOIN shared_group_members m ON m.group_id = e.group_id AND m.user_id = ?
       JOIN shared_groups g ON g.id = e.group_id
-      WHERE e.actor_id <> ? ORDER BY e.id DESC LIMIT 30`,
+      LEFT JOIN shared_group_notification_states n ON n.event_id = e.id AND n.user_id = m.user_id
+      WHERE e.actor_id <> ? AND COALESCE(n.dismissed, 0) = 0 ORDER BY e.id DESC LIMIT 30`,
     args: [userId, userId],
   });
   return result.rows.flatMap(row => {
@@ -163,18 +164,41 @@ export async function listSharedNotifications(userId: string) {
     actorName: String(row.actor_name),
     summary: String(row.summary),
     createdAt: Number(row.created_at),
-    unread: Number(row.id) > Number(row.last_seen_event_id),
+    unread: Number(row.id) > Number(row.last_seen_event_id) && !Number(row.is_read),
   }];
   });
 }
 
-export async function markSharedNotificationsRead(userId: string) {
+export async function markSharedNotificationsRead(userId: string, eventId?: number) {
   const database = await sharedDatabase();
+  if (eventId !== undefined) {
+    await database.execute({
+      sql: `INSERT INTO shared_group_notification_states (user_id, event_id, is_read)
+        SELECT ?, e.id, 1 FROM shared_group_events e
+        JOIN shared_group_members m ON m.group_id = e.group_id AND m.user_id = ?
+        WHERE e.id = ? AND e.actor_id <> ?
+        ON CONFLICT(user_id, event_id) DO UPDATE SET is_read = 1`,
+      args: [userId, userId, eventId, userId],
+    });
+    return;
+  }
   await database.execute({
     sql: `UPDATE shared_group_members SET last_seen_event_id = COALESCE(
       (SELECT MAX(id) FROM shared_group_events WHERE group_id = shared_group_members.group_id), 0
     ) WHERE user_id = ?`,
     args: [userId],
+  });
+}
+
+export async function clearSharedNotifications(userId: string) {
+  const database = await sharedDatabase();
+  await database.execute({
+    sql: `INSERT INTO shared_group_notification_states (user_id, event_id, dismissed)
+      SELECT ?, e.id, 1 FROM shared_group_events e
+      JOIN shared_group_members m ON m.group_id = e.group_id AND m.user_id = ?
+      WHERE e.actor_id <> ?
+      ON CONFLICT(user_id, event_id) DO UPDATE SET dismissed = 1`,
+    args: [userId, userId, userId],
   });
 }
 

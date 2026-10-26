@@ -8,7 +8,7 @@ test("5. 소유권 조회 실패는 임시 분류 없이 다시 시도로 복구
   await owner.reload();
   await expect(owner.locator("button.auth-command")).toBeVisible();
   if (await groupsCommand(owner).getAttribute("aria-expanded") !== "true") await groupsCommand(owner).click();
-  const notice = owner.locator(".group-access-error");
+  const notice = owner.locator("#group-shared-list .group-access-error");
   await expect(notice).toContainText("Could not check shared groups.");
   await expect(owner.locator('#group-shared-list [data-group-id="' + id + '"]')).toHaveCount(0);
   await owner.unroute("**/api/groups");

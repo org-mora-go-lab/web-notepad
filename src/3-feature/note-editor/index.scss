@@ -1,16 +1,18 @@
-@use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
 @use "./style/editor";
 
 .note-editor {
   // Scales with the Font Size setting like the editor text.
-  --editor-line-height: #{v.font(35px)};
+  --editor-target-line-height: #{v.font(35px)};
+  --editor-line-height: var(--editor-target-line-height);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   --editor-top-padding: 10px;
   --selected-line-background: rgba(184, 184, 176, 0.2);
   --selected-line-color: #{v.$saved};
 
   @media (max-width: 512px) {
-    --editor-line-height: #{v.font(39px)};
+    --editor-target-line-height: #{v.font(39px)};
   }
 
   &[data-tab-color="red"] {
@@ -87,13 +89,18 @@
     transform: scaleX(0.95);
     transform-origin: top left;
     resize: none;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
     padding: var(--editor-top-padding) 22px;
     border: 0;
     outline: none;
     background: transparent;
     color: v.$ink;
-    font-size: v.font(19px);
-    @include mixin.touch-input-font(19px);
+    font-size: calc(#{v.font(19px)} - 3px);
+    @media (pointer: coarse) {
+      font-size: calc(max(16px, #{v.font(19px)}) - 3px);
+    }
     line-height: var(--editor-line-height);
     tab-size: 4;
 

@@ -16,5 +16,6 @@ export type FooterProps = {
   notificationsOpen: boolean;
   onNotificationsOpenChange: (open: boolean) => void;
   notifications: SharedNotification[];
+  onClearNotifications: () => Promise<boolean>;
   onOpenNotification: (notification: SharedNotification) => void;
 };

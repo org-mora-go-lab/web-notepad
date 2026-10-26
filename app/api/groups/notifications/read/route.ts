@@ -8,7 +8,15 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isSameOrigin(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   try {
-    await markSharedNotificationsRead(user.id);
+    const body = await request.text();
+    let id: number | undefined;
+    if (body) {
+      let payload;
+      try { payload = JSON.parse(body); } catch { return NextResponse.json({ error: "Invalid notification" }, { status: 400 }); }
+      id = payload?.id;
+      if (!Number.isSafeInteger(id) || (id ?? 0) < 1) return NextResponse.json({ error: "Invalid notification" }, { status: 400 });
+    }
+    await markSharedNotificationsRead(user.id, id);
     return NextResponse.json({ read: true });
   } catch {
     return NextResponse.json({ error: "Database unavailable" }, { status: 503 });

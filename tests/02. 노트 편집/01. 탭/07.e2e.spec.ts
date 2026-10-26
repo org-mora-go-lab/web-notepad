@@ -20,4 +20,13 @@ test("7. 탭 클릭 후 Shift 클릭으로 연속된 탭 범위를 선택한다"
   await expect(tabs.nth(0)).not.toHaveClass(/is-range-selected/);
   for (const index of [1, 2, 3])
     await expect(tabs.nth(index)).toHaveClass(/is-range-selected/);
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 800 });
+    const boundary = await page.locator(".header").first().evaluate(el => el.getBoundingClientRect().bottom - parseFloat(getComputedStyle(el).borderBottomWidth));
+    for (const index of [1, 2, 3]) {
+      const tab = tabs.nth(index);
+      expect((await tab.boundingBox())!.y + (await tab.boundingBox())!.height).toBeLessThanOrEqual(boundary + 0.1);
+      expect(await tab.evaluate(el => getComputedStyle(el).boxShadow)).not.toContain("-2px");
+    }
+  }
 });

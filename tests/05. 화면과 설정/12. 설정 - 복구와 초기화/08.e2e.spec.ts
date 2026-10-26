@@ -5,6 +5,10 @@ import { openSettingsPanel, writeStoredState } from "../../__util__";
 import { settingsPanel } from "../__util__";
 
 test("8. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우고 기본 작업공간을 연다", async ({ page }) => {
+  // This requirement checks local reset; remote history restoration has separate coverage.
+  await page.route("**/api/notepad/history", route => route.fulfill({
+    json: route.request().method() === "GET" ? { latest: null, count: 0 } : { saved: true },
+  }));
   await page.setViewportSize({ width: 390, height: 844 });
   await writeStoredState(page, {
     activeGroupId: "work",
@@ -35,7 +39,9 @@ test("8. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우�
   const deleteAllButton = popup.getByRole("button", { name: "Delete all", exact: true });
   await expect(deleteAllButton).toHaveCSS("display", "flex");
   await expect(deleteAllButton).toHaveCSS("white-space", "nowrap");
+  const reloadedHistory = page.waitForResponse(response => response.url().endsWith("/api/notepad/history") && response.request().method() === "GET");
   await deleteAllButton.click();
+  await reloadedHistory;
 
   await expect(page.locator("textarea")).toHaveValue("");
   await expect(page.locator(".group-current-value")).toHaveText(

@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { openGlobalSearchPanel, seedStoredStateOnLoad } from "../../__util__";
 import { createGlobalSearchState } from "./__fixture__";
 
-test("6. 검색 목록과 우측 미리보기를 표시하고 스크롤 상단을 구분한다", async ({ page }) => {
+test("6. 검색 목록과 하단 미리보기를 표시하고 스크롤 상단을 구분한다", async ({ page }) => {
   await seedStoredStateOnLoad(page, createGlobalSearchState(20));
   await openGlobalSearchPanel(page);
   await page.getByRole("searchbox", { name: "Search everything" }).fill("Work");
@@ -25,8 +25,8 @@ test("6. 검색 목록과 우측 미리보기를 표시하고 스크롤 상단�
   await expect(page.locator("textarea")).toHaveValue("Current note");
   await expect(page.locator("#global-search-popup")).toHaveAttribute("open", "");
   const resultsBox = (await results.boundingBox())!;
-  expect((await previewPane.boundingBox())!.x).toBeGreaterThanOrEqual(
-    resultsBox.x + resultsBox.width,
+  expect((await previewPane.boundingBox())!.y).toBeGreaterThanOrEqual(
+    resultsBox.y + resultsBox.height,
   );
   const list = page.locator(".global-search-list");
   await list.evaluate((element) => element.scrollTo(0, 120));

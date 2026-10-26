@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search } from "lucide-react";
+import { Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { UserGuide } from "@/src/3-feature";
@@ -25,8 +25,11 @@ export function Footer({
   onNotificationsOpenChange: setNotificationsOpen,
   notifications,
   onOpenNotification,
+  onClearNotifications,
 }: FooterProps) {
   const { t } = useI18n();
+  const [clearing, setClearing] = useState(false);
+  const [clearError, setClearError] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -146,10 +149,18 @@ export function Footer({
                   </div>
                 )}
                 {notificationsOpen && <CornerPopover className="footer-notifications-panel" id="footer-notifications-panel" title={t.notifications} closeLabel={t.close}
+                  headerActions={<button type="button" className="notification-clear" aria-label={t.clearNotifications} title={t.clearNotifications}
+                    disabled={clearing || notifications.length === 0} onClick={async () => {
+                      setClearing(true); setClearError(false);
+                      try { if (!await onClearNotifications()) setClearError(true); }
+                      finally { setClearing(false); }
+                    }}><Trash2 size={16} aria-hidden="true" /></button>}
                   open={notificationsOpen} position="top" triggerSelector="button.auth-command" onClose={() => setNotificationsOpen(false)}>
+                  {clearError && <p role="alert">{t.clearNotificationsError}</p>}
                   {notifications.length === 0 ? <p>{t.noNotifications}</p> : <ul>
                     {notifications.map((item) => <li key={item.id}>
-                      <button type="button" className="notification-entry" onClick={() => { setNotificationsOpen(false); onOpenNotification(item); }}>
+                      <button type="button" className={`notification-entry ${item.unread ? "is-unread" : ""}`} onClick={() => { setNotificationsOpen(false); onOpenNotification(item); }}>
+                      {item.unread && <span className="notification-unread" role="img" aria-label={t.unreadNotification} />}
                       <strong>{item.actorName}</strong> · {item.groupName}
                       <span>{item.summary}</span>
                       <time dateTime={new Date(item.createdAt).toISOString()}>{new Date(item.createdAt).toLocaleString()}</time>
