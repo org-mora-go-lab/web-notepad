@@ -1,0 +1,30 @@
+@use "../../style/variable" as v;
+
+.corner-popover {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  z-index: 80;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(420px, calc(100dvh - 160px));
+  display: flex;
+  flex-direction: column;
+  border: 1px solid v.$line;
+  border-radius: 8px;
+  background: v.$raised;
+  color: v.$ink;
+  font-family: v.$sans;
+  font-size: v.font(14px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  &[hidden] { display: none; }
+  &[data-position="top"] { top: max(64px, env(safe-area-inset-top)); }
+  &[data-position="bottom"] { bottom: calc(48px + env(safe-area-inset-bottom) + 8px); }
+  .corner-popover-header { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid v.$line; }
+  .corner-popover-header h2 { margin: 0; font: inherit; font-weight: 600; }
+  .corner-popover-close { width: 32px; height: 32px; flex: 0 0 32px; display: grid; place-items: center; border: 0; border-radius: 4px; background: transparent; color: v.$ink; }
+  .corner-popover-content { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  button:focus-visible { outline: 2px solid v.$signal; outline-offset: -2px; }
+  @media (max-width: 512px) {
+    &[data-position="bottom"] { bottom: calc(114.8px + env(safe-area-inset-bottom) + 8px); }
+    .corner-popover-close { width: 44px; height: 44px; flex-basis: 44px; }
+  }
+}

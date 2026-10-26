@@ -59,7 +59,7 @@ function GroupSidebar({
 
   const hasAccess = (group: GroupEntry) => !isSharedGroupId(group.id) || !!sharing?.accessByGroup[group.id];
   const pendingRows = otherRows.filter(group => !hasAccess(group));
-  const isReceived = (group: GroupEntry) => sharing?.accessByGroup[group.id]?.role === "member";
+  const isShared = (group: GroupEntry) => isSharedGroupId(group.id) && sharing?.accessByGroup[group.id]?.active === true;
   const accessLoading = sharing?.loading || checkingAccess;
 
   useEffect(() => {
@@ -122,7 +122,7 @@ function GroupSidebar({
                 </div>}
               </div>}
               {(["my", "shared"] as const).map(section => {
-                const rows = otherRows.filter(group => hasAccess(group) && isReceived(group) === (section === "shared"));
+                const rows = otherRows.filter(group => hasAccess(group) && isShared(group) === (section === "shared"));
                 const label = section === "my" ? t.myGroup : t.shareGroupSection;
                 const Icon = sectionsOpen[section] ? ChevronDown : ChevronRight;
                 return <section className="group-category" key={section}>
@@ -143,7 +143,7 @@ function GroupSidebar({
                   dropTarget={reorder.targetId === group.id}
                   onReorderStart={(event) => reorder.start(group.id, event)}
                   onReorderKey={(direction) => {
-                    const peers = otherRows.filter((item) => item.pinned === group.pinned && isReceived(item) === isReceived(group));
+                    const peers = otherRows.filter((item) => item.pinned === group.pinned && isShared(item) === isShared(group));
                     const target = peers[peers.findIndex((item) => item.id === group.id) + direction];
                     if (target) onMoveGroup(group.id, target.id);
                   }}

@@ -120,31 +120,6 @@
     margin-left: auto;
   }
 
-  .footer-notifications-panel {
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 8px);
-    z-index: 80;
-    width: min(360px, calc(100vw - 32px));
-    max-height: min(420px, 60vh);
-    display: flex;
-    flex-direction: column;
-    border: 1px solid v.$line;
-    border-radius: 8px;
-    background: v.$raised;
-    color: v.$ink;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-
-    header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid v.$line; }
-    header button { width: 28px; height: 28px; display: grid; place-items: center; border: 0; background: transparent; color: v.$ink; }
-    p { margin: 0; padding: 18px 12px; }
-    ul { margin: 0; padding: 0; overflow-y: auto; list-style: none; }
-    li { display: grid; gap: 4px; padding: 10px 12px; border-bottom: 1px solid v.$line; line-height: 1.4; }
-    li:last-child { border-bottom: 0; }
-    li span { overflow-wrap: anywhere; }
-    li time { color: v.$muted; font-size: v.font(11px); }
-  }
-
   .dashboard-command,
   .more-command {
     --status-icon-growth: 1px;
@@ -159,7 +134,7 @@
     position: absolute;
     right: 0;
     bottom: calc(100% + 7px);
-    z-index: 70;
+    z-index: 90;
     min-width: 160px;
     padding: 5px;
     border: 1px solid v.$line;
@@ -270,14 +245,6 @@
       margin-left: 0;
     }
 
-    .footer-notifications-panel {
-      position: fixed;
-      left: 16px;
-      right: 16px;
-      bottom: calc(114.8px + env(safe-area-inset-bottom) + 8px);
-      width: auto;
-    }
-
     .footer-more {
       grid-column: 3;
       min-width: 0;
@@ -311,4 +278,13 @@
   }
 }
 
-.footer .notification-entry { width: 100%; display: block; padding: 10px; border: 0; border-radius: 4px; background: transparent; color: inherit; font: inherit; text-align: left; &:hover, &:focus-visible { background: var(--color-line); } &:focus-visible { outline: 2px solid var(--color-signal); } }
+.footer-notifications-panel .notification-entry { width: 100%; display: block; padding: 10px; border: 0; border-radius: 4px; background: transparent; color: inherit; font: inherit; text-align: left; &:hover, &:focus-visible { background: var(--color-line); } &:focus-visible { outline: 2px solid var(--color-signal); } }
+
+.footer-notifications-panel {
+  p { margin: 0; padding: 18px 12px; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  li { display: grid; gap: 4px; padding: 10px 12px; border-bottom: 1px solid v.$line; line-height: 1.4; }
+  li:last-child { border-bottom: 0; }
+  li span { display: block; overflow-wrap: anywhere; }
+  li time { color: v.$muted; font-size: v.font(11px); }
+}

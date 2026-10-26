@@ -6,7 +6,7 @@ import { openPanel } from "../../__util__";
 test("2. Escape를 눌러도 고정 패널을 닫지 않는다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
-  await openPanel(page, "bookmarks-panel");
+  await openPanel(page, "dashboard-panel");
   await page.keyboard.press("Escape");
-  await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute("aria-hidden", "false");
 });

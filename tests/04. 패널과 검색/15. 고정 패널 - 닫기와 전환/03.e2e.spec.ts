@@ -7,7 +7,7 @@ test("3. 그룹을 전환해도 고정 패널을 열린 상태로 유지한다",
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   await createGroups(page, "Alpha");
-  await openPanel(page, "bookmarks-panel");
+  await openPanel(page, "dashboard-panel");
   await switchGroup(page, "Ungrouped");
-  await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute("aria-hidden", "false");
 });

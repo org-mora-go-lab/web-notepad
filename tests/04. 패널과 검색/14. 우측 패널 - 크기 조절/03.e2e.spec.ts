@@ -7,12 +7,12 @@ import { dragPanelEdgeTo } from "../__util__";
 test("3. 우측에 배치한 고정 패널의 크기를 조절할 수 있다", async ({ page }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
-  await openPanel(page, "bookmarks-panel");
-  const panel = page.locator("#bookmarks-panel");
+  await openPanel(page, "dashboard-panel");
+  const panel = page.locator("#dashboard-panel");
 
   await dragPanelEdgeTo(
     page,
-    "bookmarks-panel",
+    "dashboard-panel",
     DESKTOP_VIEWPORT.width - 520,
   );
 

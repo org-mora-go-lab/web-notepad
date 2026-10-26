@@ -13,10 +13,10 @@ test("4. 좌측에 배치한 고정 패널의 크기를 조절할 수 있다", a
     .getByRole("radio", { name: "Left", exact: true })
     .check();
   await page.locator("#settings-panel .side-panel-close").click();
-  await openPanel(page, "bookmarks-panel");
-  const panel = page.locator("#bookmarks-panel");
+  await openPanel(page, "dashboard-panel");
+  const panel = page.locator("#dashboard-panel");
 
-  await dragPanelEdgeTo(page, "bookmarks-panel", 600);
+  await dragPanelEdgeTo(page, "dashboard-panel", 600);
 
   await expect
     .poll(async () => (await panel.boundingBox())!.width)

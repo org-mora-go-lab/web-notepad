@@ -39,6 +39,7 @@ export function useHomeNavigation({
       openPanel !== null &&
       openPanel !== "global-search" &&
       openPanel !== "closed" &&
+      openPanel !== "bookmarks" &&
       isPinLayout(),
     [openPanel],
   );
@@ -140,7 +141,7 @@ export function useHomeNavigation({
     if (openPanel === null) return;
     if (
       backgroundPanel &&
-      (openPanel === "global-search" || openPanel === "closed")
+      (openPanel === "global-search" || openPanel === "closed" || openPanel === "bookmarks")
     ) {
       setOpenPanel(backgroundPanel);
       setBackgroundPanel(null);
@@ -167,7 +168,7 @@ export function useHomeNavigation({
         return;
       }
       if (
-        (panel === "global-search" || panel === "closed") &&
+        (panel === "global-search" || panel === "closed" || panel === "bookmarks") &&
         keepsPanelOpen()
       ) {
         setBackgroundPanel(openPanel);

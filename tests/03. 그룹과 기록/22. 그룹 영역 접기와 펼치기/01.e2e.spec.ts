@@ -15,8 +15,8 @@ test("1. 소유권 확인 전에는 그룹을 임시 분류하지 않고 확인 
     await expect(owner.locator('#group-shared-list [data-group-id="' + id + '"]')).toHaveCount(0);
     await expect(owner.locator('.group-access-skeleton')).toBeVisible();
   } finally { release(); }
-  await expect(owner.locator('#group-my-list [data-group-id="' + id + '"]')).toBeVisible();
-  await expect(owner.locator('#group-shared-list [data-group-id="' + id + '"]')).toHaveCount(0);
+  await expect(owner.locator('#group-shared-list [data-group-id="' + id + '"]')).toBeVisible();
+  await expect(owner.locator('#group-my-list [data-group-id="' + id + '"]')).toHaveCount(0);
   await expect(owner.locator('.group-access-skeleton')).toHaveCount(0);
   await expect(guest.locator('#group-shared-list [data-group-id="' + id + '"]')).toBeVisible();
   await expect(guest.locator('#group-my-list [data-group-id="' + id + '"]')).toHaveCount(0);

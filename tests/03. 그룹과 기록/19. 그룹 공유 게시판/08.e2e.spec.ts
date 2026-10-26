@@ -12,7 +12,10 @@ test("8. 초대 링크 복사는 관리자 파라미터 없이 참여 링크만 
   await page.goto("/");
   await openBoard(page);
   await selectBoardPost(page, boardPost.title);
-  await page.getByRole("button", { name: "Copy invitation link" }).click();
+  const copy = page.getByRole("button", { name: "Copy invitation link" });
+  const text = (await copy.locator("span").boundingBox())!, icon = (await copy.locator("svg").boundingBox())!;
+  expect(icon.x).toBeGreaterThanOrEqual(text.x + text.width);
+  await copy.click();
   await expect(
     page.getByRole("button", { name: "Invitation link copied" }),
   ).toBeVisible();

@@ -3,7 +3,7 @@
 import { Bookmark as BookmarkIcon } from "lucide-react";
 
 import { useI18n } from "@/src/5-shared/hook";
-import { EmptyState, SidePanel } from "@/src/5-shared/ui";
+import { CornerPopover, EmptyState } from "@/src/5-shared/ui";
 
 import { BookmarkItem } from "./component";
 import type { BookmarkProps } from "./type";
@@ -18,13 +18,15 @@ export function Bookmark({
   const { t } = useI18n();
 
   return (
-    <SidePanel
+    <CornerPopover
       className="bookmark"
       id="bookmarks-panel"
       title={t.bookmarksTitle}
       open={open}
       closeLabel={t.closePanel(t.bookmarksTitle)}
-      ariaLabel={t.bookmarksTitle}
+      position="bottom"
+      triggerSelector=".footer .more-command"
+      outsideIgnoreSelector="#footer-more-menu"
       onClose={onClose}
     >
       <div className="bookmark-list">
@@ -45,6 +47,6 @@ export function Bookmark({
           ))
         )}
       </div>
-    </SidePanel>
+    </CornerPopover>
   );
 }

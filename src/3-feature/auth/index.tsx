@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, CircleUserRound, LogIn, LogOut, MessageSquare, Settings, UserRound } from "lucide-react";
+import { Bell, CircleUserRound, LogIn, LogOut, Settings, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -114,7 +114,6 @@ export function Auth() {
           if (next >= 0) { event.preventDefault(); items[next]?.focus(); }
         }}>
         <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}><UserRound size={18} /><span>{t.myPage}</span></Link>
-        <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenBoard(); }}><MessageSquare size={18} /><span>{t.accountBoard}</span></button>
         <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenNotifications(); }}><Bell size={18} /><span>{t.notifications}</span></button>
         <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenSettings(); }}><Settings size={18} /><span>{t.settingsTitle}</span></button>
         <button type="button" role="menuitem" disabled={loading} onClick={() => void logout()}><LogOut size={18} /><span>{t.logout}</span></button>

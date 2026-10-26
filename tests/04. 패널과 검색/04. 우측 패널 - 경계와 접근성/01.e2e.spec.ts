@@ -5,8 +5,8 @@ import { openPanel } from "../../__util__";
 test("1. 모바일 오버레이 경계는 11.52px의 테마별 다단계 그라데이션으로 표시한다", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await openPanel(page, "bookmarks-panel");
-  const panel = page.locator("#bookmarks-panel");
+  await openPanel(page, "dashboard-panel");
+  const panel = page.locator("#dashboard-panel");
   const edge = async () => panel.evaluate((element) => {
     const style = getComputedStyle(element, "::before");
     return { background: style.backgroundImage, width: style.width };

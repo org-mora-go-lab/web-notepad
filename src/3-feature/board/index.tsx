@@ -5,14 +5,16 @@ import {
   ChevronLeft,
   Clipboard,
   Layers,
+  LogOut,
   NotebookPen,
+  Unlink,
   Users,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import type { BoardPost } from "@/src/4-entity/notepad";
-import { useI18n } from "@/src/5-shared/hook";
-import { SearchField, SidePanel } from "@/src/5-shared/ui";
+import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
+import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
 
 import { useBoard } from "./hook";
 import type { BoardProps } from "./type";
@@ -24,6 +26,11 @@ export function Board({ onClose }: BoardProps) {
   }, []);
   const { t, language } = useI18n();
   const { posts, loading, error, reload } = useBoard();
+  const sharing = useContext(GroupSharingContext);
+  const [accessConfirm, setAccessConfirm] = useState(false);
+  const [accessError, setAccessError] = useState(false);
+  const accessBusy = useRef(false);
+  const actionRef = useRef<HTMLButtonElement>(null);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<BoardPost | null>(null);
   const [failure, setFailure] = useState("");
@@ -34,6 +41,8 @@ export function Board({ onClose }: BoardProps) {
       .includes(query.trim().toLocaleLowerCase()),
   );
 
+  const selectedRole = selected && posts.find(post => post.id === selected.id)?.viewerRole;
+  const accessLabel = selectedRole === "owner" ? t.revokeGroupShare : t.leaveGroup;
   const back = () => { setSelected(null); setFailure(""); setCopied(false); };
 
   return (
@@ -63,8 +72,8 @@ export function Board({ onClose }: BoardProps) {
             className="board-back"
             onClick={back}
           >
-            <ChevronLeft size={16} />
-            {t.boardBack}
+            <ChevronLeft size={16} aria-hidden="true" />
+            <span>{t.boardBack}</span>
           </button>
         )}
         {selected ? (
@@ -85,11 +94,13 @@ export function Board({ onClose }: BoardProps) {
               </span>
             </div>
             <p className="board-description">{t.boardSharedWorkspace}</p>
-            <p className="board-join-hint">{t.boardJoinHint}</p>
-            <a className="board-primary board-join" href={selected.inviteUrl}>
+            <p className="board-join-hint">{selectedRole === "owner" ? t.boardOwnerHint : selectedRole === "member" ? t.boardMemberHint : t.boardJoinHint}</p>
+            {selectedRole ? <button ref={actionRef} type="button" className="board-primary board-access" onClick={() => { setAccessError(false); setAccessConfirm(true); }}>
+              <span>{accessLabel}</span>{selectedRole === "owner" ? <Unlink size={17} aria-hidden="true" /> : <LogOut size={17} aria-hidden="true" />}
+            </button> : <a className="board-primary board-join" href={selected.inviteUrl}>
               {t.boardJoin}
               <ArrowUpRight size={17} />
-            </a>
+            </a>}
             <button
               type="button"
               className="board-copy"
@@ -102,8 +113,8 @@ export function Board({ onClose }: BoardProps) {
                 }
               }}
             >
-              <Clipboard size={15} />
-              {copied ? t.boardCopied : t.boardCopy}
+              <span>{copied ? t.boardCopied : t.boardCopy}</span>
+              <Clipboard size={15} aria-hidden="true" />
             </button>
           </article>
         ) : (
@@ -138,6 +149,7 @@ export function Board({ onClose }: BoardProps) {
                     type="button"
                     className="board-card"
                     key={post.id}
+                    data-group-id={post.id}
                     onClick={() => {
                       setSelected(post);
                       setFailure("");
@@ -183,6 +195,23 @@ export function Board({ onClose }: BoardProps) {
           {copied ? t.boardCopied : ""}
         </span>
       </div>
+      {accessConfirm && selected && <ConfirmPopup
+        title={accessLabel} message={selectedRole === "owner" ? t.revokeGroupShareMessage : t.leaveGroupMessage}
+        closeLabel={t.close} closeTitle={t.close} confirmLabel={accessLabel}
+        confirmIcon={selectedRole === "owner" ? <Unlink size={14} /> : <LogOut size={14} />}
+        keepOpenOnConfirm error={accessError ? t.groupAccessError : undefined}
+        onCancel={() => { setAccessConfirm(false); actionRef.current?.focus(); }}
+        onConfirm={async () => {
+          if (accessBusy.current || !sharing) return;
+          accessBusy.current = true; setAccessError(false);
+          try {
+            if (await sharing.changeAccess(selected.id, selectedRole === "owner" ? "revoke" : "leave")) {
+              setAccessConfirm(false); back(); reload();
+              contentRef.current?.querySelector<HTMLElement>("input, button")?.focus();
+            } else setAccessError(true);
+          } finally { accessBusy.current = false; }
+        }}
+      />}
     </SidePanel>
   );
 }

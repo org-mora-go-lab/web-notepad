@@ -28,8 +28,8 @@ test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중
   await page.goto("/");
 
   await openBookmarksPanel(page);
-  await expectIconCentered(page.locator("#bookmarks-panel .side-panel-close"));
-  await page.locator("#bookmarks-panel .side-panel-close").click();
+  await expectIconCentered(page.locator("#bookmarks-panel .corner-popover-close"));
+  await page.locator("#bookmarks-panel .corner-popover-close").click();
 
   await groupsCommand(page).click();
   const createInput = page.getByRole("textbox", { name: "New group name" });

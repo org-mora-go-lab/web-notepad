@@ -107,14 +107,13 @@ export function Home() {
     <I18nContext value={language}>
       <AccountActionsContext value={{
         onOpenSettings: () => { closeGroupMenu(); if (openPanel !== "settings") toggleSidePanel("settings"); },
-        onOpenBoard: () => { closeGroupMenu(); if (openPanel !== "board") toggleSidePanel("board"); },
         onOpenNotifications: () => { setNotificationsOpen(true); void shared.markNotificationsRead(); },
       }}>
       <GroupSharingContext value={{ loading: shared.loading || shared.checkingGroups, refreshGroups: shared.refreshGroups, accessByGroup: shared.accessByGroup, changeAccess: shared.changeAccess }}>
       <SavingTabsContext value={[...savingTabIds, ...shared.savingTabIds]}>
       <MobileTapFeedback />
       <main
-        className={`home ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed")) ? "is-panel-pinned" : ""}`}
+        className={`home ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${(backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed" && openPanel !== "bookmarks")) ? "is-panel-pinned" : ""}`}
         style={{ "--font-scale": fontScale } as CSSProperties}
         data-panel-position={panelPosition}
         data-panel-slide={panelSlide ? "on" : "off"}

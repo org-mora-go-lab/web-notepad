@@ -2,9 +2,8 @@
 
 import "./index.scss";
 
-import { ArrowLeft, Bookmark, CircleUserRound, FileText, Layers, LogOut, Settings, Share2, Users } from "lucide-react";
+import { ArrowLeft, Bookmark, CircleUserRound, FileText, Layers, Share2, Users } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { isSharedGroupId, UNGROUPED_GROUP_ID, useCloudSave, useNotepadHydrated, useNotepadStore, useSharedGroups } from "@/src/4-entity/notepad";
@@ -12,7 +11,6 @@ import { MESSAGES } from "@/src/5-shared/constant";
 import type { AccountProfile } from "@/src/5-shared/type";
 
 export function MyPage() {
-  const router = useRouter();
   const hydrated = useNotepadHydrated();
   const groups = useNotepadStore(state => state.groups);
   const settings = useNotepadStore(state => state.settings);
@@ -22,7 +20,6 @@ export function MyPage() {
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
-  const [loggingOut, setLoggingOut] = useState(false);
   const t = MESSAGES[settings.language];
   useEffect(() => {
     let active = true;
@@ -40,7 +37,7 @@ export function MyPage() {
   const workspaceLoading = !hydrated || !cloud.serverLoaded || !shared.groupsLoaded;
   const workspaceFailed = !!user && ((!cloud.serverLoaded && cloud.ready && cloud.status === "error") || (!shared.groupsLoaded && shared.loadError));
   const pageLoading = loading || (!!user && !failed && !workspaceFailed && workspaceLoading);
-  const myGroups = groups.filter(group => group.id !== UNGROUPED_GROUP_ID && (!isSharedGroupId(group.id) || shared.accessByGroup[group.id]?.role === "owner"));
+  const myGroups = groups.filter(group => group.id !== UNGROUPED_GROUP_ID && (!isSharedGroupId(group.id) || shared.accessByGroup[group.id]?.active === false));
   const access = Object.values(shared.accessByGroup);
   const metrics = [
     { key: "my-groups", label: t.myGroup, value: myGroups.length, Icon: Layers },
@@ -57,7 +54,6 @@ export function MyPage() {
           <section className="my-page-profile is-loading" aria-hidden="true"><span className="my-page-avatar-skeleton" /><span className="my-page-name-skeleton" /></section>
           <div className="my-page-metrics-skeleton" aria-hidden="true">{Array.from({ length: 5 }, (_, index) => <span key={index} />)}</div>
           <div className="my-page-sync-skeleton" aria-hidden="true"><span /><span /><span /></div>
-          <div className="my-page-actions-skeleton" aria-hidden="true"><span /><span /><span /></div>
         </div>
         : failed || workspaceFailed ? <section className="my-page-notice" role="alert"><p>{failed ? t.myPageLoadError : t.myPageWorkspaceError}</p><button type="button" onClick={() => { setLoading(true); setAttempt(value => value + 1); }}>{t.boardRetry}</button></section>
           : !user ? <section className="my-page-notice"><p>{t.myPageLoginHint}</p><a href="/api/auth/oauth/kakao">{t.kakaoLogin}</a></section> : <>
@@ -77,14 +73,6 @@ export function MyPage() {
               <dl><dt>{t.myPageLastSaved}</dt><dd>{cloud.lastSavedAt ? <time dateTime={new Date(cloud.lastSavedAt).toISOString()}>{new Date(cloud.lastSavedAt).toLocaleString(settings.language === "ko" ? "ko-KR" : "en-US")}</time> : t.myPageNeverSaved}</dd></dl>
               <p className="my-page-hint">{t.myPageLocalHint}</p>
             </section>
-            <nav className="my-page-actions"><Link href="/?panel=settings"><Settings size={18} />{t.myPageSettings}</Link><Link href="/?panel=board"><Users size={18} />{t.accountBoard}</Link>
-              <button type="button" disabled={loggingOut} onClick={async () => {
-                setLoggingOut(true);
-                try { const response = await fetch("/api/auth/logout", { method: "POST" });
-                  if (response.ok) { window.dispatchEvent(new Event("notepad-auth-changed")); router.replace("/"); } else setFailed(true);
-                } catch { setFailed(true); } finally { setLoggingOut(false); }
-              }}><LogOut size={18} /><span>{t.logout}</span></button>
-            </nav>
           </>}
     </div>
   </main>;
