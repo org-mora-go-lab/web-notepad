@@ -183,7 +183,6 @@ export const en = {
   searchTitle: "Search",
   searchEverything: "Search everything",
   searchPreview: "Selected tab preview",
-  resizeSearch: "Resize search popup",
   previewBookmarkResult: (title: string) => `Preview bookmark ${title}`,
   enterSearchTerm: "Enter a search term",
   groupCategory: "Group",

@@ -185,7 +185,6 @@ export const ko: Messages = {
   searchTitle: "검색",
   searchEverything: "전체 검색",
   searchPreview: "선택한 탭 미리보기",
-  resizeSearch: "검색 팝업 크기 조절",
   previewBookmarkResult: (title: string) => `${title} 북마크 미리보기`,
   enterSearchTerm: "검색어를 입력하세요",
   groupCategory: "그룹",
