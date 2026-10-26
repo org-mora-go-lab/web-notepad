@@ -5,7 +5,8 @@ export {
   TAB_COLORS,
   TAB_STATUSES,
 } from "./constant";
-export { useNotepadHydrated } from "./hook";
+export type { CloudSaveStatus, ShareInviteStatus } from "./hook";
+export { useCloudSave, useNotepadHydrated, useSharedGroups } from "./hook";
 export { createCloudSnapshot, mergeCloudSnapshot, normalizePersistedState } from "./persistence";
 export * from "./store";
 export * from "./type";

@@ -6,12 +6,12 @@ import { createGroupFixture, createTabFixture } from "../../../__fixture__";
 import { dashboardColumn, openPanel, writeStoredState } from "../../../__util__";
 
 export async function verifyStatusMoves(page: Page, source: TabStatus, customNames = false) {
-  const statuses: TabStatus[] = ["icebox", "todo", "in-progress", "done", "closed"];
+  const statuses: TabStatus[] = ["icebox", "todo", "ready", "in-progress", "done", "closed"];
   const labels = customNames
-    ? { icebox: "Notes", todo: "Ready", "in-progress": "Working", done: "Complete", closed: "Archived" }
-    : { icebox: "Note", todo: "To Do", "in-progress": "Doing", done: "Done", closed: "Closed" };
+    ? { icebox: "Notes", todo: "Ready", ready: "Queued", "in-progress": "Working", done: "Complete", closed: "Archived" }
+    : { icebox: "Note", todo: "To Do", ready: "Ready", "in-progress": "Doing", done: "Done", closed: "Closed" };
   const colors: Record<TabStatus, TabColor> = {
-    icebox: "gray", todo: "gray", "in-progress": "indigo", done: "teal", closed: "gray",
+    icebox: "gray", todo: "gray", ready: "orange", "in-progress": "indigo", done: "teal", closed: "gray",
   };
   const targets = statuses.filter((status) => status !== source);
   for (const target of targets) {
@@ -20,7 +20,7 @@ export async function verifyStatusMoves(page: Page, source: TabStatus, customNam
       groups: [createGroupFixture("ungrouped", "Ungrouped", [
         createTabFixture("tab-1", "Moving task", {
           tabColor: colors[source],
-          dashboardStatus: source === "icebox" || source === "closed" ? source : undefined,
+          dashboardStatus: source === "icebox" || source === "closed" || source === "ready" ? source : undefined,
         }),
       ], {
         dashboardVisibility: { icebox: true, closed: true },

@@ -13,3 +13,4 @@ export {
   cycleActiveTabColor,
   openTabMenu,
 } from "./tab";
+export { expectTabSavingLine } from "./tab";

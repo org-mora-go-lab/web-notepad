@@ -25,3 +25,9 @@ export async function cycleActiveTabColor(page: Page, times = 1) {
     await page.locator(".tab-item.is-active .dirty-dot").click();
   }
 }
+
+export async function expectTabSavingLine(tab: Locator, saving: boolean) {
+  const { expect } = await import("@playwright/test");
+  await expect.poll(() => tab.evaluate(element => getComputedStyle(element, "::after").animationName))
+    .toBe(saving ? "cloud-line-shimmer" : "none");
+}

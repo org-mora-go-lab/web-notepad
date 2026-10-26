@@ -63,3 +63,20 @@
     .group-menu-resizer { display: none; }
   }
 }
+
+.group {
+  .group-category { min-width: 0; }
+  .group-category h3 { margin: 0; }
+  .group-section-toggle {
+    width: 100%; min-height: 42px; padding: 8px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: 0; border-top: 1px solid v.$line; background: transparent;
+    color: v.$muted; font: 500 v.font(13px) v.$sans; text-align: left;
+    &:hover, &:focus-visible { background: v.$line; color: v.$ink; }
+    &:focus-visible { outline: 2px solid v.$signal; outline-offset: -2px; }
+    svg { flex: 0 0 16px; }
+  }
+  .group-section-list[hidden] { display: none; }
+  .group-section-empty { margin: 0; padding: 8px 18px 16px; color: v.$dim; font-size: v.font(12px); line-height: 1.6; }
+  @media (max-width: 512px) { .group-section-toggle { min-height: 44px; } }
+}

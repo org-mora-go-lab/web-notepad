@@ -31,5 +31,5 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·설정·검색·�
   const iconBox = (await icon.boundingBox())!;
   expect(labelBox.y).toBeGreaterThanOrEqual(iconBox.y + iconBox.height);
   await moreCommand(page).click();
-  await expect(page.locator("#footer-more-menu").getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH", "Bookmark", "BOARD", "Group notifications"]);
+  await expect(page.locator("#footer-more-menu").getByRole("button")).toHaveText(["GUIDE", "SETTINGS", "SEARCH", "Bookmark", "BOARD", "Alarm"]);
 });

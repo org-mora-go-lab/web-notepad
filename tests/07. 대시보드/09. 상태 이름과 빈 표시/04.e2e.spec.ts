@@ -4,7 +4,7 @@ import { BOTH_VIEWPORTS } from "../../__constant__";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { dashboardPanel, openPanel, toggleDashboardStatus, writeStoredState } from "../../__util__";
 
-test("4. 다섯 상태의 빈 영역은 동일한 디자인과 None 문구를 사용하고 버튼을 표시하지 않는다", async ({ page }) => {
+test("4. 여섯 상태의 빈 영역은 동일한 디자인과 None 문구를 사용하고 버튼을 표시하지 않는다", async ({ page }) => {
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     for (const language of ["en", "ko"] as const) {
@@ -16,7 +16,7 @@ test("4. 다섯 상태의 빈 영역은 동일한 디자인과 None 문구를 �
       await toggleDashboardStatus(page, "icebox");
       await toggleDashboardStatus(page, "closed");
       const empty = dashboardPanel(page).locator(".dashboard-empty");
-      await expect(empty).toHaveText(["None", "None", "None", "None", "None"]);
+      await expect(empty).toHaveText(["None", "None", "None", "None", "None", "None"]);
       await expect(empty.locator("button")).toHaveCount(0);
       if (viewport.width > 512) {
         await expect(empty.first()).toBeHidden();

@@ -42,17 +42,13 @@ export async function sharedDatabase() {
       actor_id TEXT NOT NULL,
       actor_name TEXT NOT NULL,
       summary TEXT NOT NULL,
+      tab_id TEXT,
       created_at INTEGER NOT NULL
     )`,
     "CREATE INDEX IF NOT EXISTS shared_group_events_group_id ON shared_group_events(group_id, id)",
-    `CREATE TABLE IF NOT EXISTS shared_group_board (
-      id TEXT PRIMARY KEY,
-      group_id TEXT NOT NULL UNIQUE,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      updated_at INTEGER NOT NULL
-    )`,
   ], "write").then(async () => {
+    const eventColumns = await database.execute("PRAGMA table_info(shared_group_events)");
+    if (!eventColumns.rows.some(column => column.name === "tab_id")) await database.execute("ALTER TABLE shared_group_events ADD COLUMN tab_id TEXT");
     const columns = await database.execute("PRAGMA table_info(shared_group_access)");
     if (!columns.rows.some(column => column.name === "token_version")) {
       await database.execute("ALTER TABLE shared_group_access ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0");

@@ -24,6 +24,7 @@ export function Footer({
   notificationsOpen,
   onNotificationsOpenChange: setNotificationsOpen,
   notifications,
+  onOpenNotification,
   unreadCount,
   onMarkNotificationsRead,
 }: FooterProps) {
@@ -204,9 +205,11 @@ export function Footer({
                   <header><strong>{t.notifications}</strong><button type="button" onClick={closeNotifications} aria-label={t.close}><X size={16} /></button></header>
                   {notifications.length === 0 ? <p>{t.noNotifications}</p> : <ul>
                     {notifications.map((item) => <li key={item.id}>
+                      <button type="button" className="notification-entry" onClick={() => { setNotificationsOpen(false); onOpenNotification(item); }}>
                       <strong>{item.actorName}</strong> · {item.groupName}
                       <span>{item.summary}</span>
                       <time dateTime={new Date(item.createdAt).toISOString()}>{new Date(item.createdAt).toLocaleString()}</time>
+                      </button>
                     </li>)}
                   </ul>}
                 </section>}

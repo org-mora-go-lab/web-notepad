@@ -12,3 +12,4 @@ export {
   createGroupFixture,
   createTabFixture,
 } from "./notepad-state";
+export { sharingTest } from "./shared-workspace";

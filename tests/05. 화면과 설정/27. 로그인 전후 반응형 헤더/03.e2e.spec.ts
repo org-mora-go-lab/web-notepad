@@ -4,7 +4,7 @@ import { MOBILE_VIEWPORT } from "../../__constant__";
 import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("3. 모바일 로그아웃 후 로그인 영역의 위치와 크기가 유지된다", async ({ page, context }) => {
+test("3. 모바일 Logout 후 로그인 영역의 위치와 크기가 유지된다", async ({ page, context }) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
   await expect(page.locator("a.auth-command")).toBeVisible();
@@ -18,7 +18,7 @@ test("3. 모바일 로그아웃 후 로그인 영역의 위치와 크기가 유�
   const logout = page.locator("button.auth-command");
   await expect(logout).toBeVisible();
   await logout.click();
-  await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Logout", exact: true }).click();
   await expect(page.locator("a.auth-command")).toBeVisible();
   expect(await page.locator(".header-auth").boundingBox()).toEqual(before);
 });

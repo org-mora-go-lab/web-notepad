@@ -16,7 +16,7 @@ export function DashboardStatuses({
   const { t } = useI18n();
   const statusLabels = {
     icebox: t.icebox,
-    todo: t.statusTodo,
+    todo: t.statusTodo, ready: t.statusReady,
     "in-progress": t.statusInProgress,
     done: t.statusDone,
     closed: t.closedTitle,

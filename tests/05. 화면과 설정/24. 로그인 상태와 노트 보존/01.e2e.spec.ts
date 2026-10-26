@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { authProfile } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("1. 로그인 계정은 별도 로그아웃 아이콘 없이 닉네임과 로그아웃 동작을 제공한다", async ({
+test("1. 로그인 계정은 별도 Logout 아이콘 없이 닉네임과 Logout 동작을 제공한다", async ({
   page,
   context,
 }) => {

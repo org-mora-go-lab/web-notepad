@@ -6,6 +6,7 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { useCloudSave, useHome, useSharedGroups } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
+import { useNotepadStore } from "@/src/4-entity/notepad";
 import { MESSAGES } from "@/src/5-shared/constant";
 import { AccountActionsContext, GroupSharingContext, I18nContext, SavingTabsContext } from "@/src/5-shared/hook";
 import { MobileTapFeedback } from "@/src/5-shared/ui";
@@ -59,8 +60,8 @@ export function Home() {
   const shared = useSharedGroups(hydrated);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { inviteStatus, dismissInvite } = shared;
+  const entryOpened = useRef(false);
   const inviteRef = useRef<HTMLElement>(null);
-  const adminBoardOpened = useRef(false);
   const messages = MESSAGES[language];
   const cloudSaveText = {
     pending: messages.cloudPending,
@@ -75,13 +76,11 @@ export function Home() {
   }, [language, fontScale]);
 
   useEffect(() => {
-    if (!hydrated || adminBoardOpened.current) return;
-    adminBoardOpened.current = true;
-    if (new URLSearchParams(window.location.search).get("role") === "admin") {
-      closeGroupMenu();
-      if (openPanel !== "board") toggleSidePanel("board");
-    }
-  }, [closeGroupMenu, hydrated, openPanel, toggleSidePanel]);
+    if (!hydrated || entryOpened.current) return;
+    entryOpened.current = true;
+    const panel = new URLSearchParams(window.location.search).get("panel");
+    if (panel === "settings" || panel === "board") { closeGroupMenu(); toggleSidePanel(panel); }
+  }, [hydrated, closeGroupMenu, toggleSidePanel]);
 
   useEffect(() => {
     if (!inviteStatus || inviteStatus === "joining") return;
@@ -147,6 +146,15 @@ export function Home() {
             notificationsOpen={notificationsOpen}
             onNotificationsOpenChange={setNotificationsOpen}
             notifications={shared.notifications}
+            onOpenNotification={async item => {
+              await shared.refreshGroups();
+              const group = useNotepadStore.getState().groups.find(group => group.id === item.groupId);
+              if (!group) return;
+              selectGroupAndClosePanel(group.id);
+              const tab = group.tabs.find(tab => tab.id === item.tabId) ?? group.tabs.find(tab => tab.open) ?? group.tabs[0];
+              if (tab) openTabAndClosePanel(tab.id);
+              closeGroupMenu();
+            }}
             unreadCount={shared.unreadCount}
             onMarkNotificationsRead={() => void shared.markNotificationsRead()}
           />

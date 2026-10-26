@@ -2,8 +2,9 @@ import { expect, type Page, test as base } from "@playwright/test";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
 
-import { createGroupFixture, createTabFixture, signedSession } from "../../../__fixture__";
-import { authenticateBrowser, groupsCommand } from "../../../__util__";
+import { authenticateBrowser, groupsCommand } from "../__util__";
+import { signedSession } from "./auth";
+import { createGroupFixture, createTabFixture } from "./notepad-state";
 
 type Sharing = { group: GroupEntry; owner: Page; guest: Page; id: string; token: string; url: string };
 export const sharingTest = base.extend<{ sharing: Sharing }>({

@@ -12,7 +12,7 @@ test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만�
   await openBoard(page);
   await selectBoardPost(page, boardPost.title);
   await expect(page.locator(".board-description")).toHaveText(
-    boardPost.description,
+    "A shared workspace. Join to write together.",
   );
   await expect(
     page.getByRole("link", { name: "Join this group" }),

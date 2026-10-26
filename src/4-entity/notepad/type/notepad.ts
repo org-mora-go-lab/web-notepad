@@ -23,7 +23,7 @@ export type NotepadSettings = {
 };
 
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
-export type TabStatus = "icebox" | "todo" | "in-progress" | "done" | "closed";
+export type TabStatus = "icebox" | "todo" | "ready" | "in-progress" | "done" | "closed";
 export type DashboardStatusNames = Partial<Record<TabStatus, string>>;
 export type DashboardVisibility = {
   icebox: boolean;
@@ -101,6 +101,7 @@ export type SharedGroupData = Pick<
 export type SharedNotification = {
   id: number;
   groupId: string;
+  tabId: string | null;
   groupName: string;
   actorName: string;
   summary: string;

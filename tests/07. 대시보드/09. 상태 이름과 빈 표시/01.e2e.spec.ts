@@ -4,7 +4,7 @@ import { BOTH_VIEWPORTS } from "../../__constant__";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { dashboardPanel, openPanel, readStoredState, switchGroup, toggleDashboardStatus, writeStoredState } from "../../__util__";
 
-test("1. Edit Status로 수정한 다섯 상태 이름은 해당 그룹에만 저장하고 새로고침 후 복원한다", async ({ page }) => {
+test("1. Edit Status로 수정한 여섯 상태 이름은 해당 그룹에만 저장하고 새로고침 후 복원한다", async ({ page }) => {
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await writeStoredState(page, {
@@ -20,8 +20,8 @@ test("1. Edit Status로 수정한 다섯 상태 이름은 해당 그룹에만 �
     await toggleDashboardStatus(page, "closed");
     const panel = dashboardPanel(page);
     const titles = panel.locator(viewport.width <= 512 ? ".dashboard-column-status .dashboard-status-label" : ".dashboard-statuses h3 .dashboard-status-label");
-    const original = ["Note", "To Do", "Doing", "Done", "Closed"];
-    const renamed = ["Ideas", "Next", "Working", "Shipped", "History"];
+    const original = ["Note", "To Do", "Ready", "Doing", "Done", "Closed"];
+    const renamed = ["Ideas", "Next", "Queued", "Working", "Shipped", "History"];
     await expect(titles).toHaveText(original);
     await panel.locator(".dashboard-options-trigger").click();
     await panel.getByRole("button", { name: "Edit Status", exact: true }).click();
@@ -34,7 +34,7 @@ test("1. Edit Status로 수정한 다섯 상태 이름은 해당 그룹에만 �
     await expect(editor).toHaveCount(0);
     await expect(titles).toHaveText(renamed);
     const saved = await readStoredState(page);
-    expect(saved.groups.find((group) => group.id === "work")!.dashboardStatusNames).toEqual({ icebox: "Ideas", todo: "Next", "in-progress": "Working", done: "Shipped", closed: "History" });
+    expect(saved.groups.find((group) => group.id === "work")!.dashboardStatusNames).toEqual({ icebox: "Ideas", todo: "Next", ready: "Queued", "in-progress": "Working", done: "Shipped", closed: "History" });
     expect(saved.groups.find((group) => group.id === "ungrouped")!.dashboardStatusNames).toBeUndefined();
     expect(saved.groups.find((group) => group.id === "work")!.tabs[0].tabColor).toBe("gray");
     await page.reload();
