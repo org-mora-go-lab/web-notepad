@@ -88,18 +88,6 @@
       --tab-background-active: color-mix(in srgb, var(--color-tab-orange) 16%, transparent);
     }
 
-    &[data-dashboard-status="closed"][data-tab-color] {
-      --tab-accent: var(--color-status-closed);
-      --tab-glow: color-mix(in srgb, var(--color-status-closed) 55%, transparent);
-      --tab-accent-muted: var(--color-status-closed);
-      --tab-background: color-mix(in srgb, var(--color-status-closed) 12%, transparent);
-      --tab-background-active: color-mix(in srgb, var(--color-status-closed) 25%, transparent);
-
-      .tab-title {
-        text-decoration-line: line-through;
-        text-decoration-thickness: 1px;
-      }
-    }
 
     background: var(--tab-background, transparent);
 

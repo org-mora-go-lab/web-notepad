@@ -23,7 +23,7 @@ export function useEditorFocus(
         .groups.find((group) => group.id === activeGroupId)
         ?.tabs.find((tab) => tab.id === activeTabId);
       const editor = editorRefs[activePane].current;
-      if (!currentTab || !editor) return;
+      if (!currentTab || !editor || document.querySelector('[aria-modal="true"]')) return;
       if (window.matchMedia("(pointer: coarse)").matches) {
         return;
       }

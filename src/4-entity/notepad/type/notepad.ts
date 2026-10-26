@@ -23,11 +23,14 @@ export type NotepadSettings = {
 };
 
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
+// "closed" is accepted only for legacy records and is displayed as Done.
 export type TabStatus = "icebox" | "todo" | "ready" | "in-progress" | "done" | "closed";
 export type DashboardStatusNames = Partial<Record<TabStatus, string>>;
 export type DashboardVisibility = {
   icebox: boolean;
-  closed: boolean;
+  done: boolean;
+  // Accepted only for legacy saved visibility objects.
+  closed?: boolean;
 };
 
 export type NoteTab = {
@@ -39,7 +42,7 @@ export type NoteTab = {
   savedContent: string;
   selectedLines: number[];
   tabColor: TabColor;
-  // Icebox and Closed are explicit states; legacy tabs derive the three core states from color.
+  // Note and Ready are explicit states; legacy Closed is restored as Done.
   dashboardStatus?: TabStatus;
   pinned: boolean;
   bookmarked: boolean;

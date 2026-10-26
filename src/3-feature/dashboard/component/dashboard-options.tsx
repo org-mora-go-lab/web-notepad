@@ -1,4 +1,4 @@
-import { Check, EllipsisVertical, Ghost, Pencil, StickyNote } from "lucide-react";
+import { Check, CircleCheck, EllipsisVertical, Pencil, StickyNote } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
@@ -13,9 +13,9 @@ export function DashboardOptions({
   statusNames,
   onSaveStatusNames,
   iceboxVisible,
-  closedVisible,
+  doneVisible,
   onToggleIcebox,
-  onToggleClosed,
+  onToggleDone,
 }: DashboardOptionsProps) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -77,14 +77,14 @@ export function DashboardOptions({
             {iceboxVisible && <Check className="dashboard-option-check" size={16} />}
           </button>
           <button
-            className="dashboard-closed-command"
+            className="dashboard-done-command"
             type="button"
-            aria-pressed={closedVisible}
-            onClick={onToggleClosed}
+            aria-pressed={doneVisible}
+            onClick={onToggleDone}
           >
-            <Ghost size={18} strokeWidth={1.8} />
-            <span>{statusNames.closed ?? t.closedTitle}</span>
-            {closedVisible && <Check className="dashboard-option-check" size={16} />}
+            <CircleCheck size={18} strokeWidth={1.8} />
+            <span>{statusNames.done ?? t.statusDone}</span>
+            {doneVisible && <Check className="dashboard-option-check" size={16} />}
           </button>
           <button
             className="dashboard-edit-status-command"

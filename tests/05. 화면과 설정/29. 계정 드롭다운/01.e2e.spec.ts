@@ -10,7 +10,7 @@ test("1. 로그인 계정 아래에 보드·Alarm·Logout을 순서대로 표시
     const trigger = page.locator("button.auth-command");
     await trigger.click();
     const menu = page.getByRole("menu", { name: "계정 메뉴", exact: true });
-    await expect(menu.getByRole("menuitem")).toHaveText(["My Page", "보드", "Alarm", "Logout"]);
+    await expect(menu.getByRole("menuitem")).toHaveText(["내 페이지", "보드", "알람", "설정", "로그아웃"]);
     const anchor = (await trigger.boundingBox())!, bounds = (await menu.boundingBox())!;
     expect(bounds.y).toBeGreaterThanOrEqual(anchor.y + anchor.height);
     expect(bounds.x).toBeGreaterThanOrEqual(0);

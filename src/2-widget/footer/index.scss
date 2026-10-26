@@ -120,27 +120,6 @@
     margin-left: auto;
   }
 
-  .notification-count {
-    min-width: 17px;
-    height: 17px;
-    display: grid;
-    place-items: center;
-    padding: 0 3px;
-    border-radius: 9px;
-    background: v.$signal;
-    color: v.$pit;
-    font-size: 10px;
-    line-height: 1;
-  }
-
-  .more-command .notification-count {
-    position: absolute;
-    top: -6px;
-    right: -10px;
-  }
-
-  .notification-command .notification-count { margin-left: auto; }
-
   .footer-notifications-panel {
     position: absolute;
     right: 0;

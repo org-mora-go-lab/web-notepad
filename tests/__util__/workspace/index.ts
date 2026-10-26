@@ -1,9 +1,9 @@
+export { openAccountMenu } from "./account";
 export { openBoard, selectBoardPost } from "./board";
 export { divider, dividerDistanceFromCenter, dragDividerBy, dragDividerTo } from "./divider";
 export { chooseGroupAction, groupActionsButton, groupMenu } from "./group-menu";
 export { openGuide } from "./guide";
 export {
-  closedCommand,
   createGroup,
   createGroups,
   groupsCommand,
@@ -11,7 +11,6 @@ export {
   groupStatusName,
   moreCommand,
   openBookmarksPanel,
-  openClosedPanel,
   openGlobalSearchPanel,
   openHeaderMenu,
   openMoreMenu,

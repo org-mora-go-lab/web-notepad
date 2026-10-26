@@ -8,7 +8,6 @@ export type FooterProps = {
   groupsOpen: boolean;
   onToggleDashboard: () => void;
   onToggleGroups: () => void;
-  onOpenSettings: () => void;
   onOpenBoard: () => void;
   onOpenShortcuts: () => void;
   onToggleBookmarks: () => void;
@@ -18,6 +17,4 @@ export type FooterProps = {
   onNotificationsOpenChange: (open: boolean) => void;
   notifications: SharedNotification[];
   onOpenNotification: (notification: SharedNotification) => void;
-  unreadCount: number;
-  onMarkNotificationsRead: () => void;
 };

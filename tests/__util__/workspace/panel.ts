@@ -1,5 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
+import { openAccountMenu } from "./account";
+
 // The group button on the left of the bottom bar (icon + current group name).
 export const groupsCommand = (page: Page) =>
   page.locator(".group-select-command");
@@ -11,8 +13,6 @@ export async function openBookmarksPanel(page: Page) {
   await menu.getByRole("button", { name: /Bookmark|북마크/i }).click();
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
 }
-export const closedCommand = (page: Page) =>
-  page.locator('button[aria-controls="closed-popup"]');
 export const groupStatusName = (page: Page) =>
   page.locator(".group-current-value");
 export const shortcutsCommand = (page: Page) =>
@@ -38,12 +38,13 @@ export async function openPanel(page: Page, panelId: string) {
     panelId === "shortcuts-panel" ||
     panelId === "settings-panel"
   ) {
-    const tools = await openMoreMenu(page);
     if (panelId === "shortcuts-panel") {
+      const tools = await openMoreMenu(page);
       await tools.getByRole("button", { name: /GUIDE|사용 가이드/i }).click();
       await page.getByRole("dialog").getByRole("button", { name: /SHORTCUT|단축키/i }).click();
     } else {
-      const settingsCommand = tools.getByRole("button", { name: /SETTINGS|설정/i });
+      const account = await openAccountMenu(page);
+      const settingsCommand = account.getByRole("menuitem", { name: /SETTINGS|설정/i });
       await expect(settingsCommand).toBeVisible();
       await settingsCommand.click();
     }
@@ -61,13 +62,7 @@ export async function openPanel(page: Page, panelId: string) {
   );
 }
 
-export async function openClosedPanel(page: Page) {
-  await openPanel(page, "dashboard-panel");
-  await toggleDashboardStatus(page, "closed");
-  await expect(page.locator(".dashboard-closed-column")).toBeVisible();
-}
-
-export async function toggleDashboardStatus(page: Page, status: "icebox" | "closed") {
+export async function toggleDashboardStatus(page: Page, status: "icebox" | "done") {
   const trigger = page.locator(".dashboard-options-trigger");
   if (await trigger.getAttribute("aria-expanded") !== "true") await trigger.click();
   await page.locator(`.dashboard-${status}-command`).click();

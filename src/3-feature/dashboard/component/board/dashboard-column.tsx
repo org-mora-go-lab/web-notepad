@@ -70,7 +70,7 @@ export function DashboardColumn({
         {cardEntries.map((tab) => (
           <DashboardCard
             key={tab.id}
-            tab={tab}
+            tab={tab.dashboardStatus === "closed" ? { ...tab, tabColor: getStatusColor("done", tabColorCycle), dashboardStatus: "done" } : tab}
             active={tab.id === activeTabId}
             contextMenuTarget={tab.id === contextMenuTabId}
             groupName={

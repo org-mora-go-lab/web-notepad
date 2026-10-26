@@ -33,6 +33,7 @@ export function GroupItem({
   onShare,
 }: GroupItemProps) {
   const { t } = useI18n();
+  const canCancelSharing = shared && sharingRole === "owner" && sharingActive;
   const [editingName, setEditingName] = useState<string | null>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -216,14 +217,16 @@ export function GroupItem({
                 <>
                   {(!shared || sharingRole === "owner") && <button
                     type="button"
-                    aria-label={t.shareGroupFor(name)}
-                    onClick={() => {
+                    aria-label={canCancelSharing ? t.revokeGroupShare : t.shareGroupFor(name)}
+                    onClick={event => {
+                      const anchor = actionsRef.current?.querySelector<HTMLButtonElement>("button") ?? event.currentTarget;
                       onToggleActions();
-                      onShare();
+                      if (canCancelSharing) onChangeSharing?.("revoke", anchor);
+                      else onShare();
                     }}
                   >
-                    <Share2 size={16} />
-                    <span>{t.shareGroup}</span>
+                    {canCancelSharing ? <Unlink size={16} /> : <Share2 size={16} />}
+                    <span>{canCancelSharing ? t.revokeGroupShare : t.shareGroup}</span>
                   </button>}
                   <button
                     type="button"
@@ -250,14 +253,14 @@ export function GroupItem({
                     <Trash2 size={16} />
                     <span>{t.delete}</span>
                   </button>}
-                  {shared && (sharingRole === "member" || (sharingRole === "owner" && sharingActive)) && <button type="button"
+                  {shared && sharingRole === "member" && <button type="button"
                     onClick={event => {
                       const anchor = actionsRef.current?.querySelector<HTMLButtonElement>("button") ?? event.currentTarget;
                       onToggleActions();
-                      onChangeSharing?.(sharingRole === "member" ? "leave" : "revoke", anchor);
+                      onChangeSharing?.("leave", anchor);
                     }}>
-                    {sharingRole === "member" ? <LogOut size={16} /> : <Unlink size={16} />}
-                    <span>{sharingRole === "member" ? t.leaveGroup : t.revokeGroupShare}</span>
+                    <LogOut size={16} />
+                    <span>{t.leaveGroup}</span>
                   </button>}
                 </>
               )}

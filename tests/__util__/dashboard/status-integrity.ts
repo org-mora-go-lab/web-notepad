@@ -20,7 +20,7 @@ export async function seedStatusIntegrity(
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     nextTabNumber: 4,
-    allGroupDashboardVisibility: { icebox: true, closed: true },
+    allGroupDashboardVisibility: { icebox: true, done: true },
     groups: [
       createGroupFixture(
         "ungrouped",
@@ -35,7 +35,7 @@ export async function seedStatusIntegrity(
           createTabFixture("tab-2", "Sibling task", { tabColor: "gray" }),
         ],
         {
-          dashboardVisibility: { icebox: true, closed: true },
+          dashboardVisibility: { icebox: true, done: true },
           bookmarks: [
             createBookmarkFixture("b1", "tab-1", "Integrity task\nkept body", {
               selectedLines: [1],
@@ -55,13 +55,9 @@ export async function seedStatusIntegrity(
 }
 
 export async function moveDashboardCard(page: Page, label: string) {
-  await dashboardPanel(page)
-    .locator(".dashboard-card", { hasText: "Integrity task" })
-    .click({ button: "right" });
-  await page
-    .getByRole("menu")
-    .locator(".tab-context-menu-footer")
-    .getByRole("menuitem", { name: label, exact: true })
-    .click();
-  await expect(page.getByRole("menu")).toHaveCount(0);
+  const statuses: Record<string, string> = { Note: "icebox", "To Do": "todo", Ready: "ready", Doing: "in-progress", Done: "done" };
+  const status = statuses[label];
+  if (!status) throw Error("Unsupported status: " + label);
+  await dashboardPanel(page).locator(".dashboard-card", { hasText: "Integrity task" })
+    .dragTo(dashboardPanel(page).locator('.dashboard-column[data-status="' + status + '"]'));
 }

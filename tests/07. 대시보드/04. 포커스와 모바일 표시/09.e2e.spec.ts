@@ -5,7 +5,7 @@ import { dashboardPanel, openPanel, seedDashboardTabs } from "../../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
-test("9. 모바일에서 Icebox와 Closed를 반복 전환해도 상태 영역을 한 열로 표시한다", async ({ page }) => {
+test("9. 모바일에서 Icebox와 Done를 반복 전환해도 상태 영역을 한 열로 표시한다", async ({ page }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
   await page.locator(".dashboard-options-trigger").click();
@@ -13,7 +13,7 @@ test("9. 모바일에서 Icebox와 Closed를 반복 전환해도 상태 영역�
   const panel = dashboardPanel(page);
   const columns = panel.locator(".dashboard-column");
   const icebox = panel.locator(".dashboard-icebox-command");
-  const closed = panel.locator(".dashboard-closed-command");
+  const closed = panel.locator(".dashboard-done-command");
   await icebox.click();
 
   const expectSingleColumn = async (count: number) => {
@@ -40,11 +40,11 @@ test("9. 모바일에서 Icebox와 Closed를 반복 전환해도 상태 영역�
     await icebox.click();
     await expectSingleColumn(4);
     await closed.click();
-    await expectSingleColumn(5);
+    await expectSingleColumn(3);
     await icebox.click();
-    await expectSingleColumn(6);
+    await expectSingleColumn(4);
     await icebox.click();
-    await expectSingleColumn(5);
+    await expectSingleColumn(3);
     await closed.click();
     await expectSingleColumn(4);
     await icebox.click();

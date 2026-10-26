@@ -11,7 +11,7 @@ test("2. Note 보조 상태는 주기 색상보다 우선해 복원한다", asyn
         dashboardStatus: "icebox",
       }),
     ],
-    dashboardVisibility: { icebox: true, closed: false },
+    dashboardVisibility: { icebox: true, done: false },
   });
   await openPanel(page, "dashboard-panel");
   await expect(

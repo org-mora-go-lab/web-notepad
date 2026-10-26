@@ -6,8 +6,8 @@ import { openSharingMenu } from "./__util__";
 test("4. 공유 취소는 기존 참여자와 초대 링크 및 게시판 접근을 해제하고 원문을 지킨다", async ({ sharing: { owner, guest, id, token, url } }) => {
   expect((await (await owner.request.get("/api/board")).json()).posts.some((post: { id: string }) => post.id === id)).toBe(true);
   const menu = await openSharingMenu(owner, id);
-  await menu.getByRole("button", { name: "Cancel group sharing", exact: true }).click();
-  await owner.getByRole("alertdialog", { name: "Cancel group sharing", exact: true }).getByRole("button", { name: "Cancel group sharing", exact: true }).click();
+  await menu.getByRole("button", { name: "Cancel Sharing", exact: true }).click();
+  await owner.getByRole("alertdialog", { name: "Cancel Sharing", exact: true }).getByRole("button", { name: "Cancel Sharing", exact: true }).click();
   await expect(owner.getByRole("alertdialog")).toHaveCount(0);
   await expect(owner.locator("textarea").first()).toHaveValue("Keep this note");
   expect((await guest.request.post("/api/groups/join", { data: { token } })).status()).toBe(404);

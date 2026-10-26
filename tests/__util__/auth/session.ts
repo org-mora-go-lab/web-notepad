@@ -1,6 +1,6 @@
 import type { BrowserContext } from "@playwright/test";
 
-import { SESSION_COOKIE, signedSession } from "../../__fixture__";
+import { authProfile, SESSION_COOKIE, signedSession } from "../../__fixture__";
 
 export const sessionHeaders = (token = signedSession()) => ({
   Cookie: `${SESSION_COOKIE}=${token}`,
@@ -8,7 +8,7 @@ export const sessionHeaders = (token = signedSession()) => ({
 
 export async function authenticateBrowser(
   context: BrowserContext,
-  token = signedSession(),
+  token = signedSession({ ...authProfile, id: "browser-" + crypto.randomUUID(), expiresAt: Date.now() + 300_000 }),
 ) {
   await context.addCookies([
     { name: SESSION_COOKIE, value: token, url: "http://localhost:3100" },

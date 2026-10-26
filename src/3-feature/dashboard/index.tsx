@@ -1,9 +1,9 @@
 "use client";
 
-import { CircleCheck, CircleDot, Ghost, ListTodo, Maximize2, Minimize2, StickyNote } from "lucide-react";
+import { Maximize2, Minimize2 } from "lucide-react";
 import { useState } from "react";
 
-import { compareGroups, DASHBOARD_STATUSES, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import { compareGroups, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
@@ -32,7 +32,7 @@ export function Dashboard({
 }: DashboardProps) {
   const [expanded, setExpanded] = useState(false);
   const iceboxVisible = visibility.icebox;
-  const closedVisible = visibility.closed;
+  const doneVisible = visibility.done !== false;
   const [contextMenu, setContextMenu] = useState<{
     itemId: string;
     left: number;
@@ -40,20 +40,15 @@ export function Dashboard({
   } | null>(null);
   const { t } = useI18n();
   const { contentRef, listRef, boardRef } = useDashboardScroll();
-  const columns = getDashboardColumns(tabs, tabColorCycle);
+  const columns = getDashboardColumns(tabs, tabColorCycle).filter(column => column.status !== "done" || doneVisible);
   const iceboxTabs = tabs.filter(
     (tab) => tab.content.trim() && getTabStatus(tab, tabColorCycle) === "icebox",
-  );
-  const closedTabs = tabs.filter(
-    (tab) => tab.content.trim() && getTabStatus(tab, tabColorCycle) === "closed",
   );
   const visibleTabs = [
     ...columns.flatMap((column) => column.tabs),
     ...(iceboxVisible ? iceboxTabs : []),
-    ...(closedVisible ? closedTabs : []),
   ];
   const contextTab = visibleTabs.find((tab) => tab.id === contextMenu?.itemId);
-  const contextStatus = contextTab ? getTabStatus(contextTab, tabColorCycle) : null;
   const contextGroup = groups.find((group) =>
     group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
@@ -75,9 +70,9 @@ export function Dashboard({
               statusNames={statusNames}
               onSaveStatusNames={onSaveStatusNames}
               iceboxVisible={iceboxVisible}
-              closedVisible={closedVisible}
+              doneVisible={doneVisible}
               onToggleIcebox={() => onVisibilityChange({ ...visibility, icebox: !iceboxVisible })}
-              onToggleClosed={() => onVisibilityChange({ ...visibility, closed: !closedVisible })}
+              onToggleDone={() => onVisibilityChange({ ...visibility, done: !doneVisible })}
             />
           )}
           <button
@@ -102,13 +97,11 @@ export function Dashboard({
           columns={columns}
           tabColorCycle={tabColorCycle}
           iceboxVisible={iceboxVisible}
-          closedVisible={closedVisible}
           iceboxCount={iceboxTabs.length}
-          closedCount={closedTabs.length}
         />
         <div className="dashboard-list" ref={listRef}>
           <div
-            className={`dashboard-board ${iceboxVisible ? "has-icebox" : ""} ${closedVisible ? "has-closed" : ""}`}
+            className={`dashboard-board ${iceboxVisible ? "has-icebox" : ""} ${doneVisible ? "has-done" : ""}`}
             ref={boardRef}
           >
             {iceboxVisible && (
@@ -144,22 +137,7 @@ export function Dashboard({
                 }
               />
             ))}
-            {closedVisible && (
-              <DashboardColumn
-                statusNames={statusNames}
-                column={{ status: "closed", tabs: closedTabs }}
-                drag={drag}
-                activeTabId={activeTabId}
-                groups={groups}
-                showGroupNames={showGroupNames}
-                tabColorCycle={tabColorCycle}
-                contextMenuTabId={contextMenu?.itemId}
-                onOpenTab={onOpenTab}
-                onOpenContextMenu={(itemId, left, top) =>
-                  setContextMenu({ itemId, left, top })
-                }
-              />
-            )}
+
           </div>
         </div>
       </div>
@@ -167,24 +145,8 @@ export function Dashboard({
         <TabContextMenu
           left={contextMenu.left}
           top={contextMenu.top}
-          moveGroupFirst={getTabStatus(contextTab, tabColorCycle) !== "closed"}
-          deleteOnly={getTabStatus(contextTab, tabColorCycle) === "closed"}
+          moveGroupFirst
           bookmarked={contextTab.bookmarked}
-          footerAction={DASHBOARD_STATUSES.filter((status) => status !== contextStatus).map((status) => {
-            const Icon = { icebox: StickyNote, todo: ListTodo, ready: ListTodo, "in-progress": CircleDot, done: CircleCheck, closed: Ghost }[status];
-            const label = statusNames[status] ?? {
-              icebox: t.icebox, todo: t.statusTodo, ready: t.statusReady, "in-progress": t.statusInProgress, done: t.statusDone, closed: t.closedTitle,
-            }[status];
-            return (
-              <button key={status} type="button" role="menuitem" onClick={() => {
-                onChangeStatus(contextTab.id, status);
-                setContextMenu(null);
-              }}>
-                <Icon size={14} />
-                <span>{label}</span>
-              </button>
-            );
-          })}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id && group.id !== UNGROUPED_GROUP_ID)
             .sort(compareGroups)}

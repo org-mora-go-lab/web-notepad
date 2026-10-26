@@ -1,25 +1,34 @@
 import { expect, test } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { dashboardColumn, openPanel, writeStoredState } from "../../__util__";
+import { openPanel } from "../../__util__";
+import { dashboardColumn, seedDashboardTabs } from "../../__util__";
 
-test("3. PC에서 열린 탭 카드 메뉴로 다른 그룹에 이동한다", async ({ page }) => {
-  await writeStoredState(page, {
-    activeGroupId: "source",
-    groups: [
-      createGroupFixture("source", "Source", [createTabFixture("source-tab", "Alpha task", { tabColor: "gray" })]),
-      createGroupFixture("work", "Work", [createTabFixture("work-tab", "Work task")]),
-    ],
-  });
+test("3. 우클릭한 탭 카드는 에디터에서 열지 않고 메뉴가 열린 동안 테두리만 강조한다", async ({
+  page,
+}) => {
+  await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
-  const card = dashboardColumn(page, "todo").locator(".dashboard-card", {
-    hasText: "Alpha task",
-  });
+  const card = dashboardColumn(page, "in-progress").locator(
+    ".dashboard-card",
+    { hasText: "Beta task" },
+  );
+  const originalBackground = await card.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
 
   await card.click({ button: "right" });
-  await page.getByRole("menuitem", { name: "Move Group", exact: true }).click();
-  await expect(page.getByRole("menuitem", { name: "Ungrouped", exact: true })).toHaveCount(0);
-  await page.getByRole("menuitem", { name: "Work", exact: true }).click();
 
-  await expect(card).toHaveCount(0);
+  await expect(card).toHaveClass(/is-context-menu-target/);
+  await expect(card).not.toHaveClass(/is-active/);
+  await expect(card.locator(".dashboard-card-open")).not.toHaveAttribute(
+    "aria-current",
+  );
+  await expect(page.locator(".tab-item.is-active")).toContainText("Alpha task");
+  await expect(card).toHaveCSS("background-color", originalBackground);
+  expect(
+    await card.evaluate((element) => getComputedStyle(element).borderTopColor),
+  ).toMatch(/(?:\/\s*0\.5\s*\)|,\s*0\.5\s*\))/);
+
+  await page.getByRole("menuitem", { name: "Bookmark", exact: true }).click();
+  await expect(card).not.toHaveClass(/is-context-menu-target/);
 });

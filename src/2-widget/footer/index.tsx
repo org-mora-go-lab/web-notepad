@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search, Settings, X } from "lucide-react";
+import { Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { UserGuide } from "@/src/3-feature";
@@ -15,7 +15,6 @@ export function Footer({
   groupsOpen,
   onToggleDashboard,
   onToggleGroups,
-  onOpenSettings,
   onOpenBoard,
   onOpenShortcuts,
   onToggleBookmarks,
@@ -25,8 +24,6 @@ export function Footer({
   onNotificationsOpenChange: setNotificationsOpen,
   notifications,
   onOpenNotification,
-  unreadCount,
-  onMarkNotificationsRead,
 }: FooterProps) {
   const { t } = useI18n();
   const [moreOpen, setMoreOpen] = useState(false);
@@ -125,7 +122,7 @@ export function Footer({
               </button>
               <div className="footer-more" ref={moreRef}>
                 <button
-                  className={`status-command more-command ${moreOpen || searchOpen || notificationsOpen ? "is-active" : ""}`}
+                  className={`status-command more-command ${moreOpen || searchOpen ? "is-active" : ""}`}
                   type="button"
                   aria-expanded={moreOpen}
                   aria-controls="footer-more-menu"
@@ -133,7 +130,6 @@ export function Footer({
                 >
                   <span className="status-icon">
                     <Ellipsis size={16} strokeWidth={1.8} />
-                    {unreadCount > 0 && <span className="notification-count" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
                   </span>
                   <span className="status-label">{t.more}</span>
                 </button>
@@ -148,16 +144,6 @@ export function Footer({
                     >
                       <BookOpen size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.guide}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMoreOpen(false);
-                        onOpenSettings();
-                      }}
-                    >
-                      <Settings size={18} strokeWidth={1.8} />
-                      <span className="status-label">{t.settings}</span>
                     </button>
                     <button
                       className="global-search-command"
@@ -186,18 +172,6 @@ export function Footer({
                     <button type="button" className="board-command" aria-controls="board-panel" onClick={() => { setMoreOpen(false); onOpenBoard(); }}>
                       <MessageSquare size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.board}</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="notification-command"
-                      aria-label={unreadCount ? `${t.notifications} · ${t.unreadNotifications(unreadCount)}` : t.notifications}
-                      aria-haspopup="dialog"
-                      aria-controls="footer-notifications-panel"
-                      onClick={() => { setMoreOpen(false); setNotificationsOpen(true); void onMarkNotificationsRead(); }}
-                    >
-                      <Bell size={18} strokeWidth={1.8} />
-                      <span className="status-label">{t.notifications}</span>
-                      {unreadCount > 0 && <span className="notification-count" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
                     </button>
                   </div>
                 )}
