@@ -90,7 +90,19 @@ export function useCloudSave(hydrated: boolean) {
         });
       }
       applying = true;
-      try { useNotepadStore.setState(normalizePersistedState(source, current)); }
+      try {
+        const normalized = normalizePersistedState(source, current);
+        // Personal history must not normalize or queue changes to shared records.
+        if (preserveShared) {
+          normalized.groups = normalized.groups.map(group => isSharedGroupId(group.id)
+            ? current.groups.find(existing => existing.id === group.id) ?? group : group);
+          normalized.closedTabs = [
+            ...normalized.closedTabs.filter(entry => !isSharedGroupId(entry.groupId)),
+            ...current.closedTabs.filter(entry => isSharedGroupId(entry.groupId)),
+          ];
+        }
+        useNotepadStore.setState(normalized);
+      }
       finally { applying = false; }
       lastSnapshot = createCloudSnapshot(useNotepadStore.getState());
       if (userId) writeLocal(localKey(userId), lastSnapshot);

@@ -32,6 +32,7 @@ export function useSharedGroups(hydrated: boolean) {
     let sessionChecked = false;
     let refreshing = false;
     let refreshQueued = false;
+    const refreshWaiters: Array<() => void> = [];
     let applying = false;
     const baselines = new Map<string, SharedRecord>();
     const timers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -127,9 +128,12 @@ export function useSharedGroups(hydrated: boolean) {
       } catch { /* Retry when the screen returns or the connection recovers. */ }
     };
 
-    const refreshGroups = async () => {
+    const refreshGroups = async (): Promise<void> => {
       if (!userId) return;
-      if (refreshing) { refreshQueued = true; return; }
+      if (refreshing) {
+        refreshQueued = true;
+        return new Promise<void>(resolve => refreshWaiters.push(resolve));
+      }
       refreshing = true;
       try {
         const response = await fetch("/api/groups", { cache: "no-store" });
@@ -180,7 +184,8 @@ export function useSharedGroups(hydrated: boolean) {
       finally {
         refreshing = false;
         if (active) setLoading(false);
-        if (active && refreshQueued) { refreshQueued = false; void refreshGroups(); }
+        if (active && userId && refreshQueued) { refreshQueued = false; await refreshGroups(); }
+        else { refreshQueued = false; refreshWaiters.splice(0).forEach(resolve => resolve()); }
       }
     };
 
@@ -199,6 +204,8 @@ export function useSharedGroups(hydrated: boolean) {
       if (changedIds.length) setSavingTabIds(current => current.filter(id => !changedIds.includes(id)));
       for (const group of state.groups) {
         if (!isSharedGroupId(group.id)) continue;
+        const previousGroup = previous.groups.find(item => item.id === group.id);
+        if (previousGroup && same(toSharedGroupData(previousGroup), toSharedGroupData(group))) continue;
         if (!baselines.has(group.id)) changedBeforeLoad.add(group.id);
         else queue(group.id);
       }
