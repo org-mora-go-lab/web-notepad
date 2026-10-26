@@ -3,18 +3,18 @@
 .dashboard {
   .dashboard-board {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     column-gap: 15px;
     min-height: 100%;
   }
 
   .dashboard-board.has-icebox,
   .dashboard-board.has-closed {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .dashboard-board.has-icebox.has-closed {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .dashboard-column.dashboard-icebox-column {
@@ -25,6 +25,8 @@
   .dashboard-icebox-column .dashboard-card[data-tab-color] {
     --dashboard-accent: var(--color-tab-yellow);
   }
+
+  .dashboard-ready-column .dashboard-card[data-tab-color] { --dashboard-accent: var(--color-tab-orange); }
 
   .dashboard-column.dashboard-closed-column {
     --dashboard-accent: var(--color-status-closed);
@@ -80,7 +82,7 @@
 
     .dashboard-board {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: repeat(3, auto);
+      grid-template-rows: repeat(4, auto);
       row-gap: 30px;
       align-content: start;
     }
@@ -88,12 +90,12 @@
     .dashboard-board.has-icebox,
     .dashboard-board.has-closed {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: repeat(4, auto);
+      grid-template-rows: repeat(5, auto);
     }
 
     .dashboard-board.has-icebox.has-closed {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: repeat(5, auto);
+      grid-template-rows: repeat(6, auto);
     }
 
     .dashboard-column {

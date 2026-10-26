@@ -17,6 +17,7 @@ export type FooterProps = {
   notificationsOpen: boolean;
   onNotificationsOpenChange: (open: boolean) => void;
   notifications: SharedNotification[];
+  onOpenNotification: (notification: SharedNotification) => void;
   unreadCount: number;
   onMarkNotificationsRead: () => void;
 };

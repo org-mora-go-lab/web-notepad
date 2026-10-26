@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -31,6 +31,16 @@ function GroupSidebar({
   const [accessAction, setAccessAction] = useState<{ groupId: string; action: "leave" | "revoke"; anchor: HTMLElement } | null>(null);
   const [accessError, setAccessError] = useState(false);
   const accessBusy = useRef(false);
+  const [sectionsOpen, setSectionsOpen] = useState(() => {
+    try { const value = JSON.parse(localStorage.getItem("web-notepad-group-sections") ?? "null");
+      return { my: value?.my !== false, shared: value?.shared !== false }; }
+    catch { return { my: true, shared: true }; }
+  });
+  const toggleSection = (section: "my" | "shared") => {
+    const next = { ...sectionsOpen, [section]: !sectionsOpen[section] };
+    setSectionsOpen(next); setActionsGroupId(null);
+    try { localStorage.setItem("web-notepad-group-sections", JSON.stringify(next)); } catch { /* Keep the current view usable. */ }
+  };
   const sidebarRef = useRef<HTMLDivElement>(null);
   const handleResizeStart = useGroupMenuResize(sidebarRef);
   const reorder = useGroupReorder(onMoveGroup);
@@ -43,6 +53,8 @@ function GroupSidebar({
   const otherRows = [...groups]
     .sort(compareGroups)
     .filter((group) => group.id !== UNGROUPED_GROUP_ID);
+
+  const isReceived = (group: GroupEntry) => isSharedGroupId(group.id) && sharing?.accessByGroup[group.id]?.role !== "owner";
 
   const handleShared = useCallback((originalId: string, sharedGroup: GroupEntry) => {
     if (originalId !== sharedGroup.id) {
@@ -84,8 +96,18 @@ function GroupSidebar({
         </header>
         <section className="group-section">
           <div className="group-list" id="group-sidebar-list">
-              <GroupCreateForm onCreate={onCreate} />
-              {otherRows.map((group) => (
+              <GroupCreateForm onCreate={name => { if (!sectionsOpen.my) toggleSection("my"); onCreate(name); }} />
+              {(["my", "shared"] as const).map(section => {
+                const rows = otherRows.filter(group => isReceived(group) === (section === "shared"));
+                const label = section === "my" ? t.myGroup : t.shareGroupSection;
+                const Icon = sectionsOpen[section] ? ChevronDown : ChevronRight;
+                return <section className="group-category" key={section}>
+                  <h3><button type="button" className="group-section-toggle" aria-expanded={sectionsOpen[section]}
+                    aria-controls={"group-" + section + "-list"} onClick={() => toggleSection(section)}>
+                    <span>{label}</span><Icon size={16} aria-hidden="true" />
+                  </button></h3>
+                  <div className="group-section-list" id={"group-" + section + "-list"} hidden={!sectionsOpen[section]}>
+                    {rows.map(group => (
                 <GroupItem
                   key={group.id}
                   groupId={group.id}
@@ -97,7 +119,7 @@ function GroupSidebar({
                   dropTarget={reorder.targetId === group.id}
                   onReorderStart={(event) => reorder.start(group.id, event)}
                   onReorderKey={(direction) => {
-                    const peers = otherRows.filter((item) => item.pinned === group.pinned);
+                    const peers = otherRows.filter((item) => item.pinned === group.pinned && isReceived(item) === isReceived(group));
                     const target = peers[peers.findIndex((item) => item.id === group.id) + direction];
                     if (target) onMoveGroup(group.id, target.id);
                   }}
@@ -117,7 +139,12 @@ function GroupSidebar({
                   }}
                   onShare={() => setSharingGroup(group)}
                 />
-              ))}
+
+                    ))}
+                    {rows.length === 0 && <p className="group-section-empty">{section === "my" ? t.noMyGroups : t.noSharedGroups}</p>}
+                  </div>
+                </section>;
+              })}
           </div>
         </section>
         <div className="group-system-list">

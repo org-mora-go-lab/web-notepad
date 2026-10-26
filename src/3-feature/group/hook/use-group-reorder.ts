@@ -15,6 +15,7 @@ export function useGroupReorder(onMove: (groupId: string, targetId: string) => v
     const pointerId = event.pointerId;
     const row = handle.closest<HTMLElement>("[data-group-id]");
     const list = handle.closest<HTMLElement>(".group-list");
+    const section = handle.closest<HTMLElement>(".group-section-list") ?? list;
     const startX = event.clientX;
     const startY = event.clientY;
     let active = false;
@@ -35,7 +36,7 @@ export function useGroupReorder(onMove: (groupId: string, targetId: string) => v
       }
       moveEvent.preventDefault();
       const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)?.closest<HTMLElement>("[data-group-id]");
-      destination = target && list?.contains(target) && target.dataset.pinned === row?.dataset.pinned && target.dataset.groupId !== groupId
+      destination = target && section?.contains(target) && target.dataset.pinned === row?.dataset.pinned && target.dataset.groupId !== groupId
         ? target.dataset.groupId ?? null : null;
       setTargetId(destination);
       if (list) {

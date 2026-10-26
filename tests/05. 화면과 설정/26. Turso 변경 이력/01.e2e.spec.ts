@@ -1,31 +1,27 @@
 import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
-import { authenticateBrowser, createGroups } from "../../__util__";
+import { authenticateBrowser, expectTabSavingLine } from "../../__util__";
 import { readCloudHistory } from "./__util__";
 
-test("1. 글 수정 후 3초 대기가 끝나 저장 중일 때만 제목을 반짝인다", async ({ page, context }) => {
-  await authenticateBrowser(context, signedSession({ id: "cloud-batch-" + crypto.randomUUID(), nickname: "Cloud User", expiresAt: Date.now() + 300_000 }));
-  let release!: () => void; const gate = new Promise<void>(resolve => { release = resolve; });
-  await page.route("**/api/notepad/history", async route => { if (route.request().method() === "POST") await gate; await route.continue(); });
+test("1. 에디터 수정 후 정확히 1초 대기한 뒤 저장 중에만 탭 상단 선을 움직인다", async ({ page, context }) => {
+  await authenticateBrowser(context, signedSession({ id: "one-second-" + crypto.randomUUID(), nickname: "Cloud User", expiresAt: Date.now() + 300_000 }));
   const initial = page.waitForResponse(response => response.url().endsWith("/api/notepad/history") && response.request().method() === "GET");
-  await page.goto("/"); await initial;
-  await expect(page.locator("button.auth-command")).toContainText("Cloud User");
-  await createGroups(page, "Batch group");
-  await page.locator("textarea").first().fill("첫 번째 글");
-  await page.locator("textarea").first().fill("마지막 글");
-  const lastEdit = Date.now(); const title = page.locator(".tab-item.is-active .tab-title").first();
+  await page.goto("/"); await initial; await expect(page.locator("button.auth-command")).toBeVisible();
+  await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-01-02T00:00:00Z"));
+  let release!: () => void; const gate = new Promise<void>(resolve => { release = resolve; }); let posts = 0;
+  await page.route("**/api/notepad/history", async route => { if (route.request().method() === "POST") { posts += 1; await gate; } await route.continue(); });
+  const tab = page.locator(".tab-item.is-active");
   try {
-    await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "pending");
-    await expect(title).toHaveCSS("animation-name", "none");
+    await page.locator("textarea").first().fill("마지막 글");
+    await page.clock.runFor(999); expect(posts).toBe(0); await expectTabSavingLine(tab, false);
+    await page.clock.runFor(1); await expect.poll(() => posts).toBe(1);
+    await expectTabSavingLine(tab, true);
+    await expect(tab.locator(".tab-title")).toHaveCSS("animation-name", "none");
     expect((await readCloudHistory(page)).count).toBe(0);
-    await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "saving", { timeout: 10_000 });
-    expect(Date.now() - lastEdit).toBeGreaterThanOrEqual(2800);
-    await expect(title).toHaveCSS("animation-name", "cloud-title-shimmer");
-    await expect(page.locator(".cloud-save-status")).toHaveCount(0);
   } finally { release(); }
   await expect(page.locator(".home")).toHaveAttribute("data-cloud-save", "saved", { timeout: 15_000 });
-  await expect(title).toHaveCSS("animation-name", "none");
-  const history = await readCloudHistory(page); expect(history.count).toBe(1);
-  expect(history.latest!.snapshot).toContain("마지막 글");
+  await expectTabSavingLine(tab, false);
+  expect((await readCloudHistory(page)).count).toBe(1);
 });

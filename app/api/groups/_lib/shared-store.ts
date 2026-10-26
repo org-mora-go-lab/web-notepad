@@ -122,10 +122,15 @@ export async function saveSharedGroup(
       sql: "UPDATE shared_groups SET snapshot = ?, revision = ?, updated_at = ? WHERE id = ?",
       args: [JSON.stringify(data), revision, now, id],
     });
+    const previousTabs = new Map(current.data.tabs.map(tab => [tab.id, tab]));
+    const changedTab = data.tabs.find(tab => {
+      const previous = previousTabs.get(tab.id);
+      return !previous || previous.content !== tab.content || previous.tabColor !== tab.tabColor || previous.dashboardStatus !== tab.dashboardStatus;
+    }) ?? data.tabs.find(tab => tab.open) ?? data.tabs[0];
     await transaction.execute({
-      sql: `INSERT INTO shared_group_events (group_id, revision, actor_id, actor_name, summary, created_at)
-        VALUES (?, ?, ?, ?, ?, ?)`,
-      args: [id, revision, user.id, user.nickname, describeGroupUpdate(current.data, data), now],
+      sql: `INSERT INTO shared_group_events (group_id, revision, actor_id, actor_name, summary, created_at, tab_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, revision, user.id, user.nickname, describeGroupUpdate(current.data, data), now, changedTab?.id ?? null],
     });
     await transaction.commit();
     return { kind: "saved" as const, record: { ...current, revision, data, updatedAt: now } };
@@ -137,7 +142,7 @@ export async function saveSharedGroup(
 export async function listSharedNotifications(userId: string) {
   const database = await sharedDatabase();
   const result = await database.execute({
-    sql: `SELECT e.id, e.group_id, e.actor_name, e.summary, e.created_at,
+    sql: `SELECT e.id, e.group_id, e.tab_id, e.actor_name, e.summary, e.created_at,
       g.snapshot, m.last_seen_event_id
       FROM shared_group_events e
       JOIN shared_group_members m ON m.group_id = e.group_id AND m.user_id = ?
@@ -148,6 +153,7 @@ export async function listSharedNotifications(userId: string) {
   return result.rows.map((row) => ({
     id: Number(row.id),
     groupId: String(row.group_id),
+    tabId: typeof row.tab_id === "string" ? row.tab_id : (JSON.parse(String(row.snapshot)) as SharedGroupData).tabs.find(tab => tab.open)?.id ?? null,
     groupName: (JSON.parse(String(row.snapshot)) as SharedGroupData).name,
     actorName: String(row.actor_name),
     summary: String(row.summary),
@@ -177,7 +183,6 @@ export async function changeSharedGroupAccess(userId: string, id: string, action
       if (String(ownerId) !== userId) return "forbidden" as const;
       await transaction.execute({ sql: "INSERT INTO shared_group_access (group_id, enabled, token_version) VALUES (?, 0, 1) ON CONFLICT(group_id) DO UPDATE SET token_version = CASE WHEN shared_group_access.enabled = 1 THEN shared_group_access.token_version + 1 ELSE shared_group_access.token_version END, enabled = 0", args: [id] });
       await transaction.execute({ sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id <> ?", args: [id, userId] });
-      await transaction.execute({ sql: "DELETE FROM shared_group_board WHERE group_id = ?", args: [id] });
     } else {
       if (String(ownerId) === userId) return "forbidden" as const;
       const removed = await transaction.execute({ sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id = ?", args: [id, userId] });

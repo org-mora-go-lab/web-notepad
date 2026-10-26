@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { authProfile, SESSION_COOKIE } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("4. 로그아웃 후 새로고침해도 로그인 링크를 유지한다", async ({
+test("4. Logout 후 새로고침해도 로그인 링크를 유지한다", async ({
   page,
   context,
 }) => {
@@ -12,7 +12,7 @@ test("4. 로그아웃 후 새로고침해도 로그인 링크를 유지한다", 
   await page
     .getByRole("button", { name: authProfile.nickname + " · Account menu" })
     .click();
-  await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Logout", exact: true }).click();
   await expect(page.locator("a.auth-command")).toHaveAttribute(
     "aria-disabled",
     "false",

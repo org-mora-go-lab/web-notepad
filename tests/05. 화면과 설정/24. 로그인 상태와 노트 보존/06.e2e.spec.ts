@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { authProfile } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("6. 로그아웃 서버 오류는 계정 표시를 보존하고 재시도를 허용한다", async ({
+test("6. Logout 서버 오류는 계정 표시를 보존하고 재시도를 허용한다", async ({
   page,
   context,
 }) => {
@@ -17,9 +17,9 @@ test("6. 로그아웃 서버 오류는 계정 표시를 보존하고 재시도�
   });
   await account.click();
   const failed = page.waitForResponse(response => response.url().endsWith("/api/auth/logout") && response.status() === 500);
-  await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Logout", exact: true }).click();
   await failed;
-  await expect(page.getByRole("menuitem", { name: "Log out", exact: true })).toBeEnabled();
+  await expect(page.getByRole("menuitem", { name: "Logout", exact: true })).toBeEnabled();
   await expect(account).toBeEnabled();
   await expect(page.locator("a.auth-command")).toHaveCount(0);
 });

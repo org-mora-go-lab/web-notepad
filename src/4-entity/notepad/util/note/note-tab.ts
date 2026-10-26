@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS, TAB_STATUSES } from "../../constant";
+import { DEFAULT_SETTINGS } from "../../constant";
 import type { NoteTab, TabColor, TabStatus } from "../../type";
 
 const graphemeSegmenter =
@@ -77,9 +77,9 @@ export const getTabStatus = (
   tab: NoteTab,
   tabColorCycle: TabColor[],
 ): TabStatus => {
-  if (tab.dashboardStatus === "icebox" || tab.dashboardStatus === "closed")
+  if (tab.dashboardStatus === "icebox" || tab.dashboardStatus === "closed" || tab.dashboardStatus === "ready")
     return tab.dashboardStatus;
-  return TAB_STATUSES[Math.max(0, tabColorCycle.indexOf(tab.tabColor))] ?? "todo";
+  return (["todo", "in-progress", "done"] as const)[Math.max(0, tabColorCycle.indexOf(tab.tabColor))] ?? "todo";
 };
 
 export const getStatusColor = (
@@ -88,5 +88,6 @@ export const getStatusColor = (
 ): TabColor => {
   if (status === "icebox") return "yellow";
   if (status === "closed") return "gray";
-  return tabColorCycle[TAB_STATUSES.indexOf(status)];
+  if (status === "ready") return "orange";
+  return tabColorCycle[(["todo", "in-progress", "done"] as const).indexOf(status)] ?? tabColorCycle[0];
 };

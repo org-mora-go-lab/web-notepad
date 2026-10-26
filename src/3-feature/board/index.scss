@@ -31,15 +31,6 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  .board-admin-badge {
-    display: inline-block;
-    margin-top: 12px;
-    padding: 4px 8px;
-    border: 1px solid v.$line;
-    border-radius: 4px;
-    color: v.$muted;
-    font-size: v.font(11px);
-  }
   button,
   a.board-primary {
     display: inline-flex;
@@ -179,68 +170,6 @@
     color: v.$muted;
     font-size: v.font(12px);
     line-height: 1.7;
-  }
-  .board-admin-actions,
-  .board-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .board-admin-actions {
-    padding-top: 18px;
-    margin-top: 6px;
-    border-top: 1px solid v.$line;
-  }
-  .board-remove-confirm {
-    background: v.$raised;
-    border: 1px solid v.$line;
-    border-radius: 5px;
-    padding: 14px;
-    font-size: v.font(13px);
-    line-height: 1.7;
-  }
-  .board-field { display: flex; flex-direction: column; gap: 8px; }
-  .board-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    h3 {
-      margin: 0;
-      font-size: v.font(18px);
-      font-weight: 500;
-    }
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: v.font(13px);
-    }
-    input,
-    textarea {
-      width: 100%;
-      box-sizing: border-box;
-      min-width: 0;
-      padding: 10px 12px;
-      background: v.$pit;
-      border: 1px solid v.$line;
-      border-radius: 4px;
-      color: v.$ink;
-      font: inherit;
-      line-height: 1.7;
-      &:focus {
-        outline: 1px solid v.$signal;
-      }
-    }
-    textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-    small {
-      color: v.$muted;
-      line-height: 1.6;
-      font-size: v.font(11px);
-    }
   }
   .board-error {
     color: v.$tab-red;

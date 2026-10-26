@@ -23,5 +23,5 @@ export const DEFAULT_SETTINGS: NotepadSettings = {
 };
 
 // Dashboard columns, in display order.
-export const TAB_STATUSES: readonly TabStatus[] = ["todo", "in-progress", "done"];
+export const TAB_STATUSES: readonly TabStatus[] = ["todo", "ready", "in-progress", "done"];
 export const DASHBOARD_STATUSES: readonly TabStatus[] = ["icebox", ...TAB_STATUSES, "closed"];

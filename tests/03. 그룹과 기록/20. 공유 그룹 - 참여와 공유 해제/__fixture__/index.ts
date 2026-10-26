@@ -1,1 +1,1 @@
-export { sharingTest } from "./sharing";
+export { sharingTest } from "../../../__fixture__";

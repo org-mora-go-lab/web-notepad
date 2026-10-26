@@ -5,7 +5,7 @@
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 15px;
     padding: 14px 14px 0;
     padding-right: calc(14px + var(--dashboard-scrollbar-width, 0px));
@@ -29,11 +29,11 @@
 
   .dashboard-statuses.has-icebox,
   .dashboard-statuses.has-closed {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .dashboard-statuses.has-icebox.has-closed {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .dashboard-statuses h3.dashboard-icebox-status {

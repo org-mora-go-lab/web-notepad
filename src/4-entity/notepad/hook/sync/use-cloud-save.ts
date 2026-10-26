@@ -2,13 +2,17 @@
 
 import { useEffect, useState } from "react";
 
-import { createCloudSnapshot, DEFAULT_SETTINGS, getPaneLayout, type GroupEntry, isSharedGroupId, mergeCloudSnapshot, normalizePersistedState, UNGROUPED_GROUP_ID, useNotepadStore } from "@/src/4-entity/notepad";
+import { DEFAULT_SETTINGS, UNGROUPED_GROUP_ID } from "../../constant";
+import { createCloudSnapshot, mergeCloudSnapshot, normalizePersistedState } from "../../persistence";
+import { useNotepadStore } from "../../store";
+import type { GroupEntry } from "../../type";
+import { getPaneLayout, isSharedGroupId } from "../../util";
 
 export type CloudSaveStatus = "pending" | "saving" | "saved" | "error" | null;
 type PendingUpdate = { eventId: string; snapshot: string; baseEventId?: string | null };
 type Baseline = { eventId: string | null; snapshot: string | null };
 type CloudRecord = { eventId: string; snapshot: string; createdAt: number };
-const SAVE_DELAY_MS = 3_000;
+const SAVE_DELAY_MS = 1_000;
 const RETRY_DELAY_MS = 5_000;
 const OWNER_KEY = "web-notepad-cloud-owner";
 
@@ -30,6 +34,8 @@ function hasLocalWork(snapshot: string) {
 }
 
 export function useCloudSave(hydrated: boolean) {
+  const [ready, setReady] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
   const [status, setStatus] = useState<CloudSaveStatus>(null);
 
@@ -84,7 +90,19 @@ export function useCloudSave(hydrated: boolean) {
         });
       }
       applying = true;
-      try { useNotepadStore.setState(normalizePersistedState(source, current)); }
+      try {
+        const normalized = normalizePersistedState(source, current);
+        // Personal history must not normalize or queue changes to shared records.
+        if (preserveShared) {
+          normalized.groups = normalized.groups.map(group => isSharedGroupId(group.id)
+            ? current.groups.find(existing => existing.id === group.id) ?? group : group);
+          normalized.closedTabs = [
+            ...normalized.closedTabs.filter(entry => !isSharedGroupId(entry.groupId)),
+            ...current.closedTabs.filter(entry => isSharedGroupId(entry.groupId)),
+          ];
+        }
+        useNotepadStore.setState(normalized);
+      }
       finally { applying = false; }
       lastSnapshot = createCloudSnapshot(useNotepadStore.getState());
       if (userId) writeLocal(localKey(userId), lastSnapshot);
@@ -115,6 +133,8 @@ export function useCloudSave(hydrated: boolean) {
       next = apply(next, !first);
       rememberBase({ eventId: latest?.eventId ?? null, snapshot: latest ? (needsSave ? latest.snapshot : next) : null });
       initialized = true;
+      setReady(true);
+      setLastSavedAt(latest?.createdAt ?? null);
       changedBeforeAuth = false;
       if (needsSave) queue(next, restored);
       else {
@@ -135,7 +155,7 @@ export function useCloudSave(hydrated: boolean) {
         const { latest } = await response.json() as { latest: CloudRecord | null };
         if (!valid(id, version)) return;
         if (!initialized || (latest?.eventId ?? null) !== baseline.eventId) reconcile(latest, !initialized);
-      } catch { if (valid(id, version) && !initialized) setStatus("error"); }
+      } catch { if (valid(id, version) && !initialized) { setStatus("error"); setReady(true); } }
       finally { pulling = false; }
     };
     const flush = async () => {
@@ -162,6 +182,7 @@ export function useCloudSave(hydrated: boolean) {
         }
         if (!response.ok) throw new Error("Cloud save failed");
         rememberBase({ eventId: update.eventId, snapshot: update.snapshot });
+        setLastSavedAt(Date.now());
         for (const [tabId, content] of sentContents) if (editedContents.get(tabId) === content) editedContents.delete(tabId);
         if (pending?.eventId === update.eventId) {
           pending = null;
@@ -213,7 +234,9 @@ export function useCloudSave(hydrated: boolean) {
         const result = await response.json() as { user?: { id?: string } | null };
         if (!active || requestId !== sessionRequest) return;
         const nextId = result.user?.id ?? null;
-        if (nextId === userId) return;
+        if (nextId === userId) { if (!nextId) setReady(true); return; }
+        setReady(false);
+        setLastSavedAt(null);
         generation += 1;
         clearTimer();
         pending = null;
@@ -253,5 +276,5 @@ export function useCloudSave(hydrated: boolean) {
     };
   }, [hydrated]);
 
-  return { status, savingTabIds };
+  return { status, savingTabIds, ready, lastSavedAt };
 }

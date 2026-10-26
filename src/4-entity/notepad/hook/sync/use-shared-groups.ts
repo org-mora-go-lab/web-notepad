@@ -1,9 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { applySharedGroupData, createJoinedGroup, isSharedGroupId, mergeSharedGroupData, type SharedGroupData, type SharedNotification, toSharedGroupData, UNGROUPED_GROUP_ID, useNotepadStore } from "@/src/4-entity/notepad";
 import type { GroupSharingAccess } from "@/src/5-shared/type";
+
+import { UNGROUPED_GROUP_ID } from "../../constant";
+import { useNotepadStore } from "../../store";
+import type { SharedGroupData, SharedNotification } from "../../type";
+import { applySharedGroupData, createJoinedGroup, isSharedGroupId, mergeSharedGroupData, toSharedGroupData } from "../../util";
 
 type SharedRecord = { id: string; ownerId: string; revision: number; data: SharedGroupData; updatedAt: number; sharingActive?: boolean };
 export type ShareInviteStatus = "login" | "joining" | "joined" | "error" | null;
@@ -11,6 +15,8 @@ type PendingGroup = { base: SharedRecord; data: SharedGroupData };
 const same = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
 
 export function useSharedGroups(hydrated: boolean) {
+  const [loading, setLoading] = useState(true);
+  const refreshRef = useRef<(() => Promise<void>) | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
   const [accessByGroup, setAccessByGroup] = useState<Record<string, GroupSharingAccess>>({});
   const [notifications, setNotifications] = useState<SharedNotification[]>([]);
@@ -26,6 +32,7 @@ export function useSharedGroups(hydrated: boolean) {
     let sessionChecked = false;
     let refreshing = false;
     let refreshQueued = false;
+    const refreshWaiters: Array<() => void> = [];
     let applying = false;
     const baselines = new Map<string, SharedRecord>();
     const timers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -108,7 +115,7 @@ export function useSharedGroups(hydrated: boolean) {
       if (same(data, base.data)) { persistPending(id, null); clearTimer(id); return; }
       persistPending(id, { base, data });
       clearTimer(id);
-      timers.set(id, setTimeout(() => void flush(id), 3_000));
+      timers.set(id, setTimeout(() => void flush(id), 1_000));
     };
 
     const refreshNotifications = async () => {
@@ -121,9 +128,12 @@ export function useSharedGroups(hydrated: boolean) {
       } catch { /* Retry when the screen returns or the connection recovers. */ }
     };
 
-    const refreshGroups = async () => {
+    const refreshGroups = async (): Promise<void> => {
       if (!userId) return;
-      if (refreshing) { refreshQueued = true; return; }
+      if (refreshing) {
+        refreshQueued = true;
+        return new Promise<void>(resolve => refreshWaiters.push(resolve));
+      }
       refreshing = true;
       try {
         const response = await fetch("/api/groups", { cache: "no-store" });
@@ -173,7 +183,9 @@ export function useSharedGroups(hydrated: boolean) {
       } catch { /* Keep local editing available. */ }
       finally {
         refreshing = false;
-        if (active && refreshQueued) { refreshQueued = false; void refreshGroups(); }
+        if (active) setLoading(false);
+        if (active && userId && refreshQueued) { refreshQueued = false; await refreshGroups(); }
+        else { refreshQueued = false; refreshWaiters.splice(0).forEach(resolve => resolve()); }
       }
     };
 
@@ -192,6 +204,8 @@ export function useSharedGroups(hydrated: boolean) {
       if (changedIds.length) setSavingTabIds(current => current.filter(id => !changedIds.includes(id)));
       for (const group of state.groups) {
         if (!isSharedGroupId(group.id)) continue;
+        const previousGroup = previous.groups.find(item => item.id === group.id);
+        if (previousGroup && same(toSharedGroupData(previousGroup), toSharedGroupData(group))) continue;
         if (!baselines.has(group.id)) changedBeforeLoad.add(group.id);
         else queue(group.id);
       }
@@ -233,6 +247,7 @@ export function useSharedGroups(hydrated: boolean) {
         timers.clear();
         if (!userId) {
           setNotifications([]);
+          setLoading(false);
           setAccessByGroup({});
           if (share) setInviteStatus("login");
           applying = true;
@@ -244,9 +259,10 @@ export function useSharedGroups(hydrated: boolean) {
         }
         if (share) await joinInvite();
         else await refreshGroups();
-      } catch { if (active && share) setInviteStatus("error"); }
+      } catch { if (active) { setLoading(false); if (share) setInviteStatus("error"); } }
     };
 
+    refreshRef.current = refreshGroups;
     const onShared = () => void refreshGroups();
     const onRestore = () => { if (document.visibilityState !== "hidden") void refreshGroups(); };
     window.addEventListener("shared-groups-changed", onShared);
@@ -257,6 +273,7 @@ export function useSharedGroups(hydrated: boolean) {
     void refreshSession();
     return () => {
       active = false;
+      refreshRef.current = null;
       unsubscribe();
       timers.forEach(clearTimeout);
       window.removeEventListener("focus", onRestore);
@@ -294,6 +311,8 @@ export function useSharedGroups(hydrated: boolean) {
 
   return {
     notifications,
+    loading,
+    refreshGroups: () => refreshRef.current?.(),
     savingTabIds,
     accessByGroup,
     changeAccess,

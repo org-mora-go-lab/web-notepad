@@ -13,7 +13,7 @@ export function DashboardStatusEditor({ statusNames, groupName, onSaveStatusName
   const dialogRef = useModalDialog(true, "input");
   const [draft, setDraft] = useState({ ...statusNames });
   const close = () => { dialogRef.current?.close(); onClose(); };
-  const labels = { icebox: t.icebox, todo: t.statusTodo, "in-progress": t.statusInProgress, done: t.statusDone, closed: t.closedTitle };
+  const labels = { icebox: t.icebox, todo: t.statusTodo, ready: t.statusReady, "in-progress": t.statusInProgress, done: t.statusDone, closed: t.closedTitle };
 
   return (
     <dialog

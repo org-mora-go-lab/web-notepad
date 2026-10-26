@@ -85,7 +85,8 @@
   background: v.$raised;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   color: v.$ink;
-  button {
+  :is(button, a) {
+    text-decoration: none;
     width: 100%;
     min-height: 40px;
     display: flex;
@@ -105,5 +106,5 @@
     &:disabled { opacity: 0.55; cursor: wait; }
     svg { flex: 0 0 18px; }
   }
-  @media (max-width: 512px) { button { min-height: 44px; } }
+  @media (max-width: 512px) { :is(button, a) { min-height: 44px; } }
 }

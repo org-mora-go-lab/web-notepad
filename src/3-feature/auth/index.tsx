@@ -1,12 +1,12 @@
 "use client";
 
-import { Bell, CircleUserRound, LogIn, LogOut, MessageSquare } from "lucide-react";
+import { Bell, CircleUserRound, LogIn, LogOut, MessageSquare,UserRound } from "lucide-react";
+import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { AccountActionsContext, useI18n } from "@/src/5-shared/hook";
-
-type AuthUser = { id: string; nickname: string; profileImageUrl?: string };
+import type { AccountProfile as AuthUser } from "@/src/5-shared/type";
 
 export function Auth() {
   const { t } = useI18n();
@@ -42,7 +42,7 @@ export function Auth() {
 
   useEffect(() => {
     if (!menuOpen) return;
-    const items = menuRef.current?.querySelectorAll<HTMLButtonElement>("button");
+    const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]');
     (lastItemOnOpen.current ? items?.[items.length - 1] : items?.[0])?.focus();
     const outside = (event: PointerEvent) => {
       if (!triggerRef.current?.contains(event.target as Node) && !menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
@@ -100,13 +100,14 @@ export function Auth() {
           if (event.key === "Escape" || event.key === "Tab") {
             event.preventDefault(); event.stopPropagation(); closeMenu(true); return;
           }
-          const items = Array.from(menuRef.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)") ?? []);
-          const index = items.indexOf(document.activeElement as HTMLButtonElement);
+          const items = Array.from(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? []);
+          const index = items.indexOf(document.activeElement as HTMLElement);
           const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1
             : event.key === "ArrowDown" ? (index + 1) % items.length
               : event.key === "ArrowUp" ? (index - 1 + items.length) % items.length : -1;
           if (next >= 0) { event.preventDefault(); items[next]?.focus(); }
         }}>
+        <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}><UserRound size={18} /><span>{t.myPage}</span></Link>
         <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenBoard(); }}><MessageSquare size={18} /><span>{t.accountBoard}</span></button>
         <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenNotifications(); }}><Bell size={18} /><span>{t.notifications}</span></button>
         <button type="button" role="menuitem" disabled={loading} onClick={() => void logout()}><LogOut size={18} /><span>{t.logout}</span></button>

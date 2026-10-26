@@ -171,9 +171,9 @@ export function Dashboard({
           deleteOnly={getTabStatus(contextTab, tabColorCycle) === "closed"}
           bookmarked={contextTab.bookmarked}
           footerAction={DASHBOARD_STATUSES.filter((status) => status !== contextStatus).map((status) => {
-            const Icon = { icebox: StickyNote, todo: ListTodo, "in-progress": CircleDot, done: CircleCheck, closed: Ghost }[status];
+            const Icon = { icebox: StickyNote, todo: ListTodo, ready: ListTodo, "in-progress": CircleDot, done: CircleCheck, closed: Ghost }[status];
             const label = statusNames[status] ?? {
-              icebox: t.icebox, todo: t.statusTodo, "in-progress": t.statusInProgress, done: t.statusDone, closed: t.closedTitle,
+              icebox: t.icebox, todo: t.statusTodo, ready: t.statusReady, "in-progress": t.statusInProgress, done: t.statusDone, closed: t.closedTitle,
             }[status];
             return (
               <button key={status} type="button" role="menuitem" onClick={() => {

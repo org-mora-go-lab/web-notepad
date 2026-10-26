@@ -1,0 +1,19 @@
+@use "../../5-shared/style/variable" as v;
+.my-page {
+  width: 100%; height: 100vh; height: 100dvh; min-height: 0; overflow-y: auto; overflow-x: hidden;
+  padding: 32px 20px 48px; background: v.$pit; color: v.$ink; font-family: v.$sans;
+  .my-page-container { width: min(880px, 100%); margin: 0 auto; display: grid; gap: 24px; }
+  h1 { margin: 20px 0 8px; font-size: v.font(32px); font-weight: 500; }
+  h2 { margin: 0; font-size: v.font(20px); font-weight: 500; }
+  p { margin: 8px 0 0; color: v.$muted; line-height: 1.7; font-size: v.font(14px); }
+  a, button { min-height: 40px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid v.$line; border-radius: 5px; background: v.$panel; color: v.$ink; font: inherit; font-size: v.font(14px); text-decoration: none; &:hover, &:focus-visible { background: v.$raised; } &:focus-visible { outline: 2px solid v.$signal; outline-offset: 2px; } }
+  .my-page-header > a { padding-left: 0; border: 0; background: transparent; color: v.$muted; }
+  .my-page-profile, .my-page-sync, .my-page-notice { padding: 24px; background: v.$panel; border: 1px solid v.$line; border-radius: 6px; }
+  .my-page-profile { display: flex; align-items: center; gap: 20px; min-width: 0; min-height: 114px; > img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; } > svg, > img { flex: 0 0 64px; } > div { min-width: 0; } h2 { overflow-wrap: anywhere; } }
+  .my-page-avatar-skeleton { width: 64px; height: 64px; flex: 0 0 64px; border-radius: 50%; background: v.$line; }
+  .my-page-name-skeleton { width: min(200px, 50%); height: 18px; border-radius: 4px; background: v.$line; }
+  .my-page-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin: 0; > div { min-width: 0; padding: 18px; background: v.$panel; border: 1px solid v.$line; border-radius: 6px; } dt { display: flex; align-items: center; gap: 8px; color: v.$muted; font-size: v.font(13px); } dd { margin: 14px 0 0; font-size: v.font(30px); } }
+  .my-page-sync dl { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: v.font(13px); dt { color: v.$muted; } dd { margin: 0; } }
+  .my-page-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  @media (max-width: 512px) { padding: 20px 16px 36px; .my-page-profile, .my-page-sync, .my-page-notice { padding: 18px; } a, button { min-height: 44px; } .my-page-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+}

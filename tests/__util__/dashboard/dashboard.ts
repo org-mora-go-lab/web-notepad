@@ -6,7 +6,7 @@ import { writeStoredState } from "../state";
 export const dashboardPanel = (page: Page) => page.locator("#dashboard-panel");
 export const dashboardColumn = (
   page: Page,
-  status: "icebox" | "todo" | "in-progress" | "done" | "closed",
+  status: "icebox" | "todo" | "ready" | "in-progress" | "done" | "closed",
 ) =>
   dashboardPanel(page).locator(`.dashboard-column[data-status="${status}"]`);
 
