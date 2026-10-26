@@ -156,7 +156,6 @@ export function Home() {
               selectGroupAndClosePanel(group.id);
               const tab = group.tabs.find(tab => tab.id === item.tabId) ?? group.tabs.find(tab => tab.open) ?? group.tabs[0];
               if (tab) openTabAndClosePanel(tab.id);
-              closeGroupMenu();
             }}
           />
         </section>
