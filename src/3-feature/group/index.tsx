@@ -30,6 +30,7 @@ function GroupSidebar({
   const sharing = useContext(GroupSharingContext);
   const [accessAction, setAccessAction] = useState<{ groupId: string; action: "leave" | "revoke"; anchor: HTMLElement } | null>(null);
   const [accessError, setAccessError] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(false);
   const accessBusy = useRef(false);
   const [sectionsOpen, setSectionsOpen] = useState(() => {
     try { const value = JSON.parse(localStorage.getItem("web-notepad-group-sections") ?? "null");
@@ -54,7 +55,10 @@ function GroupSidebar({
     .sort(compareGroups)
     .filter((group) => group.id !== UNGROUPED_GROUP_ID);
 
-  const isReceived = (group: GroupEntry) => isSharedGroupId(group.id) && sharing?.accessByGroup[group.id]?.role !== "owner";
+  const hasAccess = (group: GroupEntry) => !isSharedGroupId(group.id) || !!sharing?.accessByGroup[group.id];
+  const pendingRows = otherRows.filter(group => !hasAccess(group));
+  const isReceived = (group: GroupEntry) => sharing?.accessByGroup[group.id]?.role === "member";
+  const accessLoading = sharing?.loading || checkingAccess;
 
   const handleShared = useCallback((originalId: string, sharedGroup: GroupEntry) => {
     if (originalId !== sharedGroup.id) {
@@ -97,8 +101,19 @@ function GroupSidebar({
         <section className="group-section">
           <div className="group-list" id="group-sidebar-list">
               <GroupCreateForm onCreate={name => { if (!sectionsOpen.my) toggleSection("my"); onCreate(name); }} />
+              {pendingRows.length > 0 && <div className="group-access-status" aria-busy={!!accessLoading}>
+                {accessLoading ? <div className="group-access-skeleton" role="status" aria-label={t.sharedGroupsLoading}>
+                  <span aria-hidden="true" /><span aria-hidden="true" />
+                </div> : <div className="group-access-error" role="status">
+                  <p>{t.sharedGroupsUnavailable}</p>
+                  <button type="button" onClick={async () => {
+                    setCheckingAccess(true);
+                    try { await sharing?.refreshGroups(); } finally { setCheckingAccess(false); }
+                  }}>{t.boardRetry}</button>
+                </div>}
+              </div>}
               {(["my", "shared"] as const).map(section => {
-                const rows = otherRows.filter(group => isReceived(group) === (section === "shared"));
+                const rows = otherRows.filter(group => hasAccess(group) && isReceived(group) === (section === "shared"));
                 const label = section === "my" ? t.myGroup : t.shareGroupSection;
                 const Icon = sectionsOpen[section] ? ChevronDown : ChevronRight;
                 return <section className="group-category" key={section}>
@@ -141,7 +156,7 @@ function GroupSidebar({
                 />
 
                     ))}
-                    {rows.length === 0 && <p className="group-section-empty">{section === "my" ? t.noMyGroups : t.noSharedGroups}</p>}
+                    {rows.length === 0 && pendingRows.length === 0 && <p className="group-section-empty">{section === "my" ? t.noMyGroups : t.noSharedGroups}</p>}
                   </div>
                 </section>;
               })}

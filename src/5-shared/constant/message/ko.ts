@@ -1,6 +1,8 @@
 import type { Messages } from "./en";
 
 export const ko: Messages = {
+  sharedGroupsLoading: "공유 그룹 확인 중…",
+  sharedGroupsUnavailable: "공유 그룹을 확인하지 못했습니다.",
   noMyGroups: "첫 그룹을 만들어보세요.",
   noSharedGroups: "공유받은 그룹이 여기에 표시됩니다.",
   myGroup: "My Group",

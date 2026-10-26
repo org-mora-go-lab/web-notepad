@@ -80,3 +80,13 @@
   .group-section-empty { margin: 0; padding: 8px 18px 16px; color: v.$dim; font-size: v.font(12px); line-height: 1.6; }
   @media (max-width: 512px) { .group-section-toggle { min-height: 44px; } }
 }
+
+.group {
+  .group-access-status { padding: 14px 18px; }
+  .group-access-skeleton { display: grid; gap: 12px; }
+  .group-access-skeleton span { height: 18px; width: 75%; border-radius: 4px; background: v.$line; animation: group-access-pulse 1.5s ease-in-out infinite; }
+  .group-access-skeleton span:last-child { width: 55%; }
+  .group-access-error { color: v.$muted; font-size: v.font(12px); line-height: 1.6; p { margin: 0 0 8px; } button { min-height: 36px; padding: 6px 10px; border: 1px solid v.$line; border-radius: 4px; background: transparent; color: v.$ink; &:focus-visible { outline: 2px solid v.$signal; outline-offset: 2px; } } }
+}
+@keyframes group-access-pulse { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .group .group-access-skeleton span { animation: none; } }

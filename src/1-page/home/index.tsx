@@ -109,7 +109,7 @@ export function Home() {
         onOpenBoard: () => { closeGroupMenu(); if (openPanel !== "board") toggleSidePanel("board"); },
         onOpenNotifications: () => { setNotificationsOpen(true); void shared.markNotificationsRead(); },
       }}>
-      <GroupSharingContext value={{ accessByGroup: shared.accessByGroup, changeAccess: shared.changeAccess }}>
+      <GroupSharingContext value={{ loading: shared.loading || shared.checkingGroups, refreshGroups: shared.refreshGroups, accessByGroup: shared.accessByGroup, changeAccess: shared.changeAccess }}>
       <SavingTabsContext value={[...savingTabIds, ...shared.savingTabIds]}>
       <MobileTapFeedback />
       <main

@@ -16,6 +16,7 @@ const same = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.st
 
 export function useSharedGroups(hydrated: boolean) {
   const [loading, setLoading] = useState(true);
+  const [checkingGroups, setCheckingGroups] = useState(false);
   const refreshRef = useRef<(() => Promise<void>) | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
   const [accessByGroup, setAccessByGroup] = useState<Record<string, GroupSharingAccess>>({});
@@ -135,6 +136,7 @@ export function useSharedGroups(hydrated: boolean) {
         return new Promise<void>(resolve => refreshWaiters.push(resolve));
       }
       refreshing = true;
+      setCheckingGroups(true);
       try {
         const response = await fetch("/api/groups", { cache: "no-store" });
         if (!response.ok) return;
@@ -185,7 +187,11 @@ export function useSharedGroups(hydrated: boolean) {
         refreshing = false;
         if (active) setLoading(false);
         if (active && userId && refreshQueued) { refreshQueued = false; await refreshGroups(); }
-        else { refreshQueued = false; refreshWaiters.splice(0).forEach(resolve => resolve()); }
+        else {
+          refreshQueued = false;
+          if (active) setCheckingGroups(false);
+          refreshWaiters.splice(0).forEach(resolve => resolve());
+        }
       }
     };
 
@@ -312,6 +318,7 @@ export function useSharedGroups(hydrated: boolean) {
   return {
     notifications,
     loading,
+    checkingGroups,
     refreshGroups: () => refreshRef.current?.(),
     savingTabIds,
     accessByGroup,
