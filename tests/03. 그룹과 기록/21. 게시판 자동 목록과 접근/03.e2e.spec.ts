@@ -9,8 +9,8 @@ test("3. Board는 로그인한 나의 공유 그룹과 다른 사용자의 공�
   expect(response.ok()).toBe(true); const { group } = await response.json();
   try {
     await authenticateBrowser(context, boardOwnerToken); await page.goto("/"); await openBoard(page);
-    await expect(page.locator(".board-card", { hasText: boardPost.title })).toBeVisible();
-    await expect(page.locator(".board-card", { hasText: group.name })).toBeVisible();
+    await expect(page.locator(".board-entry", { hasText: boardPost.title })).toBeVisible();
+    await expect(page.locator(".board-entry", { hasText: group.name })).toBeVisible();
     const ownGroups = (await (await page.request.get("/api/groups")).json()).groups;
     expect(ownGroups.some((entry: { id: string }) => entry.id === group.id)).toBe(false);
   } finally { await request.post("/api/groups/revoke", { headers, data: { id: group.id } }); }

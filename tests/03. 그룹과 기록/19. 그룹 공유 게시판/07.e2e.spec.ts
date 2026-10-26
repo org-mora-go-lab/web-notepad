@@ -12,7 +12,7 @@ test("7. 게시판 요청 실패 후 다시 시도로 목록을 복구한다", a
   );
   await page.goto("/");
   await openBoard(page);
-  await expect(page.locator("#board-panel").getByRole("alert")).toContainText(
+  await expect(page.locator("#board-page").getByRole("alert")).toContainText(
     "Could not load the board",
   );
   await page.unroute("**/api/board");
@@ -20,5 +20,5 @@ test("7. 게시판 요청 실패 후 다시 시도로 목록을 복구한다", a
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill(boardPost.title);
-  await expect(page.locator(".board-card")).toHaveCount(1);
+  await expect(page.locator(".board-entry")).toHaveCount(1);
 });

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Board,
   Bookmark,
   Dashboard,
   GlobalSearch,
@@ -39,6 +38,7 @@ export function Panel({
   onDeleteDashboardTab,
   onCreateGroup,
   onSelectGroup,
+  onSelectSearchTab,
   onRemoveGroup,
   onRenameGroup,
   onToggleGroupPin,
@@ -46,7 +46,6 @@ export function Panel({
 }: PanelProps) {
   return (
     <div className="panel">
-      {(openPanel === "board" || backgroundPanel === "board") && <Board onClose={onClose} />}
       <Bookmark
         bookmarks={bookmarks}
         open={openPanel === "bookmarks" || backgroundPanel === "bookmarks"}
@@ -92,6 +91,7 @@ export function Panel({
         open={openPanel === "global-search"}
         onClose={onClose}
         onSelectGroup={onSelectGroup}
+        onSelectTab={onSelectSearchTab}
       />
       <Shortcut
         open={openPanel === "shortcuts" || backgroundPanel === "shortcuts"}

@@ -16,7 +16,7 @@ export async function seedSortableGroups(page: Page) {
     createGroupFixture(
       id,
       name,
-      [createTabFixture(`tab-${index + 1}`, "", { title: name })],
+      [createTabFixture(`tab-${index + 1}`, name)],
       {
         createdAt: index,
       },

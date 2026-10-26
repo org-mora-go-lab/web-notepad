@@ -2,6 +2,7 @@
 
 import "./index.scss";
 
+import { useRouter } from "next/navigation";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { useCloudSave, useHome, useSharedGroups } from "@/src/1-page/home/hook";
@@ -14,6 +15,7 @@ import { MobileTapFeedback } from "@/src/5-shared/ui";
 import { Loading, PaneColumn } from "./component";
 
 export function Home() {
+  const router = useRouter();
   const {
     hydrated,
     groupMenuOpen,
@@ -29,6 +31,7 @@ export function Home() {
     selectGroupAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,
+    openSearchTabAndClosePanel,
     activeTab,
     split,
     bookmarks,
@@ -79,8 +82,9 @@ export function Home() {
     if (!hydrated || entryOpened.current) return;
     entryOpened.current = true;
     const panel = new URLSearchParams(window.location.search).get("panel");
-    if (panel === "settings" || panel === "board") { closeGroupMenu(); toggleSidePanel(panel); }
-  }, [hydrated, closeGroupMenu, toggleSidePanel]);
+    if (panel === "board") { router.replace("/board"); return; }
+    if (panel === "settings") { closeGroupMenu(); toggleSidePanel(panel); }
+  }, [hydrated, closeGroupMenu, toggleSidePanel, router]);
 
   useEffect(() => {
     if (!inviteStatus || inviteStatus === "joining") return;
@@ -137,7 +141,7 @@ export function Home() {
             groupsOpen={groupMenuOpen}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
             onToggleGroups={toggleGroupMenu}
-            onOpenBoard={() => toggleSidePanel("board")}
+            onOpenBoard={() => router.push("/board")}
             onOpenShortcuts={() => toggleSidePanel("shortcuts")}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
             onToggleSearch={() => toggleSidePanel("global-search")}
@@ -198,6 +202,7 @@ export function Home() {
           onDeleteDashboardTab={deleteDashboardTab}
           onCreateGroup={createGroupAndRecord}
           onSelectGroup={selectGroupAndClosePanel}
+          onSelectSearchTab={openSearchTabAndClosePanel}
           onRemoveGroup={removeGroupAndRecord}
           onRenameGroup={renameGroup}
           onSaveDashboardStatusNames={(names) => setGroupStatusNames(activeGroupId, names)}

@@ -3,6 +3,7 @@ import type { ComponentProps } from "react";
 import type {
   Bookmark,
   Dashboard,
+  GlobalSearch,
   Group,
 } from "@/src/3-feature";
 import type {
@@ -40,6 +41,7 @@ export type PanelProps = {
   >["onToggleTabBookmark"];
   onDeleteDashboardTab: ComponentProps<typeof Dashboard>["onDeleteTab"];
   onCreateGroup: ComponentProps<typeof Group>["onCreate"];
+  onSelectSearchTab: ComponentProps<typeof GlobalSearch>["onSelectTab"];
   onSelectGroup: ComponentProps<typeof Group>["onSelect"];
   onRemoveGroup: ComponentProps<typeof Group>["onRemove"];
   onRenameGroup: ComponentProps<typeof Group>["onRename"];

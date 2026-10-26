@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import type { CornerPopoverProps } from "./type";
@@ -12,6 +12,33 @@ export function CornerPopover({ id, className, title, closeLabel, open, position
   const triggerRef = useRef<HTMLElement | null>(null);
   useEffect(() => { closeRef.current = onClose; }, [onClose]);
   const restoreFocus = () => { if (triggerRef.current?.isConnected) triggerRef.current.focus(); };
+  useLayoutEffect(() => {
+    if (!open || position !== "top") return;
+    const trigger = document.querySelector<HTMLElement>(triggerSelector), popup = ref.current;
+    if (!trigger || !popup) return;
+    const place = () => {
+      const anchor = trigger.getBoundingClientRect();
+      const viewport = window.visualViewport;
+      const leftEdge = (viewport?.offsetLeft ?? 0) + 8;
+      const rightEdge = leftEdge + (viewport?.width ?? window.innerWidth) - 16;
+      const top = anchor.bottom + 7;
+      popup.style.top = top + "px";
+      popup.style.left = Math.max(leftEdge, Math.min(anchor.right - popup.offsetWidth, rightEdge - popup.offsetWidth)) + "px";
+      popup.style.right = "auto";
+      popup.style.maxHeight = Math.max(44, Math.min(420, (viewport?.height ?? window.innerHeight) + (viewport?.offsetTop ?? 0) - top - 8)) + "px";
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    observer.observe(trigger); observer.observe(popup);
+    if (trigger.parentElement) observer.observe(trigger.parentElement);
+    window.addEventListener("resize", place); window.addEventListener("scroll", place, true);
+    window.visualViewport?.addEventListener("resize", place);
+    window.visualViewport?.addEventListener("scroll", place);
+    return () => {
+      observer.disconnect(); window.removeEventListener("resize", place); window.removeEventListener("scroll", place, true);
+      window.visualViewport?.removeEventListener("resize", place); window.visualViewport?.removeEventListener("scroll", place);
+    };
+  }, [open, position, triggerSelector]);
   useEffect(() => {
     if (!open) return;
     triggerRef.current = document.querySelector<HTMLElement>(triggerSelector);

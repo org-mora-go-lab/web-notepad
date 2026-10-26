@@ -6,5 +6,6 @@ export type GlobalSearchProps = {
   onSearchQueryChange: (query: string) => void;
   open: boolean;
   onClose: () => void;
+  onSelectTab: (groupId: string, tabId: string) => void;
   onSelectGroup: (groupId: string) => void;
 };

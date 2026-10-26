@@ -106,6 +106,7 @@ export type SharedNotification = {
   groupId: string;
   tabId: string | null;
   groupName: string;
+  actorId?: string;
   actorName: string;
   summary: string;
   createdAt: number;

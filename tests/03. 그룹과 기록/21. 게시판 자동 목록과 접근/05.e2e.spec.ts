@@ -9,10 +9,10 @@ test("5. 내 공유 그룹은 참여 대신 공유 취소를 제공하고 노트
   await page.locator(".board-detail").getByRole("button", { name: "Cancel Sharing", exact: true }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Cancel Sharing", exact: true }).click();
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
-  await expect(page.locator(".board-card", { hasText: boardPost.title })).toHaveCount(0);
+  await expect(page.locator(".board-entry", { hasText: boardPost.title })).toHaveCount(0);
   const records = (await (await page.request.get("/api/groups")).json()).groups;
   expect(records.find((item: { id: string }) => item.id === boardPost.id).sharingActive).toBe(false);
-  await page.locator("#board-panel .side-panel-close").click();
+  await page.getByRole("link", { name: "Back to notes", exact: true }).click();
   if (await groupsCommand(page).getAttribute("aria-expanded") !== "true") await groupsCommand(page).click();
   await expect(page.locator('#group-my-list [data-group-id="' + boardPost.id + '"]')).toBeVisible();
 });

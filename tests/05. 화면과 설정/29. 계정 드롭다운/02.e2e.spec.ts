@@ -8,5 +8,6 @@ test("2. 보드는 계정 메뉴에서 제외하고 더보기에서 열 수 있�
   await expect(page.getByRole("menuitem", { name: "Board", exact: true })).toHaveCount(0);
   await page.keyboard.press("Escape");
   await openBoard(page);
-  await expect(page.locator("#board-panel")).toHaveAttribute("aria-hidden", "false");
+  await expect(page).toHaveURL(/\/board$/);
+  await expect(page.locator("#board-page")).toBeVisible();
 });

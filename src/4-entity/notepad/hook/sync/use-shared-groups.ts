@@ -23,6 +23,8 @@ export function useSharedGroups(hydrated: boolean) {
   const refreshRef = useRef<(() => Promise<void>) | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
   const [accessByGroup, setAccessByGroup] = useState<Record<string, GroupSharingAccess>>({});
+  const [deletedTabIds, setDeletedTabIds] = useState(new Set<string>());
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<SharedNotification[]>([]);
   const [inviteStatus, setInviteStatus] = useState<ShareInviteStatus>(null);
   const [inviteToken] = useState<string | null>(() =>
@@ -201,7 +203,17 @@ export function useSharedGroups(hydrated: boolean) {
     };
 
     const unsubscribe = useNotepadStore.subscribe((state, previous) => {
-      if (applying || !userId) return;
+      if (!userId) return;
+      const presentIds = new Set(state.groups.filter(group => isSharedGroupId(group.id)).flatMap(group => group.tabs.map(tab => tab.id)));
+      setDeletedTabIds(current => {
+        const next = new Set(current);
+        for (const group of previous.groups.filter(group => isSharedGroupId(group.id))) {
+          for (const tab of group.tabs) if (!presentIds.has(tab.id)) next.add(tab.id);
+        }
+        for (const id of presentIds) next.delete(id);
+        return next.size === current.size && [...next].every(id => current.has(id)) ? current : next;
+      });
+      if (applying) return;
       const previousContents = new Map(previous.groups.filter(group => isSharedGroupId(group.id)).flatMap(group => group.tabs.map(tab => [tab.id, tab.content] as const)));
       const changedIds: string[] = [];
       for (const group of state.groups.filter(group => isSharedGroupId(group.id))) {
@@ -252,6 +264,9 @@ export function useSharedGroups(hydrated: boolean) {
         if (sessionChecked && nextId === userId) { if (userId) await refreshGroups(); return; }
         sessionChecked = true;
         userId = nextId;
+        setCurrentUserId(nextId);
+        setDeletedTabIds(new Set());
+        setNotifications([]);
         setGroupsLoaded(false);
         setLoadError(false);
         baselines.clear();
@@ -327,8 +342,9 @@ export function useSharedGroups(hydrated: boolean) {
   const visibleNotifications = notifications.filter(notification => {
     const group = groups.find(group => group.id === notification.groupId);
     const tab = group?.tabs.find(tab => tab.id === notification.tabId);
-    // A newly notified tab may arrive with the in-flight group response.
-    return !!tab || loading || checkingGroups;
+    if (notification.actorId === currentUserId) return false;
+    if (tab) return true;
+    return !!notification.tabId && !deletedTabIds.has(notification.tabId) && (loading || checkingGroups);
   });
 
   return {
