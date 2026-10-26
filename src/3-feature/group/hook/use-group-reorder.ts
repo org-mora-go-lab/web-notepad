@@ -39,10 +39,10 @@ export function useGroupReorder(onMove: (groupId: string, targetId: string) => v
       destination = target && section?.contains(target) && target.dataset.pinned === row?.dataset.pinned && target.dataset.groupId !== groupId
         ? target.dataset.groupId ?? null : null;
       setTargetId(destination);
-      if (list) {
-        const bounds = list.getBoundingClientRect();
-        if (moveEvent.clientY < bounds.top + 28) list.scrollTop -= 16;
-        if (moveEvent.clientY > bounds.bottom - 28) list.scrollTop += 16;
+      if (section) {
+        const bounds = section.getBoundingClientRect();
+        if (moveEvent.clientY < bounds.top + 28) section.scrollTop -= 16;
+        if (moveEvent.clientY > bounds.bottom - 28) section.scrollTop += 16;
       }
     };
     const cleanup = () => {

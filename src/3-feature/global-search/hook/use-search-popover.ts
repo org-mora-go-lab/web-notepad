@@ -21,16 +21,13 @@ export function useSearchPopover(open: boolean, onClose: () => void) {
     if (firstOpen) dialog.show();
     const position = () => {
       const viewport = window.visualViewport;
-      const anchorRect = anchor?.getBoundingClientRect();
       const viewportBottom = (viewport?.height ?? window.innerHeight) + (viewport?.offsetTop ?? 0);
-      const preferredTop = (anchorRect?.bottom ?? 40) + 6;
-      const top = anchorRect && anchorRect.top > window.innerHeight / 2
-        ? Math.max(8, anchorRect.top - dialog.offsetHeight - 6)
-        : preferredTop;
-      const right = anchorRect?.right ?? window.innerWidth - 8;
-      dialog.style.top = `${top}px`;
-      dialog.style.left = `${Math.max(8, Math.min(right - dialog.offsetWidth, window.innerWidth - dialog.offsetWidth - 8))}px`;
-      dialog.style.setProperty("--global-search-available-height", `${Math.max(100, viewportBottom - top - 8)}px`);
+      const footerHeight = document.querySelector(".footer")?.getBoundingClientRect().height ?? 48;
+      dialog.style.setProperty("--global-search-available-height", Math.max(100, (viewport?.height ?? window.innerHeight) - footerHeight - 24) + "px");
+      const top = Math.max((viewport?.offsetTop ?? 0) + 8, viewportBottom - footerHeight - 8 - dialog.offsetHeight);
+      const right = (viewport?.offsetLeft ?? 0) + (viewport?.width ?? window.innerWidth) - 16;
+      dialog.style.top = top + "px";
+      dialog.style.left = Math.max((viewport?.offsetLeft ?? 0) + 16, right - dialog.offsetWidth) + "px";
     };
     position();
     if (firstOpen) dialog.querySelector<HTMLInputElement>('input[type="search"]')?.focus({ preventScroll: true });

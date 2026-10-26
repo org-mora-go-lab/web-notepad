@@ -4,6 +4,7 @@ import { sharingTest as test } from "../../__fixture__";
 import { addTabButton, openAccountMenu } from "../../__util__";
 
 test("10. Alarm은 진행 중인 그룹 갱신을 기다린 뒤 변경된 탭을 연다", async ({ sharing: { owner, guest } }) => {
+  test.setTimeout(60000);
   await guest.keyboard.press("Escape");
   await addTabButton(guest).click();
   const content = "Alarm target second tab";

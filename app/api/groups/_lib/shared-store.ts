@@ -142,7 +142,7 @@ export async function saveSharedGroup(
 export async function listSharedNotifications(userId: string) {
   const database = await sharedDatabase();
   const result = await database.execute({
-    sql: `SELECT e.id, e.group_id, e.tab_id, e.actor_name, e.summary, e.created_at,
+    sql: `SELECT e.id, e.group_id, e.tab_id, e.actor_id, e.actor_name, e.summary, e.created_at,
       g.snapshot, m.last_seen_event_id
       FROM shared_group_events e
       JOIN shared_group_members m ON m.group_id = e.group_id AND m.user_id = ?
@@ -159,6 +159,7 @@ export async function listSharedNotifications(userId: string) {
     groupId: String(row.group_id),
     tabId,
     groupName: group.name,
+    actorId: String(row.actor_id),
     actorName: String(row.actor_name),
     summary: String(row.summary),
     createdAt: Number(row.created_at),

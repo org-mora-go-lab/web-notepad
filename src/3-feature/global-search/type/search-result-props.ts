@@ -1,5 +1,6 @@
 export type SearchResultProps = {
   category: string;
+  kind?: "tab";
   groupName?: string;
   title: string;
   description?: string;

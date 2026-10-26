@@ -1,5 +1,7 @@
 @use "./variable" as v;
 
+:root { --list-popover-height: min(416px, calc(100dvh - 160px)); }
+
 * {
   box-sizing: border-box;
   scrollbar-color: v.$dim v.$panel;

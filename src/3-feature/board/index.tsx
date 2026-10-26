@@ -14,12 +14,11 @@ import { useContext, useEffect, useRef, useState } from "react";
 
 import type { BoardPost } from "@/src/4-entity/notepad";
 import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
-import { ConfirmPopup, SearchField, SidePanel } from "@/src/5-shared/ui";
+import { ConfirmPopup, SearchField } from "@/src/5-shared/ui";
 
 import { useBoard } from "./hook";
-import type { BoardProps } from "./type";
 
-export function Board({ onClose }: BoardProps) {
+export function Board() {
   const contentRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     contentRef.current?.querySelector<HTMLElement>("button, input")?.focus();
@@ -46,15 +45,7 @@ export function Board({ onClose }: BoardProps) {
   const back = () => { setSelected(null); setFailure(""); setCopied(false); };
 
   return (
-    <SidePanel
-      className="board"
-      id="board-panel"
-      title={t.boardTitle}
-      ariaLabel={t.boardTitle}
-      closeLabel={t.closePanel(t.boardTitle)}
-      open
-      onClose={onClose}
-    >
+    <section className="board">
       <div className="board-content" ref={contentRef} aria-busy={loading}
         onKeyDown={(event) => {
           if (event.key !== "Escape" && (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)) event.stopPropagation();
@@ -143,45 +134,14 @@ export function Board({ onClose }: BoardProps) {
                 <p>{t.boardEmptyHint}</p>
               </div>
             ) : (
-              <div className="board-list">
-                {filtered.map((post) => (
-                  <button
-                    type="button"
-                    className="board-card"
-                    key={post.id}
-                    data-group-id={post.id}
-                    onClick={() => {
-                      setSelected(post);
-                      setFailure("");
-                      setCopied(false);
-                    }}
-                  >
-                    <span className="board-card-top">
-                      <span className="board-group-name">
-                        <Layers size={14} />
-                        {post.groupName}
-                      </span>
-                      <ArrowUpRight size={17} aria-hidden="true" />
-                    </span>
-                    <strong>{post.title}</strong>
-                    <p>{t.boardSharedWorkspace}</p>
-                    <span className="board-meta">
-                      <span>
-                        <NotebookPen size={13} />
-                        {t.boardNotes(post.noteCount)}
-                      </span>
-                      <span>
-                        <Users size={13} />
-                        {t.boardMembers(post.memberCount)}
-                      </span>
-                      <time dateTime={new Date(post.updatedAt).toISOString()}>
-                        {new Date(post.updatedAt).toLocaleDateString(
-                          language === "ko" ? "ko-KR" : "en-US",
-                        )}
-                      </time>
-                    </span>
-                  </button>
-                ))}
+              <div className="board-list board-table-container">
+                <table className="board-table" aria-label={t.boardTitle}>
+                  <thead><tr><th scope="col">{t.groupCategory}</th><th scope="col">{t.boardNotesColumn}</th><th scope="col">{t.boardMembersColumn}</th><th scope="col">{t.boardUpdatedColumn}</th></tr></thead>
+                  <tbody>{filtered.map(post => <tr key={post.id} data-group-id={post.id} onClick={() => { setSelected(post); setFailure(""); setCopied(false); }}>
+                    <th scope="row"><button type="button" className="board-entry" data-group-id={post.id}><Layers size={16} aria-hidden="true" /><strong>{post.title}</strong><ArrowUpRight size={16} aria-hidden="true" /></button></th>
+                    <td>{post.noteCount}</td><td>{post.memberCount}</td><td><time dateTime={new Date(post.updatedAt).toISOString()}>{new Date(post.updatedAt).toLocaleDateString(language === "ko" ? "ko-KR" : "en-US")}</time></td>
+                  </tr>)}</tbody>
+                </table>
               </div>
             )}
           </>
@@ -212,6 +172,6 @@ export function Board({ onClose }: BoardProps) {
           } finally { accessBusy.current = false; }
         }}
       />}
-    </SidePanel>
+    </section>
   );
 }

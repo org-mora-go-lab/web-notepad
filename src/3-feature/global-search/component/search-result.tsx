@@ -1,4 +1,4 @@
-import { Bookmark, Folder } from "lucide-react";
+import { Bookmark, FileText, Folder } from "lucide-react";
 
 import { SearchHighlight } from "@/src/5-shared/ui/search-field/component";
 
@@ -6,6 +6,7 @@ import type { SearchResultProps } from "../type";
 
 export function SearchResult({
   category,
+  kind,
   groupName,
   title,
   description,
@@ -23,7 +24,7 @@ export function SearchResult({
       onClick={onSelect}
     >
       <span className="global-search-result-category">
-        {groupName !== undefined ? <Bookmark size={14} aria-hidden="true" /> : <Folder size={14} aria-hidden="true" />}
+        {kind === "tab" ? <FileText size={14} aria-hidden="true" /> : groupName !== undefined ? <Bookmark size={14} aria-hidden="true" /> : <Folder size={14} aria-hidden="true" />}
         {category}
         {groupName && (
           <>

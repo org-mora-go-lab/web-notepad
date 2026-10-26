@@ -10,8 +10,8 @@ test("4. 공유 그룹 이름의 HTML은 실행하지 않고 글자로 표시하
   expect(result.ok()).toBe(true); const { group } = await result.json();
   try {
     await page.goto("/"); await openBoard(page); await page.getByRole("searchbox", { name: "Search shared groups" }).fill(title);
-    await expect(page.locator(".board-card strong")).toHaveText(title);
-    await expect(page.locator(".board-card img")).toHaveCount(0);
+    await expect(page.locator(".board-entry strong")).toHaveText(title);
+    await expect(page.locator(".board-entry img")).toHaveCount(0);
     expect(await page.evaluate(() => (window as Window & { boardInjected?: number }).boardInjected)).toBeUndefined();
     expect(await (await request.get("/api/board")).text()).not.toContain(group.tabs[0].content);
   } finally { await request.post("/api/groups/revoke", { headers, data: { id: group.id } }); }

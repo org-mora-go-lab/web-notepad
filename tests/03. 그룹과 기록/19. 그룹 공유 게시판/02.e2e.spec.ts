@@ -20,5 +20,6 @@ test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만�
   expect(await (await request.get("/api/board")).text()).not.toContain(
     "Private shared note body",
   );
+  await page.getByRole("link", { name: "Back to notes", exact: true }).click();
   await expect(page.locator("textarea.note-area")).toHaveValue("");
 });

@@ -84,6 +84,11 @@ export function useViewActions({
     [openBookmarkAndClosePanel],
   );
 
+  const openSearchTabAndClosePanel = useCallback((groupId: string, tabId: string) => {
+    const state = useNotepadStore.getState();
+    state.selectGroup(groupId); state.selectTab(tabId); finishPanelAction();
+  }, [finishPanelAction]);
+
   const openTabAndClosePanel = useCallback(
     (tabId: string) => {
       useNotepadStore.getState().selectTab(tabId);
@@ -127,6 +132,7 @@ export function useViewActions({
     openBookmarkAndClosePanel,
     openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,
+    openSearchTabAndClosePanel,
     restoreClosedTabAndClosePanel,
     addTabAndRecord,
     moveTabToPaneAndRecord,

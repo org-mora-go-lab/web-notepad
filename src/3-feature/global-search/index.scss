@@ -8,10 +8,10 @@
   position: fixed;
   z-index: 60;
   inset: auto;
-  width: min(420px, calc(100vw - 16px));
-  min-width: min(320px, calc(100vw - 16px));
-  max-width: calc(100vw - 16px);
-  height: min(520px, var(--global-search-available-height, calc(100dvh - 72px)));
+  width: min(420px, calc(100vw - 32px));
+  min-width: min(320px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  height: min(var(--list-popover-height), var(--global-search-available-height, calc(100dvh - 160px)));
   margin: 0;
   padding: 0;
   grid-template-rows: auto minmax(0, 1fr);
@@ -23,8 +23,8 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 
   &.has-preview {
-    width: min(760px, calc(100vw - 16px));
-    min-width: min(640px, calc(100vw - 16px));
+    width: min(760px, calc(100vw - 32px));
+    min-width: min(640px, calc(100vw - 32px));
   }
 
   &[open] {
