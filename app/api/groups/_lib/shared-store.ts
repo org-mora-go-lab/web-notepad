@@ -125,8 +125,8 @@ export async function saveSharedGroup(
     const previousTabs = new Map(current.data.tabs.map(tab => [tab.id, tab]));
     const changedTab = data.tabs.find(tab => {
       const previous = previousTabs.get(tab.id);
-      return !previous || previous.content !== tab.content || previous.tabColor !== tab.tabColor || previous.dashboardStatus !== tab.dashboardStatus;
-    }) ?? data.tabs.find(tab => tab.open) ?? data.tabs[0];
+      return !previous || previous.content !== tab.content || previous.open !== tab.open || previous.tabColor !== tab.tabColor || previous.dashboardStatus !== tab.dashboardStatus;
+    }) ?? current.data.tabs.find(tab => !data.tabs.some(next => next.id === tab.id)) ?? data.tabs.find(tab => tab.open) ?? data.tabs[0];
     await transaction.execute({
       sql: `INSERT INTO shared_group_events (group_id, revision, actor_id, actor_name, summary, created_at, tab_id)
         VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -150,16 +150,21 @@ export async function listSharedNotifications(userId: string) {
       WHERE e.actor_id <> ? ORDER BY e.id DESC LIMIT 30`,
     args: [userId, userId],
   });
-  return result.rows.map((row) => ({
+  return result.rows.flatMap(row => {
+    const group = JSON.parse(String(row.snapshot)) as SharedGroupData;
+    const tabId = typeof row.tab_id === "string" ? row.tab_id : group.tabs.find(tab => tab.open)?.id ?? null;
+    if (!tabId || !group.tabs.some(tab => tab.id === tabId && tab.open !== false) || String(row.summary).startsWith("글 삭제:")) return [];
+    return [{
     id: Number(row.id),
     groupId: String(row.group_id),
-    tabId: typeof row.tab_id === "string" ? row.tab_id : (JSON.parse(String(row.snapshot)) as SharedGroupData).tabs.find(tab => tab.open)?.id ?? null,
-    groupName: (JSON.parse(String(row.snapshot)) as SharedGroupData).name,
+    tabId,
+    groupName: group.name,
     actorName: String(row.actor_name),
     summary: String(row.summary),
     createdAt: Number(row.created_at),
     unread: Number(row.id) > Number(row.last_seen_event_id),
-  }));
+  }];
+  });
 }
 
 export async function markSharedNotificationsRead(userId: string) {

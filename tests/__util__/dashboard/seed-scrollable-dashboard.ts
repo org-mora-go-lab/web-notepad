@@ -16,7 +16,7 @@ export async function seedScrollableDashboard(page: Page) {
             tabColor: index % 3 === 0 ? "gray" : index % 3 === 1 ? "indigo" : "teal",
           }),
         ),
-        { dashboardVisibility: { icebox: false, closed: false } },
+        { dashboardVisibility: { icebox: false, done: true } },
       ),
     ],
   });

@@ -5,7 +5,5 @@ import type { DashboardProps } from "..";
 export type DashboardStatusesProps = Pick<DashboardProps, "tabColorCycle" | "statusNames"> & {
   columns: DashboardColumnData[];
   iceboxVisible: boolean;
-  closedVisible: boolean;
   iceboxCount: number;
-  closedCount: number;
 };

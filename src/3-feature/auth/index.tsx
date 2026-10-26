@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, CircleUserRound, LogIn, LogOut, MessageSquare,UserRound } from "lucide-react";
+import { Bell, CircleUserRound, LogIn, LogOut, MessageSquare, Settings, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -32,12 +32,18 @@ export function Auth() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/auth/session", { cache: "no-store" })
-      .then(response => response.json() as Promise<{ user: AuthUser | null }>)
-      .then(({ user: nextUser }) => { if (active) setUser(nextUser); })
-      .catch(() => undefined)
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+    let requestId = 0;
+    const loadSession = () => {
+      const current = ++requestId;
+      void fetch("/api/auth/session", { cache: "no-store" })
+        .then(response => response.json() as Promise<{ user: AuthUser | null }>)
+        .then(({ user: nextUser }) => { if (active && current === requestId) setUser(nextUser); })
+        .catch(() => undefined)
+        .finally(() => { if (active && current === requestId) setLoading(false); });
+    };
+    loadSession();
+    window.addEventListener("notepad-auth-changed", loadSession);
+    return () => { active = false; window.removeEventListener("notepad-auth-changed", loadSession); };
   }, []);
 
   useEffect(() => {
@@ -110,6 +116,7 @@ export function Auth() {
         <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}><UserRound size={18} /><span>{t.myPage}</span></Link>
         <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenBoard(); }}><MessageSquare size={18} /><span>{t.accountBoard}</span></button>
         <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenNotifications(); }}><Bell size={18} /><span>{t.notifications}</span></button>
+        <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenSettings(); }}><Settings size={18} /><span>{t.settingsTitle}</span></button>
         <button type="button" role="menuitem" disabled={loading} onClick={() => void logout()}><LogOut size={18} /><span>{t.logout}</span></button>
       </div>, document.body)}
   </>;

@@ -106,6 +106,7 @@ export function Home() {
   return (
     <I18nContext value={language}>
       <AccountActionsContext value={{
+        onOpenSettings: () => { closeGroupMenu(); if (openPanel !== "settings") toggleSidePanel("settings"); },
         onOpenBoard: () => { closeGroupMenu(); if (openPanel !== "board") toggleSidePanel("board"); },
         onOpenNotifications: () => { setNotificationsOpen(true); void shared.markNotificationsRead(); },
       }}>
@@ -137,7 +138,6 @@ export function Home() {
             groupsOpen={groupMenuOpen}
             onToggleDashboard={() => toggleSidePanel("dashboard")}
             onToggleGroups={toggleGroupMenu}
-            onOpenSettings={() => toggleSidePanel("settings")}
             onOpenBoard={() => toggleSidePanel("board")}
             onOpenShortcuts={() => toggleSidePanel("shortcuts")}
             onToggleBookmarks={() => toggleSidePanel("bookmarks")}
@@ -155,8 +155,6 @@ export function Home() {
               if (tab) openTabAndClosePanel(tab.id);
               closeGroupMenu();
             }}
-            unreadCount={shared.unreadCount}
-            onMarkNotificationsRead={() => void shared.markNotificationsRead()}
           />
         </section>
 

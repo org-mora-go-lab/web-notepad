@@ -1,23 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import { moreCommand, openMoreMenu } from "../../__util__";
+import { openMoreMenu } from "../../__util__";
 
-test("7. Alarm은 더보기에서 열고 Escape로 닫으면 더보기로 포커스를 돌려준다", async ({ page }) => {
+test("7. PC와 모바일 더보기에는 설정과 그룹 알림 진입점을 표시하지 않는다", async ({ page }) => {
   await page.goto("/");
   for (const width of [1280, 390, 320]) {
     await page.setViewportSize({ width, height: 844 });
-    await expect(page.locator(".notification-command")).toHaveCount(0);
     const menu = await openMoreMenu(page);
-    await menu.getByRole("button", { name: "Alarm", exact: true }).click();
-    await expect(menu).toHaveCount(0);
-    const panel = page.getByRole("dialog", { name: "Alarm", exact: true });
-    await expect(panel).toBeVisible();
-    await expect(panel).toContainText("No shared group updates yet.");
-    const bounds = (await panel.boundingBox())!;
-    expect(bounds.x).toBeGreaterThanOrEqual(0);
-    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    await expect(menu.getByRole("button")).toHaveText(["GUIDE", "SEARCH", "Bookmark", "BOARD"]);
+    await expect(menu.getByRole("button", { name: /Alarm|알람|SETTINGS|설정/ })).toHaveCount(0);
+    await expect(page.locator(".more-command .notification-count")).toHaveCount(0);
     await page.keyboard.press("Escape");
-    await expect(panel).toHaveCount(0);
-    await expect(moreCommand(page)).toBeFocused();
   }
 });

@@ -54,7 +54,7 @@ export const en = {
   search: "SEARCH",
   login: "LOGIN",
   leaveGroup: "Leave group",
-  revokeGroupShare: "Cancel group sharing",
+  revokeGroupShare: "Cancel Sharing",
   leaveGroupMessage: "Leave this shared group? Other members will keep their access.",
   revokeGroupShareMessage: "Cancel sharing? Your notes will remain, and all other members and existing invite links will lose access.",
   groupAccessError: "Could not update sharing. Please try again.",

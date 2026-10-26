@@ -6,7 +6,7 @@
 
 - `__fixture__`: `createTabFixture`, `createGroupFixture`, `createBookmarkFixture`, `createClosedTabFixture`로 정상 데이터를 만든다. 해당 시나리오의 차이만 overrides에 적는다.
 - `__util__/state`: `writeStoredState`는 최초 진입 전에 한 번만 데이터를 넣는다. 저장·새로고침 검증에서는 매번 값을 덮어쓰는 `seedStoredStateOnLoad`를 사용하지 않는다. `restoreWorkspace`는 손상된 입력의 복구 결과를 UI로 확인하고 현재 그룹을 선택해 저장한다.
-- `__util__/workspace`: 그룹·메뉴·패널·가이드 진입과 검색 작업공간 준비를 공유한다. `openPanel`은 토글 동작이므로 이미 열린 패널에 다시 호출하지 않는다.
+- `__util__/workspace`: 그룹·메뉴·패널·가이드 진입과 검색 작업공간 준비를 공유한다. `openAccountMenu`는 설정 검증에 로그인 전제가 필요하면 고유한 실제 테스트 세션을 준비한다. `openSettingsPanel`은 계정 메뉴의 설정 항목으로 진입한다. `openPanel`은 토글 동작이므로 이미 열린 패널에 다시 호출하지 않는다.
 - `__util__/dashboard`: 카드 상태 이동과 데이터 보존 검증의 공통 준비를 제공한다. 각 테스트는 자신의 데이터·배치·편집 연속성에 대한 결과를 직접 검증한다.
 - `__util__/auth`: 서명된 테스트 세션을 실제 API 또는 브라우저 쿠키에 전달한다. 서명 fixture는 앱의 세션 생성 함수를 가져오지 않고 독립적으로 구성한다. 비밀키는 Playwright 서버 설정의 로컬 테스트 값과 맞춘다.
 

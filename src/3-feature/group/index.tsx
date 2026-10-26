@@ -48,6 +48,8 @@ function GroupSidebar({
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
   const [sharingGroup, setSharingGroup] = useState<GroupEntry | null>(null);
+  const shareFocusTarget = useRef<string | null>(null);
+  const closeSharing = useCallback(() => setSharingGroup(null), []);
   const deleteAnchorRef = useRef<HTMLElement | null>(null);
   const groupToDelete = groups.find((group) => group.id === deletingGroupId);
   const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
@@ -60,7 +62,14 @@ function GroupSidebar({
   const isReceived = (group: GroupEntry) => sharing?.accessByGroup[group.id]?.role === "member";
   const accessLoading = sharing?.loading || checkingAccess;
 
+  useEffect(() => {
+    if (sharingGroup || !shareFocusTarget.current) return;
+    const button = sidebarRef.current?.querySelector<HTMLButtonElement>(`[data-group-id="${CSS.escape(shareFocusTarget.current)}"] .group-actions > button`);
+    if (button) { button.focus(); shareFocusTarget.current = null; }
+  }, [groups, sharing?.accessByGroup, sharingGroup]);
+
   const handleShared = useCallback((originalId: string, sharedGroup: GroupEntry) => {
+    shareFocusTarget.current = sharedGroup.id;
     if (originalId !== sharedGroup.id) {
       useNotepadStore.getState().adoptSharedGroup(originalId, sharedGroup);
     }
@@ -152,7 +161,7 @@ function GroupSidebar({
                     deleteAnchorRef.current = anchor;
                     setDeletingGroupId(group.id);
                   }}
-                  onShare={() => setSharingGroup(group)}
+                  onShare={() => { shareFocusTarget.current = group.id; setSharingGroup(group); }}
                 />
 
                     ))}
@@ -256,7 +265,7 @@ function GroupSidebar({
       </>}
       {sharingGroup && <GroupShareDialog
         group={sharingGroup}
-        onClose={() => setSharingGroup(null)}
+        onClose={closeSharing}
         onShared={handleShared}
       />}
     </div>,

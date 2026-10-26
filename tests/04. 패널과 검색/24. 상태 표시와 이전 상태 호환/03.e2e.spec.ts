@@ -4,14 +4,14 @@ import { BOTH_VIEWPORTS } from "../../__constant__";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { dashboardColumn, openPanel, writeStoredState } from "../../__util__";
 
-test("7. Note는 PC·모바일과 두 테마에서 탭·대시보드에 같은 Yellow를 적용한다", async ({ page }) => {
+test("3. Note는 PC·모바일과 두 테마에서 탭·대시보드에 같은 Yellow를 적용한다", async ({ page }) => {
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await writeStoredState(page, {
       groups: [createGroupFixture("ungrouped", "Ungrouped", [
         createTabFixture("tab-1", "Todo task", { tabColor: "gray" }),
         createTabFixture("tab-2", "Note task", { dashboardStatus: "icebox", tabColor: "purple", open: false }),
-      ], { dashboardVisibility: { icebox: true, closed: false } })],
+      ], { dashboardVisibility: { icebox: true, done: true } })],
     });
     await openPanel(page, "dashboard-panel");
     await dashboardColumn(page, "icebox").locator(".dashboard-card-open").click();

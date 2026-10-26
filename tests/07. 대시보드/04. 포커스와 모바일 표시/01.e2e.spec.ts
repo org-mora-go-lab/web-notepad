@@ -43,13 +43,12 @@ test("1. 현재 탭 카드는 상태 색상의 옅은 배경·테두리와 접�
   });
   expect(iceboxColors.actual).toBe(iceboxColors.expected);
 
-  await toggleDashboardStatus(page, "closed");
-  await iceboxActive.dragTo(dashboardColumn(page, "closed"));
-  const closedActive = dashboardColumn(page, "closed").locator(
+  await iceboxActive.dragTo(dashboardColumn(page, "done"));
+  const closedActive = dashboardColumn(page, "done").locator(
     ".dashboard-card.is-active",
   );
   const closedColors = await closedActive.evaluate((card) => {
-    const column = card.closest<HTMLElement>(".dashboard-closed-column")!;
+    const column = card.closest<HTMLElement>(".dashboard-done-column")!;
     const sample = document.createElement("span");
     sample.style.backgroundColor =
       "color-mix(in srgb, var(--dashboard-accent) 12%, var(--color-field))";

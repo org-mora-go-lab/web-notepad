@@ -61,6 +61,10 @@ export function normalizePersistedState(
     createLegacyGroupTab,
   );
 
+  for (const group of groups) {
+    group.tabs = group.tabs.map(tab => tab.dashboardStatus === "closed"
+      ? { ...tab, dashboardStatus: "done", tabColor: settings.tabColorCycle[2] ?? "teal" } : tab);
+  }
   const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
   if (!ungrouped) {
     groups.unshift({

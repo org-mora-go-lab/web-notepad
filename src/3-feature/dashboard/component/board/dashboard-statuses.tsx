@@ -9,9 +9,7 @@ export function DashboardStatuses({
   tabColorCycle,
   statusNames,
   iceboxVisible,
-  closedVisible,
   iceboxCount,
-  closedCount,
 }: DashboardStatusesProps) {
   const { t } = useI18n();
   const statusLabels = {
@@ -23,7 +21,7 @@ export function DashboardStatuses({
   };
   return (
     <div
-      className={`dashboard-statuses ${iceboxVisible ? "has-icebox" : ""} ${closedVisible ? "has-closed" : ""}`}
+      className={`dashboard-statuses ${iceboxVisible ? "has-icebox" : ""} ${columns.some(column => column.status === "done") ? "has-done" : ""}`}
     >
       {iceboxVisible && (
         <DashboardStatus
@@ -45,16 +43,7 @@ export function DashboardStatuses({
           tabColor={getStatusColor(status, tabColorCycle)}
         />
       ))}
-      {closedVisible && (
-        <DashboardStatus
-          id="dashboard-status-closed"
-          className="dashboard-closed-status"
-          status="closed"
-          label={statusNames.closed ?? t.closedTitle}
-          count={closedCount}
-          tabColor="purple"
-        />
-      )}
+
     </div>
   );
 }

@@ -15,6 +15,7 @@ type PendingGroup = { base: SharedRecord; data: SharedGroupData };
 const same = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
 
 export function useSharedGroups(hydrated: boolean) {
+  const groups = useNotepadStore(state => state.groups);
   const [loading, setLoading] = useState(true);
   const [checkingGroups, setCheckingGroups] = useState(false);
   const refreshRef = useRef<(() => Promise<void>) | null>(null);
@@ -315,15 +316,22 @@ export function useSharedGroups(hydrated: boolean) {
   };
   const dismissInvite = useCallback(() => setInviteStatus(null), []);
 
+  const visibleNotifications = notifications.filter(notification => {
+    const group = groups.find(group => group.id === notification.groupId);
+    const tab = group?.tabs.find(tab => tab.id === notification.tabId);
+    // A newly notified tab may arrive with the in-flight group response.
+    return tab ? tab.open !== false : loading || checkingGroups;
+  });
+
   return {
-    notifications,
+    notifications: visibleNotifications,
     loading,
     checkingGroups,
     refreshGroups: () => refreshRef.current?.(),
     savingTabIds,
     accessByGroup,
     changeAccess,
-    unreadCount: notifications.filter((notification) => notification.unread).length,
+    unreadCount: visibleNotifications.filter((notification) => notification.unread).length,
     inviteStatus,
     inviteToken,
     dismissInvite,

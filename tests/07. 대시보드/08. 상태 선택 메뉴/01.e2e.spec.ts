@@ -20,14 +20,14 @@ test("1. PC와 모바일에서 우측 세로 점 메뉴로 상태를 전환하�
     expect(iconBox.height).toBeCloseTo(14.4 * 1.2, 1);
     await trigger.click();
     const menu = panel.getByRole("dialog", { name: "Dashboard options" });
-    await expect(menu.locator(".dashboard-closed-command")).toHaveText("Closed");
+    await expect(menu.locator(".dashboard-done-command")).toHaveText("Done");
     await expect(menu.locator(".dashboard-icebox-command > svg").first()).toHaveClass(/lucide-sticky-note/);
     const menuBox = (await menu.boundingBox())!;
     expect(menuBox.x).toBeGreaterThanOrEqual(0);
     expect(menuBox.x + menuBox.width).toBeLessThanOrEqual(viewport.width);
-    for (const status of ["icebox", "closed"] as const) {
+    for (const status of ["icebox", "done"] as const) {
       const command = menu.locator(`.dashboard-${status}-command`);
-      const initiallyVisible = false;
+      const initiallyVisible = status === "done";
       await expect(command).toHaveAttribute("aria-pressed", String(initiallyVisible));
       await command.click();
       await expect(menu).toBeVisible();

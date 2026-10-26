@@ -1,6 +1,7 @@
 import { Bookmark, X } from "lucide-react";
 import { type DragEvent, useContext } from "react";
 
+import { useNotepadStore } from "@/src/4-entity/notepad";
 import { SavingTabsContext, useI18n } from "@/src/5-shared/hook";
 
 import type { TabItemProps } from "../../type";
@@ -26,6 +27,7 @@ export function TabItem({
   onDragEnd,
 }: TabItemProps) {
   const { t } = useI18n();
+  const doneColor = useNotepadStore(state => state.settings.tabColorCycle[2] ?? "teal");
   const saving = useContext(SavingTabsContext).includes(tab.id);
   const dirty = tab.content.trim() !== "" && tab.content !== tab.savedContent;
   const markDropTarget = (event: DragEvent<HTMLDivElement>) => {
@@ -41,8 +43,8 @@ export function TabItem({
       } ${selected ? "is-range-selected" : ""} ${dropTarget ? "is-drop-target" : ""} ${
         tab.bookmarked ? "is-bookmarked" : ""
       }`}
-      data-tab-color={tab.tabColor}
-      data-dashboard-status={tab.dashboardStatus}
+      data-tab-color={tab.dashboardStatus === "closed" ? doneColor : tab.tabColor}
+      data-dashboard-status={tab.dashboardStatus === "closed" ? "done" : tab.dashboardStatus}
       draggable
       onContextMenu={(event) => {
         event.preventDefault();

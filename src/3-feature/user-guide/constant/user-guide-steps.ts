@@ -48,7 +48,7 @@ export const USER_GUIDE_STEPS: Record<Language, readonly UserGuideStep[]> = {
     },
     {
       title: "Theme and settings",
-      description: "Choose DARK or LIGHT in THEME, and change font size, tab colors and language in SETTINGS.",
+      description: "After login, open Settings from your account menu to change theme, font size, tab colors and language.",
     },
     {
       title: "Panels beside the editor",

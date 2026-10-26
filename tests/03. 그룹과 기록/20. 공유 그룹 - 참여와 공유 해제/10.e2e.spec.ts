@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
-import { addTabButton, openMoreMenu } from "../../__util__";
+import { addTabButton, openAccountMenu } from "../../__util__";
 
 test("10. Alarm은 진행 중인 그룹 갱신을 기다린 뒤 변경된 탭을 연다", async ({ sharing: { owner, guest } }) => {
   await guest.keyboard.press("Escape");
@@ -24,8 +24,8 @@ test("10. Alarm은 진행 중인 그룹 갱신을 기다린 뒤 변경된 탭을
     await owner.reload();
     await expect(owner.locator("button.auth-command")).toBeVisible();
     await expect.poll(() => held).toBe(true);
-    const menu = await openMoreMenu(owner);
-    await menu.getByRole("button", { name: /^Alarm/ }).click();
+    const menu = await openAccountMenu(owner);
+    await menu.getByRole("menuitem", { name: "Alarm", exact: true }).click();
     const entry = owner.locator(".notification-entry").filter({ hasText: "Guest" }).first();
     await expect(entry).toBeVisible();
     await entry.click();

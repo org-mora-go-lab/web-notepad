@@ -7,16 +7,16 @@ test("8. 전체 그룹과 개별 그룹의 보조 상태 표시 설정을 별도
 }) => {
   await restoreWorkspace(
     page,
-    { dashboardVisibility: { icebox: true, closed: false } },
-    { allGroupDashboardVisibility: { icebox: false, closed: true } },
+    { dashboardVisibility: { icebox: true, done: false } },
+    { allGroupDashboardVisibility: { icebox: false, done: true } },
   );
   const state = await readStoredState(page);
   expect(state.groups[0].dashboardVisibility).toEqual({
     icebox: true,
-    closed: false,
+    done: false,
   });
   expect(state.allGroupDashboardVisibility).toEqual({
     icebox: false,
-    closed: true,
+    done: true,
   });
 });
