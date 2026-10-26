@@ -12,7 +12,7 @@ export type CloudSaveStatus = "pending" | "saving" | "saved" | "error" | null;
 type PendingUpdate = { eventId: string; snapshot: string; baseEventId?: string | null };
 type Baseline = { eventId: string | null; snapshot: string | null };
 type CloudRecord = { eventId: string; snapshot: string; createdAt: number };
-const SAVE_DELAY_MS = 1_000;
+const SAVE_DELAY_MS = 500;
 const RETRY_DELAY_MS = 5_000;
 const OWNER_KEY = "web-notepad-cloud-owner";
 

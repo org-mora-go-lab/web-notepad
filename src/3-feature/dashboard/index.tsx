@@ -1,6 +1,6 @@
 "use client";
 
-import { Maximize2, Minimize2 } from "lucide-react";
+import { CheckCheck, Maximize2, Minimize2, StickyNote } from "lucide-react";
 import { useState } from "react";
 
 import { compareGroups, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
@@ -52,6 +52,8 @@ export function Dashboard({
   const contextGroup = groups.find((group) =>
     group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
+  const contextStatus = contextTab ? getTabStatus(contextTab, tabColorCycle) : null;
+  const shortcutStatus = contextStatus === "todo" ? "icebox" : contextStatus === "in-progress" ? "done" : null;
   const drag = useDashboardDrag({ visibleTabs, onChangeStatus });
   return (
     <SidePanel
@@ -146,6 +148,13 @@ export function Dashboard({
           left={contextMenu.left}
           top={contextMenu.top}
           moveGroupFirst
+          footerAction={shortcutStatus && <button type="button" role="menuitem" onClick={() => {
+            onChangeStatus(contextTab.id, shortcutStatus);
+            setContextMenu(null);
+          }}>
+            {shortcutStatus === "icebox" ? <StickyNote size={14} /> : <CheckCheck size={14} />}
+            <span>{t.moveToStatus(statusNames[shortcutStatus] ?? (shortcutStatus === "icebox" ? t.icebox : t.statusDone))}</span>
+          </button>}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter((group) => group.id !== contextGroup?.id && group.id !== UNGROUPED_GROUP_ID)
