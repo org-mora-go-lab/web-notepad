@@ -30,23 +30,27 @@ export const seedArchivedColorCycle = (page: Page) => {
     },
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", tabs, {
-        bookmarks: [{
-          id: "bookmark-todo",
-          sourceTabId: tabs[0].id,
-          title: tabs[0].title,
-          content: tabs[0].content,
-          tabColor: "red",
-          selectedLines: [],
-          createdAt: 1,
-          updatedAt: 1,
-        }],
+        bookmarks: [
+          {
+            id: "bookmark-todo",
+            sourceTabId: tabs[0].id,
+            title: tabs[0].title,
+            content: tabs[0].content,
+            tabColor: "red",
+            selectedLines: [],
+            createdAt: 1,
+            updatedAt: 1,
+          },
+        ],
       }),
     ],
     closedTabs: [
       createClosedTabFixture(
         "closed-cycle",
         "ungrouped",
-        createTabFixture("tab-closed", "Closed cycle note", { tabColor: "teal" }),
+        createTabFixture("tab-closed", "Closed cycle note", {
+          tabColor: "teal",
+        }),
       ),
     ],
   });

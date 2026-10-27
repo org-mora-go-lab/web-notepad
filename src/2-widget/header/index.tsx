@@ -135,7 +135,10 @@ export function Header({
           top={contextMenu.top}
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
-            .filter((group) => group.id !== contextGroupId && group.id !== UNGROUPED_GROUP_ID)
+            .filter(
+              (group) =>
+                group.id !== contextGroupId && group.id !== UNGROUPED_GROUP_ID,
+            )
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);

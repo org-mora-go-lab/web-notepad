@@ -1,8 +1,8 @@
 import { LANGUAGES } from "@/src/5-shared/constant";
 import type { Language } from "@/src/5-shared/type";
 
-import { DEFAULT_SETTINGS, FONT_SCALES } from "../../constant";
-import type { NotepadSettings } from "../../type";
+import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS } from "../../constant";
+import type { NotepadSettings, TabColor } from "../../type";
 import { isTabColor } from "../read-value";
 
 export const normalizeSettings = (value: unknown): NotepadSettings => {
@@ -15,13 +15,24 @@ export const normalizeSettings = (value: unknown): NotepadSettings => {
     cycle.length === DEFAULT_SETTINGS.tabColorCycle.length &&
     cycle.every(isTabColor) &&
     new Set(cycle).size === cycle.length;
+  const migratedCycle: TabColor[] =
+    validCycle && settings.tabColorCycleVersion !== 2
+      ? [
+          cycle[0],
+          (["orange", ...TAB_COLORS] as TabColor[]).find(
+            (color) => color !== cycle[0] && color !== cycle[1],
+          )!,
+          cycle[1],
+        ]
+      : validCycle
+        ? [...cycle]
+        : [...DEFAULT_SETTINGS.tabColorCycle];
   return {
+    tabColorCycleVersion: 2,
     fontScale: FONT_SCALES.includes(settings.fontScale as number)
       ? (settings.fontScale as number)
       : DEFAULT_SETTINGS.fontScale,
-    tabColorCycle: validCycle
-      ? [...cycle]
-      : [...DEFAULT_SETTINGS.tabColorCycle],
+    tabColorCycle: migratedCycle,
     language: LANGUAGES.includes(settings.language as Language)
       ? (settings.language as Language)
       : DEFAULT_SETTINGS.language,

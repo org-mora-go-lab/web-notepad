@@ -22,6 +22,7 @@ export function Body({
     const lowerHalf = event.clientY - bounds.top > bounds.height / 2;
     const rightHalf = event.clientX - bounds.left > bounds.width / 2;
     const bottomZone = dropZones.find((zone) => zone.area === "bottom");
+    const leftZone = dropZones.find((zone) => zone.area === "left");
     const rightZone = dropZones.find((zone) => zone.area === "right");
     const adoptZone = dropZones.find((zone) => zone.key === "adopt");
     const target =
@@ -29,7 +30,9 @@ export function Body({
         ? bottomZone
         : rightHalf && rightZone
           ? rightZone
-          : adoptZone;
+          : !rightHalf && leftZone
+            ? leftZone
+            : adoptZone;
     target?.onDrop();
   });
   // The bottom split zone only appears once the dragged tab passes the middle of the editor.
@@ -41,6 +44,7 @@ export function Body({
   // Each zone takes its own part of the pane so no label is covered by another zone.
   const zoneClassName = (zone: PaneDropZone) => {
     const area = zone.area ?? "full";
+    if (area === "left") return `is-left ${hasBottomZone ? "is-upper" : ""}`;
     if (area === "right") return `is-right ${hasBottomZone ? "is-upper" : ""}`;
     if (area === "bottom") return "is-bottom";
     return `is-full ${hasRightZone ? "has-right-split" : ""} ${hasBottomZone ? "has-bottom-split" : ""}`;

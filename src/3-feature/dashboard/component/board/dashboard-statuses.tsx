@@ -14,14 +14,15 @@ export function DashboardStatuses({
   const { t } = useI18n();
   const statusLabels = {
     icebox: t.icebox,
-    todo: t.statusTodo, ready: t.statusReady,
+    todo: t.statusTodo,
+    ready: t.statusReady,
     "in-progress": t.statusInProgress,
     done: t.statusDone,
     closed: t.closedTitle,
   };
   return (
     <div
-      className={`dashboard-statuses ${iceboxVisible ? "has-icebox" : ""} ${columns.some(column => column.status === "done") ? "has-done" : ""}`}
+      className={`dashboard-statuses ${iceboxVisible ? "has-icebox" : ""} ${columns.some((column) => column.status === "done") ? "has-done" : ""}`}
     >
       {iceboxVisible && (
         <DashboardStatus
@@ -43,7 +44,6 @@ export function DashboardStatuses({
           tabColor={getStatusColor(status, tabColorCycle)}
         />
       ))}
-
     </div>
   );
 }

@@ -64,14 +64,20 @@ export async function exchangeKakaoCode(code: string) {
 
   const response = await fetch(KAKAO_TOKEN_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" },
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+    },
     body,
     cache: "no-store",
   });
   const result = (await response.json()) as KakaoTokenResponse;
 
   if (!response.ok || !result.access_token) {
-    throw new Error(result.error_description ?? result.error ?? "Kakao token exchange failed.");
+    throw new Error(
+      result.error_description ??
+        result.error ??
+        "Kakao token exchange failed.",
+    );
   }
 
   return result.access_token;
@@ -90,11 +96,13 @@ export async function getKakaoUser(accessToken: string): Promise<KakaoUser> {
 
   const profile = result.kakao_account?.profile;
   let talkProfile: KakaoTalkProfileResponse | undefined;
-  const nickname = profile?.nickname?.trim() || result.properties?.nickname?.trim();
-  const profileImageUrl = profile?.profile_image_url?.trim()
-    || profile?.thumbnail_image_url?.trim()
-    || result.properties?.profile_image?.trim()
-    || result.properties?.thumbnail_image?.trim();
+  const nickname =
+    profile?.nickname?.trim() || result.properties?.nickname?.trim();
+  const profileImageUrl =
+    profile?.profile_image_url?.trim() ||
+    profile?.thumbnail_image_url?.trim() ||
+    result.properties?.profile_image?.trim() ||
+    result.properties?.thumbnail_image?.trim();
   try {
     const talkResponse = await fetch(KAKAO_TALK_PROFILE_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -113,6 +121,8 @@ export async function getKakaoUser(accessToken: string): Promise<KakaoUser> {
     nickname: talkProfile?.nickName?.trim() || nickname || "Kakao user",
     profileImageUrl:
       talkProfile?.profileImageURL?.trim() ||
-      talkProfile?.thumbnailURL?.trim() || profileImageUrl || undefined,
+      talkProfile?.thumbnailURL?.trim() ||
+      profileImageUrl ||
+      undefined,
   };
 }

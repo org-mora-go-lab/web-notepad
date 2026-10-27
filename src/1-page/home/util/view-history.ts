@@ -31,7 +31,8 @@ const isViewSnapshot = (value: unknown): value is ViewSnapshot => {
     isOptionalTabId(snapshot.leftBottomTabId) &&
     isOptionalTabId(snapshot.rightBottomTabId) &&
     PANE_IDS.includes(snapshot.pane as PaneId) &&
-    (snapshot.groupMenuOpen === undefined || typeof snapshot.groupMenuOpen === "boolean") &&
+    (snapshot.groupMenuOpen === undefined ||
+      typeof snapshot.groupMenuOpen === "boolean") &&
     (snapshot.panel === null || PANEL_IDS.includes(snapshot.panel as ViewPanel))
   );
 };

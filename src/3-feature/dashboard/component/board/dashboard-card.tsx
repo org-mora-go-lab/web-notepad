@@ -33,6 +33,9 @@ export function DashboardCard({
   onTouchDragStart,
   onTouchDragOver,
   onTouchDrop,
+  dropPlacement,
+  onCardDragOver,
+  onCardDrop,
 }: DashboardCardProps) {
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastDragAtRef = useRef<number | null>(null);
@@ -63,10 +66,13 @@ export function DashboardCard({
     openTimerRef.current = setTimeout(() => onOpen(tab.id), 250);
   };
 
-  useEffect(() => () => {
-    cancelPendingOpen();
-    touchCleanupRef.current?.();
-  }, []);
+  useEffect(
+    () => () => {
+      cancelPendingOpen();
+      touchCleanupRef.current?.();
+    },
+    [],
+  );
 
   const startTouch = (event: React.TouchEvent<HTMLElement>) => {
     if (event.touches.length !== 1) return;
@@ -74,15 +80,28 @@ export function DashboardCard({
     const touch = event.touches[0];
     const identifier = touch.identifier;
     const origin = { x: touch.clientX, y: touch.clientY };
-    const scrollList = event.currentTarget.closest<HTMLElement>(".dashboard-list");
+    const scrollList =
+      event.currentTarget.closest<HTMLElement>(".dashboard-list");
     let started = false;
     let overStatus: TabStatus | null = null;
     let lastPoint = origin;
     let scrollFrame: number | null = null;
     const updateTarget = () => {
-      const column = document.elementFromPoint(lastPoint.x, lastPoint.y)?.closest<HTMLElement>(".dashboard-column[data-status]");
+      const column = document
+        .elementFromPoint(lastPoint.x, lastPoint.y)
+        ?.closest<HTMLElement>(".dashboard-column[data-status]");
       overStatus = (column?.dataset.status as TabStatus | undefined) ?? null;
-      onTouchDragOver(overStatus);
+      const target = document
+        .elementFromPoint(lastPoint.x, lastPoint.y)
+        ?.closest<HTMLElement>(".dashboard-card[data-tab-id]");
+      const bounds = target?.getBoundingClientRect();
+      onTouchDragOver(
+        overStatus,
+        target?.dataset.tabId === tab.id ? undefined : target?.dataset.tabId,
+        bounds && lastPoint.y > bounds.top + bounds.height / 2
+          ? "after"
+          : "before",
+      );
     };
     const scrollAtEdge = () => {
       scrollFrame = null;
@@ -90,11 +109,12 @@ export function DashboardCard({
       const bounds = scrollList.getBoundingClientRect();
       if (lastPoint.x < bounds.left || lastPoint.x > bounds.right) return;
       const edge = 64;
-      const direction = lastPoint.y < bounds.top + edge
-        ? -Math.min(1, (bounds.top + edge - lastPoint.y) / edge)
-        : lastPoint.y > bounds.bottom - edge
-          ? Math.min(1, (lastPoint.y - (bounds.bottom - edge)) / edge)
-          : 0;
+      const direction =
+        lastPoint.y < bounds.top + edge
+          ? -Math.min(1, (bounds.top + edge - lastPoint.y) / edge)
+          : lastPoint.y > bounds.bottom - edge
+            ? Math.min(1, (lastPoint.y - (bounds.bottom - edge)) / edge)
+            : 0;
       if (!direction) return;
       const before = scrollList.scrollTop;
       scrollList.scrollTop += direction * 14;
@@ -108,7 +128,8 @@ export function DashboardCard({
       timer = null;
       cancelPendingOpen();
       lastDragAtRef.current = performance.now();
-      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+      if (document.activeElement instanceof HTMLElement)
+        document.activeElement.blur();
       onTouchDragStart(tab.id);
     }, 300);
     const clear = () => {
@@ -120,10 +141,14 @@ export function DashboardCard({
       touchCleanupRef.current = null;
     };
     const move = (moveEvent: TouchEvent) => {
-      const point = Array.from(moveEvent.touches).find((item) => item.identifier === identifier);
+      const point = Array.from(moveEvent.touches).find(
+        (item) => item.identifier === identifier,
+      );
       if (!point) return;
       if (!started) {
-        if (Math.hypot(point.clientX - origin.x, point.clientY - origin.y) > 10) {
+        if (
+          Math.hypot(point.clientX - origin.x, point.clientY - origin.y) > 10
+        ) {
           clear();
         }
         return;
@@ -131,10 +156,16 @@ export function DashboardCard({
       moveEvent.preventDefault();
       lastPoint = { x: point.clientX, y: point.clientY };
       updateTarget();
-      if (scrollFrame === null) scrollFrame = requestAnimationFrame(scrollAtEdge);
+      if (scrollFrame === null)
+        scrollFrame = requestAnimationFrame(scrollAtEdge);
     };
     const end = (endEvent: TouchEvent) => {
-      if (!Array.from(endEvent.changedTouches).some((item) => item.identifier === identifier)) return;
+      if (
+        !Array.from(endEvent.changedTouches).some(
+          (item) => item.identifier === identifier,
+        )
+      )
+        return;
       clear();
       if (started) {
         lastDragAtRef.current = performance.now();
@@ -153,6 +184,10 @@ export function DashboardCard({
 
   return (
     <article
+      data-tab-id={tab.id}
+      data-drop-placement={dropPlacement}
+      onDragOver={onCardDragOver}
+      onDrop={onCardDrop}
       className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""} ${contextMenuTarget ? "is-context-menu-target" : ""}`}
       data-tab-color={tab.tabColor}
       draggable

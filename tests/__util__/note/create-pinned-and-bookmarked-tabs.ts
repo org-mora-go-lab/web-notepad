@@ -5,7 +5,9 @@ import { seedStoredStateOnLoad } from "../state";
 
 // Restores a pinned "pinned note" tab followed by an active bookmarked "bookmarked note" tab.
 export async function createPinnedAndBookmarkedTabs(page: Page) {
-  const pinned = createTabFixture("tab-pinned", "pinned note", { pinned: true });
+  const pinned = createTabFixture("tab-pinned", "pinned note", {
+    pinned: true,
+  });
   const bookmarked = createTabFixture("tab-bookmarked", "bookmarked note", {
     bookmarked: true,
   });
@@ -21,6 +23,8 @@ export async function createPinnedAndBookmarkedTabs(page: Page) {
 
   return {
     pinnedTab: page.locator(".tab-item").filter({ hasText: "pinned note" }),
-    bookmarkedTab: page.locator(".tab-item").filter({ hasText: "bookmarked note" }),
+    bookmarkedTab: page
+      .locator(".tab-item")
+      .filter({ hasText: "bookmarked note" }),
   };
 }

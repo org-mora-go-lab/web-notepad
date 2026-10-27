@@ -8,7 +8,11 @@ export const sessionHeaders = (token = signedSession()) => ({
 
 export async function authenticateBrowser(
   context: BrowserContext,
-  token = signedSession({ ...authProfile, id: "browser-" + crypto.randomUUID(), expiresAt: Date.now() + 300_000 }),
+  token = signedSession({
+    ...authProfile,
+    id: "browser-" + crypto.randomUUID(),
+    expiresAt: Date.now() + 300_000,
+  }),
 ) {
   await context.addCookies([
     { name: SESSION_COOKIE, value: token, url: "http://localhost:3100" },

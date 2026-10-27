@@ -5,9 +5,20 @@ import { seedStoredStateOnLoad } from "../../__util__";
 test("4. Ungrouped의 잘못된 고정 상태는 해제한다", async ({ page }) => {
   await seedStoredStateOnLoad(page, {
     activeGroupId: "ungrouped",
-    groups: [{ id: "ungrouped", name: "Ungrouped", pinned: true, tabs: [{ id: "tab-1" }] }],
+    groups: [
+      {
+        id: "ungrouped",
+        name: "Ungrouped",
+        pinned: true,
+        tabs: [{ id: "tab-1" }],
+      },
+    ],
   });
   await page.getByRole("button", { name: "Toggle groups" }).click();
-  await expect(page.getByRole("button", { name: "Ungrouped", exact: true })).toBeVisible();
-  await expect(page.locator(".group-system-list .group-pin-indicator")).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Ungrouped", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator(".group-system-list .group-pin-indicator"),
+  ).toHaveCount(0);
 });

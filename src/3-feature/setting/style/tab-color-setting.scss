@@ -122,3 +122,23 @@
     }
   }
 }
+
+.setting .setting-color-status {
+  display: block;
+  flex: 0 0 56px;
+  margin-bottom: 0;
+  white-space: nowrap;
+  color: var(--color-muted);
+  font-size: v.font(13px);
+}
+
+@media (max-width: 512px) {
+  .setting .setting-color-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .setting .setting-color-status {
+    flex-basis: auto;
+  }
+}

@@ -15,6 +15,7 @@ type TabActions = Pick<
   | "setTabSelectedLines"
   | "cycleTabColor"
   | "setTabStatus"
+  | "moveDashboardTab"
   | "closeTab"
   | "archiveTab"
   | "deleteTab"

@@ -1,11 +1,6 @@
 import type { ComponentProps } from "react";
 
-import type {
-  Bookmark,
-  Dashboard,
-  GlobalSearch,
-  Group,
-} from "@/src/3-feature";
+import type { Bookmark, Dashboard, GlobalSearch, Group } from "@/src/3-feature";
 import type {
   BookmarkEntry,
   GroupEntry,
@@ -15,9 +10,14 @@ import type {
 import type { ViewPanel } from "@/src/5-shared";
 
 export type PanelProps = {
-  onSaveDashboardStatusNames: ComponentProps<typeof Dashboard>["onSaveStatusNames"];
+  onSaveDashboardStatusNames: ComponentProps<
+    typeof Dashboard
+  >["onSaveStatusNames"];
+  dashboardStatusNames: ComponentProps<typeof Dashboard>["statusNames"];
   dashboardVisibility: ComponentProps<typeof Dashboard>["visibility"];
-  onDashboardVisibilityChange: ComponentProps<typeof Dashboard>["onVisibilityChange"];
+  onDashboardVisibilityChange: ComponentProps<
+    typeof Dashboard
+  >["onVisibilityChange"];
   openPanel: ViewPanel | null;
   backgroundPanel: ViewPanel | null;
   bookmarks: BookmarkEntry[];
@@ -34,6 +34,7 @@ export type PanelProps = {
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
+  onMoveDashboardCard: ComponentProps<typeof Dashboard>["onMoveCard"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
   onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
   onToggleDashboardTabBookmark: ComponentProps<

@@ -105,7 +105,8 @@ export function handleEditorKeyDown(
   // Option+Tab creates a note tab in the workspace shortcut handler.
   // Do not queue the regular Tab insertion: its animation-frame callback can
   // run after the active tab changes and read the new tab's textarea value.
-  if (event.key !== "Tab" || event.altKey || event.ctrlKey || event.metaKey) return;
+  if (event.key !== "Tab" || event.altKey || event.ctrlKey || event.metaKey)
+    return;
 
   if (event.shiftKey) {
     if (isImeComposing(event.nativeEvent, composingRef.current)) return;

@@ -69,7 +69,9 @@
     flex-direction: row;
     flex-wrap: nowrap;
     white-space: nowrap;
-    svg { flex: 0 0 auto; }
+    svg {
+      flex: 0 0 auto;
+    }
     align-self: flex-start;
     padding-left: 0;
     border: 0;
@@ -77,11 +79,72 @@
   }
   button.board-copy {
     justify-content: space-between;
-    svg { flex: 0 0 auto; }
+    svg {
+      flex: 0 0 auto;
+    }
   }
-  .board-table-container { max-width: 100%; overflow-x: auto; border: 1px solid v.$line; border-radius: 6px; }
-  .board-table { width: 100%; min-width: 480px; border-collapse: collapse; text-align: left; font-size: v.font(13px); th, td { padding: 14px 16px; border-bottom: 1px solid v.$line; } thead { background: v.$raised; color: v.$muted; } thead th { font-weight: 500; white-space: nowrap; } tbody tr { background: v.$panel; &:hover { background: v.$raised; } &:last-child th, &:last-child td { border-bottom: 0; } } td { white-space: nowrap; color: v.$muted; } }
-  button.board-entry { width: 100%; min-width: 160px; padding: 0; justify-content: flex-start; text-align: left; border: 0; background: transparent; strong { min-width: 0; font-weight: 500; overflow-wrap: anywhere; } svg { flex: 0 0 auto; color: v.$signal; } svg:last-child { margin-left: auto; color: v.$muted; } }
+  .board-table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    border: 1px solid v.$line;
+    border-radius: 6px;
+  }
+  .board-table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: v.font(13px);
+    th,
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid v.$line;
+    }
+    thead {
+      background: v.$raised;
+      color: v.$muted;
+    }
+    thead th {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    tbody tr {
+      background: v.$panel;
+      &:hover {
+        background: v.$raised;
+      }
+      &:last-child th,
+      &:last-child td {
+        border-bottom: 0;
+      }
+    }
+    td {
+      white-space: nowrap;
+      color: v.$muted;
+    }
+  }
+  button.board-entry {
+    width: 100%;
+    min-width: 160px;
+    padding: 0;
+    justify-content: flex-start;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    strong {
+      min-width: 0;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+    svg {
+      flex: 0 0 auto;
+      color: v.$signal;
+    }
+    svg:last-child {
+      margin-left: auto;
+      color: v.$muted;
+    }
+  }
   .board-card-top,
   .board-meta,
   .board-meta span,
@@ -169,5 +232,50 @@
     a.board-primary {
       min-height: 44px;
     }
+  }
+}
+
+.board {
+  .board-skeleton {
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .board-skeleton-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .board-skeleton-row {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 20px 14px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .board-skeleton-row:last-child {
+    border-bottom: 0;
+  }
+  .board-skeleton-row span {
+    height: 14px;
+    border-radius: 4px;
+    background: var(--color-line);
+    animation: board-skeleton-pulse 1.5s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .board-skeleton-row span {
+      animation: none;
+    }
+  }
+}
+@keyframes board-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
   }
 }

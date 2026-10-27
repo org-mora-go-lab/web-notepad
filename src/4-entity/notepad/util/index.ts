@@ -16,6 +16,7 @@ export {
   getTitleFromContent,
   sanitizeSelectedLines,
 } from "./note";
+export { compareDashboardCards } from "./note";
 export {
   assignTabToPane,
   getBottomPane,
@@ -29,4 +30,12 @@ export {
   PANE_IDS,
   setPaneActiveTabId,
 } from "./pane";
-export { applySharedGroupData, createJoinedGroup, isSharedGroupId, namespaceGroup, sharedGroupId, toSharedGroupData } from "./shared-group";
+export {
+  applySharedGroupData,
+  createJoinedGroup,
+  isSharedGroupId,
+  namespaceGroup,
+  normalizeSharedGroupData,
+  sharedGroupId,
+  toSharedGroupData,
+} from "./shared-group";

@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { seedStoredStateOnLoad } from "../../__util__";
 
-test("5. 활성 탭을 닫으면 URL의 탭 ID를 새 활성 탭으로 교체한다", async ({ page }) => {
+test("5. 활성 탭을 닫으면 URL의 탭 ID를 새 활성 탭으로 교체한다", async ({
+  page,
+}) => {
   const group = createGroupFixture(
     "ungrouped",
     "Ungrouped",
@@ -22,5 +24,7 @@ test("5. 활성 탭을 닫으면 URL의 탭 ID를 새 활성 탭으로 교체한
 
   await page.getByRole("button", { name: "Close B note" }).click();
   await expect(page.locator("textarea")).toHaveValue("C note");
-  await expect.poll(() => new URL(page.url()).searchParams.get("leftTab")).toBe("tab-c");
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get("leftTab"))
+    .toBe("tab-c");
 });

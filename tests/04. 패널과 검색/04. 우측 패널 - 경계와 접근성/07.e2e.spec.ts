@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { openPanel } from "../../__util__";
 
-test("7. 닫힌 패널 컨트롤은 Tab 순서와 접근성 탐색에서 제외한다", async ({ page }) => {
+test("7. 닫힌 패널 컨트롤은 Tab 순서와 접근성 탐색에서 제외한다", async ({
+  page,
+}) => {
   await page.goto("/");
 
   const panels = page.locator(".side-panel-drawer");

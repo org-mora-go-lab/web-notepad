@@ -9,14 +9,19 @@ import {
   readStoredState,
 } from "../../__util__";
 
-test("5. Escape로 북마크 팝업을 닫고 메모·그룹·북마크 데이터를 유지한다", async ({ page }) => {
+test("5. Escape로 북마크 팝업을 닫고 메모·그룹·북마크 데이터를 유지한다", async ({
+  page,
+}) => {
   await page.goto("/");
   const note = "Preserve this note";
   await createGroups(page, "Work");
   await bookmarkActiveTab(page, note);
   const editor = page.locator("textarea");
   const bookmarksPanel = page.locator("#bookmarks-panel");
-  const bookmarkAction = bookmarksPanel.getByRole("button", { name: "Open", exact: true });
+  const bookmarkAction = bookmarksPanel.getByRole("button", {
+    name: "Open",
+    exact: true,
+  });
   const shortcutsPanel = page.locator("#shortcuts-panel");
 
   for (const viewport of BOTH_VIEWPORTS) {

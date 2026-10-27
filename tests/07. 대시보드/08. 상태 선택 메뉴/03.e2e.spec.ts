@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { dashboardPanel, openPanel, seedDashboardTabs } from "../../__util__";
 
-test("3. Escape는 상태 선택 영역만 닫고 메뉴 버튼으로 포커스를 돌려준다", async ({ page }) => {
+test("3. Escape는 상태 선택 영역만 닫고 메뉴 버튼으로 포커스를 돌려준다", async ({
+  page,
+}) => {
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
     await seedDashboardTabs(page);
@@ -17,6 +19,9 @@ test("3. Escape는 상태 선택 영역만 닫고 메뉴 버튼으로 포커스�
     await expect(trigger).toBeFocused();
     await expect(panel).toHaveAttribute("aria-hidden", "false");
     await page.keyboard.press("Escape");
-    await expect(panel).toHaveAttribute("aria-hidden", viewport.width >= 641 ? "false" : "true");
+    await expect(panel).toHaveAttribute(
+      "aria-hidden",
+      viewport.width >= 641 ? "false" : "true",
+    );
   }
 });

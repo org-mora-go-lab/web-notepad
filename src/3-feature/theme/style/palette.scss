@@ -75,12 +75,24 @@
     --color-tab-#{$name}: #{list.nth($accents, 2)};
 
     .home .tab-item[data-tab-color="#{$name}"] {
-      --tab-background: color-mix(in srgb, var(--color-tab-#{$name}) 10%, transparent);
-      --tab-background-active: color-mix(in srgb, var(--color-tab-#{$name}) 22%, transparent);
+      --tab-background: color-mix(
+        in srgb,
+        var(--color-tab-#{$name}) 10%,
+        transparent
+      );
+      --tab-background-active: color-mix(
+        in srgb,
+        var(--color-tab-#{$name}) 22%,
+        transparent
+      );
     }
 
     .home .note-editor[data-tab-color="#{$name}"] {
-      --selected-line-background: color-mix(in srgb, var(--color-tab-#{$name}) 15%, transparent);
+      --selected-line-background: color-mix(
+        in srgb,
+        var(--color-tab-#{$name}) 15%,
+        transparent
+      );
     }
   }
 

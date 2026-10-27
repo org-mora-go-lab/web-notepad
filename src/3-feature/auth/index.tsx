@@ -1,6 +1,13 @@
 "use client";
 
-import { Bell, CircleUserRound, LogIn, LogOut, Settings, UserRound } from "lucide-react";
+import {
+  Bell,
+  CircleUserRound,
+  LogIn,
+  LogOut,
+  Settings,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -26,7 +33,10 @@ export function Auth() {
     const bounds = triggerRef.current?.getBoundingClientRect();
     if (!bounds) return;
     lastItemOnOpen.current = last;
-    setMenuPosition({ left: Math.max(8, Math.min(bounds.right - 192, window.innerWidth - 200)), top: bounds.bottom + 7 });
+    setMenuPosition({
+      left: Math.max(8, Math.min(bounds.right - 192, window.innerWidth - 200)),
+      top: bounds.bottom + 7,
+    });
     setMenuOpen(true);
   };
 
@@ -36,22 +46,36 @@ export function Auth() {
     const loadSession = () => {
       const current = ++requestId;
       void fetch("/api/auth/session", { cache: "no-store" })
-        .then(response => response.json() as Promise<{ user: AuthUser | null }>)
-        .then(({ user: nextUser }) => { if (active && current === requestId) setUser(nextUser); })
+        .then(
+          (response) => response.json() as Promise<{ user: AuthUser | null }>,
+        )
+        .then(({ user: nextUser }) => {
+          if (active && current === requestId) setUser(nextUser);
+        })
         .catch(() => undefined)
-        .finally(() => { if (active && current === requestId) setLoading(false); });
+        .finally(() => {
+          if (active && current === requestId) setLoading(false);
+        });
     };
     loadSession();
     window.addEventListener("notepad-auth-changed", loadSession);
-    return () => { active = false; window.removeEventListener("notepad-auth-changed", loadSession); };
+    return () => {
+      active = false;
+      window.removeEventListener("notepad-auth-changed", loadSession);
+    };
   }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
-    const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]');
+    const items =
+      menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]');
     (lastItemOnOpen.current ? items?.[items.length - 1] : items?.[0])?.focus();
     const outside = (event: PointerEvent) => {
-      if (!triggerRef.current?.contains(event.target as Node) && !menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
+      if (
+        !triggerRef.current?.contains(event.target as Node) &&
+        !menuRef.current?.contains(event.target as Node)
+      )
+        setMenuOpen(false);
     };
     const closeOnResize = () => setMenuOpen(false);
     document.addEventListener("pointerdown", outside);
@@ -71,56 +95,151 @@ export function Auth() {
         setUser(null);
         window.dispatchEvent(new Event("notepad-auth-changed"));
       }
-    } catch { /* Keep the account and menu available for retry. */ }
-    finally { setLoading(false); }
+    } catch {
+      /* Keep the account and menu available for retry. */
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loading && !user) return (
-    <div className="auth-command is-loading" role="status" aria-label={t.accountLoading} aria-busy="true">
-      <span className="auth-skeleton-avatar" aria-hidden="true" />
-      <span className="auth-skeleton-name" aria-hidden="true" />
-    </div>
+  if (loading && !user)
+    return (
+      <div
+        className="auth-command is-loading"
+        role="status"
+        aria-label={t.accountLoading}
+        aria-busy="true"
+      >
+        <span className="auth-skeleton-avatar" aria-hidden="true" />
+        <span className="auth-skeleton-name" aria-hidden="true" />
+      </div>
+    );
+
+  if (user)
+    return (
+      <>
+        <button
+          ref={triggerRef}
+          className="auth-command"
+          type="button"
+          title={user.nickname + " · " + t.accountMenu}
+          aria-label={user.nickname + " · " + t.accountMenu}
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          aria-controls="account-menu"
+          disabled={loading}
+          onClick={() => (menuOpen ? closeMenu() : openMenu())}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+              event.preventDefault();
+              openMenu(event.key === "ArrowUp");
+            }
+          }}
+        >
+          {user.profileImageUrl ? (
+            // Kakao profile hosts are dynamic.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={user.profileImageUrl}
+              alt=""
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <CircleUserRound aria-hidden="true" />
+          )}
+          <span>{user.nickname}</span>
+        </button>
+        {menuOpen &&
+          createPortal(
+            <div
+              ref={menuRef}
+              id="account-menu"
+              className="auth-menu"
+              role="menu"
+              aria-label={t.accountMenu}
+              style={{ left: menuPosition.left, top: menuPosition.top }}
+              onKeyDown={(event) => {
+                if (event.key === "Escape" || event.key === "Tab") {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  closeMenu(true);
+                  return;
+                }
+                const items = Array.from(
+                  menuRef.current?.querySelectorAll<HTMLElement>(
+                    '[role="menuitem"]:not(:disabled)',
+                  ) ?? [],
+                );
+                const index = items.indexOf(
+                  document.activeElement as HTMLElement,
+                );
+                const next =
+                  event.key === "Home"
+                    ? 0
+                    : event.key === "End"
+                      ? items.length - 1
+                      : event.key === "ArrowDown"
+                        ? (index + 1) % items.length
+                        : event.key === "ArrowUp"
+                          ? (index - 1 + items.length) % items.length
+                          : -1;
+                if (next >= 0) {
+                  event.preventDefault();
+                  items[next]?.focus();
+                }
+              }}
+            >
+              <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}>
+                <UserRound size={18} />
+                <span>{t.myPage}</span>
+              </Link>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  closeMenu(true);
+                  actions?.onOpenNotifications();
+                }}
+              >
+                <Bell size={18} />
+                <span>{t.notifications}</span>
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  closeMenu(true);
+                  actions?.onOpenSettings();
+                }}
+              >
+                <Settings size={18} />
+                <span>{t.settingsTitle}</span>
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                disabled={loading}
+                onClick={() => void logout()}
+              >
+                <LogOut size={18} />
+                <span>{t.logout}</span>
+              </button>
+            </div>,
+            document.body,
+          )}
+      </>
+    );
+
+  return (
+    <a
+      aria-disabled={false}
+      className="auth-command"
+      href="/api/auth/oauth/kakao"
+      title={t.kakaoLogin}
+      aria-label={t.kakaoLogin}
+    >
+      <LogIn aria-hidden="true" />
+      <span>{t.login}</span>
+    </a>
   );
-
-  if (user) return <>
-    <button ref={triggerRef} className="auth-command" type="button"
-      title={user.nickname + " · " + t.accountMenu} aria-label={user.nickname + " · " + t.accountMenu}
-      aria-haspopup="menu" aria-expanded={menuOpen} aria-controls="account-menu" disabled={loading}
-      onClick={() => menuOpen ? closeMenu() : openMenu()}
-      onKeyDown={event => {
-        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-          event.preventDefault(); openMenu(event.key === "ArrowUp");
-        }
-      }}>
-      {user.profileImageUrl ? (
-        // Kakao profile hosts are dynamic.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={user.profileImageUrl} alt="" referrerPolicy="no-referrer" />
-      ) : <CircleUserRound aria-hidden="true" />}
-      <span>{user.nickname}</span>
-    </button>
-    {menuOpen && createPortal(
-      <div ref={menuRef} id="account-menu" className="auth-menu" role="menu" aria-label={t.accountMenu}
-        style={{ left: menuPosition.left, top: menuPosition.top }}
-        onKeyDown={event => {
-          if (event.key === "Escape" || event.key === "Tab") {
-            event.preventDefault(); event.stopPropagation(); closeMenu(true); return;
-          }
-          const items = Array.from(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? []);
-          const index = items.indexOf(document.activeElement as HTMLElement);
-          const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1
-            : event.key === "ArrowDown" ? (index + 1) % items.length
-              : event.key === "ArrowUp" ? (index - 1 + items.length) % items.length : -1;
-          if (next >= 0) { event.preventDefault(); items[next]?.focus(); }
-        }}>
-        <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}><UserRound size={18} /><span>{t.myPage}</span></Link>
-        <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenNotifications(); }}><Bell size={18} /><span>{t.notifications}</span></button>
-        <button type="button" role="menuitem" onClick={() => { closeMenu(true); actions?.onOpenSettings(); }}><Settings size={18} /><span>{t.settingsTitle}</span></button>
-        <button type="button" role="menuitem" disabled={loading} onClick={() => void logout()}><LogOut size={18} /><span>{t.logout}</span></button>
-      </div>, document.body)}
-  </>;
-
-  return <a aria-disabled={false} className="auth-command" href="/api/auth/oauth/kakao" title={t.kakaoLogin} aria-label={t.kakaoLogin}>
-    <LogIn aria-hidden="true" /><span>{t.login}</span>
-  </a>;
 }

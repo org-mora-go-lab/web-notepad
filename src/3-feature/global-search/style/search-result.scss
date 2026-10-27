@@ -52,7 +52,9 @@
   gap: 5px;
   color: v.$muted;
   font-size: v.font(12px);
-  svg { flex-shrink: 0; }
+  svg {
+    flex-shrink: 0;
+  }
 }
 @media (max-width: 512px) {
   .global-search-result {

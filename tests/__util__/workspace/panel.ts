@@ -7,11 +7,15 @@ export const groupsCommand = (page: Page) =>
   page.locator(".group-select-command");
 export const groupSelectCommand = (page: Page) =>
   page.locator(".group-select-command");
-export const moreCommand = (page: Page) => page.locator(".footer .more-command");
+export const moreCommand = (page: Page) =>
+  page.locator(".footer .more-command");
 export async function openBookmarksPanel(page: Page) {
   const menu = await openMoreMenu(page);
   await menu.getByRole("button", { name: /Bookmark|북마크/i }).click();
-  await expect(page.locator("#bookmarks-panel")).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator("#bookmarks-panel")).toHaveAttribute(
+    "aria-hidden",
+    "false",
+  );
 }
 export const groupStatusName = (page: Page) =>
   page.locator(".group-current-value");
@@ -34,17 +38,19 @@ export async function openPanel(page: Page, panelId: string) {
   const command = page
     .locator(`button[aria-controls="${panelId}"]:visible`)
     .first();
-  if (
-    panelId === "shortcuts-panel" ||
-    panelId === "settings-panel"
-  ) {
+  if (panelId === "shortcuts-panel" || panelId === "settings-panel") {
     if (panelId === "shortcuts-panel") {
       const tools = await openMoreMenu(page);
       await tools.getByRole("button", { name: /GUIDE|사용 가이드/i }).click();
-      await page.getByRole("dialog").getByRole("button", { name: /SHORTCUT|단축키/i }).click();
+      await page
+        .getByRole("dialog")
+        .getByRole("button", { name: /SHORTCUT|단축키/i })
+        .click();
     } else {
       const account = await openAccountMenu(page);
-      const settingsCommand = account.getByRole("menuitem", { name: /SETTINGS|설정/i });
+      const settingsCommand = account.getByRole("menuitem", {
+        name: /SETTINGS|설정/i,
+      });
       await expect(settingsCommand).toBeVisible();
       await settingsCommand.click();
     }
@@ -62,9 +68,13 @@ export async function openPanel(page: Page, panelId: string) {
   );
 }
 
-export async function toggleDashboardStatus(page: Page, status: "icebox" | "done") {
+export async function toggleDashboardStatus(
+  page: Page,
+  status: "icebox" | "done",
+) {
   const trigger = page.locator(".dashboard-options-trigger");
-  if (await trigger.getAttribute("aria-expanded") !== "true") await trigger.click();
+  if ((await trigger.getAttribute("aria-expanded")) !== "true")
+    await trigger.click();
   await page.locator(`.dashboard-${status}-command`).click();
   await trigger.click();
 }
@@ -96,7 +106,7 @@ export async function switchGroup(page: Page, name: string) {
   if (name === "All Group" || name === "Ungrouped") {
     await groupsCommand(page).click();
     await page.getByRole("button", { name, exact: true }).click();
-    if (await groupsCommand(page).getAttribute("aria-expanded") === "true")
+    if ((await groupsCommand(page).getAttribute("aria-expanded")) === "true")
       await page.keyboard.press("Escape");
     return;
   }

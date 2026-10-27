@@ -27,19 +27,36 @@
     cursor: default;
 
     font-size: v.font(14px);
+    &[aria-haspopup="menu"] > span {
+      font-size: calc(1em + 1px);
+    }
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     position: relative;
-    svg { width: 20px; height: 20px; flex: 0 0 20px; }
-    &:hover, &:focus-visible { background: v.$raised; color: v.$ink; }
+    svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+    }
+    &:hover,
+    &:focus-visible {
+      background: v.$raised;
+      color: v.$ink;
+    }
   }
 
-  &.has-auth { padding-right: calc(var(--tools-button-width) + var(--tools-right-padding)); }
+  &.has-auth {
+    padding-right: calc(var(--tools-button-width) + var(--tools-right-padding));
+  }
 
   @media (max-width: 512px) {
     --tools-button-width: 92px;
-    .header-auth { height: 45px; }
-    .auth-command { font-size: v.font(12px); }
+    .header-auth {
+      height: 45px;
+    }
+    .auth-command {
+      font-size: v.font(12px);
+    }
   }
 }

@@ -40,8 +40,6 @@
     --dashboard-accent: var(--color-tab-yellow);
   }
 
-
-
   .dashboard-content.is-scrolled .dashboard-statuses::after {
     opacity: 1;
   }
@@ -136,31 +134,15 @@
       &::before {
         height: 20px;
         bottom: 100%;
-        -webkit-mask-image: linear-gradient(
-          to bottom,
-          transparent,
-          #000
-        );
-        mask-image: linear-gradient(
-          to bottom,
-          transparent,
-          #000
-        );
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+        mask-image: linear-gradient(to bottom, transparent, #000);
       }
 
       &::after {
         height: 20px;
         top: 100%;
-        -webkit-mask-image: linear-gradient(
-          to bottom,
-          #000,
-          transparent
-        );
-        mask-image: linear-gradient(
-          to bottom,
-          #000,
-          transparent
-        );
+        -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+        mask-image: linear-gradient(to bottom, #000, transparent);
       }
     }
 

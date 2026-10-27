@@ -13,17 +13,34 @@
   background: v.$raised;
   color: v.$ink;
 
-  &::backdrop { background: rgba(0, 0, 0, 0.65); }
-  .dashboard-status-editor-header, .dashboard-status-editor-actions {
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.65);
+  }
+  .dashboard-status-editor-header,
+  .dashboard-status-editor-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
   }
-  h3 { margin: 0; font-size: v.font(20px); }
-  p { color: v.$muted; font-size: v.font(14px); }
-  .dashboard-status-editor-fields { display: grid; gap: 12px; }
-  label { display: grid; grid-template-columns: 90px minmax(0, 1fr); align-items: center; gap: 12px; }
+  h3 {
+    margin: 0;
+    font-size: v.font(20px);
+  }
+  p {
+    color: v.$muted;
+    font-size: v.font(14px);
+  }
+  .dashboard-status-editor-fields {
+    display: grid;
+    gap: 12px;
+  }
+  label {
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
   input {
     width: 100%;
     min-width: 0;
@@ -45,8 +62,16 @@
     color: v.$ink;
     cursor: default;
     font: inherit;
-    &:focus-visible { outline: 2px solid v.$signal; outline-offset: 2px; }
+    &:focus-visible {
+      outline: 2px solid v.$signal;
+      outline-offset: 2px;
+    }
   }
-  .dashboard-status-editor-header button { padding: 6px; }
-  .dashboard-status-editor-actions { justify-content: flex-end; margin-top: 16px; }
+  .dashboard-status-editor-header button {
+    padding: 6px;
+  }
+  .dashboard-status-editor-actions {
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
 }

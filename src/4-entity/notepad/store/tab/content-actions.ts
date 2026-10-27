@@ -1,7 +1,11 @@
 import type { StateCreator } from "zustand";
 
 import type { NotepadState } from "../../type";
-import { getTitleFromContent, sanitizeSelectedLines } from "../../util";
+import {
+  getTabStatus,
+  getTitleFromContent,
+  sanitizeSelectedLines,
+} from "../../util";
 import { getTabGroup, patchTabAndBookmark, updateGroup } from "../workspace";
 
 type Actions = Pick<
@@ -58,13 +62,21 @@ export const createTabContentActions: StateCreator<
       const tab = group?.tabs.find((item) => item.id === tabId);
       if (!group || !tab) return state;
       const cycle = state.settings.tabColorCycle;
-      // A color outside the cycle moves to the cycle's first color.
-      const nextColor = cycle[(cycle.indexOf(tab.tabColor) + 1) % cycle.length];
+      const statuses = ["todo", "ready", "in-progress"] as const;
+      const index = statuses.findIndex(
+        (status) => status === getTabStatus(tab, cycle),
+      );
+      const next = (index + 1) % statuses.length;
+      const nextColor = cycle[next];
       return updateGroup(state, group.id, (current) =>
         patchTabAndBookmark(
           current,
           tabId,
-          { tabColor: nextColor },
+          {
+            tabColor: nextColor,
+            dashboardStatus: statuses[next],
+            dashboardOrder: undefined,
+          },
           { tabColor: nextColor, updatedAt: Date.now() },
         ),
       );

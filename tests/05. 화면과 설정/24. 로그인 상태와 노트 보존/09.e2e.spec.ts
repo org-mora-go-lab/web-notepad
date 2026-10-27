@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
 
-test("9. 로그인 영역은 좌우 padding 없이 PC 116px, 모바일 92px 너비를 사용한다", async ({ page }) => {
+test("9. 로그인 영역은 좌우 padding 없이 PC 116px, 모바일 92px 너비를 사용한다", async ({
+  page,
+}) => {
   await page.goto("/");
   const login = page.locator(".auth-command");
 

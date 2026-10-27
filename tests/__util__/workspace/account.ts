@@ -8,10 +8,20 @@ export async function openAccountMenu(page: Page) {
   await expect(page.locator(".auth-command:not(.is-loading)")).toBeVisible();
   const trigger = page.locator("button.auth-command");
   if (!(await trigger.count())) {
-    await authenticateBrowser(page.context(), signedSession({ id: "settings-" + crypto.randomUUID(), nickname: "Settings User", expiresAt: Date.now() + 300_000 }));
-    await page.evaluate(() => window.dispatchEvent(new Event("notepad-auth-changed")));
+    await authenticateBrowser(
+      page.context(),
+      signedSession({
+        id: "settings-" + crypto.randomUUID(),
+        nickname: "Settings User",
+        expiresAt: Date.now() + 300_000,
+      }),
+    );
+    await page.evaluate(() =>
+      window.dispatchEvent(new Event("notepad-auth-changed")),
+    );
     await expect(trigger).toBeVisible();
   }
-  if (await trigger.getAttribute("aria-expanded") !== "true") await trigger.press("Enter");
+  if ((await trigger.getAttribute("aria-expanded")) !== "true")
+    await trigger.press("Enter");
   return page.locator("#account-menu");
 }

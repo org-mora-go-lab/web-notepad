@@ -4,7 +4,9 @@ import { STORAGE_KEY } from "../../__constant__";
 import { openSettingsPanel, waitForStoredState } from "../../__util__";
 import { tabColorRadio } from "../__util__";
 
-test("2. 중복되거나 잘못된 탭 색상 순서 저장값은 기본 순서로 복원한다", async ({ page }) => {
+test("2. 중복되거나 잘못된 탭 색상 순서 저장값은 기본 순서로 복원한다", async ({
+  page,
+}) => {
   await page.goto("/");
   await waitForStoredState(page);
   await page.evaluate((key) => {
@@ -15,6 +17,6 @@ test("2. 중복되거나 잘못된 탭 색상 순서 저장값은 기본 순서�
   await page.reload();
   await openSettingsPanel(page);
   await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Indigo")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Teal")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Orange")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Indigo")).toBeChecked();
 });

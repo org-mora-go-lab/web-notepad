@@ -1,7 +1,13 @@
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState, NoteTab } from "../type";
-import { createNoteTab, normalizeDashboardVisibility } from "../util";
-import { finiteNumberOr } from "./read-value";
+import {
+  createNoteTab,
+  isSharedGroupId,
+  normalizeDashboardStatusNames,
+  normalizeDashboardVisibility,
+  normalizeSharedGroupData,
+} from "../util";
+import { finiteNumberOr, isTabColor } from "./read-value";
 import {
   normalizeBookmarks,
   normalizeClosedTabs,
@@ -26,6 +32,37 @@ export function normalizePersistedState(
     splitRatio?: unknown;
   };
   const settings = normalizeSettings(persisted.settings);
+  const legacyColors =
+    persisted.settings?.tabColorCycleVersion !== 2
+      ? Array.isArray(persisted.settings?.tabColorCycle)
+        ? persisted.settings.tabColorCycle
+        : ["gray", "indigo", "teal"]
+      : null;
+  const legacyDoneColor = legacyColors?.[2];
+  const migrateStatus = (tab: NoteTab): NoteTab => {
+    if (tab.dashboardStatus === "closed")
+      return {
+        ...tab,
+        dashboardStatus: "done",
+        tabColor: isTabColor(legacyDoneColor) ? legacyDoneColor : "teal",
+      };
+    if (legacyColors && tab.dashboardStatus === "ready")
+      return { ...tab, tabColor: settings.tabColorCycle[1] };
+    if (
+      legacyColors &&
+      (!tab.dashboardStatus ||
+        tab.dashboardStatus === "todo" ||
+        tab.dashboardStatus === "in-progress")
+    )
+      return {
+        ...tab,
+        dashboardStatus:
+          (["todo", "in-progress", "done"] as const)[
+            Math.max(0, legacyColors.indexOf(tab.tabColor))
+          ] ?? "todo",
+      };
+    return tab;
+  };
   const hasLegacyTabs = Array.isArray(persisted.tabs);
   const legacyTabs = normalizeTabs(persisted.tabs, currentState.groups[0].tabs);
   const legacyBookmarks = normalizeBookmarks(
@@ -61,10 +98,10 @@ export function normalizePersistedState(
     createLegacyGroupTab,
   );
 
-  for (const group of groups) {
-    group.tabs = group.tabs.map(tab => tab.dashboardStatus === "closed"
-      ? { ...tab, dashboardStatus: "done", tabColor: settings.tabColorCycle[2] ?? "teal" } : tab);
-  }
+  for (const group of groups)
+    group.tabs = isSharedGroupId(group.id)
+      ? normalizeSharedGroupData(group).tabs
+      : group.tabs.map(migrateStatus);
   const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
   if (!ungrouped) {
     groups.unshift({
@@ -101,8 +138,24 @@ export function normalizePersistedState(
     allGroupDashboardVisibility: normalizeDashboardVisibility(
       persisted.allGroupDashboardVisibility,
     ),
+    allGroupDashboardStatusNames: normalizeDashboardStatusNames(
+      persisted.allGroupDashboardStatusNames,
+    ),
+    sharedDashboardVisibility: Object.fromEntries(
+      Object.entries(
+        persisted.sharedDashboardVisibility &&
+          typeof persisted.sharedDashboardVisibility === "object"
+          ? persisted.sharedDashboardVisibility
+          : {},
+      )
+        .filter(([id]) => isSharedGroupId(id))
+        .map(([id, value]) => [id, normalizeDashboardVisibility(value)]),
+    ),
     nextTabNumber,
-    closedTabs: normalizeClosedTabs(persisted.closedTabs),
+    closedTabs: normalizeClosedTabs(persisted.closedTabs).map((entry) => ({
+      ...entry,
+      tab: migrateStatus(entry.tab),
+    })),
     settings,
   };
 

@@ -55,9 +55,20 @@ export async function seedStatusIntegrity(
 }
 
 export async function moveDashboardCard(page: Page, label: string) {
-  const statuses: Record<string, string> = { Note: "icebox", "To Do": "todo", Ready: "ready", Doing: "in-progress", Done: "done" };
+  const statuses: Record<string, string> = {
+    Note: "icebox",
+    "To Do": "todo",
+    Ready: "ready",
+    Doing: "in-progress",
+    Done: "done",
+  };
   const status = statuses[label];
   if (!status) throw Error("Unsupported status: " + label);
-  await dashboardPanel(page).locator(".dashboard-card", { hasText: "Integrity task" })
-    .dragTo(dashboardPanel(page).locator('.dashboard-column[data-status="' + status + '"]'));
+  await dashboardPanel(page)
+    .locator(".dashboard-card", { hasText: "Integrity task" })
+    .dragTo(
+      dashboardPanel(page).locator(
+        '.dashboard-column[data-status="' + status + '"]',
+      ),
+    );
 }

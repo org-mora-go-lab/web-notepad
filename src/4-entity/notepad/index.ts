@@ -7,7 +7,11 @@ export {
 } from "./constant";
 export type { CloudSaveStatus, ShareInviteStatus } from "./hook";
 export { useCloudSave, useNotepadHydrated, useSharedGroups } from "./hook";
-export { createCloudSnapshot, mergeCloudSnapshot, normalizePersistedState } from "./persistence";
+export {
+  createCloudSnapshot,
+  mergeCloudSnapshot,
+  normalizePersistedState,
+} from "./persistence";
 export * from "./store";
 export * from "./type";
 export type { DashboardColumnData } from "./util";
@@ -30,7 +34,9 @@ export {
   isSharedGroupId,
   mergeSharedGroupData,
   namespaceGroup,
+  normalizeSharedGroupData,
   PANE_IDS,
   sharedGroupId,
   toSharedGroupData,
 } from "./util";
+export { compareDashboardCards } from "./util";

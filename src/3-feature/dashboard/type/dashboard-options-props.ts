@@ -1,6 +1,9 @@
 import type { DashboardProps } from "./dashboard-props";
 
-export type DashboardOptionsProps = Pick<DashboardProps, "groupId" | "statusNames" | "onSaveStatusNames"> & {
+export type DashboardOptionsProps = Pick<
+  DashboardProps,
+  "groupId" | "statusNames" | "onSaveStatusNames"
+> & {
   groupName: string;
   iceboxVisible: boolean;
   doneVisible: boolean;

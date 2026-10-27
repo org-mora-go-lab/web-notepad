@@ -16,10 +16,15 @@ test("6. Logout 서버 오류는 계정 표시를 보존하고 재시도를 허�
     name: authProfile.nickname + " · Account menu",
   });
   await account.click();
-  const failed = page.waitForResponse(response => response.url().endsWith("/api/auth/logout") && response.status() === 500);
+  const failed = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/auth/logout") && response.status() === 500,
+  );
   await page.getByRole("menuitem", { name: "Logout", exact: true }).click();
   await failed;
-  await expect(page.getByRole("menuitem", { name: "Logout", exact: true })).toBeEnabled();
+  await expect(
+    page.getByRole("menuitem", { name: "Logout", exact: true }),
+  ).toBeEnabled();
   await expect(account).toBeEnabled();
   await expect(page.locator("a.auth-command")).toHaveCount(0);
 });

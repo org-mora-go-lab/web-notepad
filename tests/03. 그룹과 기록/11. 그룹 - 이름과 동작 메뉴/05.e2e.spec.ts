@@ -11,5 +11,7 @@ test("5. 새 그룹 이름은 최대 60자로 입력하고 저장한다", async 
   await expect(input).toHaveValue("A".repeat(60));
   await page.getByRole("button", { name: "Create group" }).click();
 
-  expect((await readStoredState(page)).groups.map((group) => group.name)).toContain("A".repeat(60));
+  expect(
+    (await readStoredState(page)).groups.map((group) => group.name),
+  ).toContain("A".repeat(60));
 });

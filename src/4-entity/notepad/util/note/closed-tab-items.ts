@@ -9,9 +9,7 @@ export function getClosedTabItems(
   const groupNames = new Map(groups.map((group) => [group.id, group.name]));
   return closedTabs.map((entry) => ({
     entry,
-    groupId: groupNames.has(entry.groupId)
-      ? entry.groupId
-      : UNGROUPED_GROUP_ID,
+    groupId: groupNames.has(entry.groupId) ? entry.groupId : UNGROUPED_GROUP_ID,
     groupName: groupNames.get(entry.groupId) ?? "Ungrouped",
   }));
 }

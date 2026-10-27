@@ -1,8 +1,35 @@
+import { DASHBOARD_STATUSES, DEFAULT_SETTINGS } from "../constant";
 import type { GroupEntry, SharedGroupData } from "../type";
+import { getTabStatus } from "./note";
 import { normalizeLayout } from "./pane";
 
 export const sharedGroupId = (shareId: string) => `shared-${shareId}`;
-export const isSharedGroupId = (id: string) => /^shared-[0-9a-f-]{36}$/i.test(id);
+export const isSharedGroupId = (id: string) =>
+  /^shared-[0-9a-f-]{36}$/i.test(id);
+
+// Resolve legacy records against a common palette, never a viewer's preferences.
+export function normalizeSharedGroupData(
+  data: SharedGroupData,
+): SharedGroupData {
+  return {
+    ...data,
+    tabs: data.tabs.map((tab) =>
+      tab.dashboardStatus && DASHBOARD_STATUSES.includes(tab.dashboardStatus)
+        ? tab
+        : {
+            ...tab,
+            dashboardStatus: getTabStatus(
+              {
+                ...tab,
+                dashboardStatus:
+                  tab.dashboardStatus === "closed" ? "done" : undefined,
+              },
+              DEFAULT_SETTINGS.tabColorCycle,
+            ),
+          },
+    ),
+  };
+}
 
 export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
   const id = sharedGroupId(shareId);
@@ -11,7 +38,10 @@ export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
   return {
     ...group,
     id,
-    tabs: group.tabs.map((tab) => ({ ...tab, id: tabId(tab.id) })),
+    tabs: normalizeSharedGroupData(group).tabs.map((tab) => ({
+      ...tab,
+      id: tabId(tab.id),
+    })),
     bookmarks: group.bookmarks.map((bookmark) => ({
       ...bookmark,
       id: bookmarkId(bookmark.id),
@@ -19,16 +49,22 @@ export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
     })),
     activeTabId: tabId(group.activeTabId),
     rightTabIds: group.rightTabIds.map(tabId),
-    activeRightTabId: group.activeRightTabId ? tabId(group.activeRightTabId) : null,
+    activeRightTabId: group.activeRightTabId
+      ? tabId(group.activeRightTabId)
+      : null,
     leftBottomTabIds: group.leftBottomTabIds.map(tabId),
-    activeLeftBottomTabId: group.activeLeftBottomTabId ? tabId(group.activeLeftBottomTabId) : null,
+    activeLeftBottomTabId: group.activeLeftBottomTabId
+      ? tabId(group.activeLeftBottomTabId)
+      : null,
     rightBottomTabIds: group.rightBottomTabIds.map(tabId),
-    activeRightBottomTabId: group.activeRightBottomTabId ? tabId(group.activeRightBottomTabId) : null,
+    activeRightBottomTabId: group.activeRightBottomTabId
+      ? tabId(group.activeRightBottomTabId)
+      : null,
   };
 }
 
 export function toSharedGroupData(group: GroupEntry): SharedGroupData {
-  return {
+  return normalizeSharedGroupData({
     id: group.id,
     name: group.name,
     createdAt: group.createdAt,
@@ -36,12 +72,17 @@ export function toSharedGroupData(group: GroupEntry): SharedGroupData {
     tabs: group.tabs,
     bookmarks: group.bookmarks,
     dashboardStatusNames: group.dashboardStatusNames,
-    dashboardVisibility: group.dashboardVisibility,
-  };
+  });
 }
 
-export function applySharedGroupData(group: GroupEntry, data: SharedGroupData): GroupEntry {
-  const openIds = new Set(data.tabs.filter((tab) => tab.open).map((tab) => tab.id));
+export function applySharedGroupData(
+  group: GroupEntry,
+  data: SharedGroupData,
+): GroupEntry {
+  data = normalizeSharedGroupData(data);
+  const openIds = new Set(
+    data.tabs.filter((tab) => tab.open).map((tab) => tab.id),
+  );
   const activeTabId = openIds.has(group.activeTabId)
     ? group.activeTabId
     : (data.tabs.find((tab) => tab.open)?.id ?? "");
@@ -50,6 +91,7 @@ export function applySharedGroupData(group: GroupEntry, data: SharedGroupData): 
     ...data,
     pinned: group.pinned,
     sortOrder: group.sortOrder,
+    dashboardVisibility: group.dashboardVisibility,
     activeTabId,
     rightTabIds: group.rightTabIds.filter((id) => openIds.has(id)),
     leftBottomTabIds: group.leftBottomTabIds.filter((id) => openIds.has(id)),
@@ -58,6 +100,7 @@ export function applySharedGroupData(group: GroupEntry, data: SharedGroupData): 
 }
 
 export function createJoinedGroup(data: SharedGroupData): GroupEntry {
+  data = normalizeSharedGroupData(data);
   const firstOpenTab = data.tabs.find((tab) => tab.open);
   return normalizeLayout({
     ...data,

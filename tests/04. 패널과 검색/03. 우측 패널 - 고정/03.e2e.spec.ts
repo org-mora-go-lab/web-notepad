@@ -10,5 +10,7 @@ test("3. X로 고정 패널을 닫으면 작업 영역을 복원한다", async (
   await openPanel(page, "dashboard-panel");
   await closePanelWithX(page, "dashboard-panel");
 
-  await expect.poll(async () => (await workspaceBounds(page)).width).toBe(DESKTOP_VIEWPORT.width);
+  await expect
+    .poll(async () => (await workspaceBounds(page)).width)
+    .toBe(DESKTOP_VIEWPORT.width);
 });

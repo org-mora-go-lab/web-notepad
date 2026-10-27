@@ -122,21 +122,23 @@ export function TabContextMenu({
             </button>
           ) : (
             <>
-          {moveGroupFirst && moveGroupButton}
-          <button type="button" role="menuitem" onClick={onToggleBookmark}>
-            <Bookmark size={14} />
-            <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
-          </button>
-          {onCloseTab && (
-            <button type="button" role="menuitem" onClick={onCloseTab}>
-              <Archive size={14} />
-              <span>{t.closedTitle}</span>
-            </button>
-          )}
-          {!moveGroupFirst && moveGroupButton}
+              {moveGroupFirst && moveGroupButton}
+              <button type="button" role="menuitem" onClick={onToggleBookmark}>
+                <Bookmark size={14} />
+                <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
+              </button>
+              {onCloseTab && (
+                <button type="button" role="menuitem" onClick={onCloseTab}>
+                  <Archive size={14} />
+                  <span>{t.closedTitle}</span>
+                </button>
+              )}
+              {!moveGroupFirst && moveGroupButton}
             </>
           )}
-          {footerAction && <div className="tab-context-menu-footer">{footerAction}</div>}
+          {footerAction && (
+            <div className="tab-context-menu-footer">{footerAction}</div>
+          )}
         </>
       )}
     </div>,

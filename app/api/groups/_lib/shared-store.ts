@@ -2,7 +2,12 @@ import "server-only";
 
 import type { KakaoUser } from "@/app/api/auth/_lib/kakao";
 import type { GroupEntry, SharedGroupData } from "@/src/4-entity/notepad";
-import { applySharedGroupData, namespaceGroup, toSharedGroupData } from "@/src/4-entity/notepad";
+import {
+  applySharedGroupData,
+  namespaceGroup,
+  normalizeSharedGroupData,
+  toSharedGroupData,
+} from "@/src/4-entity/notepad";
 
 import { sharedDatabase } from "./database";
 import { describeGroupUpdate } from "./summary";
@@ -22,14 +27,19 @@ function fromRow(row: Record<string, unknown>): SharedRecord {
     id: String(row.id),
     ownerId: String(row.owner_id),
     revision: Number(row.revision),
-    data: JSON.parse(String(row.snapshot)) as SharedGroupData,
+    data: normalizeSharedGroupData(
+      JSON.parse(String(row.snapshot)) as SharedGroupData,
+    ),
     updatedAt: Number(row.updated_at),
     sharingActive: Number(row.invite_enabled ?? 1) !== 0,
     shareVersion: Number(row.token_version ?? 0),
   };
 }
 
-export async function createOrGetSharedGroup(user: KakaoUser, group: GroupEntry) {
+export async function createOrGetSharedGroup(
+  user: KakaoUser,
+  group: GroupEntry,
+) {
   const database = await sharedDatabase();
   const existing = await database.execute({
     sql: `SELECT * FROM shared_groups WHERE (owner_id = ? AND owner_local_id = ?) OR id = ? LIMIT 1`,
@@ -43,46 +53,96 @@ export async function createOrGetSharedGroup(user: KakaoUser, group: GroupEntry)
       args: [record.id, user.id],
     });
     if (!member.rows.length || record.ownerId !== user.id) return null;
-    const access = await database.execute({ sql: "SELECT enabled, token_version FROM shared_group_access WHERE group_id = ?", args: [record.id] });
+    const access = await database.execute({
+      sql: "SELECT enabled, token_version FROM shared_group_access WHERE group_id = ?",
+      args: [record.id],
+    });
     record.shareVersion = Number(access.rows[0]?.token_version ?? 0);
     if (Number(access.rows[0]?.enabled ?? 1) === 0) {
-      await database.execute({ sql: "UPDATE shared_group_access SET enabled = 1 WHERE group_id = ?", args: [record.id] });
+      await database.execute({
+        sql: "UPDATE shared_group_access SET enabled = 1 WHERE group_id = ?",
+        args: [record.id],
+      });
     }
-    return { record, group: applySharedGroupData(group.id === record.id ? group : namespaceGroup(group, record.id.slice(7)), record.data) };
+    return {
+      record,
+      group: applySharedGroupData(
+        group.id === record.id
+          ? group
+          : namespaceGroup(group, record.id.slice(7)),
+        record.data,
+      ),
+    };
   }
 
   const id = `shared-${crypto.randomUUID()}`;
   const namespaced = namespaceGroup(group, id.slice(7));
   const data = toSharedGroupData(namespaced);
   const now = Date.now();
-  await database.batch([
-    {
-      sql: "INSERT INTO shared_groups (id, owner_id, owner_local_id, snapshot, revision, updated_at) VALUES (?, ?, ?, ?, 0, ?)",
-      args: [id, user.id, group.id, JSON.stringify(data), now],
+  await database.batch(
+    [
+      {
+        sql: "INSERT INTO shared_groups (id, owner_id, owner_local_id, snapshot, revision, updated_at) VALUES (?, ?, ?, ?, 0, ?)",
+        args: [id, user.id, group.id, JSON.stringify(data), now],
+      },
+      {
+        sql: "INSERT INTO shared_group_members (group_id, user_id, display_name, joined_at) VALUES (?, ?, ?, ?)",
+        args: [id, user.id, user.nickname, now],
+      },
+    ],
+    "write",
+  );
+  return {
+    record: {
+      id,
+      ownerId: user.id,
+      revision: 0,
+      data,
+      updatedAt: now,
+      sharingActive: true,
+      shareVersion: 0,
     },
-    {
-      sql: "INSERT INTO shared_group_members (group_id, user_id, display_name, joined_at) VALUES (?, ?, ?, ?)",
-      args: [id, user.id, user.nickname, now],
-    },
-  ], "write");
-  return { record: { id, ownerId: user.id, revision: 0, data, updatedAt: now, sharingActive: true, shareVersion: 0 }, group: namespaced };
+    group: namespaced,
+  };
 }
 
-export async function joinSharedGroup(user: KakaoUser, id: string, shareVersion = 0) {
+export async function joinSharedGroup(
+  user: KakaoUser,
+  id: string,
+  shareVersion = 0,
+) {
   const database = await sharedDatabase();
   const transaction = await database.transaction("write");
   try {
-    const found = await transaction.execute({ sql: "SELECT g.*, COALESCE(a.enabled, 1) AS invite_enabled, COALESCE(a.token_version, 0) AS token_version FROM shared_groups g LEFT JOIN shared_group_access a ON a.group_id = g.id WHERE g.id = ?", args: [id] });
-    if (!found.rows[0] || Number(found.rows[0].invite_enabled) === 0 || Number(found.rows[0].token_version) !== shareVersion) return null;
-    const lastEvent = await transaction.execute({ sql: "SELECT COALESCE(MAX(id), 0) AS id FROM shared_group_events WHERE group_id = ?", args: [id] });
+    const found = await transaction.execute({
+      sql: "SELECT g.*, COALESCE(a.enabled, 1) AS invite_enabled, COALESCE(a.token_version, 0) AS token_version FROM shared_groups g LEFT JOIN shared_group_access a ON a.group_id = g.id WHERE g.id = ?",
+      args: [id],
+    });
+    if (
+      !found.rows[0] ||
+      Number(found.rows[0].invite_enabled) === 0 ||
+      Number(found.rows[0].token_version) !== shareVersion
+    )
+      return null;
+    const lastEvent = await transaction.execute({
+      sql: "SELECT COALESCE(MAX(id), 0) AS id FROM shared_group_events WHERE group_id = ?",
+      args: [id],
+    });
     await transaction.execute({
       sql: "INSERT OR IGNORE INTO shared_group_members (group_id, user_id, display_name, last_seen_event_id, joined_at) VALUES (?, ?, ?, ?, ?)",
-      args: [id, user.id, user.nickname, Number(lastEvent.rows[0]?.id ?? 0), Date.now()],
+      args: [
+        id,
+        user.id,
+        user.nickname,
+        Number(lastEvent.rows[0]?.id ?? 0),
+        Date.now(),
+      ],
     });
     await transaction.commit();
     return fromRow(found.rows[0]);
-  } finally { transaction.close(); }
-
+  } finally {
+    transaction.close();
+  }
 }
 
 export async function listSharedGroups(userId: string) {
@@ -102,6 +162,7 @@ export async function saveSharedGroup(
   baseRevision: number,
   data: SharedGroupData,
 ) {
+  data = normalizeSharedGroupData(data);
   const database = await sharedDatabase();
   const transaction = await database.transaction("write");
   try {
@@ -110,30 +171,57 @@ export async function saveSharedGroup(
       args: [id, user.id],
     });
     if (!membership.rows.length) return { kind: "forbidden" as const };
-    const result = await transaction.execute({ sql: "SELECT * FROM shared_groups WHERE id = ?", args: [id] });
+    const result = await transaction.execute({
+      sql: "SELECT * FROM shared_groups WHERE id = ?",
+      args: [id],
+    });
     const row = result.rows[0];
     if (!row) return { kind: "missing" as const };
     const current = fromRow(row);
-    if (current.revision !== baseRevision) return { kind: "conflict" as const, record: current };
-    if (JSON.stringify(current.data) === JSON.stringify(data)) return { kind: "saved" as const, record: current };
+    if (current.revision !== baseRevision)
+      return { kind: "conflict" as const, record: current };
+    if (JSON.stringify(current.data) === JSON.stringify(data))
+      return { kind: "saved" as const, record: current };
     const revision = current.revision + 1;
     const now = Date.now();
     await transaction.execute({
       sql: "UPDATE shared_groups SET snapshot = ?, revision = ?, updated_at = ? WHERE id = ?",
       args: [JSON.stringify(data), revision, now, id],
     });
-    const previousTabs = new Map(current.data.tabs.map(tab => [tab.id, tab]));
-    const changedTab = data.tabs.find(tab => {
-      const previous = previousTabs.get(tab.id);
-      return !previous || previous.content !== tab.content || previous.tabColor !== tab.tabColor || previous.dashboardStatus !== tab.dashboardStatus;
-    }) ?? current.data.tabs.find(tab => !data.tabs.some(next => next.id === tab.id)) ?? data.tabs.find(tab => tab.open) ?? data.tabs[0];
+    const previousTabs = new Map(current.data.tabs.map((tab) => [tab.id, tab]));
+    const changedTab =
+      data.tabs.find((tab) => {
+        const previous = previousTabs.get(tab.id);
+        return (
+          !previous ||
+          previous.content !== tab.content ||
+          previous.tabColor !== tab.tabColor ||
+          previous.dashboardStatus !== tab.dashboardStatus
+        );
+      }) ??
+      current.data.tabs.find(
+        (tab) => !data.tabs.some((next) => next.id === tab.id),
+      ) ??
+      data.tabs.find((tab) => tab.open) ??
+      data.tabs[0];
     await transaction.execute({
       sql: `INSERT INTO shared_group_events (group_id, revision, actor_id, actor_name, summary, created_at, tab_id)
         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      args: [id, revision, user.id, user.nickname, describeGroupUpdate(current.data, data), now, changedTab?.id ?? null],
+      args: [
+        id,
+        revision,
+        user.id,
+        user.nickname,
+        describeGroupUpdate(current.data, data),
+        now,
+        changedTab?.id ?? null,
+      ],
     });
     await transaction.commit();
-    return { kind: "saved" as const, record: { ...current, revision, data, updatedAt: now } };
+    return {
+      kind: "saved" as const,
+      record: { ...current, revision, data, updatedAt: now },
+    };
   } finally {
     transaction.close();
   }
@@ -151,25 +239,40 @@ export async function listSharedNotifications(userId: string) {
       WHERE e.actor_id <> ? AND COALESCE(n.dismissed, 0) = 0 ORDER BY e.id DESC LIMIT 30`,
     args: [userId, userId],
   });
-  return result.rows.flatMap(row => {
+  return result.rows.flatMap((row) => {
     const group = JSON.parse(String(row.snapshot)) as SharedGroupData;
-    const tabId = typeof row.tab_id === "string" ? row.tab_id : group.tabs.find(tab => tab.open)?.id ?? null;
-    if (!tabId || !group.tabs.some(tab => tab.id === tabId) || String(row.summary).startsWith("글 삭제:")) return [];
-    return [{
-    id: Number(row.id),
-    groupId: String(row.group_id),
-    tabId,
-    groupName: group.name,
-    actorId: String(row.actor_id),
-    actorName: String(row.actor_name),
-    summary: String(row.summary),
-    createdAt: Number(row.created_at),
-    unread: Number(row.id) > Number(row.last_seen_event_id) && !Number(row.is_read),
-  }];
+    const tabId =
+      typeof row.tab_id === "string"
+        ? row.tab_id
+        : (group.tabs.find((tab) => tab.open)?.id ?? null);
+    if (
+      !tabId ||
+      !group.tabs.some((tab) => tab.id === tabId) ||
+      String(row.summary).startsWith("글 삭제:")
+    )
+      return [];
+    return [
+      {
+        id: Number(row.id),
+        groupId: String(row.group_id),
+        tabId,
+        groupName: group.name,
+        actorId: String(row.actor_id),
+        actorName: String(row.actor_name),
+        summary: String(row.summary),
+        createdAt: Number(row.created_at),
+        unread:
+          Number(row.id) > Number(row.last_seen_event_id) &&
+          !Number(row.is_read),
+      },
+    ];
   });
 }
 
-export async function markSharedNotificationsRead(userId: string, eventId?: number) {
+export async function markSharedNotificationsRead(
+  userId: string,
+  eventId?: number,
+) {
   const database = await sharedDatabase();
   if (eventId !== undefined) {
     await database.execute({
@@ -202,23 +305,41 @@ export async function clearSharedNotifications(userId: string) {
   });
 }
 
-export async function changeSharedGroupAccess(userId: string, id: string, action: "leave" | "revoke") {
+export async function changeSharedGroupAccess(
+  userId: string,
+  id: string,
+  action: "leave" | "revoke",
+) {
   const database = await sharedDatabase();
   const transaction = await database.transaction("write");
   try {
-    const result = await transaction.execute({ sql: "SELECT owner_id FROM shared_groups WHERE id = ?", args: [id] });
+    const result = await transaction.execute({
+      sql: "SELECT owner_id FROM shared_groups WHERE id = ?",
+      args: [id],
+    });
     const ownerId = result.rows[0]?.owner_id;
     if (!ownerId) return "missing" as const;
     if (action === "revoke") {
       if (String(ownerId) !== userId) return "forbidden" as const;
-      await transaction.execute({ sql: "INSERT INTO shared_group_access (group_id, enabled, token_version) VALUES (?, 0, 1) ON CONFLICT(group_id) DO UPDATE SET token_version = CASE WHEN shared_group_access.enabled = 1 THEN shared_group_access.token_version + 1 ELSE shared_group_access.token_version END, enabled = 0", args: [id] });
-      await transaction.execute({ sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id <> ?", args: [id, userId] });
+      await transaction.execute({
+        sql: "INSERT INTO shared_group_access (group_id, enabled, token_version) VALUES (?, 0, 1) ON CONFLICT(group_id) DO UPDATE SET token_version = CASE WHEN shared_group_access.enabled = 1 THEN shared_group_access.token_version + 1 ELSE shared_group_access.token_version END, enabled = 0",
+        args: [id],
+      });
+      await transaction.execute({
+        sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id <> ?",
+        args: [id, userId],
+      });
     } else {
       if (String(ownerId) === userId) return "forbidden" as const;
-      const removed = await transaction.execute({ sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id = ?", args: [id, userId] });
+      const removed = await transaction.execute({
+        sql: "DELETE FROM shared_group_members WHERE group_id = ? AND user_id = ?",
+        args: [id, userId],
+      });
       if (!removed.rowsAffected) return "forbidden" as const;
     }
     await transaction.commit();
     return "changed" as const;
-  } finally { transaction.close(); }
+  } finally {
+    transaction.close();
+  }
 }

@@ -2,7 +2,14 @@ import type { StateCreator } from "zustand";
 
 import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
-import { assignTabToPane, compareGroups, normalizeDashboardStatusNames, normalizeDashboardVisibility, normalizeLayout } from "../../util";
+import {
+  assignTabToPane,
+  compareGroups,
+  isSharedGroupId,
+  normalizeDashboardStatusNames,
+  normalizeDashboardVisibility,
+  normalizeLayout,
+} from "../../util";
 import { allocateTab, createGroupEntry } from "./workspace";
 
 type GroupActions = Pick<
@@ -25,49 +32,104 @@ export const createGroupActions: StateCreator<
   [],
   GroupActions
 > = (set, get) => ({
-  adoptSharedGroup: (originalId, sharedGroup) => set((state) => {
-    const original = state.groups.find((group) => group.id === originalId);
-    if (!original) return state;
-    const tabIds = new Map(original.tabs.map((tab, index) => [tab.id, sharedGroup.tabs[index]?.id ?? tab.id]));
-    return {
-      groups: state.groups.map((group) => group.id === originalId ? sharedGroup : group),
-      activeGroupId: state.activeGroupId === originalId ? sharedGroup.id : state.activeGroupId,
-      allGroupActiveTabId: state.allGroupActiveTabId ? tabIds.get(state.allGroupActiveTabId) ?? state.allGroupActiveTabId : null,
-      closedTabs: state.closedTabs.map((entry) => entry.groupId === originalId
-        ? { ...entry, groupId: sharedGroup.id, tab: { ...entry.tab, id: `${sharedGroup.id}-${entry.tab.id}` } }
-        : entry),
-    };
-  }),
-  moveGroup: (groupId, targetId) => set((state) => {
-    const ordered = state.groups.filter((group) => group.id !== UNGROUPED_GROUP_ID).sort(compareGroups);
-    const source = ordered.findIndex((group) => group.id === groupId);
-    const target = ordered.findIndex((group) => group.id === targetId);
-    if (source < 0 || target < 0 || source === target || ordered[source].pinned !== ordered[target].pinned) return state;
-    const [moving] = ordered.splice(source, 1);
-    ordered.splice(target, 0, moving);
-    const ranks = new Map(ordered.map((group, index) => [group.id, index]));
-    return { groups: state.groups.map((group) => ranks.has(group.id) ? { ...group, sortOrder: ranks.get(group.id) } : group) };
-  }),
-  setGroupStatusNames: (groupId, names) => set((state) => {
-    if (groupId === ALL_GROUP_ID || !state.groups.some((group) => group.id === groupId)) return state;
-    return {
-      groups: state.groups.map((group) => group.id === groupId
-        ? { ...group, dashboardStatusNames: normalizeDashboardStatusNames(names), updatedAt: Date.now() }
-        : group),
-    };
-  }),
-  setGroupDashboardVisibility: (groupId, visibility) => set((state) => {
-    const normalized = normalizeDashboardVisibility(visibility);
-    if (groupId === ALL_GROUP_ID) {
-      return { allGroupDashboardVisibility: normalized };
-    }
-    if (!state.groups.some((group) => group.id === groupId)) return state;
-    return {
-      groups: state.groups.map((group) => group.id === groupId
-        ? { ...group, dashboardVisibility: normalized }
-        : group),
-    };
-  }),
+  adoptSharedGroup: (originalId, sharedGroup) =>
+    set((state) => {
+      const original = state.groups.find((group) => group.id === originalId);
+      if (!original) return state;
+      const tabIds = new Map(
+        original.tabs.map((tab, index) => [
+          tab.id,
+          sharedGroup.tabs[index]?.id ?? tab.id,
+        ]),
+      );
+      return {
+        groups: state.groups.map((group) =>
+          group.id === originalId ? sharedGroup : group,
+        ),
+        activeGroupId:
+          state.activeGroupId === originalId
+            ? sharedGroup.id
+            : state.activeGroupId,
+        allGroupActiveTabId: state.allGroupActiveTabId
+          ? (tabIds.get(state.allGroupActiveTabId) ?? state.allGroupActiveTabId)
+          : null,
+        closedTabs: state.closedTabs.map((entry) =>
+          entry.groupId === originalId
+            ? {
+                ...entry,
+                groupId: sharedGroup.id,
+                tab: { ...entry.tab, id: `${sharedGroup.id}-${entry.tab.id}` },
+              }
+            : entry,
+        ),
+      };
+    }),
+  moveGroup: (groupId, targetId) =>
+    set((state) => {
+      const ordered = state.groups
+        .filter((group) => group.id !== UNGROUPED_GROUP_ID)
+        .sort(compareGroups);
+      const source = ordered.findIndex((group) => group.id === groupId);
+      const target = ordered.findIndex((group) => group.id === targetId);
+      if (
+        source < 0 ||
+        target < 0 ||
+        source === target ||
+        ordered[source].pinned !== ordered[target].pinned
+      )
+        return state;
+      const [moving] = ordered.splice(source, 1);
+      ordered.splice(target, 0, moving);
+      const ranks = new Map(ordered.map((group, index) => [group.id, index]));
+      return {
+        groups: state.groups.map((group) =>
+          ranks.has(group.id)
+            ? { ...group, sortOrder: ranks.get(group.id) }
+            : group,
+        ),
+      };
+    }),
+  setGroupStatusNames: (groupId, names) =>
+    set((state) => {
+      if (groupId === ALL_GROUP_ID)
+        return {
+          allGroupDashboardStatusNames: normalizeDashboardStatusNames(names),
+        };
+      if (!state.groups.some((group) => group.id === groupId)) return state;
+      return {
+        groups: state.groups.map((group) =>
+          group.id === groupId
+            ? {
+                ...group,
+                dashboardStatusNames: normalizeDashboardStatusNames(names),
+                updatedAt: Date.now(),
+              }
+            : group,
+        ),
+      };
+    }),
+  setGroupDashboardVisibility: (groupId, visibility) =>
+    set((state) => {
+      const normalized = normalizeDashboardVisibility(visibility);
+      if (groupId === ALL_GROUP_ID) {
+        return { allGroupDashboardVisibility: normalized };
+      }
+      if (!state.groups.some((group) => group.id === groupId)) return state;
+      if (isSharedGroupId(groupId))
+        return {
+          sharedDashboardVisibility: {
+            ...state.sharedDashboardVisibility,
+            [groupId]: normalized,
+          },
+        };
+      return {
+        groups: state.groups.map((group) =>
+          group.id === groupId
+            ? { ...group, dashboardVisibility: normalized }
+            : group,
+        ),
+      };
+    }),
   moveTabToGroup: (tabId, groupId) =>
     set((state) => {
       const source = state.groups.find((group) =>

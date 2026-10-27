@@ -23,17 +23,31 @@ $mobile-scale: 1.2;
 
 // Tab colors beyond gray, red and green as (dark, light) accents.
 $extra-tab-colors: (
-  "orange": (#f6ad6b, #b5641c),
-  "yellow": (#f1d570, #8f7412),
-  "teal": (#7fd8d0, #1f7f78),
-  "indigo": (#a5b4fc, #4f5bd5),
-  "purple": (#c3a6f5, #7044b8),
-  "pink": (#f5a3d0, #b03d7c),
+  "orange": (
+    #f6ad6b,
+    #b5641c,
+  ),
+  "yellow": (
+    #f1d570,
+    #8f7412,
+  ),
+  "teal": (
+    #7fd8d0,
+    #1f7f78,
+  ),
+  "indigo": (
+    #a5b4fc,
+    #4f5bd5,
+  ),
+  "purple": (
+    #c3a6f5,
+    #7044b8,
+  ),
+  "pink": (
+    #f5a3d0,
+    #b03d7c,
+  ),
 );
 
 // PC panel width: reserve at least 20% of the viewport for the workspace.
-$side-panel-width: clamp(
-  336px,
-  var(--side-panel-width, 462px),
-  80vw
-);
+$side-panel-width: clamp(336px, var(--side-panel-width, 462px), 80vw);

@@ -1,10 +1,14 @@
 import { expect, test } from "@playwright/test";
 
-test("2. 하단 메뉴 항목은 연결된 메뉴·패널을 열고 활성 상태를 표시한다", async ({ page }) => {
+test("2. 하단 메뉴 항목은 연결된 메뉴·패널을 열고 활성 상태를 표시한다", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
 
-  for (const command of await page.locator(".status-meta .status-command:visible").all()) {
+  for (const command of await page
+    .locator(".status-meta .status-command:visible")
+    .all()) {
     const panelId = await command.getAttribute("aria-controls");
     const target = page.locator(`#${panelId}`);
     await command.click();

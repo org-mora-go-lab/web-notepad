@@ -128,7 +128,9 @@
     width: 1px;
     background: v.$line;
     content: "";
-    transition: background 150ms ease, width 150ms ease;
+    transition:
+      background 150ms ease,
+      width 150ms ease;
   }
 
   &:hover::before,

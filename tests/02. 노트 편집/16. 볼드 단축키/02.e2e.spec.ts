@@ -9,10 +9,12 @@ test("2. 선택 없는 Cmd+B는 빈 굵게 표식을 토글한다", async ({ pag
   await editor.press("Meta+b");
   await expect(editor).toHaveValue("note ****");
   await expect
-    .poll(() => editor.evaluate((element) => {
-      const textarea = element as HTMLTextAreaElement;
-      return [textarea.selectionStart, textarea.selectionEnd];
-    }))
+    .poll(() =>
+      editor.evaluate((element) => {
+        const textarea = element as HTMLTextAreaElement;
+        return [textarea.selectionStart, textarea.selectionEnd];
+      }),
+    )
     .toEqual([7, 7]);
   await editor.press("Meta+b");
   await expect(editor).toHaveValue("note ");

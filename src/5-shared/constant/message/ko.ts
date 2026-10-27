@@ -21,7 +21,8 @@ export const ko: Messages = {
   myPageNeverSaved: "아직 저장된 변경이 없습니다",
   myPageWorkspaceError: "작업공간을 불러오지 못했습니다. 다시 시도해주세요.",
   myPageLoadError: "계정을 불러오지 못했습니다. 다시 시도해주세요.",
-  myPageLocalHint: "동기화 대기 중인 변경을 포함한 메모는 이 기기에 보존됩니다.",
+  myPageLocalHint:
+    "동기화 대기 중인 변경을 포함한 메모는 이 기기에 보존됩니다.",
   myPageKakao: "카카오 계정 연결됨",
   myPageSyncLoading: "작업공간 확인 중…",
   myPage: "내 페이지",
@@ -32,9 +33,11 @@ export const ko: Messages = {
   boardIntro: "공유된 그룹을 둘러보고, 함께 기록할 작업 공간에 참여하세요.",
   boardBack: "게시판 목록",
   boardJoin: "그룹 참여하기",
-  boardJoinHint: "참여하면 내 작업 공간에 공유 그룹이 추가됩니다. 구성원과 노트를 함께 편집할 수 있으며 카카오 로그인이 필요합니다.",
+  boardJoinHint:
+    "참여하면 내 작업 공간에 공유 그룹이 추가됩니다. 구성원과 노트를 함께 편집할 수 있으며 카카오 로그인이 필요합니다.",
   boardMemberHint: "참여 중인 공유 그룹입니다.",
-  boardOwnerHint: "내가 공유한 그룹입니다. 공유를 취소하면 내 노트는 보존되고 다른 참여자의 접근은 해제됩니다.",
+  boardOwnerHint:
+    "내가 공유한 그룹입니다. 공유를 취소하면 내 노트는 보존되고 다른 참여자의 접근은 해제됩니다.",
   boardCopy: "초대 링크 복사",
   boardCopied: "초대 링크를 복사했습니다",
   boardCopyError: "링크를 복사하지 못했습니다. 다시 시도해 주세요.",
@@ -44,7 +47,8 @@ export const ko: Messages = {
   boardRetry: "다시 시도",
   boardNoResults: "검색 결과가 없습니다",
   boardEmpty: "함께 기록할 공간을 기다리고 있어요",
-  boardEmptyHint: "현재 공유 중인 모든 그룹이 표시됩니다. 그룹을 열어 참여할 수 있습니다.",
+  boardEmptyHint:
+    "현재 공유 중인 모든 그룹이 표시됩니다. 그룹을 열어 참여할 수 있습니다.",
   boardNotesColumn: "노트",
   boardMembersColumn: "참여자",
   boardUpdatedColumn: "최근 변경",
@@ -62,8 +66,10 @@ export const ko: Messages = {
   login: "로그인",
   leaveGroup: "그룹 나가기",
   revokeGroupShare: "공유 취소",
-  leaveGroupMessage: "이 공유 그룹에서 나가시겠습니까? 다른 참여자의 접근은 유지됩니다.",
-  revokeGroupShareMessage: "그룹 공유를 취소하시겠습니까? 주최자의 노트는 보존되며 다른 참여자와 기존 초대 링크의 접근은 해제됩니다.",
+  leaveGroupMessage:
+    "이 공유 그룹에서 나가시겠습니까? 다른 참여자의 접근은 유지됩니다.",
+  revokeGroupShareMessage:
+    "그룹 공유를 취소하시겠습니까? 주최자의 노트는 보존되며 다른 참여자와 기존 초대 링크의 접근은 해제됩니다.",
   groupAccessError: "공유 상태를 변경하지 못했습니다. 다시 시도해주세요.",
   accountMenu: "계정 메뉴",
   accountLoading: "로그인 상태 확인 중",
@@ -92,7 +98,8 @@ export const ko: Messages = {
   editStatus: "상태 이름 수정",
   selectGroupToEditStatus: "상태 이름을 수정할 그룹을 선택하세요.",
   groupStatusScope: (name: string) => `${name} 그룹에만 적용합니다.`,
-  statusNameHint: "비워 두면 기본 이름을 사용합니다. 최대 30자까지 입력할 수 있습니다.",
+  statusNameHint:
+    "비워 두면 기본 이름을 사용합니다. 최대 30자까지 입력할 수 있습니다.",
   statusTodo: "할 일",
   dashboardEmpty: "None",
   statusInProgress: "진행 중",

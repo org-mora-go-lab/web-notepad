@@ -11,12 +11,16 @@ import {
 } from "../../__util__";
 import { moveTabToTarget } from "./__util__";
 
-test("1. 그룹 이동 시 탭 ID, 내용, 색상, 고정, 줄 선택과 연결 북마크를 유지한다", async ({ page }) => {
+test("1. 그룹 이동 시 탭 ID, 내용, 색상, 고정, 줄 선택과 연결 북마크를 유지한다", async ({
+  page,
+}) => {
   const editor = page.locator("textarea");
   const movedTabItem = activeTabItem(page);
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    const original = await seedMoveGroupState(page);
+    await seedMoveGroupState(page);
+    await expect(editor).toBeVisible();
+    const original = await readStoredState(page);
     await moveTabToTarget(page, viewport);
 
     const moved = await readStoredState(page);

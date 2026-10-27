@@ -12,7 +12,7 @@ test("9. 색상 주기에 중복 색상이 있으면 기본 주기로 복구한�
   );
   expect((await readStoredState(page)).settings?.tabColorCycle).toEqual([
     "gray",
+    "orange",
     "indigo",
-    "teal",
   ]);
 });

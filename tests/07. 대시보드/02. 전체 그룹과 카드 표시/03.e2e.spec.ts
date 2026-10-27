@@ -4,7 +4,9 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn, dashboardPanel } from "../../__util__";
 
-test("3. 내용이 비어 있는 탭은 대시보드에 표시하지 않고 개수에도 포함하지 않는다", async ({ page }) => {
+test("3. 내용이 비어 있는 탭은 대시보드에 표시하지 않고 개수에도 포함하지 않는다", async ({
+  page,
+}) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [

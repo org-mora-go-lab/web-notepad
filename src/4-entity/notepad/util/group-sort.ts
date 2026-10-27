@@ -11,7 +11,9 @@ export function compareGroups(first: GroupEntry, second: GroupEntry) {
   if (firstIsUngrouped !== secondIsUngrouped) return firstIsUngrouped ? 1 : -1;
   if (first.pinned !== second.pinned) return first.pinned ? -1 : 1;
   if (first.sortOrder !== undefined || second.sortOrder !== undefined) {
-    const difference = (first.sortOrder ?? Number.MAX_SAFE_INTEGER) - (second.sortOrder ?? Number.MAX_SAFE_INTEGER);
+    const difference =
+      (first.sortOrder ?? Number.MAX_SAFE_INTEGER) -
+      (second.sortOrder ?? Number.MAX_SAFE_INTEGER);
     if (difference) return difference;
   }
   const firstIsKorean = koreanInitial.test(first.name);

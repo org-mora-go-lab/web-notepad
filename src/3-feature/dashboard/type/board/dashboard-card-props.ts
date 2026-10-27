@@ -13,6 +13,13 @@ export type DashboardCardProps = {
   onDragStart: (tabId: string, event: DragEvent<HTMLElement>) => void;
   onDragEnd: () => void;
   onTouchDragStart: (tabId: string) => void;
-  onTouchDragOver: (status: TabStatus | null) => void;
+  onTouchDragOver: (
+    status: TabStatus | null,
+    id?: string,
+    placement?: "before" | "after",
+  ) => void;
+  dropPlacement?: "before" | "after";
+  onCardDragOver: (event: DragEvent<HTMLElement>) => void;
+  onCardDrop: (event: DragEvent<HTMLElement>) => void;
   onTouchDrop: (tabId: string, status: TabStatus | null) => void;
 };

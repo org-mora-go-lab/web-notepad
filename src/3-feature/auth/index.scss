@@ -61,14 +61,21 @@
 }
 
 @keyframes auth-skeleton-pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .auth-command.is-loading {
     .auth-skeleton-avatar,
-    .auth-skeleton-name { animation: none; }
+    .auth-skeleton-name {
+      animation: none;
+    }
   }
 }
 
@@ -102,9 +109,21 @@
     text-align: left;
     white-space: nowrap;
     cursor: default;
-    &:hover, &:focus-visible { background: v.$line; }
-    &:disabled { opacity: 0.55; cursor: wait; }
-    svg { flex: 0 0 18px; }
+    &:hover,
+    &:focus-visible {
+      background: v.$line;
+    }
+    &:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+    svg {
+      flex: 0 0 18px;
+    }
   }
-  @media (max-width: 512px) { :is(button, a) { min-height: 44px; } }
+  @media (max-width: 512px) {
+    :is(button, a) {
+      min-height: 44px;
+    }
+  }
 }

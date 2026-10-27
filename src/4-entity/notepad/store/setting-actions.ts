@@ -8,7 +8,14 @@ import { withTabColorCycle } from "./workspace";
 
 type SettingActions = Pick<
   NotepadState,
-  "setFontScale" | "setTabColorCycleColor" | "setLanguage" | "setPanelPosition" | "setPanelSlide" | "resetSettings" | "resetTabColorCycle" | "shuffleTabColorCycle"
+  | "setFontScale"
+  | "setTabColorCycleColor"
+  | "setLanguage"
+  | "setPanelPosition"
+  | "setPanelSlide"
+  | "resetSettings"
+  | "resetTabColorCycle"
+  | "shuffleTabColorCycle"
 >;
 
 export const createSettingActions: StateCreator<
@@ -43,9 +50,13 @@ export const createSettingActions: StateCreator<
   setPanelPosition: (panelPosition) =>
     set((state) => ({ settings: { ...state.settings, panelPosition } })),
   setPanelSlide: (panelSlide) =>
-    set((state) => ({ settings: { ...state.settings, panelSlide: Boolean(panelSlide) } })),
+    set((state) => ({
+      settings: { ...state.settings, panelSlide: Boolean(panelSlide) },
+    })),
   resetTabColorCycle: () =>
-    set((state) => withTabColorCycle(state, [...DEFAULT_SETTINGS.tabColorCycle])),
+    set((state) =>
+      withTabColorCycle(state, [...DEFAULT_SETTINGS.tabColorCycle]),
+    ),
   // Picks distinct random colors for every slot, never repeating the current order.
   shuffleTabColorCycle: () =>
     set((state) => {
@@ -53,13 +64,18 @@ export const createSettingActions: StateCreator<
       let cycle = current;
       while (cycle.every((color, index) => color === current[index])) {
         const pool = [...TAB_COLORS];
-        cycle = current.map(() => pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+        cycle = current.map(
+          () => pool.splice(Math.floor(Math.random() * pool.length), 1)[0],
+        );
       }
       return withTabColorCycle(state, cycle);
     }),
   resetSettings: () =>
     set((state) => ({
       ...withTabColorCycle(state, [...DEFAULT_SETTINGS.tabColorCycle]),
-      settings: { ...DEFAULT_SETTINGS, tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle] },
+      settings: {
+        ...DEFAULT_SETTINGS,
+        tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle],
+      },
     })),
 });

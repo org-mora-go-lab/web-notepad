@@ -6,7 +6,10 @@ test("3. 커서가 편집기 높이를 넘어가면 편집기와 줄 번호 영�
   await page.setViewportSize({ width: 1280, height: 360 });
   await page.goto("/");
   const editor = page.locator("textarea");
-  const longNote = Array.from({ length: 40 }, (_, index) => `line ${index + 1}`).join("\n");
+  const longNote = Array.from(
+    { length: 40 },
+    (_, index) => `line ${index + 1}`,
+  ).join("\n");
   await editor.fill(longNote);
   await editor.evaluate((element) => {
     const textarea = element as HTMLTextAreaElement;
@@ -37,9 +40,9 @@ test("3. 커서가 편집기 높이를 넘어가면 편집기와 줄 번호 영�
         const lineHeight = Number.parseFloat(style.lineHeight);
         const paddingTop = Number.parseFloat(style.paddingTop);
         const paddingBottom = Number.parseFloat(style.paddingBottom);
-        const caretLine = textarea.value
-          .slice(0, textarea.selectionStart)
-          .split("\n").length - 1;
+        const caretLine =
+          textarea.value.slice(0, textarea.selectionStart).split("\n").length -
+          1;
         const caretTop = paddingTop + caretLine * lineHeight;
         const caretBottom = caretTop + lineHeight;
         return (

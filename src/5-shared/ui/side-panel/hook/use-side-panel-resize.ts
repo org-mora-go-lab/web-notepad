@@ -1,6 +1,10 @@
 "use client";
 
-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+} from "react";
 
 import {
   SIDE_PANEL_MAX_WIDTH_RATIO,
@@ -18,7 +22,10 @@ const clampWidth = (width: number) =>
   );
 
 const applyWidth = (width: number) =>
-  document.documentElement.style.setProperty(SIDE_PANEL_WIDTH_PROPERTY, `${width}px`);
+  document.documentElement.style.setProperty(
+    SIDE_PANEL_WIDTH_PROPERTY,
+    `${width}px`,
+  );
 
 // Drags the drawer's left edge; the width is shared by every panel and remembered.
 export function useSidePanelResize() {
@@ -33,10 +40,15 @@ export function useSidePanelResize() {
 
   return useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const left = event.currentTarget.closest("[data-panel-position]")?.getAttribute("data-panel-position") === "left";
+    const left =
+      event.currentTarget
+        .closest("[data-panel-position]")
+        ?.getAttribute("data-panel-position") === "left";
     let width: number | null = null;
     const handleMove = (moveEvent: PointerEvent) => {
-      width = clampWidth(left ? moveEvent.clientX : window.innerWidth - moveEvent.clientX);
+      width = clampWidth(
+        left ? moveEvent.clientX : window.innerWidth - moveEvent.clientX,
+      );
       applyWidth(width);
     };
     const handleUp = () => {

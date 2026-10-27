@@ -4,7 +4,9 @@ import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openPanel } from "../../__util__";
 import { RIGHT_PANEL_IDS } from "../__constant__";
 
-test("5. X로 패널을 닫으면 PC의 패널 진입 버튼 포커스를 해제한다", async ({ page }) => {
+test("5. X로 패널을 닫으면 PC의 패널 진입 버튼 포커스를 해제한다", async ({
+  page,
+}) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
 

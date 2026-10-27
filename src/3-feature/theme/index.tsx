@@ -21,7 +21,9 @@ export function Theme() {
           role="switch"
           aria-label={t.theme}
           checked={theme === "light"}
-          onChange={(event) => setTheme(event.target.checked ? "light" : "dark")}
+          onChange={(event) =>
+            setTheme(event.target.checked ? "light" : "dark")
+          }
         />
         <span className="theme-toggle-track" aria-hidden="true" />
       </label>

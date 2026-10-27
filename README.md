@@ -13,14 +13,14 @@ http://localhost:3100 에서 실행합니다. 기본 메모 기능은 환경 변
 
 카카오 로그인을 사용하려면 `.env.example`을 `.env.local`로 복사하고 값을 설정합니다.
 
-| 환경 변수 | 용도 |
-| --- | --- |
-| `KAKAO_REST_API_KEY` | 카카오 애플리케이션의 REST API 키 |
-| `KAKAO_REDIRECT_URI` | 카카오에 등록한 콜백 주소. 로컬 기본값은 `http://localhost:3100/api/auth/oauth/kakao/callback` |
-| `AUTH_SECRET` | 세션 서명에 사용할 긴 임의 문자열 |
-| `KAKAO_CLIENT_SECRET` | 카카오 Client Secret을 활성화한 경우 설정 |
-| `TURSO_DATABASE_URL` | Turso 데이터베이스의 `libsql://` 주소 |
-| `TURSO_AUTH_TOKEN` | Turso 데이터베이스 인증 토큰. 서버 환경 변수에만 설정 |
+| 환경 변수             | 용도                                                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| `KAKAO_REST_API_KEY`  | 카카오 애플리케이션의 REST API 키                                                              |
+| `KAKAO_REDIRECT_URI`  | 카카오에 등록한 콜백 주소. 로컬 기본값은 `http://localhost:3100/api/auth/oauth/kakao/callback` |
+| `AUTH_SECRET`         | 세션 서명에 사용할 긴 임의 문자열                                                              |
+| `KAKAO_CLIENT_SECRET` | 카카오 Client Secret을 활성화한 경우 설정                                                      |
+| `TURSO_DATABASE_URL`  | Turso 데이터베이스의 `libsql://` 주소                                                          |
+| `TURSO_AUTH_TOKEN`    | Turso 데이터베이스 인증 토큰. 서버 환경 변수에만 설정                                          |
 
 카카오 개발자 콘솔의 **카카오 로그인 → 동의항목**에서 닉네임(`profile_nickname`)과 프로필 사진(`profile_image`)을 사용 설정해야 합니다. 로그인 시 두 항목의 동의를 요청하며, 받은 카카오 프로필을 이름과 사진으로 표시합니다. 기존 `Kakao user` 세션은 로그아웃 후 다시 로그인하면 갱신됩니다.
 
@@ -58,7 +58,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-현재 E2E는 606개이며 각 번호 파일은 상세 요구사항 하나와 대응합니다. 구조 검사는 요구사항 번호·파일 대응·파일당 단일 테스트와 공통 리소스 배럴을 확인합니다. 테스트 서버는 3100 포트에서 실행하며, 인증과 파일 기반 libSQL 테스트 환경 변수는 Playwright 설정에서 제공합니다.
+현재 E2E는 621개이며 각 번호 파일은 상세 요구사항 하나와 대응합니다. 구조 검사는 요구사항 번호·파일 대응·파일당 단일 테스트와 공통 리소스 배럴을 확인합니다. 테스트 서버는 3100 포트에서 실행하며, 인증과 파일 기반 libSQL 테스트 환경 변수는 Playwright 설정에서 제공합니다.
 
 ## 버전 및 배포
 
@@ -72,3 +72,5 @@ Turso 저장을 사용한다면 배포 환경에 `TURSO_DATABASE_URL`과 `TURSO_
 더보기의 게시판에서 현재 공유 중인 모든 그룹(내 그룹 포함)을 검색하고 소개·노트 수·참여자 수를 확인합니다. 게시글을 열어 그룹 참여 또는 초대 링크 복사를 사용할 수 있습니다. 참여는 기존 카카오 로그인과 공유 그룹 초대 흐름을 사용합니다.
 
 게시판 목록은 공유 중인 그룹에서 자동으로 구성하며 공유 취소 시 목록에서 제외합니다. 노트 본문은 공개 목록에 표시하지 않습니다.
+
+코드 형식은 Prettier로 통일합니다. `npm run format`으로 적용하고 `npm run format:check`로 확인합니다. 탭 아이콘의 상태는 To Do → Ready → Doing 순서로 전환되며, 대시보드 카드 드래그는 상태 이동과 같은 상태 내 순서 변경을 지원합니다. 공유 그룹의 Note·Done 표시 설정은 계정별 개인 이력에 저장합니다.

@@ -18,6 +18,8 @@ export type StoredState = Pick<
       | "allGroupLayout"
       | "allGroupDashboardVisibility"
       | "allGroupActiveTabId"
+      | "allGroupDashboardStatusNames"
+      | "sharedDashboardVisibility"
     >
   >;
 

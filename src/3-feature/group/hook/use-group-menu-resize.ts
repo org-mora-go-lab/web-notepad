@@ -8,7 +8,7 @@ import {
 } from "react";
 
 const MIN_WIDTH = 192;
-const MAX_WIDTH_RATIO = 0.6;
+const MAX_WIDTH_RATIO = 0.51;
 const WIDTH_PROPERTY = "--group-sidebar-width";
 const WIDTH_STORAGE_KEY = "web-notepad-group-sidebar-width";
 
@@ -23,9 +23,7 @@ const clampWidth = (width: number) =>
 const applyWidth = (width: number) =>
   document.documentElement.style.setProperty(WIDTH_PROPERTY, `${width}px`);
 
-export function useGroupMenuResize(
-  menuRef: RefObject<HTMLDivElement | null>,
-) {
+export function useGroupMenuResize(menuRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     try {
       const stored = Number(localStorage.getItem(WIDTH_STORAGE_KEY));

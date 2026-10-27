@@ -2,10 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { DEFAULT_SETTINGS, UNGROUPED_GROUP_ID } from "../constant";
-import {
-  createSafeJsonStorage,
-  normalizePersistedState,
-} from "../persistence";
+import { createSafeJsonStorage, normalizePersistedState } from "../persistence";
 import type { NotepadState } from "../type";
 import { createNoteTab, DEFAULT_DASHBOARD_VISIBILITY } from "../util";
 import { createBookmarkActions, createClosedTabActions } from "./archive";
@@ -43,6 +40,8 @@ export const useNotepadStore = create<NotepadState>()(
       allGroupActiveTabId: null,
       allGroupLayout: null,
       allGroupDashboardVisibility: DEFAULT_DASHBOARD_VISIBILITY,
+      allGroupDashboardStatusNames: {},
+      sharedDashboardVisibility: {},
       settings: DEFAULT_SETTINGS,
     }),
     {

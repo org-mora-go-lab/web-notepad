@@ -1,4 +1,11 @@
-import type { DashboardStatusNames, DashboardVisibility, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
+import type {
+  DashboardStatusNames,
+  DashboardVisibility,
+  GroupEntry,
+  NoteTab,
+  TabColor,
+  TabStatus,
+} from "@/src/4-entity/notepad";
 
 export type DashboardProps = {
   groupId: string;
@@ -15,6 +22,12 @@ export type DashboardProps = {
   open: boolean;
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
+  onMoveCard: (
+    tabId: string,
+    status: TabStatus,
+    targetId?: string,
+    placement?: "before" | "after",
+  ) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
   onMoveToGroup: (tabId: string, groupId: string) => void;
   onToggleTabBookmark: (tabId: string) => void;

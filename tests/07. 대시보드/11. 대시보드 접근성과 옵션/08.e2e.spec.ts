@@ -1,11 +1,14 @@
 import { expect, test } from "@playwright/test";
 
-import { switchGroup } from "../../__util__";
-
-test("8. 전체 그룹에서는 상태 이름 편집 명령을 비활성화한다", async ({ page }) => {
+test("8. 대시보드 확장 명령은 눌림 상태와 이름을 함께 전환한다", async ({
+  page,
+}) => {
   await page.goto("/");
-  await switchGroup(page, "All Group");
   await page.getByRole("button", { name: "DASHBOARD" }).click();
-  await page.getByRole("button", { name: "Dashboard options" }).click();
-  await expect(page.getByRole("button", { name: "Edit Status" })).toBeDisabled();
+  const expand = page.getByRole("button", { name: "Expand dashboard" });
+  await expect(expand).toHaveAttribute("aria-pressed", "false");
+  await expand.click();
+  await expect(
+    page.getByRole("button", { name: "Collapse dashboard" }),
+  ).toHaveAttribute("aria-pressed", "true");
 });

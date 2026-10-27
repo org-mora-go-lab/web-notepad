@@ -84,10 +84,15 @@ export function useViewActions({
     [openBookmarkAndClosePanel],
   );
 
-  const openSearchTabAndClosePanel = useCallback((groupId: string, tabId: string) => {
-    const state = useNotepadStore.getState();
-    state.selectGroup(groupId); state.selectTab(tabId); finishPanelAction();
-  }, [finishPanelAction]);
+  const openSearchTabAndClosePanel = useCallback(
+    (groupId: string, tabId: string) => {
+      const state = useNotepadStore.getState();
+      state.selectGroup(groupId);
+      state.selectTab(tabId);
+      finishPanelAction();
+    },
+    [finishPanelAction],
+  );
 
   const openTabAndClosePanel = useCallback(
     (tabId: string) => {
@@ -123,7 +128,16 @@ export function useViewActions({
     [getCurrentView, pushView],
   );
 
+  const splitTabsLeftAndRecord = useCallback(
+    (tabIds: string[], pane: PaneId) => {
+      useNotepadStore.getState().splitTabsLeft(tabIds, pane);
+      pushView(getCurrentView());
+    },
+    [getCurrentView, pushView],
+  );
+
   return {
+    splitTabsLeftAndRecord,
     selectTabWithHistory,
     activatePaneWithHistory,
     selectGroupAndClosePanel,

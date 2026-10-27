@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("5. Shift+Tab은 탭 들여쓰기를 제거하고 없으면 역방향으로 포커스를 이동한다", async ({ page }) => {
+test("5. Shift+Tab은 탭 들여쓰기를 제거하고 없으면 역방향으로 포커스를 이동한다", async ({
+  page,
+}) => {
   await page.goto("/");
   const editor = page.locator(".note-area");
   await editor.fill("\tfirst\n\tsecond");
@@ -12,7 +14,12 @@ test("5. Shift+Tab은 탭 들여쓰기를 제거하고 없으면 역방향으로
   await page.keyboard.press("Shift+Tab");
   await expect(editor).toHaveValue("first\nsecond");
   await expect(editor).toBeFocused();
-  expect(await editor.evaluate((element: HTMLTextAreaElement) => [element.selectionStart, element.selectionEnd])).toEqual([0, 12]);
+  expect(
+    await editor.evaluate((element: HTMLTextAreaElement) => [
+      element.selectionStart,
+      element.selectionEnd,
+    ]),
+  ).toEqual([0, 12]);
 
   await editor.fill("ab");
   await editor.press("End");

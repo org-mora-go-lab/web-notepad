@@ -1,10 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
-import { activeTabItem, readStoredState, seedMoveGroupState, switchGroup } from "../../__util__";
+import {
+  activeTabItem,
+  readStoredState,
+  seedMoveGroupState,
+  switchGroup,
+} from "../../__util__";
 import { moveTabToTarget } from "./__util__";
 
-test("2. 그룹 이동 후 현재 그룹 화면을 유지하고 대상 그룹에서 옮긴 탭을 왼쪽 활성 탭으로 지정한다", async ({ page }) => {
+test("2. 그룹 이동 후 현재 그룹 화면을 유지하고 대상 그룹에서 옮긴 탭을 왼쪽 활성 탭으로 지정한다", async ({
+  page,
+}) => {
   const editor = page.locator("textarea");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);

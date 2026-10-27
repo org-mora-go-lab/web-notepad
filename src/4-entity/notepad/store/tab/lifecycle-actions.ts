@@ -3,16 +3,19 @@ import type { StateCreator } from "zustand";
 import type { NotepadState } from "../../type";
 import {
   assignTabToPane,
+  compareDashboardCards,
   getPaneActiveTabId,
   getPaneOfTab,
   getPaneTabs,
   getStatusColor,
+  getTabStatus,
   normalizeLayout,
   setPaneActiveTabId,
 } from "../../util";
 import {
   allocateTab,
   EMPTY_SPLIT_LAYOUT,
+  getActiveGroup,
   getTabGroup,
   patchTabAndBookmark,
   updateGroup,
@@ -20,7 +23,7 @@ import {
 
 type Actions = Pick<
   NotepadState,
-  "setTabStatus" | "closeTab" | "archiveTab" | "deleteTab"
+  "moveDashboardTab" | "setTabStatus" | "closeTab" | "archiveTab" | "deleteTab"
 >;
 
 export const createTabLifecycleActions: StateCreator<
@@ -29,6 +32,63 @@ export const createTabLifecycleActions: StateCreator<
   [],
   Actions
 > = (set, get) => ({
+  moveDashboardTab: (tabId, status, targetId, placement = "before") =>
+    set((state) => {
+      const workspace = getActiveGroup(state);
+      const moving = workspace?.tabs.find(
+        (tab) => tab.id === tabId && tab.content.trim(),
+      );
+      if (!workspace || !moving || targetId === tabId) return state;
+      const cards = workspace.tabs
+        .filter(
+          (tab) =>
+            tab.id !== tabId &&
+            tab.content.trim() &&
+            getTabStatus(tab, state.settings.tabColorCycle) === status,
+        )
+        .sort(compareDashboardCards);
+      const targetIndex = cards.findIndex((tab) => tab.id === targetId);
+      cards.splice(
+        targetIndex < 0
+          ? cards.length
+          : targetIndex + Number(placement === "after"),
+        0,
+        moving,
+      );
+      const ranks = new Map(cards.map((tab, index) => [tab.id, index]));
+      const nextColor = getStatusColor(status, state.settings.tabColorCycle);
+      const changedStatus =
+        getTabStatus(moving, state.settings.tabColorCycle) !== status ||
+        moving.tabColor !== nextColor;
+      const updatedAt = Date.now();
+      return {
+        groups: state.groups.map((group) => {
+          if (!group.tabs.some((tab) => ranks.has(tab.id))) return group;
+          return {
+            ...group,
+            bookmarks: group.bookmarks.map((bookmark) =>
+              bookmark.sourceTabId === tabId && changedStatus
+                ? { ...bookmark, tabColor: nextColor, updatedAt }
+                : bookmark,
+            ),
+            tabs: group.tabs.map((tab) =>
+              !ranks.has(tab.id)
+                ? tab
+                : {
+                    ...tab,
+                    dashboardOrder: ranks.get(tab.id),
+                    ...(tab.id === tabId
+                      ? {
+                          dashboardStatus: status,
+                          tabColor: nextColor,
+                        }
+                      : {}),
+                  },
+            ),
+          };
+        }),
+      };
+    }),
   // Dashboard columns describe status only; changing status never closes a tab.
   setTabStatus: (tabId, status) => {
     set((state) => {
@@ -44,7 +104,11 @@ export const createTabLifecycleActions: StateCreator<
         patchTabAndBookmark(
           current,
           tabId,
-          { ...(tabColor ? { tabColor } : {}), dashboardStatus: auxiliary || status === "ready" ? status : undefined },
+          {
+            ...(tabColor ? { tabColor } : {}),
+            dashboardStatus: status === "closed" ? "done" : status,
+            dashboardOrder: undefined,
+          },
           { ...(tabColor ? { tabColor } : {}), updatedAt: Date.now() },
         ),
       );

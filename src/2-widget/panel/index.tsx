@@ -30,8 +30,10 @@ export function Panel({
   onRemoveBookmark,
   onOpenDashboardTab,
   onChangeTabStatus,
+  onMoveDashboardCard,
   onSaveDashboardStatusNames,
   dashboardVisibility,
+  dashboardStatusNames,
   onDashboardVisibilityChange,
   onMoveDashboardTabToGroup,
   onToggleDashboardTabBookmark,
@@ -55,7 +57,7 @@ export function Panel({
       />
       <Dashboard
         groupId={activeGroupId}
-        statusNames={groups.find((group) => group.id === activeGroupId)?.dashboardStatusNames ?? {}}
+        statusNames={dashboardStatusNames}
         onSaveStatusNames={onSaveDashboardStatusNames}
         visibility={dashboardVisibility}
         onVisibilityChange={onDashboardVisibilityChange}
@@ -68,6 +70,7 @@ export function Panel({
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
         onChangeStatus={onChangeTabStatus}
+        onMoveCard={onMoveDashboardCard}
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
         onDeleteTab={onDeleteDashboardTab}

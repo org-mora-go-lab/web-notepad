@@ -2,7 +2,9 @@ import { type PointerEvent, useEffect, useRef, useState } from "react";
 
 const DRAG_START_DISTANCE = 6;
 
-export function useGroupReorder(onMove: (groupId: string, targetId: string) => void) {
+export function useGroupReorder(
+  onMove: (groupId: string, targetId: string) => void,
+) {
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [targetId, setTargetId] = useState<string | null>(null);
   const cleanupRef = useRef<(() => void) | null>(null);
@@ -35,9 +37,16 @@ export function useGroupReorder(onMove: (groupId: string, targetId: string) => v
         setDraggingId(groupId);
       }
       moveEvent.preventDefault();
-      const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)?.closest<HTMLElement>("[data-group-id]");
-      destination = target && section?.contains(target) && target.dataset.pinned === row?.dataset.pinned && target.dataset.groupId !== groupId
-        ? target.dataset.groupId ?? null : null;
+      const target = document
+        .elementFromPoint(moveEvent.clientX, moveEvent.clientY)
+        ?.closest<HTMLElement>("[data-group-id]");
+      destination =
+        target &&
+        section?.contains(target) &&
+        target.dataset.pinned === row?.dataset.pinned &&
+        target.dataset.groupId !== groupId
+          ? (target.dataset.groupId ?? null)
+          : null;
       setTargetId(destination);
       if (section) {
         const bounds = section.getBoundingClientRect();
@@ -50,10 +59,15 @@ export function useGroupReorder(onMove: (groupId: string, targetId: string) => v
       window.removeEventListener("pointerup", finish);
       window.removeEventListener("pointercancel", cancel);
       window.removeEventListener("keydown", keyDown, true);
-      if (handle.hasPointerCapture(pointerId)) handle.releasePointerCapture(pointerId);
+      if (handle.hasPointerCapture(pointerId))
+        handle.releasePointerCapture(pointerId);
       cleanupRef.current = null;
     };
-    const reset = () => { cleanup(); setDraggingId(null); setTargetId(null); };
+    const reset = () => {
+      cleanup();
+      setDraggingId(null);
+      setTargetId(null);
+    };
     const finish = (upEvent: globalThis.PointerEvent) => {
       if (upEvent.pointerId !== pointerId) return;
       if (active && destination) onMove(groupId, destination);
@@ -64,7 +78,11 @@ export function useGroupReorder(onMove: (groupId: string, targetId: string) => v
     };
     const cancel = () => reset();
     const keyDown = (keyEvent: KeyboardEvent) => {
-      if (keyEvent.key === "Escape") { keyEvent.preventDefault(); keyEvent.stopPropagation(); reset(); }
+      if (keyEvent.key === "Escape") {
+        keyEvent.preventDefault();
+        keyEvent.stopPropagation();
+        reset();
+      }
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", finish);

@@ -15,6 +15,10 @@
     background: rgba(143, 227, 176, 0.08);
 
     // Split zones cover the half of the pane where the new pane will open.
+    &.is-left {
+      right: 50%;
+    }
+
     &.is-right {
       left: 50%;
     }
@@ -23,6 +27,7 @@
       top: 50%;
     }
 
+    &.is-left.is-upper,
     &.is-right.is-upper,
     &.is-full.has-bottom-split {
       bottom: 50%;

@@ -19,7 +19,8 @@ export const en = {
   myPageNeverSaved: "No saved changes yet",
   myPageWorkspaceError: "Could not load your workspace. Please try again.",
   myPageLoadError: "Could not load your account. Please try again.",
-  myPageLocalHint: "Your notes remain on this device, including changes waiting to sync.",
+  myPageLocalHint:
+    "Your notes remain on this device, including changes waiting to sync.",
   myPageKakao: "Connected with Kakao",
   myPageSyncLoading: "Checking your workspace…",
   myPage: "My Page",
@@ -30,9 +31,11 @@ export const en = {
   boardIntro: "Find a group to join, share ideas, and write together.",
   boardBack: "Back to groups",
   boardJoin: "Join this group",
-  boardJoinHint: "Joining adds this shared group to your workspace. Members can edit its notes together. Kakao login is required.",
+  boardJoinHint:
+    "Joining adds this shared group to your workspace. Members can edit its notes together. Kakao login is required.",
   boardMemberHint: "You are a member of this shared group.",
-  boardOwnerHint: "You shared this group. Cancel sharing to keep your notes and end access for other members.",
+  boardOwnerHint:
+    "You shared this group. Cancel sharing to keep your notes and end access for other members.",
   boardCopy: "Copy invitation link",
   boardCopied: "Invitation link copied",
   boardCopyError: "Could not copy the link. Try again.",
@@ -60,8 +63,10 @@ export const en = {
   login: "LOGIN",
   leaveGroup: "Leave group",
   revokeGroupShare: "Cancel Sharing",
-  leaveGroupMessage: "Leave this shared group? Other members will keep their access.",
-  revokeGroupShareMessage: "Cancel sharing? Your notes will remain, and all other members and existing invite links will lose access.",
+  leaveGroupMessage:
+    "Leave this shared group? Other members will keep their access.",
+  revokeGroupShareMessage:
+    "Cancel sharing? Your notes will remain, and all other members and existing invite links will lose access.",
   groupAccessError: "Could not update sharing. Please try again.",
   accountMenu: "Account menu",
   accountLoading: "Loading account",

@@ -12,7 +12,9 @@ export async function seedQuadState(page: Page, leftRowRatio = 0.5) {
       createGroupFixture(
         "ungrouped",
         "Ungrouped",
-        ["left-top", "left-bottom", "right-top", "right-bottom"].map((id) => createTabFixture(id, id)),
+        ["left-top", "left-bottom", "right-top", "right-bottom"].map((id) =>
+          createTabFixture(id, id),
+        ),
         {
           rightTabIds: ["right-top"],
           activeRightTabId: "right-top",
@@ -27,4 +29,5 @@ export async function seedQuadState(page: Page, leftRowRatio = 0.5) {
   });
 }
 
-export const paneSlot = (page: Page, pane: string) => page.locator(`.pane-slot[data-pane="${pane}"]`);
+export const paneSlot = (page: Page, pane: string) =>
+  page.locator(`.pane-slot[data-pane="${pane}"]`);

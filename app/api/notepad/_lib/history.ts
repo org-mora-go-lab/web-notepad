@@ -1,6 +1,6 @@
 import "server-only";
 
-import { type Client,createClient } from "@libsql/client";
+import { type Client, createClient } from "@libsql/client";
 
 let client: Client | undefined;
 let schemaReady: Promise<void> | undefined;
@@ -17,12 +17,14 @@ function getClient() {
 async function ensureSchema() {
   const database = getClient();
   schemaReady ??= database
-    .execute(`CREATE TABLE IF NOT EXISTS notepad_update_history (
+    .execute(
+      `CREATE TABLE IF NOT EXISTS notepad_update_history (
       event_id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
       snapshot TEXT NOT NULL,
       created_at INTEGER NOT NULL
-    )`)
+    )`,
+    )
     .then(() => undefined)
     .catch((error: unknown) => {
       schemaReady = undefined;
@@ -32,7 +34,12 @@ async function ensureSchema() {
   return database;
 }
 
-export async function saveNotepadUpdate(userId: string, eventId: string, snapshot: string, baseEventId?: string | null) {
+export async function saveNotepadUpdate(
+  userId: string,
+  eventId: string,
+  snapshot: string,
+  baseEventId?: string | null,
+) {
   const database = await ensureSchema();
   const transaction = await database.transaction("write");
   try {
@@ -46,8 +53,17 @@ export async function saveNotepadUpdate(userId: string, eventId: string, snapsho
       args: [userId],
     });
     const row = result.rows[0];
-    const latest = row ? { eventId: String(row.event_id), snapshot: String(row.snapshot), createdAt: Number(row.created_at) } : null;
-    if (baseEventId !== undefined && baseEventId !== (latest?.eventId ?? null)) {
+    const latest = row
+      ? {
+          eventId: String(row.event_id),
+          snapshot: String(row.snapshot),
+          createdAt: Number(row.created_at),
+        }
+      : null;
+    if (
+      baseEventId !== undefined &&
+      baseEventId !== (latest?.eventId ?? null)
+    ) {
       return { saved: false, latest };
     }
     await transaction.execute({
@@ -57,7 +73,9 @@ export async function saveNotepadUpdate(userId: string, eventId: string, snapsho
     });
     await transaction.commit();
     return { saved: true };
-  } finally { transaction.close(); }
+  } finally {
+    transaction.close();
+  }
 }
 
 export async function getLatestNotepadUpdate(userId: string) {

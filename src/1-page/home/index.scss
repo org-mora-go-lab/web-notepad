@@ -74,22 +74,30 @@
 
   @media (min-width: 513px) {
     &.is-group-sidebar-open .workspace {
-      width: calc(100% - var(--group-sidebar-width, 280px));
-      margin-left: var(--group-sidebar-width, 280px);
+      width: calc(100% - min(var(--group-sidebar-width, 280px), 51vw));
+      margin-left: min(var(--group-sidebar-width, 280px), 51vw);
     }
   }
 
   @media (min-width: 641px) {
     &.is-group-sidebar-open.is-panel-pinned .workspace {
-      width: calc(100% - var(--group-sidebar-width, 280px) - #{v.$side-panel-width});
+      width: calc(
+        100% - min(var(--group-sidebar-width, 280px), 51vw) -
+          #{v.$side-panel-width}
+      );
     }
 
-    &.is-group-sidebar-open.is-panel-pinned[data-panel-position="left"] .workspace {
-      margin-left: calc(var(--group-sidebar-width, 280px) + #{v.$side-panel-width});
+    &.is-group-sidebar-open.is-panel-pinned[data-panel-position="left"]
+      .workspace {
+      margin-left: calc(
+        min(var(--group-sidebar-width, 280px), 51vw) + #{v.$side-panel-width}
+      );
     }
 
-    &.is-group-sidebar-open[data-panel-position="left"] .side-panel:not(.is-expanded) .side-panel-drawer {
-      left: var(--group-sidebar-width, 280px);
+    &.is-group-sidebar-open[data-panel-position="left"]
+      .side-panel:not(.is-expanded)
+      .side-panel-drawer {
+      left: min(var(--group-sidebar-width, 280px), 51vw);
     }
   }
 

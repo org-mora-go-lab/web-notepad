@@ -26,13 +26,13 @@ type Options = {
 // Docking only applies to the PC layout; mobile keeps the overlay drawer.
 const isPinLayout = () => window.matchMedia("(min-width: 641px)").matches;
 
-export function useHomeNavigation({
-  hydrated,
-  addTabToPane,
-}: Options) {
+export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
   const [openPanel, setOpenPanel] = useState<ViewPanel | null>(null);
-  const [backgroundPanel, setBackgroundPanel] = useState<ViewPanel | null>(null);
-  const { groupMenuOpen, updateGroupMenuOpen, getGroupMenuOpen } = useGroupMenuOpen();
+  const [backgroundPanel, setBackgroundPanel] = useState<ViewPanel | null>(
+    null,
+  );
+  const { groupMenuOpen, updateGroupMenuOpen, getGroupMenuOpen } =
+    useGroupMenuOpen();
   // A pinned panel stays open until its X button closes it.
   const keepsPanelOpen = useCallback(
     () =>
@@ -63,49 +63,54 @@ export function useHomeNavigation({
           : null,
         pane: group?.activePane ?? "left",
         panel,
-        groupMenuOpen: typeof window !== "undefined" && window.matchMedia("(max-width: 512px)").matches
-          ? getGroupMenuOpen()
-          : undefined,
+        groupMenuOpen:
+          typeof window !== "undefined" &&
+          window.matchMedia("(max-width: 512px)").matches
+            ? getGroupMenuOpen()
+            : undefined,
       };
     },
     [getGroupMenuOpen, openPanel],
   );
 
-  const restoreView = useCallback((snapshot: ViewSnapshot) => {
-    if (window.matchMedia("(max-width: 512px)").matches) {
-      updateGroupMenuOpen(snapshot.groupMenuOpen ?? false);
-    }
-    const state = useNotepadStore.getState();
-    const exists =
-      snapshot.groupId === ALL_GROUP_ID ||
-      state.groups.some((group) => group.id === snapshot.groupId);
-    const fallbackGroupId = state.groups[0]?.id;
-    if (!exists && !fallbackGroupId) return;
+  const restoreView = useCallback(
+    (snapshot: ViewSnapshot) => {
+      if (window.matchMedia("(max-width: 512px)").matches) {
+        updateGroupMenuOpen(snapshot.groupMenuOpen ?? false);
+      }
+      const state = useNotepadStore.getState();
+      const exists =
+        snapshot.groupId === ALL_GROUP_ID ||
+        state.groups.some((group) => group.id === snapshot.groupId);
+      const fallbackGroupId = state.groups[0]?.id;
+      if (!exists && !fallbackGroupId) return;
 
-    state.selectGroup(exists ? snapshot.groupId : fallbackGroupId);
-    const targetGroup = getActiveGroup(useNotepadStore.getState());
-    if (!targetGroup) return;
-    const snapshotTabIds: Record<PaneId, string | null> = {
-      left: snapshot.leftTabId,
-      right: snapshot.rightTabId,
-      "left-bottom": snapshot.leftBottomTabId,
-      "right-bottom": snapshot.rightBottomTabId,
-    };
-    for (const pane of PANE_IDS) {
-      const paneTabs = getPaneTabs(targetGroup, pane);
-      const tab =
-        paneTabs.find((item) => item.id === snapshotTabIds[pane]) ??
-        paneTabs[0];
-      if (tab) state.selectTab(tab.id);
-    }
-    state.setActivePane(snapshot.pane);
-    setBackgroundPanel(null);
-    setOpenPanel((current) =>
-      snapshot.panel === null && keepsPanelOpenRef.current()
-        ? current
-        : snapshot.panel,
-    );
-  }, [updateGroupMenuOpen]);
+      state.selectGroup(exists ? snapshot.groupId : fallbackGroupId);
+      const targetGroup = getActiveGroup(useNotepadStore.getState());
+      if (!targetGroup) return;
+      const snapshotTabIds: Record<PaneId, string | null> = {
+        left: snapshot.leftTabId,
+        right: snapshot.rightTabId,
+        "left-bottom": snapshot.leftBottomTabId,
+        "right-bottom": snapshot.rightBottomTabId,
+      };
+      for (const pane of PANE_IDS) {
+        const paneTabs = getPaneTabs(targetGroup, pane);
+        const tab =
+          paneTabs.find((item) => item.id === snapshotTabIds[pane]) ??
+          paneTabs[0];
+        if (tab) state.selectTab(tab.id);
+      }
+      state.setActivePane(snapshot.pane);
+      setBackgroundPanel(null);
+      setOpenPanel((current) =>
+        snapshot.panel === null && keepsPanelOpenRef.current()
+          ? current
+          : snapshot.panel,
+      );
+    },
+    [updateGroupMenuOpen],
+  );
 
   const { pushView, replaceView } = useViewHistory(
     hydrated,
@@ -120,12 +125,14 @@ export function useHomeNavigation({
 
   useEffect(() => {
     window.addEventListener("notepad-cloud-applied", replaceCurrentView);
-    return () => window.removeEventListener("notepad-cloud-applied", replaceCurrentView);
+    return () =>
+      window.removeEventListener("notepad-cloud-applied", replaceCurrentView);
   }, [replaceCurrentView]);
 
   const closeGroupMenu = useCallback(() => {
     updateGroupMenuOpen(false);
-    if (window.matchMedia("(max-width: 512px)").matches) replaceView(getCurrentView());
+    if (window.matchMedia("(max-width: 512px)").matches)
+      replaceView(getCurrentView());
   }, [getCurrentView, replaceView, updateGroupMenuOpen]);
 
   const toggleGroupMenu = useCallback(() => {
@@ -135,13 +142,21 @@ export function useHomeNavigation({
       if (open) pushView(getCurrentView());
       else replaceView(getCurrentView());
     }
-  }, [getCurrentView, getGroupMenuOpen, pushView, replaceView, updateGroupMenuOpen]);
+  }, [
+    getCurrentView,
+    getGroupMenuOpen,
+    pushView,
+    replaceView,
+    updateGroupMenuOpen,
+  ]);
 
   const closeSidePanels = useCallback(() => {
     if (openPanel === null) return;
     if (
       backgroundPanel &&
-      (openPanel === "global-search" || openPanel === "closed" || openPanel === "bookmarks")
+      (openPanel === "global-search" ||
+        openPanel === "closed" ||
+        openPanel === "bookmarks")
     ) {
       setOpenPanel(backgroundPanel);
       setBackgroundPanel(null);
@@ -168,7 +183,9 @@ export function useHomeNavigation({
         return;
       }
       if (
-        (panel === "global-search" || panel === "closed" || panel === "bookmarks") &&
+        (panel === "global-search" ||
+          panel === "closed" ||
+          panel === "bookmarks") &&
         keepsPanelOpen()
       ) {
         setBackgroundPanel(openPanel);

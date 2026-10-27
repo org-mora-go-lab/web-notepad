@@ -9,7 +9,12 @@ export function DashboardStatus({
   tabColor,
 }: DashboardStatusProps) {
   return (
-    <h3 className={className} id={id} data-status={status} data-tab-color={tabColor}>
+    <h3
+      className={className}
+      id={id}
+      data-status={status}
+      data-tab-color={tabColor}
+    >
       <span className="dashboard-status-label">{label}</span>
       <span className="dashboard-count">{count}</span>
     </h3>

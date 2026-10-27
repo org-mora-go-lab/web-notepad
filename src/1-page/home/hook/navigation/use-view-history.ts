@@ -32,7 +32,10 @@ export function useViewHistory(
       readViewFromUrl() ?? storedView?.snapshot ?? initialSnapshotRef.current;
     const snapshot = {
       ...initialView,
-      groupMenuOpen: initialView.groupMenuOpen ?? storedView?.snapshot.groupMenuOpen ?? initialSnapshotRef.current.groupMenuOpen,
+      groupMenuOpen:
+        initialView.groupMenuOpen ??
+        storedView?.snapshot.groupMenuOpen ??
+        initialSnapshotRef.current.groupMenuOpen,
     };
     snapshotRef.current = snapshot;
     restoreRef.current(snapshot);

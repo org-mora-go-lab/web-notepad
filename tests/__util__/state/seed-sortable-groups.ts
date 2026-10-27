@@ -13,14 +13,9 @@ export async function seedSortableGroups(page: Page) {
     ["namu", "나무"],
     ["gabang", "가방"],
   ].map(([id, name], index) =>
-    createGroupFixture(
-      id,
-      name,
-      [createTabFixture(`tab-${index + 1}`, name)],
-      {
-        createdAt: index,
-      },
-    ),
+    createGroupFixture(id, name, [createTabFixture(`tab-${index + 1}`, name)], {
+      createdAt: index,
+    }),
   );
   await seedStoredStateOnce(
     page,

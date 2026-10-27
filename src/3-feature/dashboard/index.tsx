@@ -3,11 +3,20 @@
 import { CheckCheck, Maximize2, Minimize2, StickyNote } from "lucide-react";
 import { useState } from "react";
 
-import { compareGroups, getDashboardColumns, getTabStatus, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import {
+  compareGroups,
+  getDashboardColumns,
+  getTabStatus,
+  UNGROUPED_GROUP_ID,
+} from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
 
-import { DashboardColumn, DashboardOptions, DashboardStatuses } from "./component";
+import {
+  DashboardColumn,
+  DashboardOptions,
+  DashboardStatuses,
+} from "./component";
 import { useDashboardDrag, useDashboardScroll } from "./hook";
 import type { DashboardProps } from "./type";
 
@@ -26,6 +35,7 @@ export function Dashboard({
   onClose,
   onOpenTab,
   onChangeStatus,
+  onMoveCard,
   onMoveToGroup,
   onToggleTabBookmark,
   onDeleteTab,
@@ -39,10 +49,21 @@ export function Dashboard({
     top: number;
   } | null>(null);
   const { t } = useI18n();
-  const { contentRef, listRef, boardRef } = useDashboardScroll();
-  const columns = getDashboardColumns(tabs, tabColorCycle).filter(column => column.status !== "done" || doneVisible);
+  const { contentRef, listRef, boardRef, scrollToCard } = useDashboardScroll(
+    open,
+    activeTabId,
+  );
+  const openCard = (tabId: string) => {
+    if (drag.isRecentDrag()) return;
+    onOpenTab(tabId);
+    requestAnimationFrame(() => scrollToCard(tabId));
+  };
+  const columns = getDashboardColumns(tabs, tabColorCycle).filter(
+    (column) => column.status !== "done" || doneVisible,
+  );
   const iceboxTabs = tabs.filter(
-    (tab) => tab.content.trim() && getTabStatus(tab, tabColorCycle) === "icebox",
+    (tab) =>
+      tab.content.trim() && getTabStatus(tab, tabColorCycle) === "icebox",
   );
   const visibleTabs = [
     ...columns.flatMap((column) => column.tabs),
@@ -52,9 +73,16 @@ export function Dashboard({
   const contextGroup = groups.find((group) =>
     group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
-  const contextStatus = contextTab ? getTabStatus(contextTab, tabColorCycle) : null;
-  const shortcutStatus = contextStatus === "todo" ? "icebox" : contextStatus === "in-progress" ? "done" : null;
-  const drag = useDashboardDrag({ visibleTabs, onChangeStatus });
+  const contextStatus = contextTab
+    ? getTabStatus(contextTab, tabColorCycle)
+    : null;
+  const shortcutStatus =
+    contextStatus === "todo"
+      ? "icebox"
+      : contextStatus === "in-progress"
+        ? "done"
+        : null;
+  const drag = useDashboardDrag({ visibleTabs, onMoveCard });
   return (
     <SidePanel
       className="dashboard"
@@ -68,13 +96,22 @@ export function Dashboard({
             <DashboardOptions
               key={groupId}
               groupId={groupId}
-              groupName={groups.find((group) => group.id === groupId)?.name ?? t.ungrouped}
+              groupName={
+                showGroupNames
+                  ? t.allGroup
+                  : (groups.find((group) => group.id === groupId)?.name ??
+                    t.ungrouped)
+              }
               statusNames={statusNames}
               onSaveStatusNames={onSaveStatusNames}
               iceboxVisible={iceboxVisible}
               doneVisible={doneVisible}
-              onToggleIcebox={() => onVisibilityChange({ ...visibility, icebox: !iceboxVisible })}
-              onToggleDone={() => onVisibilityChange({ ...visibility, done: !doneVisible })}
+              onToggleIcebox={() =>
+                onVisibilityChange({ ...visibility, icebox: !iceboxVisible })
+              }
+              onToggleDone={() =>
+                onVisibilityChange({ ...visibility, done: !doneVisible })
+              }
             />
           )}
           <button
@@ -116,7 +153,7 @@ export function Dashboard({
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
                 contextMenuTabId={contextMenu?.itemId}
-                onOpenTab={onOpenTab}
+                onOpenTab={openCard}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
@@ -133,13 +170,12 @@ export function Dashboard({
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
                 contextMenuTabId={contextMenu?.itemId}
-                onOpenTab={onOpenTab}
+                onOpenTab={openCard}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
               />
             ))}
-
           </div>
         </div>
       </div>
@@ -148,16 +184,37 @@ export function Dashboard({
           left={contextMenu.left}
           top={contextMenu.top}
           moveGroupFirst
-          footerAction={shortcutStatus && <button type="button" role="menuitem" onClick={() => {
-            onChangeStatus(contextTab.id, shortcutStatus);
-            setContextMenu(null);
-          }}>
-            {shortcutStatus === "icebox" ? <StickyNote size={14} /> : <CheckCheck size={14} />}
-            <span>{t.moveToStatus(statusNames[shortcutStatus] ?? (shortcutStatus === "icebox" ? t.icebox : t.statusDone))}</span>
-          </button>}
+          footerAction={
+            shortcutStatus && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  onChangeStatus(contextTab.id, shortcutStatus);
+                  setContextMenu(null);
+                }}
+              >
+                {shortcutStatus === "icebox" ? (
+                  <StickyNote size={14} />
+                ) : (
+                  <CheckCheck size={14} />
+                )}
+                <span>
+                  {t.moveToStatus(
+                    statusNames[shortcutStatus] ??
+                      (shortcutStatus === "icebox" ? t.icebox : t.statusDone),
+                  )}
+                </span>
+              </button>
+            )
+          }
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
-            .filter((group) => group.id !== contextGroup?.id && group.id !== UNGROUPED_GROUP_ID)
+            .filter(
+              (group) =>
+                group.id !== contextGroup?.id &&
+                group.id !== UNGROUPED_GROUP_ID,
+            )
             .sort(compareGroups)}
           onMoveToGroup={(groupId) => {
             onMoveToGroup(contextTab.id, groupId);
