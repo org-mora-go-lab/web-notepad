@@ -5,6 +5,7 @@ import type { NotepadState } from "../../type";
 import {
   assignTabToPane,
   compareGroups,
+  isSharedGroupId,
   normalizeDashboardStatusNames,
   normalizeDashboardVisibility,
   normalizeLayout,
@@ -90,11 +91,11 @@ export const createGroupActions: StateCreator<
     }),
   setGroupStatusNames: (groupId, names) =>
     set((state) => {
-      if (
-        groupId === ALL_GROUP_ID ||
-        !state.groups.some((group) => group.id === groupId)
-      )
-        return state;
+      if (groupId === ALL_GROUP_ID)
+        return {
+          allGroupDashboardStatusNames: normalizeDashboardStatusNames(names),
+        };
+      if (!state.groups.some((group) => group.id === groupId)) return state;
       return {
         groups: state.groups.map((group) =>
           group.id === groupId
@@ -114,6 +115,13 @@ export const createGroupActions: StateCreator<
         return { allGroupDashboardVisibility: normalized };
       }
       if (!state.groups.some((group) => group.id === groupId)) return state;
+      if (isSharedGroupId(groupId))
+        return {
+          sharedDashboardVisibility: {
+            ...state.sharedDashboardVisibility,
+            [groupId]: normalized,
+          },
+        };
       return {
         groups: state.groups.map((group) =>
           group.id === groupId

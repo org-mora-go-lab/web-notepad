@@ -16,6 +16,7 @@ export {
   getTitleFromContent,
   sanitizeSelectedLines,
 } from "./note";
+export { compareDashboardCards } from "./note";
 export {
   assignTabToPane,
   getBottomPane,

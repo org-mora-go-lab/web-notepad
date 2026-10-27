@@ -46,6 +46,7 @@ export function useHome() {
     cycleTabColor,
     toggleBookmark,
     setTabStatus,
+    moveDashboardTab,
     deleteTab,
     removeClosedTab,
     removeBookmark,
@@ -96,6 +97,7 @@ export function useHome() {
     activatePaneWithHistory,
     addTabAndRecord,
     moveTabToPaneAndRecord,
+    splitTabsLeftAndRecord,
     replaceCurrentView,
     toggleGroupMenu,
     toggleSidePanel,
@@ -145,6 +147,7 @@ export function useHome() {
   } = usePaneDrag({
     group: activeGroup,
     moveTabsToPane: moveTabToPaneAndRecord,
+    splitTabsLeft: splitTabsLeftAndRecord,
   });
 
   // The search command sits on the top pane of the rightmost column.
@@ -234,6 +237,7 @@ export function useHome() {
     activeGroupTabs,
     tabColorCycle: settings.tabColorCycle,
     setTabStatus,
+    moveDashboardTab,
     toggleBookmark,
     moveToGroup,
     deleteDashboardTab,
@@ -243,6 +247,7 @@ export function useHome() {
     renameGroup,
     setGroupStatusNames,
     setGroupDashboardVisibility,
+    dashboardStatusNames: activeGroup?.dashboardStatusNames ?? {},
     dashboardVisibility:
       activeGroup?.dashboardVisibility ?? DEFAULT_DASHBOARD_VISIBILITY,
     toggleGroupPin,

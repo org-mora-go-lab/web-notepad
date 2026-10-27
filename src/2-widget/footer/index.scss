@@ -234,7 +234,7 @@
       gap: 4px;
 
       &.status-command > span.status-label {
-        font-size: v.font(10px);
+        font-size: calc(#{v.font(10px)} + 1px);
         line-height: 12px;
         letter-spacing: 0.04em;
         text-transform: uppercase;
@@ -268,7 +268,7 @@
 
     .status-command > span.group-command-label {
       display: block;
-      font-size: v.font(10px);
+      font-size: calc(#{v.font(10px)} + 1px);
       line-height: 12px;
       letter-spacing: 0.04em;
       text-transform: uppercase;

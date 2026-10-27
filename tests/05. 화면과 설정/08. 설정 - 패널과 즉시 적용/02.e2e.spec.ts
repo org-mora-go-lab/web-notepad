@@ -21,7 +21,7 @@ test("2. Tab Colors에서 순번의 색상을 바꾸면 해당 색상의 모든 
         group.tabs.map((tab) => tab.tabColor),
       );
     })
-    .toEqual(["yellow", "teal", "pink", "yellow"]);
+    .toEqual(["yellow", "pink", "teal", "yellow"]);
 
   await openPanel(page, "dashboard-panel");
   await expect(dashboardColumn(page, "todo")).toContainText("Alpha task");

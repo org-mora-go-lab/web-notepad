@@ -17,7 +17,7 @@ test("3. 편집기에서 숨긴 Done 카드를 다른 상태로 옮겨도 자동
   await moveDashboardCard(page, "To Do");
   const tab = (await readActiveGroup(page)).tabs[0];
   expect(tab.open).toBe(false);
-  expect(tab.dashboardStatus).toBeUndefined();
+  expect(tab.dashboardStatus).toBe("todo");
   await expect(page.locator("textarea")).toHaveValue("Sibling task");
   await expect(
     page.getByRole("tab", { name: "Integrity task", exact: true }),

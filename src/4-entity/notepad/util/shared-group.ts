@@ -43,7 +43,6 @@ export function toSharedGroupData(group: GroupEntry): SharedGroupData {
     tabs: group.tabs,
     bookmarks: group.bookmarks,
     dashboardStatusNames: group.dashboardStatusNames,
-    dashboardVisibility: group.dashboardVisibility,
   };
 }
 
@@ -62,6 +61,7 @@ export function applySharedGroupData(
     ...data,
     pinned: group.pinned,
     sortOrder: group.sortOrder,
+    dashboardVisibility: group.dashboardVisibility,
     activeTabId,
     rightTabIds: group.rightTabIds.filter((id) => openIds.has(id)),
     leftBottomTabIds: group.leftBottomTabIds.filter((id) => openIds.has(id)),

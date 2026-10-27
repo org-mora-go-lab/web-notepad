@@ -113,6 +113,8 @@ export function useCloudSave(hydrated: boolean) {
       ) {
         throw new Error("Invalid cloud snapshot");
       }
+      if (preserveShared && source.sharedDashboardVisibility === undefined)
+        source.sharedDashboardVisibility = current.sharedDashboardVisibility;
       // Shared groups have their own membership checks and revision protocol.
       source.groups = [
         ...source.groups.filter(
@@ -208,7 +210,12 @@ export function useCloudSave(hydrated: boolean) {
       const needsSave = latest
         ? next !== latest.snapshot
         : !!restored || changedBeforeAuth || hasLocalWork(next);
-      next = apply(next, !first);
+      next = apply(
+        next,
+        !first ||
+          hasLocalWork(local) ||
+          useNotepadStore.getState().activeGroupId !== UNGROUPED_GROUP_ID,
+      );
       rememberBase({
         eventId: latest?.eventId ?? null,
         snapshot: latest ? (needsSave ? latest.snapshot : next) : null,

@@ -15,9 +15,10 @@ import type { PaneDropZone } from "@/src/5-shared";
 type Options = {
   group: GroupEntry | undefined;
   moveTabsToPane: (tabIds: string[], pane: PaneId) => void;
+  splitTabsLeft: (tabIds: string[], pane: PaneId) => void;
 };
 
-export function usePaneDrag({ group, moveTabsToPane }: Options) {
+export function usePaneDrag({ group, moveTabsToPane, splitTabsLeft }: Options) {
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
   const [draggingTabIds, setDraggingTabIds] = useState<string[]>([]);
   const [selectedTabIds, setSelectedTabIds] = useState<string[]>([]);
@@ -103,6 +104,16 @@ export function usePaneDrag({ group, moveTabsToPane }: Options) {
     const rightTarget =
       pane === "left-bottom" && countOf("right") > 0 ? "right-bottom" : "right";
     if (column === "left" && countOf(rightTarget) === 0) {
+      if (draggingPane === pane)
+        zones.push({
+          key: "split-left",
+          label: "Split left",
+          area: "left",
+          onDrop: () => {
+            splitTabsLeft(draggingTabIds, pane);
+            endDrag();
+          },
+        });
       zones.push({
         key: "split-right",
         label: "Split right",

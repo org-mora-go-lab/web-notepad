@@ -128,7 +128,16 @@ export function useViewActions({
     [getCurrentView, pushView],
   );
 
+  const splitTabsLeftAndRecord = useCallback(
+    (tabIds: string[], pane: PaneId) => {
+      useNotepadStore.getState().splitTabsLeft(tabIds, pane);
+      pushView(getCurrentView());
+    },
+    [getCurrentView, pushView],
+  );
+
   return {
+    splitTabsLeftAndRecord,
     selectTabWithHistory,
     activatePaneWithHistory,
     selectGroupAndClosePanel,

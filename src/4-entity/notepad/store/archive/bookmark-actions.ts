@@ -1,7 +1,7 @@
 import type { StateCreator } from "zustand";
 
 import type { NotepadState } from "../../type";
-import { getTitleFromContent } from "../../util";
+import { getTabStatus, getTitleFromContent } from "../../util";
 import {
   activateTab,
   allocateTab,
@@ -94,6 +94,14 @@ export const createBookmarkActions: StateCreator<
       content: bookmark.content,
       savedContent: bookmark.content,
       tabColor: bookmark.tabColor,
+      dashboardStatus: getTabStatus(
+        {
+          ...blankTab,
+          tabColor: bookmark.tabColor,
+          dashboardStatus: undefined,
+        },
+        state.settings.tabColorCycle,
+      ),
       selectedLines: [...bookmark.selectedLines],
       bookmarked: true,
       updatedAt: bookmark.createdAt,

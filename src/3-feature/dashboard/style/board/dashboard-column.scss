@@ -26,10 +26,6 @@
     --dashboard-accent: var(--color-tab-yellow);
   }
 
-  .dashboard-ready-column .dashboard-card[data-tab-color] {
-    --dashboard-accent: var(--color-tab-orange);
-  }
-
   .dashboard-column {
     min-height: 0;
     min-width: 0;

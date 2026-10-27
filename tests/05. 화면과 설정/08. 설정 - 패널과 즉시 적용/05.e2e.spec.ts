@@ -15,7 +15,7 @@ test("5. 탭 색상 초기화는 열린 탭·북마크·닫은 탭을 기본 순
     .click();
 
   const state = await readStoredState(page);
-  expect(state.settings!.tabColorCycle).toEqual(["gray", "indigo", "teal"]);
+  expect(state.settings!.tabColorCycle).toEqual(["gray", "orange", "indigo"]);
   expect(state.groups[0].tabs.map((tab) => tab.tabColor)).toEqual([
     "gray",
     "indigo",

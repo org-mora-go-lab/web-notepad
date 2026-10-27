@@ -20,6 +20,7 @@ export function TabColorSetting() {
   const shuffleTabColorCycle = useNotepadStore(
     (state) => state.shuffleTabColorCycle,
   );
+  const statusLabels = [t.statusTodo, t.statusReady, t.statusInProgress];
   return (
     <section className="setting-section" aria-labelledby={colorTitleId}>
       <div className="setting-section-heading">
@@ -50,7 +51,7 @@ export function TabColorSetting() {
             <span key={color}>
               {index > 0 && " → "}
               <span className="setting-color-chip" data-tab-color={color}>
-                {colorLabels[color]}
+                {statusLabels[index]} · {colorLabels[color]}
               </span>
             </span>
           ))}
@@ -58,6 +59,7 @@ export function TabColorSetting() {
       </p>
       {settings.tabColorCycle.map((selected, index) => (
         <div className="setting-color-row" key={index}>
+          <span className="setting-color-status">{statusLabels[index]}</span>
           <div
             className="setting-swatches"
             role="radiogroup"

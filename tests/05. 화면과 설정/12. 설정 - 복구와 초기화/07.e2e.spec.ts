@@ -22,5 +22,5 @@ test("7. 앞 순번에서 사용 중인 탭 색상은 뒤 순번에서 키보드
         STORAGE_KEY,
       ),
     )
-    .toEqual(["gray", "indigo", "teal"]);
+    .toEqual(["gray", "orange", "indigo"]);
 });

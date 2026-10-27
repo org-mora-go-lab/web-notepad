@@ -20,7 +20,8 @@ test("5. 설정한 폰트 크기와 탭 색상 순서는 새로고침 후에도 
     )
     .toEqual({
       fontScale: 1.1,
-      tabColorCycle: ["gray", "yellow", "teal"],
+      tabColorCycleVersion: 2,
+      tabColorCycle: ["gray", "yellow", "indigo"],
       language: "en",
       panelSlide: false,
       panelPosition: "right",
@@ -31,5 +32,5 @@ test("5. 설정한 폰트 크기와 탭 색상 순서는 새로고침 후에도 
   await openSettingsPanel(page);
   await expect(fontScaleRadio(page, "110%")).toBeChecked();
   await expect(tabColorRadio(page, 2, "Yellow")).toBeChecked();
-  await expectCssPx(page.locator("textarea").first(), "fontSize", 17.9);
+  await expectCssPx(page.locator("textarea").first(), "fontSize", 18.9);
 });

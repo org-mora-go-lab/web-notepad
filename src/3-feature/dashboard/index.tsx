@@ -35,6 +35,7 @@ export function Dashboard({
   onClose,
   onOpenTab,
   onChangeStatus,
+  onMoveCard,
   onMoveToGroup,
   onToggleTabBookmark,
   onDeleteTab,
@@ -48,7 +49,15 @@ export function Dashboard({
     top: number;
   } | null>(null);
   const { t } = useI18n();
-  const { contentRef, listRef, boardRef } = useDashboardScroll();
+  const { contentRef, listRef, boardRef, scrollToCard } = useDashboardScroll(
+    open,
+    activeTabId,
+  );
+  const openCard = (tabId: string) => {
+    if (drag.isRecentDrag()) return;
+    onOpenTab(tabId);
+    requestAnimationFrame(() => scrollToCard(tabId));
+  };
   const columns = getDashboardColumns(tabs, tabColorCycle).filter(
     (column) => column.status !== "done" || doneVisible,
   );
@@ -73,7 +82,7 @@ export function Dashboard({
       : contextStatus === "in-progress"
         ? "done"
         : null;
-  const drag = useDashboardDrag({ visibleTabs, onChangeStatus });
+  const drag = useDashboardDrag({ visibleTabs, onMoveCard });
   return (
     <SidePanel
       className="dashboard"
@@ -88,8 +97,10 @@ export function Dashboard({
               key={groupId}
               groupId={groupId}
               groupName={
-                groups.find((group) => group.id === groupId)?.name ??
-                t.ungrouped
+                showGroupNames
+                  ? t.allGroup
+                  : (groups.find((group) => group.id === groupId)?.name ??
+                    t.ungrouped)
               }
               statusNames={statusNames}
               onSaveStatusNames={onSaveStatusNames}
@@ -142,7 +153,7 @@ export function Dashboard({
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
                 contextMenuTabId={contextMenu?.itemId}
-                onOpenTab={onOpenTab}
+                onOpenTab={openCard}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }
@@ -159,7 +170,7 @@ export function Dashboard({
                 showGroupNames={showGroupNames}
                 tabColorCycle={tabColorCycle}
                 contextMenuTabId={contextMenu?.itemId}
-                onOpenTab={onOpenTab}
+                onOpenTab={openCard}
                 onOpenContextMenu={(itemId, left, top) =>
                   setContextMenu({ itemId, left, top })
                 }

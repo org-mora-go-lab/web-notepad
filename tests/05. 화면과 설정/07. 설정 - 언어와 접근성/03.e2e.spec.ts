@@ -34,8 +34,8 @@ test("3. Tab Colors 제목 오른쪽의 색상 초기화 버튼은 팝업 없이
   await reset.click();
   await expect(page.getByRole("alertdialog")).toHaveCount(0);
   await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Indigo")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Teal")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Orange")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Indigo")).toBeChecked();
   await expect
     .poll(() =>
       page.evaluate(
@@ -43,5 +43,5 @@ test("3. Tab Colors 제목 오른쪽의 색상 초기화 버튼은 팝업 없이
         STORAGE_KEY,
       ),
     )
-    .toMatchObject({ tabColorCycle: ["gray", "indigo", "teal"] });
+    .toMatchObject({ tabColorCycle: ["gray", "orange", "indigo"] });
 });

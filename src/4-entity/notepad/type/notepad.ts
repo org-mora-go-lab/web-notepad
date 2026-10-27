@@ -14,15 +14,16 @@ export type TabColor =
 export type NotepadSettings = {
   // Multiplier applied to every font size in the app.
   fontScale: number;
-  // Colors the tab color icon cycles through; the first one is the new-tab color.
+  // To Do / Ready / Doing colors; the first is the new-tab color.
   tabColorCycle: TabColor[];
+  tabColorCycleVersion?: 2;
   language: Language;
   // Right panels slide in and out; off shows and hides them in place.
   panelSlide: boolean;
   panelPosition: "left" | "right";
 };
 
-// Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
+// Explicit dashboard status; legacy records can still derive it from their saved colors.
 // "closed" is accepted only for legacy records and is displayed as Done.
 export type TabStatus =
   "icebox" | "todo" | "ready" | "in-progress" | "done" | "closed";
@@ -43,11 +44,12 @@ export type NoteTab = {
   savedContent: string;
   selectedLines: number[];
   tabColor: TabColor;
-  // Note and Ready are explicit states; legacy Closed is restored as Done.
+  // Every status is explicit for shared cards; legacy Closed is restored as Done.
   dashboardStatus?: TabStatus;
   pinned: boolean;
   bookmarked: boolean;
   updatedAt: number;
+  dashboardOrder?: number;
 };
 
 export type BookmarkEntry = {
@@ -96,7 +98,7 @@ export type GroupEntry = {
   rightRowRatio: number;
 };
 
-// Content that is shared between collaborators; pane layout and pin order stay local.
+// Collaborative content; pane layout, pin order and dashboard visibility are per-user.
 export type SharedGroupData = Pick<
   GroupEntry,
   | "id"
@@ -106,7 +108,6 @@ export type SharedGroupData = Pick<
   | "tabs"
   | "bookmarks"
   | "dashboardStatusNames"
-  | "dashboardVisibility"
 >;
 
 export type SharedNotification = {
@@ -149,6 +150,8 @@ export type NotepadState = {
   allGroupActiveTabId: string | null;
   allGroupLayout: PaneLayout | null;
   allGroupDashboardVisibility: DashboardVisibility;
+  allGroupDashboardStatusNames: DashboardStatusNames;
+  sharedDashboardVisibility: Record<string, DashboardVisibility>;
   settings: NotepadSettings;
   setFontScale: (fontScale: number) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;
@@ -171,6 +174,13 @@ export type NotepadState = {
   setSplitRatio: (ratio: number) => void;
   setRowRatio: (column: PaneColumn, ratio: number) => void;
   cycleTabColor: (tabId: string) => void;
+  moveDashboardTab: (
+    tabId: string,
+    status: TabStatus,
+    targetId?: string,
+    placement?: "before" | "after",
+  ) => void;
+  splitTabsLeft: (tabIds: string[], pane: PaneId) => void;
   setTabStatus: (tabId: string, status: TabStatus) => void;
   toggleBookmark: (tabId: string) => void;
   closeTab: (tabId: string) => void;

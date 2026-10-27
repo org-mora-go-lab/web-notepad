@@ -122,3 +122,10 @@
     }
   }
 }
+
+.setting .setting-color-status {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-muted);
+  font-size: 13px;
+}

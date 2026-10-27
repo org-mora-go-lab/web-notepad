@@ -13,6 +13,9 @@ import {
   getPaneActiveTabId,
   getPaneLayout,
   getPaneOfTab,
+  getStatusColor,
+  getTabStatus,
+  isSharedGroupId,
   normalizeLayout,
   setPaneActiveTabId,
 } from "../../util";
@@ -41,17 +44,27 @@ const buildAllGroup = (state: NotepadState): GroupEntry => {
     tabs,
     bookmarks: [],
     dashboardVisibility: state.allGroupDashboardVisibility,
+    dashboardStatusNames: state.allGroupDashboardStatusNames,
     ...EMPTY_SPLIT_LAYOUT,
     activeTabId: activeTab?.id ?? "",
     ...state.allGroupLayout,
   });
 };
 
-export const getActiveGroup = (state: NotepadState) =>
-  state.activeGroupId === ALL_GROUP_ID
-    ? buildAllGroup(state)
-    : (state.groups.find((group) => group.id === state.activeGroupId) ??
-      state.groups[0]);
+export const getActiveGroup = (state: NotepadState) => {
+  if (state.activeGroupId === ALL_GROUP_ID) return buildAllGroup(state);
+  const group =
+    state.groups.find((group) => group.id === state.activeGroupId) ??
+    state.groups[0];
+  return group && isSharedGroupId(group.id)
+    ? {
+        ...group,
+        dashboardVisibility:
+          state.sharedDashboardVisibility[group.id] ??
+          DEFAULT_DASHBOARD_VISIBILITY,
+      }
+    : group;
+};
 
 // The group a tab edit applies to: the All lists tabs of every group, so a tab edit goes to its own group.
 export const getTabGroup = (state: NotepadState, tabId: string) =>
@@ -161,33 +174,48 @@ export const patchTabAndBookmark = (
   ),
 });
 
-// Applies a new tab color cycle. A tab's dashboard status follows its color's position in the cycle,
-// so every tab (and bookmark / closed tab) keeps its position by taking the new color of that slot.
+// Recolor the three configurable statuses while keeping explicit Note and Done records intact.
 export const withTabColorCycle = (
   state: NotepadState,
   tabColorCycle: TabColor[],
 ) => {
   const previous = state.settings.tabColorCycle;
+  const recolorTab = (tab: NoteTab) => {
+    const status = getTabStatus(tab, previous);
+    return {
+      ...tab,
+      dashboardStatus: status,
+      tabColor:
+        status === "icebox" || status === "done"
+          ? tab.tabColor
+          : getStatusColor(status, tabColorCycle),
+    };
+  };
   const recolor = (color: TabColor) => {
     const index = previous.indexOf(color);
     return index >= 0 && tabColorCycle[index] ? tabColorCycle[index] : color;
   };
   return {
-    settings: { ...state.settings, tabColorCycle },
+    settings: {
+      ...state.settings,
+      tabColorCycle,
+      tabColorCycleVersion: 2 as const,
+    },
     groups: state.groups.map((group) => ({
       ...group,
-      tabs: group.tabs.map((tab) => ({
-        ...tab,
-        tabColor: recolor(tab.tabColor),
-      })),
+      tabs: group.tabs.map(recolorTab),
       bookmarks: group.bookmarks.map((bookmark) => ({
         ...bookmark,
-        tabColor: recolor(bookmark.tabColor),
+        tabColor: group.tabs.find((tab) => tab.id === bookmark.sourceTabId)
+          ? recolorTab(
+              group.tabs.find((tab) => tab.id === bookmark.sourceTabId)!,
+            ).tabColor
+          : recolor(bookmark.tabColor),
       })),
     })),
     closedTabs: state.closedTabs.map((entry) => ({
       ...entry,
-      tab: { ...entry.tab, tabColor: recolor(entry.tab.tabColor) },
+      tab: recolorTab(entry.tab),
     })),
   };
 };

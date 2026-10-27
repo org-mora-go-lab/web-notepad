@@ -39,5 +39,5 @@ test("2. 노트 상태 변경을 Turso 스냅샷에 저장한다", async ({
       (group: { tabs: { content: string; tabColor: string }[] }) => group.tabs,
     )
     .find((entry: { content: string }) => entry.content === "상태 변경 글");
-  expect(tab?.tabColor).toBe(snapshot.settings.tabColorCycle[2]);
+  expect(tab?.tabColor).toBe("teal");
 });

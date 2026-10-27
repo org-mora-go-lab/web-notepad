@@ -22,6 +22,12 @@ export type DashboardProps = {
   open: boolean;
   onClose: () => void;
   onOpenTab: (tabId: string) => void;
+  onMoveCard: (
+    tabId: string,
+    status: TabStatus,
+    targetId?: string,
+    placement?: "before" | "after",
+  ) => void;
   onChangeStatus: (tabId: string, status: TabStatus) => void;
   onMoveToGroup: (tabId: string, groupId: string) => void;
   onToggleTabBookmark: (tabId: string) => void;

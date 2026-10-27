@@ -12,6 +12,8 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
       const selectedLines = sanitizeSelectedLines(tab.selectedLines, content);
       const tabColor = normalizeTabColor(tab.tabColor, urgent);
       const dashboardStatus =
+        tab.dashboardStatus === "todo" ||
+        tab.dashboardStatus === "in-progress" ||
         tab.dashboardStatus === "icebox" ||
         tab.dashboardStatus === "closed" ||
         tab.dashboardStatus === "ready" ||
@@ -29,6 +31,11 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
           typeof tab.savedContent === "string" ? tab.savedContent : "",
         tabColor,
         dashboardStatus,
+        dashboardOrder:
+          typeof tab.dashboardOrder === "number" &&
+          Number.isFinite(tab.dashboardOrder)
+            ? tab.dashboardOrder
+            : undefined,
         pinned: tab.pinned === true,
         bookmarked: tab.bookmarked === true,
       };

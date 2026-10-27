@@ -40,6 +40,8 @@ export const useNotepadStore = create<NotepadState>()(
       allGroupActiveTabId: null,
       allGroupLayout: null,
       allGroupDashboardVisibility: DEFAULT_DASHBOARD_VISIBILITY,
+      allGroupDashboardStatusNames: {},
+      sharedDashboardVisibility: {},
       settings: DEFAULT_SETTINGS,
     }),
     {

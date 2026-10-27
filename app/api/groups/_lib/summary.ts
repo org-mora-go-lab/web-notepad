@@ -33,11 +33,6 @@ export function describeGroupUpdate(
     JSON.stringify(after.dashboardStatusNames)
   )
     changes.push("상태 이름 변경");
-  if (
-    JSON.stringify(before.dashboardVisibility) !==
-    JSON.stringify(after.dashboardVisibility)
-  )
-    changes.push("대시보드 설정 변경");
   if (changes.length === 0) changes.push("그룹 변경");
   return changes.slice(0, 4).join(" · ");
 }

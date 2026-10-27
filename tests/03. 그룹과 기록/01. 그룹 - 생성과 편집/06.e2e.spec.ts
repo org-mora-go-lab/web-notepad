@@ -23,4 +23,18 @@ test("6. 그룹 사이드바의 우측 구분선을 드래그해 작업공간과
   const workspaceAfter = (await page.locator(".workspace").boundingBox())!;
   expect(workspaceAfter.x).toBeCloseTo(after.width, 0);
   expect(workspaceAfter.width).toBeLessThan(workspaceBefore.width);
+  await page.mouse.move(after.x + after.width, after.y + 40);
+  await page.mouse.down();
+  await page.mouse.move(1200, after.y + 40);
+  await page.mouse.up();
+  expect((await menu.boundingBox())!.width).toBeCloseTo(
+    Math.floor(1280 * 0.51),
+    0,
+  );
+  await page.setViewportSize({ width: 800, height: 800 });
+  expect((await menu.boundingBox())!.width).toBeLessThanOrEqual(800 * 0.51);
+  expect((await page.locator(".workspace").boundingBox())!.x).toBeCloseTo(
+    (await menu.boundingBox())!.width,
+    0,
+  );
 });

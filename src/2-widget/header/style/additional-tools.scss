@@ -27,6 +27,9 @@
     cursor: default;
 
     font-size: v.font(14px);
+    &[aria-haspopup="menu"] > span {
+      font-size: calc(1em + 1px);
+    }
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

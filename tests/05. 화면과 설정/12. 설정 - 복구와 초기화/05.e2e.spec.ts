@@ -48,7 +48,8 @@ test("5. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
     )
     .toEqual({
       fontScale: 0.9,
-      tabColorCycle: ["gray", "indigo", "teal"],
+      tabColorCycleVersion: 2,
+      tabColorCycle: ["gray", "orange", "indigo"],
       language: "en",
       panelSlide: false,
       panelPosition: "right",

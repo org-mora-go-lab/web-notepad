@@ -101,9 +101,9 @@
     outline: none;
     background: transparent;
     color: v.$ink;
-    font-size: calc(#{v.font(19px)} - 3px);
+    font-size: calc(#{v.font(19px)} - 2px);
     @media (pointer: coarse) {
-      font-size: calc(max(16px, #{v.font(19px)}) - 3px);
+      font-size: calc(max(16px, #{v.font(19px)}) - 2px);
     }
     line-height: var(--editor-line-height);
     tab-size: 4;

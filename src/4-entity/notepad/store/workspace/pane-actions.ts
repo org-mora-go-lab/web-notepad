@@ -16,6 +16,7 @@ type PaneActions = Pick<
   NotepadState,
   | "moveTabToPane"
   | "moveTabsToPane"
+  | "splitTabsLeft"
   | "setActivePane"
   | "setSplitRatio"
   | "setRowRatio"
@@ -79,6 +80,33 @@ export const createPaneActions: StateCreator<
           );
         }
         next = setPaneActiveTabId(next, pane, movedIds[movedIds.length - 1]);
+        return normalizeLayout({ ...next, activePane: pane });
+      });
+    }),
+  splitTabsLeft: (tabIds, pane) =>
+    set((state) => {
+      const group = getEditableGroup(state);
+      if (!group || (pane !== "left" && pane !== "left-bottom")) return state;
+      const source = getPaneTabs(group, pane),
+        selected = new Set(tabIds);
+      const moving = source.filter((tab) => selected.has(tab.id));
+      const remaining = source.filter((tab) => !selected.has(tab.id));
+      const target =
+        pane === "left-bottom" && getPaneTabs(group, "right").length
+          ? "right-bottom"
+          : "right";
+      if (
+        !moving.length ||
+        !remaining.length ||
+        getPaneTabs(group, target).length
+      )
+        return state;
+      return updateGroup(state, group.id, (current) => {
+        let next = current;
+        for (const tab of remaining)
+          next = assignTabToPane(next, tab.id, target);
+        next = setPaneActiveTabId(next, pane, moving.at(-1)!.id);
+        next = setPaneActiveTabId(next, target, remaining[0].id);
         return normalizeLayout({ ...next, activePane: pane });
       });
     }),

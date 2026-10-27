@@ -59,10 +59,5 @@ export function mergeSharedGroupData(
       local.dashboardStatusNames,
       remote.dashboardStatusNames,
     ),
-    dashboardVisibility: mergeField(
-      base.dashboardVisibility,
-      local.dashboardVisibility,
-      remote.dashboardVisibility,
-    ),
   };
 }

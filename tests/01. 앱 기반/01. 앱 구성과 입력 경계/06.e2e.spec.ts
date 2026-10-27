@@ -10,7 +10,7 @@ import {
 
 test.use({ viewport: MOBILE_VIEWPORT, isMobile: true, hasTouch: true });
 
-test("6. 터치 에디터도 기존 크기에서 3px 줄이고 다른 입력란은 최소 16px를 유지한다", async ({
+test("6. 터치 에디터도 기존 축소 크기에서 1px 늘리고 다른 입력란은 최소 16px를 유지한다", async ({
   page,
 }) => {
   // At 80%, the former 16px editor floor is reduced by exactly 3px.
@@ -32,7 +32,7 @@ test("6. 터치 에디터도 기존 크기에서 3px 줄이고 다른 입력란�
       .locator(selector)
       .first()
       .evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
-  expect(await fontSize(".note-area")).toBe(13);
+  expect(await fontSize(".note-area")).toBe(14);
 
   await openGlobalSearchPanel(page);
   expect(await fontSize("#global-search-popup input")).toBeGreaterThanOrEqual(

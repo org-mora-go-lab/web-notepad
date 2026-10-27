@@ -13,6 +13,7 @@ export type PanelProps = {
   onSaveDashboardStatusNames: ComponentProps<
     typeof Dashboard
   >["onSaveStatusNames"];
+  dashboardStatusNames: ComponentProps<typeof Dashboard>["statusNames"];
   dashboardVisibility: ComponentProps<typeof Dashboard>["visibility"];
   onDashboardVisibilityChange: ComponentProps<
     typeof Dashboard
@@ -33,6 +34,7 @@ export type PanelProps = {
   onOpenBookmark: ComponentProps<typeof Bookmark>["onOpen"];
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
+  onMoveDashboardCard: ComponentProps<typeof Dashboard>["onMoveCard"];
   onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
   onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
   onToggleDashboardTabBookmark: ComponentProps<

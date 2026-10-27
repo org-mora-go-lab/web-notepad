@@ -8,7 +8,7 @@ import {
   restoreWorkspace,
 } from "../../__util__";
 
-test("1. 보조 상태가 아닌 저장 상태 문자열은 탭 색상으로 다시 판정한다", async ({
+test("1. 구버전의 일반 상태 문자열은 기존 색상 분류로 복원한다", async ({
   page,
 }) => {
   await restoreWorkspace(page, {
@@ -19,7 +19,9 @@ test("1. 보조 상태가 아닌 저장 상태 문자열은 탭 색상으로 다
       }),
     ],
   });
-  expect((await readActiveGroup(page)).tabs[0].dashboardStatus).toBeUndefined();
+  expect((await readActiveGroup(page)).tabs[0].dashboardStatus).toBe(
+    "in-progress",
+  );
   await openPanel(page, "dashboard-panel");
   await expect(
     dashboardColumn(page, "in-progress").locator(".dashboard-card"),

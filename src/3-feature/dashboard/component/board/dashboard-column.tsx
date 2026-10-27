@@ -1,4 +1,4 @@
-import { getStatusColor } from "@/src/4-entity/notepad";
+import { compareDashboardCards, getStatusColor } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { DashboardColumnProps } from "../../type";
@@ -27,10 +27,7 @@ export function DashboardColumn({
     done: t.statusDone,
     closed: t.closedTitle,
   }[status];
-  const cardEntries = [...columnTabs].sort((left, right) => {
-    const priority = (tab: typeof left) => (tab.bookmarked ? 1 : 0);
-    return priority(right) - priority(left) || left.id.localeCompare(right.id);
-  });
+  const cardEntries = [...columnTabs].sort(compareDashboardCards);
   return (
     <section
       key={status}
@@ -42,6 +39,7 @@ export function DashboardColumn({
         if (!drag.draggingTabId) return;
         event.preventDefault();
         drag.setOverStatus(status);
+        drag.setCardTarget(null);
       }}
       onDragLeave={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -94,7 +92,38 @@ export function DashboardColumn({
             onDragStart={drag.startDrag}
             onDragEnd={drag.endDrag}
             onTouchDragStart={drag.startTouchDrag}
-            onTouchDragOver={drag.setOverStatus}
+            onTouchDragOver={drag.touchOver}
+            dropPlacement={
+              drag.overCard?.id === tab.id && drag.draggingTabId !== tab.id
+                ? drag.overCard.placement
+                : undefined
+            }
+            onCardDragOver={(event) => {
+              if (!drag.draggingTabId || drag.draggingTabId === tab.id) return;
+              event.preventDefault();
+              event.stopPropagation();
+              drag.setOverStatus(status);
+              const bounds = event.currentTarget.getBoundingClientRect();
+              drag.setCardTarget({
+                id: tab.id,
+                placement:
+                  event.clientY > bounds.top + bounds.height / 2
+                    ? "after"
+                    : "before",
+              });
+            }}
+            onCardDrop={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              const bounds = event.currentTarget.getBoundingClientRect();
+              drag.drop(status, event, {
+                id: tab.id,
+                placement:
+                  event.clientY > bounds.top + bounds.height / 2
+                    ? "after"
+                    : "before",
+              });
+            }}
             onTouchDrop={drag.touchDrop}
           />
         ))}

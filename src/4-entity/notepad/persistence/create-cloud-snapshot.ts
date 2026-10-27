@@ -14,6 +14,8 @@ export function createCloudSnapshot(state: NotepadState) {
     allGroupActiveTabId: state.allGroupActiveTabId,
     allGroupLayout: state.allGroupLayout,
     allGroupDashboardVisibility: state.allGroupDashboardVisibility,
+    allGroupDashboardStatusNames: state.allGroupDashboardStatusNames,
+    sharedDashboardVisibility: state.sharedDashboardVisibility,
     settings: state.settings,
   });
 }

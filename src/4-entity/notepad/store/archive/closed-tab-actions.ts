@@ -40,6 +40,8 @@ export const createClosedTabActions: StateCreator<
       ...entry.tab,
       id: tabId,
       open: true,
+      dashboardStatus: "todo" as const,
+      dashboardOrder: undefined,
       tabColor: getStatusColor("todo", state.settings.tabColorCycle),
       bookmarked: target.bookmarks.some(
         (bookmark) => bookmark.sourceTabId === tabId,
@@ -69,7 +71,15 @@ export const createClosedTabActions: StateCreator<
     set((state) => ({
       closedTabs: state.closedTabs.map((item) =>
         item.id === entryId
-          ? { ...item, tab: { ...item.tab, tabColor } }
+          ? {
+              ...item,
+              tab: {
+                ...item.tab,
+                tabColor,
+                dashboardStatus: status === "closed" ? "done" : status,
+                dashboardOrder: undefined,
+              },
+            }
           : item,
       ),
     }));

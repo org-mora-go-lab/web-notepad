@@ -27,6 +27,7 @@ export const createNoteTab = (
   pinned: false,
   bookmarked: false,
   updatedAt: 0,
+  dashboardStatus: "todo",
 });
 
 export const getNextTabNumber = (
@@ -72,31 +73,27 @@ export const getTitleFromContent = (content: unknown, fallback: string) => {
   return firstLine ? truncateGraphemes(firstLine, 28) : fallback;
 };
 
-// Todo / Doing / Done follow the position of the tab color in the cycle; colors outside it count as Todo.
+// Explicit status keeps shared cards stable when collaborators use different color settings.
 export const getTabStatus = (
   tab: NoteTab,
   tabColorCycle: TabColor[],
 ): TabStatus => {
-  if (tab.dashboardStatus === "closed" || tab.dashboardStatus === "done")
-    return "done";
-  if (tab.dashboardStatus === "icebox" || tab.dashboardStatus === "ready")
-    return tab.dashboardStatus;
-  return (
-    (["todo", "in-progress", "done"] as const)[
-      Math.max(0, tabColorCycle.indexOf(tab.tabColor))
-    ] ?? "todo"
-  );
+  if (tab.dashboardStatus === "closed") return "done";
+  if (tab.dashboardStatus) return tab.dashboardStatus;
+  const index = tabColorCycle.indexOf(tab.tabColor);
+  if (index >= 0)
+    return (["todo", "ready", "in-progress"] as const)[index] ?? "todo";
+  return tab.tabColor === "teal" ? "done" : "todo";
 };
 
 export const getStatusColor = (
   status: TabStatus,
-  tabColorCycle: TabColor[],
+  cycle: TabColor[],
 ): TabColor => {
   if (status === "icebox") return "yellow";
-  if (status === "closed") return tabColorCycle[2] ?? "teal";
-  if (status === "ready") return "orange";
+  if (status === "done" || status === "closed") return "teal";
   return (
-    tabColorCycle[(["todo", "in-progress", "done"] as const).indexOf(status)] ??
-    tabColorCycle[0]
+    cycle[(["todo", "ready", "in-progress"] as const).indexOf(status)] ??
+    cycle[0]
   );
 };

@@ -33,6 +33,9 @@ export function DashboardCard({
   onTouchDragStart,
   onTouchDragOver,
   onTouchDrop,
+  dropPlacement,
+  onCardDragOver,
+  onCardDrop,
 }: DashboardCardProps) {
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastDragAtRef = useRef<number | null>(null);
@@ -88,7 +91,17 @@ export function DashboardCard({
         .elementFromPoint(lastPoint.x, lastPoint.y)
         ?.closest<HTMLElement>(".dashboard-column[data-status]");
       overStatus = (column?.dataset.status as TabStatus | undefined) ?? null;
-      onTouchDragOver(overStatus);
+      const target = document
+        .elementFromPoint(lastPoint.x, lastPoint.y)
+        ?.closest<HTMLElement>(".dashboard-card[data-tab-id]");
+      const bounds = target?.getBoundingClientRect();
+      onTouchDragOver(
+        overStatus,
+        target?.dataset.tabId === tab.id ? undefined : target?.dataset.tabId,
+        bounds && lastPoint.y > bounds.top + bounds.height / 2
+          ? "after"
+          : "before",
+      );
     };
     const scrollAtEdge = () => {
       scrollFrame = null;
@@ -171,6 +184,10 @@ export function DashboardCard({
 
   return (
     <article
+      data-tab-id={tab.id}
+      data-drop-placement={dropPlacement}
+      onDragOver={onCardDragOver}
+      onDrop={onCardDrop}
       className={`dashboard-card ${dragging ? "is-dragging" : ""} ${active ? "is-active" : ""} ${contextMenuTarget ? "is-context-menu-target" : ""}`}
       data-tab-color={tab.tabColor}
       draggable

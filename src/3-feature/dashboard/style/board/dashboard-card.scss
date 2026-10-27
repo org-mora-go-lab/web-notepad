@@ -100,3 +100,20 @@
     -webkit-line-clamp: 3;
   }
 }
+
+.dashboard .dashboard-card[data-drop-placement]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-signal);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.dashboard .dashboard-card[data-drop-placement="before"]::after {
+  top: -6px;
+}
+.dashboard .dashboard-card[data-drop-placement="after"]::after {
+  bottom: -6px;
+}

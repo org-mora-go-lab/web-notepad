@@ -151,9 +151,23 @@ export function Board() {
               placeholder={t.boardSearch}
             />
             {loading ? (
-              <p className="board-empty" role="status">
-                {t.boardLoading}
-              </p>
+              <div
+                className="board-skeleton"
+                role="status"
+                aria-label={t.boardLoading}
+              >
+                <span className="board-skeleton-label">{t.boardLoading}</span>
+                <div aria-hidden="true">
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <div className="board-skeleton-row" key={index}>
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  ))}
+                </div>
+              </div>
             ) : error ? (
               <div className="board-empty" role="alert">
                 <p>{t.boardLoadError}</p>

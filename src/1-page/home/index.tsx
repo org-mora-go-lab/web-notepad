@@ -43,6 +43,7 @@ export function Home() {
     activeGroupTabs,
     tabColorCycle,
     setTabStatus,
+    moveDashboardTab,
     toggleBookmark,
     moveToGroup,
     deleteDashboardTab,
@@ -56,6 +57,7 @@ export function Home() {
     setGroupStatusNames,
     setGroupDashboardVisibility,
     dashboardVisibility,
+    dashboardStatusNames,
     toggleGroupPin,
     moveGroup,
     removeGroupAndRecord,
@@ -281,6 +283,7 @@ export function Home() {
                 onRemoveBookmark={removeBookmark}
                 onOpenDashboardTab={openTabAndClosePanel}
                 onChangeTabStatus={setTabStatus}
+                onMoveDashboardCard={moveDashboardTab}
                 onMoveDashboardTabToGroup={moveToGroup}
                 onToggleDashboardTabBookmark={toggleBookmark}
                 onDeleteDashboardTab={deleteDashboardTab}
@@ -293,6 +296,7 @@ export function Home() {
                   setGroupStatusNames(activeGroupId, names)
                 }
                 dashboardVisibility={dashboardVisibility}
+                dashboardStatusNames={dashboardStatusNames}
                 onDashboardVisibilityChange={(visibility) =>
                   setGroupDashboardVisibility(activeGroupId, visibility)
                 }
