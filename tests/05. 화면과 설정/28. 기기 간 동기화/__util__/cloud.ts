@@ -17,9 +17,7 @@ export async function waitForSaved(page: Page) {
     { timeout: 20_000 },
   );
 }
-export async function readHistory(
-  page: Page,
-): Promise<{
+export async function readHistory(page: Page): Promise<{
   count: number;
   latest: { eventId: string; snapshot: string } | null;
 }> {

@@ -40,11 +40,9 @@ test("8. 수정한 탭을 떠나도 저장 애니메이션은 해당 탭에만 �
       { timeout: 10_000 },
     );
     await expectTabSavingLine(
-      page
-        .locator(".tab-item")
-        .filter({
-          has: page.getByRole("tab", { name: "Edited tab", exact: true }),
-        }),
+      page.locator(".tab-item").filter({
+        has: page.getByRole("tab", { name: "Edited tab", exact: true }),
+      }),
       true,
     );
     await expectTabSavingLine(page.locator(".tab-item.is-active"), false);
