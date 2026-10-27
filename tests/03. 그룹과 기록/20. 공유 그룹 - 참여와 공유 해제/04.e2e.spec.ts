@@ -7,9 +7,9 @@ test("4. 공유 취소는 기존 참여자와 초대 링크 및 게시판 접근
   sharing: { owner, guest, id, token, url },
 }) => {
   expect(
-    (await (await owner.request.get("/api/board")).json()).posts.some(
-      (post: { id: string }) => post.id === id,
-    ),
+    (
+      await (await owner.request.get("/api/board", { maxRetries: 2 })).json()
+    ).posts.some((post: { id: string }) => post.id === id),
   ).toBe(true);
   const menu = await openSharingMenu(owner, id);
   await menu
@@ -27,9 +27,12 @@ test("4. 공유 취소는 기존 참여자와 초대 링크 및 게시판 접근
     ).status(),
   ).toBe(404);
   expect(
-    (await (await guest.request.get("/api/groups")).json()).groups,
+    (await (await guest.request.get("/api/groups", { maxRetries: 2 })).json())
+      .groups,
   ).toHaveLength(0);
-  const posts = (await (await owner.request.get("/api/board")).json()).posts;
+  const posts = (
+    await (await owner.request.get("/api/board", { maxRetries: 2 })).json()
+  ).posts;
   expect(
     posts.some((post: { inviteUrl: string }) => post.inviteUrl === url),
   ).toBe(false);
