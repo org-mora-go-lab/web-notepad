@@ -43,6 +43,8 @@ function hasLocalWork(snapshot: string) {
   const state = JSON.parse(snapshot);
   return (
     state.closedTabs.length > 0 ||
+    Object.keys(state.sharedDashboardVisibility ?? {}).length > 0 ||
+    Object.keys(state.allGroupDashboardStatusNames ?? {}).length > 0 ||
     Object.entries(DEFAULT_SETTINGS).some(
       ([key, value]) =>
         JSON.stringify(state.settings[key]) !== JSON.stringify(value),

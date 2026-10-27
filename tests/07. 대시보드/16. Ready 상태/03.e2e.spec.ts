@@ -17,6 +17,11 @@ test("3. 이전 색상 주기를 옮겨도 기존 To Do Doing Done 상태와 본
       ]),
     ],
   });
+  await expect
+    .poll(
+      async () => (await readStoredState(page)).settings?.tabColorCycleVersion,
+    )
+    .toBe(2);
   const initial = await readStoredState(page);
   expect(initial.settings!.tabColorCycle).toEqual(["red", "orange", "purple"]);
   expect(initial.groups[0].tabs.map((tab) => tab.dashboardStatus)).toEqual([
@@ -25,6 +30,7 @@ test("3. 이전 색상 주기를 옮겨도 기존 To Do Doing Done 상태와 본
     "done",
   ]);
   await page.reload();
+  await expect(page.locator("textarea").first()).toHaveValue("To Do body");
   const restored = await readStoredState(page);
   expect(restored.groups[0].tabs).toEqual(initial.groups[0].tabs);
   expect(restored.settings).toEqual(initial.settings);
