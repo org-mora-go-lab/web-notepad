@@ -56,11 +56,21 @@ export const createTabLifecycleActions: StateCreator<
         moving,
       );
       const ranks = new Map(cards.map((tab, index) => [tab.id, index]));
+      const nextColor = getStatusColor(status, state.settings.tabColorCycle);
+      const changedStatus =
+        getTabStatus(moving, state.settings.tabColorCycle) !== status ||
+        moving.tabColor !== nextColor;
+      const updatedAt = Date.now();
       return {
         groups: state.groups.map((group) => {
           if (!group.tabs.some((tab) => ranks.has(tab.id))) return group;
           return {
             ...group,
+            bookmarks: group.bookmarks.map((bookmark) =>
+              bookmark.sourceTabId === tabId && changedStatus
+                ? { ...bookmark, tabColor: nextColor, updatedAt }
+                : bookmark,
+            ),
             tabs: group.tabs.map((tab) =>
               !ranks.has(tab.id)
                 ? tab
@@ -70,10 +80,7 @@ export const createTabLifecycleActions: StateCreator<
                     ...(tab.id === tabId
                       ? {
                           dashboardStatus: status,
-                          tabColor: getStatusColor(
-                            status,
-                            state.settings.tabColorCycle,
-                          ),
+                          tabColor: nextColor,
                         }
                       : {}),
                   },

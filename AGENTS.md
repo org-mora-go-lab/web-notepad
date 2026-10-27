@@ -99,4 +99,4 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 
 ## Code Formatting
 
-Generate and edit code using the repository Prettier configuration. Run `npm run format` after changes and require `npm run format:check` to pass before committing. Apply formatting to existing unformatted source, styles, tests, and documentation. Exclude generated files, dependencies, test results, and user attachments as configured in `.prettierignore`. Keep formatting-only changes in a separate commit when practical.
+Generate and edit code using the repository Prettier configuration. Run `npm run format` after changes and require `npm run format:check` to pass before committing. Apply formatting to existing unformatted source, styles, tests, and documentation. Exclude generated files, dependencies, test results, and user attachments as configured in `.prettierignore`. Use LF line endings enforced by `.gitattributes` on every platform. Keep formatting-only changes in a separate commit when practical.

@@ -38,7 +38,7 @@ test("2. 새 탭은 현재 탭의 Note·Doing·Closed 상태를 이어받지 않
       const saved = await readStoredState(page);
       const newTab = saved.groups[0].tabs.find((tab) => tab.id === "tab-2")!;
       expect(newTab.tabColor).toBe("red");
-      expect(newTab.dashboardStatus).toBeUndefined();
+      expect(newTab.dashboardStatus).toBe("todo");
       await page.locator("textarea").fill("New ready note");
       await openPanel(page, "dashboard-panel");
       await expect(

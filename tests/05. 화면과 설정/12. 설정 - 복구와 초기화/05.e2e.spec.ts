@@ -29,8 +29,8 @@ test("5. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
   await expect(panel.locator("h2")).toHaveText("Settings");
   await expect(fontScaleRadio(page, "90%")).toBeChecked();
   await expect(tabColorRadio(page, 1, "Gray")).toBeChecked();
-  await expect(tabColorRadio(page, 2, "Indigo")).toBeChecked();
-  await expect(tabColorRadio(page, 3, "Teal")).toBeChecked();
+  await expect(tabColorRadio(page, 2, "Orange")).toBeChecked();
+  await expect(tabColorRadio(page, 3, "Indigo")).toBeChecked();
   await expect(languageRadio(page, "English")).toBeChecked();
   await expect(
     panel.getByRole("radio", { name: "Off", exact: true }),

@@ -59,10 +59,16 @@ export function TabColorSetting() {
       </p>
       {settings.tabColorCycle.map((selected, index) => (
         <div className="setting-color-row" key={index}>
-          <span className="setting-color-status">{statusLabels[index]}</span>
+          <span
+            className="setting-color-status"
+            id={`${colorTitleId}-status-${index}`}
+          >
+            {statusLabels[index]}
+          </span>
           <div
             className="setting-swatches"
             role="radiogroup"
+            aria-describedby={`${colorTitleId}-status-${index}`}
             aria-label={t.tabColorGroup(index + 1)}
           >
             {TAB_COLORS.map((color) => (

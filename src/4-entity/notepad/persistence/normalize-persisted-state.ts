@@ -6,7 +6,7 @@ import {
   normalizeDashboardStatusNames,
   normalizeDashboardVisibility,
 } from "../util";
-import { finiteNumberOr } from "./read-value";
+import { finiteNumberOr, isTabColor } from "./read-value";
 import {
   normalizeBookmarks,
   normalizeClosedTabs,
@@ -37,9 +37,16 @@ export function normalizePersistedState(
         ? persisted.settings.tabColorCycle
         : ["gray", "indigo", "teal"]
       : null;
+  const legacyDoneColor = legacyColors?.[2];
   const migrateStatus = (tab: NoteTab): NoteTab => {
     if (tab.dashboardStatus === "closed")
-      return { ...tab, dashboardStatus: "done", tabColor: "teal" };
+      return {
+        ...tab,
+        dashboardStatus: "done",
+        tabColor: isTabColor(legacyDoneColor) ? legacyDoneColor : "teal",
+      };
+    if (legacyColors && tab.dashboardStatus === "ready")
+      return { ...tab, tabColor: settings.tabColorCycle[1] };
     if (
       legacyColors &&
       (!tab.dashboardStatus ||

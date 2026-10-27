@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { groupMenu, groupsCommand } from "../../__util__";
 
-test("5. PC 그룹 사이드바는 280px이고 모바일에서는 화면 전체 너비를 사용한다", async ({
+test("5. PC 그룹 사이드바는 기본 280px을 최대 폭 안에서 사용하고 모바일은 전체 너비를 사용한다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -10,7 +10,10 @@ test("5. PC 그룹 사이드바는 280px이고 모바일에서는 화면 전체 
   expect((await groupMenu(page).boundingBox())!.width).toBe(280);
 
   await page.setViewportSize({ width: 513, height: 800 });
-  expect((await groupMenu(page).boundingBox())!.width).toBe(280);
+  expect((await groupMenu(page).boundingBox())!.width).toBeCloseTo(
+    513 * 0.51,
+    1,
+  );
 
   await page.setViewportSize({ width: 512, height: 800 });
   expect((await groupMenu(page).boundingBox())!.width).toBe(512);
