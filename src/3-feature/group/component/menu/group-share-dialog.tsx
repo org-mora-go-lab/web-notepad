@@ -9,10 +9,16 @@ import { useI18n } from "@/src/5-shared/hook";
 
 import type { GroupShareDialogProps } from "../../type";
 
-export function GroupShareDialog({ group, onClose, onShared }: GroupShareDialogProps) {
+export function GroupShareDialog({
+  group,
+  onClose,
+  onShared,
+}: GroupShareDialogProps) {
   const { t } = useI18n();
   const [url, setUrl] = useState<string | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "login" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "ready" | "login" | "error">(
+    "loading",
+  );
   const [copied, setCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
@@ -20,23 +26,44 @@ export function GroupShareDialog({ group, onClose, onShared }: GroupShareDialogP
   const returnGroupId = useRef(group.id);
 
   useEffect(() => {
-    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previous =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     closeRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { event.preventDefault(); onClose(); return; }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
       if (event.key !== "Tab") return;
-      const controls = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input:not([disabled])") ?? []);
+      const controls = Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          "a[href], button:not([disabled]), input:not([disabled])",
+        ) ?? [],
+      );
       if (!controls.length) return;
       const first = controls[0];
       const last = controls[controls.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       if (previous?.isConnected) previous.focus();
-      else document.querySelector<HTMLElement>(`[data-group-id="${CSS.escape(returnGroupId.current)}"] .group-actions > button`)?.focus();
+      else
+        document
+          .querySelector<HTMLElement>(
+            `[data-group-id="${CSS.escape(returnGroupId.current)}"] .group-actions > button`,
+          )
+          ?.focus();
     };
   }, [group.id, onClose]);
 
@@ -46,20 +73,33 @@ export function GroupShareDialog({ group, onClose, onShared }: GroupShareDialogP
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ group }),
-    }).then(async (response) => {
-      if (!active) return;
-      if (response.status === 401) { setStatus("login"); return; }
-      if (!response.ok) { setStatus("error"); return; }
-      const result = (await response.json()) as { url: string; group: GroupEntry };
-      if (!active) return;
-      setUrl(result.url);
-      setStatus("ready");
-      returnGroupId.current = result.group.id;
-      onShared(group.id, result.group);
-    }).catch(() => {
-      if (active) setStatus("error");
-    });
-    return () => { active = false; };
+    })
+      .then(async (response) => {
+        if (!active) return;
+        if (response.status === 401) {
+          setStatus("login");
+          return;
+        }
+        if (!response.ok) {
+          setStatus("error");
+          return;
+        }
+        const result = (await response.json()) as {
+          url: string;
+          group: GroupEntry;
+        };
+        if (!active) return;
+        setUrl(result.url);
+        setStatus("ready");
+        returnGroupId.current = result.group.id;
+        onShared(group.id, result.group);
+      })
+      .catch(() => {
+        if (active) setStatus("error");
+      });
+    return () => {
+      active = false;
+    };
   }, [group, onShared]);
 
   const copy = async () => {
@@ -73,28 +113,63 @@ export function GroupShareDialog({ group, onClose, onShared }: GroupShareDialogP
   };
 
   return createPortal(
-    <div className="group-share-backdrop" onMouseDown={(event) => {
-      if (event.target === event.currentTarget) onClose();
-    }}>
-      <section ref={dialogRef} className="group-share-dialog" role="dialog" aria-modal="true" aria-label={t.shareGroupTitle(group.name)}>
+    <div
+      className="group-share-backdrop"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <section
+        ref={dialogRef}
+        className="group-share-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.shareGroupTitle(group.name)}
+      >
         <header>
           <h2>{t.shareGroupTitle(group.name)}</h2>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label={t.close}><X size={18} /></button>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label={t.close}
+          >
+            <X size={18} />
+          </button>
         </header>
         {status === "loading" && <p role="status">{t.cloudSaving}</p>}
         {status === "error" && <p role="alert">{t.shareUnavailable}</p>}
-        {status === "login" && <>
-          <p>{t.shareLoginRequired}</p>
-          <a className="group-share-login" href="/api/auth/oauth/kakao">{t.kakaoLogin}</a>
-        </>}
-        {status === "ready" && url && <>
-          <label htmlFor="group-share-url">{t.shareLink}</label>
-          <input ref={inputRef} id="group-share-url" readOnly value={url} onFocus={(event) => event.currentTarget.select()} />
-          <button className="group-share-copy" type="button" onClick={() => void copy()}>
-            <Copy size={16} />{copied ? t.shareLinkCopied : t.copyShareLink}
-          </button>
-        </>}
-        <button className="group-share-close" type="button" onClick={onClose}>{t.close}</button>
+        {status === "login" && (
+          <>
+            <p>{t.shareLoginRequired}</p>
+            <a className="group-share-login" href="/api/auth/oauth/kakao">
+              {t.kakaoLogin}
+            </a>
+          </>
+        )}
+        {status === "ready" && url && (
+          <>
+            <label htmlFor="group-share-url">{t.shareLink}</label>
+            <input
+              ref={inputRef}
+              id="group-share-url"
+              readOnly
+              value={url}
+              onFocus={(event) => event.currentTarget.select()}
+            />
+            <button
+              className="group-share-copy"
+              type="button"
+              onClick={() => void copy()}
+            >
+              <Copy size={16} />
+              {copied ? t.shareLinkCopied : t.copyShareLink}
+            </button>
+          </>
+        )}
+        <button className="group-share-close" type="button" onClick={onClose}>
+          {t.close}
+        </button>
       </section>
     </div>,
     document.body,

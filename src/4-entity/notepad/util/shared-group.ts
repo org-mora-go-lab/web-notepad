@@ -2,7 +2,8 @@ import type { GroupEntry, SharedGroupData } from "../type";
 import { normalizeLayout } from "./pane";
 
 export const sharedGroupId = (shareId: string) => `shared-${shareId}`;
-export const isSharedGroupId = (id: string) => /^shared-[0-9a-f-]{36}$/i.test(id);
+export const isSharedGroupId = (id: string) =>
+  /^shared-[0-9a-f-]{36}$/i.test(id);
 
 export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
   const id = sharedGroupId(shareId);
@@ -19,11 +20,17 @@ export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
     })),
     activeTabId: tabId(group.activeTabId),
     rightTabIds: group.rightTabIds.map(tabId),
-    activeRightTabId: group.activeRightTabId ? tabId(group.activeRightTabId) : null,
+    activeRightTabId: group.activeRightTabId
+      ? tabId(group.activeRightTabId)
+      : null,
     leftBottomTabIds: group.leftBottomTabIds.map(tabId),
-    activeLeftBottomTabId: group.activeLeftBottomTabId ? tabId(group.activeLeftBottomTabId) : null,
+    activeLeftBottomTabId: group.activeLeftBottomTabId
+      ? tabId(group.activeLeftBottomTabId)
+      : null,
     rightBottomTabIds: group.rightBottomTabIds.map(tabId),
-    activeRightBottomTabId: group.activeRightBottomTabId ? tabId(group.activeRightBottomTabId) : null,
+    activeRightBottomTabId: group.activeRightBottomTabId
+      ? tabId(group.activeRightBottomTabId)
+      : null,
   };
 }
 
@@ -40,8 +47,13 @@ export function toSharedGroupData(group: GroupEntry): SharedGroupData {
   };
 }
 
-export function applySharedGroupData(group: GroupEntry, data: SharedGroupData): GroupEntry {
-  const openIds = new Set(data.tabs.filter((tab) => tab.open).map((tab) => tab.id));
+export function applySharedGroupData(
+  group: GroupEntry,
+  data: SharedGroupData,
+): GroupEntry {
+  const openIds = new Set(
+    data.tabs.filter((tab) => tab.open).map((tab) => tab.id),
+  );
   const activeTabId = openIds.has(group.activeTabId)
     ? group.activeTabId
     : (data.tabs.find((tab) => tab.open)?.id ?? "");

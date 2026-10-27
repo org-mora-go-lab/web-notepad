@@ -5,7 +5,9 @@ export const DEFAULT_DASHBOARD_VISIBILITY: DashboardVisibility = {
   done: true,
 };
 
-export function normalizeDashboardVisibility(value: unknown): DashboardVisibility {
+export function normalizeDashboardVisibility(
+  value: unknown,
+): DashboardVisibility {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return DEFAULT_DASHBOARD_VISIBILITY;
   }

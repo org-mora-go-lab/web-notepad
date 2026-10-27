@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 
 import { getKakaoConfig } from "../../_lib/kakao";
-import { createOAuthState, KAKAO_STATE_COOKIE, readGroupShareToken, SHARE_RETURN_COOKIE } from "../../_lib/session";
+import {
+  createOAuthState,
+  KAKAO_STATE_COOKIE,
+  readGroupShareToken,
+  SHARE_RETURN_COOKIE,
+} from "../../_lib/session";
 
 export async function GET(request: Request) {
   try {
@@ -38,6 +43,8 @@ export async function GET(request: Request) {
     });
     return response;
   } catch {
-    return NextResponse.redirect(new URL("/?auth_error=configuration", request.url));
+    return NextResponse.redirect(
+      new URL("/?auth_error=configuration", request.url),
+    );
   }
 }

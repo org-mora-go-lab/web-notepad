@@ -74,7 +74,11 @@ export function UserGuide({ onClose, onOpenShortcuts }: UserGuideProps) {
       <div className="user-guide-description" id={`${guideId}-description`}>
         <p>{step.description}</p>
         {step.shortcutEntry && (
-          <button className="user-guide-shortcut" type="button" onClick={onOpenShortcuts}>
+          <button
+            className="user-guide-shortcut"
+            type="button"
+            onClick={onOpenShortcuts}
+          >
             <Keyboard aria-hidden="true" />
             <span>{t.shortcut}</span>
           </button>

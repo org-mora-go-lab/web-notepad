@@ -1,6 +1,10 @@
 import { expect, type Page } from "@playwright/test";
 
-import { hoverTabOverPane, paneSlot, writePaneLayoutState } from "../../__util__";
+import {
+  hoverTabOverPane,
+  paneSlot,
+  writePaneLayoutState,
+} from "../../__util__";
 
 export async function expectLowerTabSplitRight(
   page: Page,
@@ -24,13 +28,17 @@ export async function expectLowerTabSplitRight(
   await bottom
     .getByRole("tab", { name: "bottom-2", exact: true })
     .locator(".tab-title")
-    .dragTo(body, { targetPosition: { x: box.width * 0.75, y: box.height * 0.25 } });
+    .dragTo(body, {
+      targetPosition: { x: box.width * 0.75, y: box.height * 0.25 },
+    });
 
   const target = paneSlot(page, hasRightTop ? "right-bottom" : "right");
   await expect(target.locator("textarea")).toHaveValue("bottom-2");
   await expect(bottom.locator(".tab-title")).toHaveText(["bottom-1"]);
   if (hasRightTop) {
-    await expect(paneSlot(page, "right").locator("textarea")).toHaveValue("right-top");
+    await expect(paneSlot(page, "right").locator("textarea")).toHaveValue(
+      "right-top",
+    );
   }
 }
 
@@ -51,7 +59,10 @@ export async function expectLowerTabSplitRightPersistence(
   );
 }
 
-export async function expectThirdBottomTabSplitRight(page: Page, allGroup: boolean) {
+export async function expectThirdBottomTabSplitRight(
+  page: Page,
+  allGroup: boolean,
+) {
   await writePaneLayoutState(
     page,
     ["1", "2", "3"],

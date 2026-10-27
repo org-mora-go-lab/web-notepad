@@ -55,7 +55,10 @@ export function Panel({
       />
       <Dashboard
         groupId={activeGroupId}
-        statusNames={groups.find((group) => group.id === activeGroupId)?.dashboardStatusNames ?? {}}
+        statusNames={
+          groups.find((group) => group.id === activeGroupId)
+            ?.dashboardStatusNames ?? {}
+        }
         onSaveStatusNames={onSaveDashboardStatusNames}
         visibility={dashboardVisibility}
         onVisibilityChange={onDashboardVisibilityChange}

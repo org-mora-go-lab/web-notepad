@@ -24,7 +24,13 @@ export function SearchResult({
       onClick={onSelect}
     >
       <span className="global-search-result-category">
-        {kind === "tab" ? <FileText size={14} aria-hidden="true" /> : groupName !== undefined ? <Bookmark size={14} aria-hidden="true" /> : <Folder size={14} aria-hidden="true" />}
+        {kind === "tab" ? (
+          <FileText size={14} aria-hidden="true" />
+        ) : groupName !== undefined ? (
+          <Bookmark size={14} aria-hidden="true" />
+        ) : (
+          <Folder size={14} aria-hidden="true" />
+        )}
         {category}
         {groupName && (
           <>

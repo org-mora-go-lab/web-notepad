@@ -1,6 +1,15 @@
 "use client";
 
-import { Bookmark, BookOpen, Ellipsis, Layers, LayoutDashboard, MessageSquare, Search, Trash2 } from "lucide-react";
+import {
+  Bookmark,
+  BookOpen,
+  Ellipsis,
+  Layers,
+  LayoutDashboard,
+  MessageSquare,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { UserGuide } from "@/src/3-feature";
@@ -51,7 +60,12 @@ export function Footer({
   return (
     <footer className="footer">
       <div className="current-group-panel" title={activeGroupName}>
-        <Layers className="current-group-icon" size={18} strokeWidth={1.8} aria-hidden="true" />
+        <Layers
+          className="current-group-icon"
+          size={18}
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
         <span className="current-group-name" title={activeGroupName}>
           {activeGroupName}
         </span>
@@ -71,7 +85,11 @@ export function Footer({
             <span className="status-icon">
               <Layers size={16} strokeWidth={1.8} />
               {hasGroupUpdateToday && (
-                <span className="status-dot" role="img" aria-label={t.updatedToday} />
+                <span
+                  className="status-dot"
+                  role="img"
+                  aria-label={t.updatedToday}
+                />
               )}
             </span>
             <span className="status-label group-command-label">{t.group}</span>
@@ -99,7 +117,10 @@ export function Footer({
                   type="button"
                   aria-expanded={moreOpen}
                   aria-controls="footer-more-menu"
-                  onClick={() => { setNotificationsOpen(false); setMoreOpen((current) => !current); }}
+                  onClick={() => {
+                    setNotificationsOpen(false);
+                    setMoreOpen((current) => !current);
+                  }}
                 >
                   <span className="status-icon">
                     <Ellipsis size={16} strokeWidth={1.8} />
@@ -107,7 +128,11 @@ export function Footer({
                   <span className="status-label">{t.more}</span>
                 </button>
                 {moreOpen && (
-                  <div className="footer-more-menu" id="footer-more-menu" role="menu">
+                  <div
+                    className="footer-more-menu"
+                    id="footer-more-menu"
+                    role="menu"
+                  >
                     <button
                       type="button"
                       onClick={() => {
@@ -142,32 +167,93 @@ export function Footer({
                       <Bookmark size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.bookmark}</span>
                     </button>
-                    <button type="button" className="board-command" aria-controls="board-panel" onClick={() => { setMoreOpen(false); onOpenBoard(); }}>
+                    <button
+                      type="button"
+                      className="board-command"
+                      aria-controls="board-panel"
+                      onClick={() => {
+                        setMoreOpen(false);
+                        onOpenBoard();
+                      }}
+                    >
                       <MessageSquare size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.board}</span>
                     </button>
                   </div>
                 )}
-                {notificationsOpen && <CornerPopover className="footer-notifications-panel" id="footer-notifications-panel" title={t.notifications} closeLabel={t.close}
-                  headerActions={<button type="button" className="notification-clear" aria-label={t.clearNotifications} title={t.clearNotifications}
-                    disabled={clearing || notifications.length === 0} onClick={async () => {
-                      setClearing(true); setClearError(false);
-                      try { if (!await onClearNotifications()) setClearError(true); }
-                      finally { setClearing(false); }
-                    }}><Trash2 size={16} aria-hidden="true" /></button>}
-                  open={notificationsOpen} position="top" triggerSelector="button.auth-command" onClose={() => setNotificationsOpen(false)}>
-                  {clearError && <p role="alert">{t.clearNotificationsError}</p>}
-                  {notifications.length === 0 ? <p>{t.noNotifications}</p> : <ul>
-                    {notifications.map((item) => <li key={item.id}>
-                      <button type="button" className={`notification-entry ${item.unread ? "is-unread" : ""}`} onClick={() => { setNotificationsOpen(false); onOpenNotification(item); }}>
-                      {item.unread && <span className="notification-unread" role="img" aria-label={t.unreadNotification} />}
-                      <strong>{item.actorName}</strong> · {item.groupName}
-                      <span>{item.summary}</span>
-                      <time dateTime={new Date(item.createdAt).toISOString()}>{new Date(item.createdAt).toLocaleString()}</time>
+                {notificationsOpen && (
+                  <CornerPopover
+                    className="footer-notifications-panel"
+                    id="footer-notifications-panel"
+                    title={t.notifications}
+                    closeLabel={t.close}
+                    headerActions={
+                      <button
+                        type="button"
+                        className="notification-clear"
+                        aria-label={t.clearNotifications}
+                        title={t.clearNotifications}
+                        disabled={clearing || notifications.length === 0}
+                        onClick={async () => {
+                          setClearing(true);
+                          setClearError(false);
+                          try {
+                            if (!(await onClearNotifications()))
+                              setClearError(true);
+                          } finally {
+                            setClearing(false);
+                          }
+                        }}
+                      >
+                        <Trash2 size={16} aria-hidden="true" />
                       </button>
-                    </li>)}
-                  </ul>}
-                </CornerPopover>}
+                    }
+                    open={notificationsOpen}
+                    position="top"
+                    triggerSelector="button.auth-command"
+                    onClose={() => setNotificationsOpen(false)}
+                  >
+                    {clearError && (
+                      <p role="alert">{t.clearNotificationsError}</p>
+                    )}
+                    {notifications.length === 0 ? (
+                      <p>{t.noNotifications}</p>
+                    ) : (
+                      <ul>
+                        {notifications.map((item) => (
+                          <li key={item.id}>
+                            <button
+                              type="button"
+                              className={`notification-entry ${item.unread ? "is-unread" : ""}`}
+                              onClick={() => {
+                                setNotificationsOpen(false);
+                                onOpenNotification(item);
+                              }}
+                            >
+                              {item.unread && (
+                                <span
+                                  className="notification-unread"
+                                  role="img"
+                                  aria-label={t.unreadNotification}
+                                />
+                              )}
+                              <strong>{item.actorName}</strong> ·{" "}
+                              {item.groupName}
+                              <span>{item.summary}</span>
+                              <time
+                                dateTime={new Date(
+                                  item.createdAt,
+                                ).toISOString()}
+                              >
+                                {new Date(item.createdAt).toLocaleString()}
+                              </time>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </CornerPopover>
+                )}
               </div>
             </div>
           </div>

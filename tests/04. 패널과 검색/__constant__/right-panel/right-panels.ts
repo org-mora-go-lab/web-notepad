@@ -11,9 +11,6 @@ export const RIGHT_PANEL_VIEWPORTS = [
   { viewport: DESKTOP_VIEWPORT, panelIds: RIGHT_PANEL_IDS },
   {
     viewport: MOBILE_VIEWPORT,
-    panelIds: [
-      "dashboard-panel",
-      "settings-panel",
-    ],
+    panelIds: ["dashboard-panel", "settings-panel"],
   },
 ];

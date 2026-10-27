@@ -4,7 +4,9 @@ import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { openPanel } from "../../__util__";
 import { dragPanelEdgeTo } from "../__util__";
 
-test("2. PC 패널 너비는 최소 336px부터 화면 너비의 최대 80%까지 조절한다", async ({ page }) => {
+test("2. PC 패널 너비는 최소 336px부터 화면 너비의 최대 80%까지 조절한다", async ({
+  page,
+}) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   await openPanel(page, "dashboard-panel");

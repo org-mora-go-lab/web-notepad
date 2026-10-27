@@ -48,7 +48,11 @@ export function toggleBoldAtSelection(
 
   if (start === end) {
     const markerPositions: number[] = [];
-    for (let index = content.indexOf(marker); index >= 0; index = content.indexOf(marker, index + marker.length)) {
+    for (
+      let index = content.indexOf(marker);
+      index >= 0;
+      index = content.indexOf(marker, index + marker.length)
+    ) {
       markerPositions.push(index);
     }
     for (let index = 0; index + 1 < markerPositions.length; index += 2) {
@@ -78,13 +82,10 @@ export function toggleBoldAtSelection(
   };
 }
 
-export function removeTabIndent(
-  content: string,
-  start: number,
-  end: number,
-) {
+export function removeTabIndent(content: string, start: number, end: number) {
   const firstLineStart = content.lastIndexOf("\n", start - 1) + 1;
-  const lastSelectedCharacter = end > start && content[end - 1] === "\n" ? end - 1 : end;
+  const lastSelectedCharacter =
+    end > start && content[end - 1] === "\n" ? end - 1 : end;
   const removed: number[] = [];
   for (let lineStart = firstLineStart; lineStart <= lastSelectedCharacter;) {
     if (content[lineStart] === "\t") removed.push(lineStart);

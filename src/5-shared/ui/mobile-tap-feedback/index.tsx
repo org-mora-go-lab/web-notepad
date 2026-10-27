@@ -11,11 +11,17 @@ export function MobileTapFeedback() {
       ripple.remove();
     };
     const onClick = (event: MouseEvent) => {
-      if (!window.matchMedia("(max-width: 512px)").matches ||
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-          !(event.target instanceof Element)) return;
-      const button = event.target.closest<HTMLElement>('button, [role="button"], [role="menuitem"]');
-      if (!button || button.matches(':disabled, [aria-disabled="true"]')) return;
+      if (
+        !window.matchMedia("(max-width: 512px)").matches ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        !(event.target instanceof Element)
+      )
+        return;
+      const button = event.target.closest<HTMLElement>(
+        'button, [role="button"], [role="menuitem"]',
+      );
+      if (!button || button.matches(':disabled, [aria-disabled="true"]'))
+        return;
       const icon = button.querySelector("svg");
       if (!icon) return;
       const bounds = icon.getBoundingClientRect();
@@ -34,8 +40,13 @@ export function MobileTapFeedback() {
       document.body.append(ripple);
       // The top layer avoids toolbar clipping and keeps feedback above existing dialogs.
       ripple.showPopover?.();
-      ripple.addEventListener("animationend", () => remove(ripple), { once: true });
-      active.set(ripple, window.setTimeout(() => remove(ripple), 500));
+      ripple.addEventListener("animationend", () => remove(ripple), {
+        once: true,
+      });
+      active.set(
+        ripple,
+        window.setTimeout(() => remove(ripple), 500),
+      );
     };
     document.addEventListener("click", onClick, true);
     return () => {

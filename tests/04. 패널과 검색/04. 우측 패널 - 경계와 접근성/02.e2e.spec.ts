@@ -3,14 +3,23 @@ import { expect, test } from "@playwright/test";
 import { openPanel } from "../../__util__";
 import { dragPanelEdgeTo } from "../__util__";
 
-test("2. 경계 음영은 카드 클릭과 패널 크기 조절을 막지 않는다", async ({ page }) => {
+test("2. 경계 음영은 카드 클릭과 패널 크기 조절을 막지 않는다", async ({
+  page,
+}) => {
   await page.goto("/");
   await page.locator("textarea").fill("Clickable dashboard card");
   await openPanel(page, "dashboard-panel");
   const panel = page.locator("#dashboard-panel");
 
-  expect(await panel.evaluate((element) => getComputedStyle(element, "::before").pointerEvents)).toBe("none");
-  await expect(panel.locator(".side-panel-resizer")).toHaveCSS("pointer-events", "auto");
+  expect(
+    await panel.evaluate(
+      (element) => getComputedStyle(element, "::before").pointerEvents,
+    ),
+  ).toBe("none");
+  await expect(panel.locator(".side-panel-resizer")).toHaveCSS(
+    "pointer-events",
+    "auto",
+  );
   await panel
     .getByRole("button", { name: "Clickable dashboard card", exact: true })
     .click();

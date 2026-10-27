@@ -9,7 +9,9 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 
 export const formatDate = (timestamp: number) => {
   const parts = Object.fromEntries(
-    dateFormatter.formatToParts(timestamp).map(({ type, value }) => [type, value]),
+    dateFormatter
+      .formatToParts(timestamp)
+      .map(({ type, value }) => [type, value]),
   );
   return `${parts.year}. ${parts.month}. ${parts.day}.\n${parts.hour}:${parts.minute} ${parts.dayPeriod}`;
 };

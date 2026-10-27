@@ -84,10 +84,15 @@ export function useViewActions({
     [openBookmarkAndClosePanel],
   );
 
-  const openSearchTabAndClosePanel = useCallback((groupId: string, tabId: string) => {
-    const state = useNotepadStore.getState();
-    state.selectGroup(groupId); state.selectTab(tabId); finishPanelAction();
-  }, [finishPanelAction]);
+  const openSearchTabAndClosePanel = useCallback(
+    (groupId: string, tabId: string) => {
+      const state = useNotepadStore.getState();
+      state.selectGroup(groupId);
+      state.selectTab(tabId);
+      finishPanelAction();
+    },
+    [finishPanelAction],
+  );
 
   const openTabAndClosePanel = useCallback(
     (tabId: string) => {

@@ -7,9 +7,13 @@
     gap: 5px;
   }
 
-  .side-panel-header-actions { display: contents; }
+  .side-panel-header-actions {
+    display: contents;
+  }
 
-  .side-panel-close { margin-left: 3px; }
+  .side-panel-close {
+    margin-left: 3px;
+  }
 
   .dashboard-options {
     margin-left: 5px;
@@ -51,7 +55,10 @@
       font-size: v.font(15px);
       text-align: left;
       cursor: default;
-      &:disabled { opacity: 0.4; cursor: default; }
+      &:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
 
       &:hover,
       &:focus-visible {
@@ -68,7 +75,11 @@
   .dashboard-option-check {
     margin-left: auto;
   }
-  .dashboard-status-edit-hint { margin: 4px 10px; color: v.$muted; font-size: v.font(12px); }
+  .dashboard-status-edit-hint {
+    margin: 4px 10px;
+    color: v.$muted;
+    font-size: v.font(12px);
+  }
 
   @media (max-width: 512px) {
     .dashboard-options-menu button {

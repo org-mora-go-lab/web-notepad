@@ -23,7 +23,9 @@ test("3. 원본 탭이 없는 북마크를 열면 탭 상태를 복원한다", a
   await openBookmarksPanel(page);
   await page.getByRole("button", { name: "Open", exact: true }).click();
 
-  await expect(page.locator("textarea")).toHaveValue("restored bookmark\nsecond\nthird");
+  await expect(page.locator("textarea")).toHaveValue(
+    "restored bookmark\nsecond\nthird",
+  );
   await expect(activeTabItem(page)).toHaveAttribute("data-tab-color", "teal");
   await expectSelectedLines(page, [false, true, true]);
 });

@@ -58,9 +58,7 @@ export const getPaneOfTab = (group: GroupEntry, tabId: string): PaneId => {
 };
 
 export const getPaneTabs = (group: GroupEntry, pane: PaneId): NoteTab[] =>
-  group.tabs.filter(
-    (tab) => tab.open && getPaneOfTab(group, tab.id) === pane,
-  );
+  group.tabs.filter((tab) => tab.open && getPaneOfTab(group, tab.id) === pane);
 
 export const getPaneActiveTabId = (
   group: GroupEntry,

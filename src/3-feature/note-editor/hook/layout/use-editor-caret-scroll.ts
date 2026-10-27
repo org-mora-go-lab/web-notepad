@@ -61,8 +61,7 @@ export function useEditorCaretScroll(
 
       let nextScrollTop = textarea.scrollTop;
       if (caret.bottom > visibleBottom) {
-        nextScrollTop =
-          caret.bottom - textarea.clientHeight + paddingBottom;
+        nextScrollTop = caret.bottom - textarea.clientHeight + paddingBottom;
       } else if (caret.top < visibleTop) {
         nextScrollTop = caret.top - paddingTop;
       }

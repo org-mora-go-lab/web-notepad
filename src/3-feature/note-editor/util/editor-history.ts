@@ -23,9 +23,6 @@ export function restoreEditorHistory(
   if (restoredContent === undefined) return undefined;
 
   source.set(tabId, history.slice(0, -1));
-  destination.set(tabId, [
-    ...(destination.get(tabId) ?? []),
-    currentContent,
-  ]);
+  destination.set(tabId, [...(destination.get(tabId) ?? []), currentContent]);
   return restoredContent;
 }

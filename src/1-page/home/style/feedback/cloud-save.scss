@@ -2,19 +2,45 @@
 
 .home {
   .cloud-save-announcement {
-    position: absolute; width: 1px; height: 1px; padding: 0;
-    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .header .tab-item.is-saving::after {
     content: "";
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, transparent, var(--tab-accent, #{v.$saved}), v.$ink, var(--tab-accent, #{v.$saved}), transparent);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--tab-accent, #{v.$saved}),
+      v.$ink,
+      var(--tab-accent, #{v.$saved}),
+      transparent
+    );
     background-size: 240% 100%;
     animation: cloud-line-shimmer 1.2s linear infinite;
     pointer-events: none;
   }
 }
-@keyframes cloud-line-shimmer { from { background-position: 100% 0; } to { background-position: 0% 0; } }
+@keyframes cloud-line-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .home .header .tab-item.is-saving::after { animation: none; background: var(--tab-accent, #{v.$saved}); }
+  .home .header .tab-item.is-saving::after {
+    animation: none;
+    background: var(--tab-accent, #{v.$saved});
+  }
 }

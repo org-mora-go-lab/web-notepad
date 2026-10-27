@@ -4,5 +4,7 @@ test("10. 모바일 사이드바에서는 PC 크기 조절선을 숨긴다", asy
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByRole("button", { name: "Toggle groups" }).click();
-  await expect(page.getByRole("separator", { name: "Resize group panel" })).toBeHidden();
+  await expect(
+    page.getByRole("separator", { name: "Resize group panel" }),
+  ).toBeHidden();
 });

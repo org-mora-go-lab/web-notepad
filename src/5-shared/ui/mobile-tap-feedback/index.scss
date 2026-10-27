@@ -12,14 +12,24 @@
   user-select: none;
   animation: mobile-tap-press 180ms ease-out forwards;
 
-  &::backdrop { background: transparent; pointer-events: none; }
+  &::backdrop {
+    background: transparent;
+    pointer-events: none;
+  }
 }
 
 @keyframes mobile-tap-press {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mobile-tap-feedback { display: none; animation: none; }
+  .mobile-tap-feedback {
+    display: none;
+    animation: none;
+  }
 }

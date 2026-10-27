@@ -27,7 +27,9 @@ export function TabItem({
   onDragEnd,
 }: TabItemProps) {
   const { t } = useI18n();
-  const doneColor = useNotepadStore(state => state.settings.tabColorCycle[2] ?? "teal");
+  const doneColor = useNotepadStore(
+    (state) => state.settings.tabColorCycle[2] ?? "teal",
+  );
   const saving = useContext(SavingTabsContext).includes(tab.id);
   const dirty = tab.content.trim() !== "" && tab.content !== tab.savedContent;
   const markDropTarget = (event: DragEvent<HTMLDivElement>) => {
@@ -43,8 +45,12 @@ export function TabItem({
       } ${selected ? "is-range-selected" : ""} ${dropTarget ? "is-drop-target" : ""} ${
         tab.bookmarked ? "is-bookmarked" : ""
       }`}
-      data-tab-color={tab.dashboardStatus === "closed" ? doneColor : tab.tabColor}
-      data-dashboard-status={tab.dashboardStatus === "closed" ? "done" : tab.dashboardStatus}
+      data-tab-color={
+        tab.dashboardStatus === "closed" ? doneColor : tab.tabColor
+      }
+      data-dashboard-status={
+        tab.dashboardStatus === "closed" ? "done" : tab.dashboardStatus
+      }
       draggable
       onContextMenu={(event) => {
         event.preventDefault();
@@ -102,15 +108,15 @@ export function TabItem({
         )}
         <span className="tab-title">{tab.title}</span>
       </button>
-        <button
-          className="tab-close"
-          type="button"
-          onClick={() => onClose(tab.id)}
-          aria-label={t.closeTabFor(tab.title)}
-          title={t.closeTab}
-        >
-          <X size={11} />
-        </button>
+      <button
+        className="tab-close"
+        type="button"
+        onClick={() => onClose(tab.id)}
+        aria-label={t.closeTabFor(tab.title)}
+        title={t.closeTab}
+      >
+        <X size={11} />
+      </button>
     </div>
   );
 }

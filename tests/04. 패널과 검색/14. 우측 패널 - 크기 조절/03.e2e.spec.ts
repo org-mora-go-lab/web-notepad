@@ -10,11 +10,7 @@ test("3. 우측에 배치한 고정 패널의 크기를 조절할 수 있다", a
   await openPanel(page, "dashboard-panel");
   const panel = page.locator("#dashboard-panel");
 
-  await dragPanelEdgeTo(
-    page,
-    "dashboard-panel",
-    DESKTOP_VIEWPORT.width - 520,
-  );
+  await dragPanelEdgeTo(page, "dashboard-panel", DESKTOP_VIEWPORT.width - 520);
 
   await expect
     .poll(async () => (await panel.boundingBox())!.width)

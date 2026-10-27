@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { addTabButton } from "../../__util__";
 
-test("2. Alt+위아래 화살표는 같은 패널의 탭 사이를 이동한다", async ({ page }) => {
+test("2. Alt+위아래 화살표는 같은 패널의 탭 사이를 이동한다", async ({
+  page,
+}) => {
   await page.goto("/");
   const tabs = page.getByRole("tab");
   await addTabButton(page).click();

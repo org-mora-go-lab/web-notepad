@@ -11,7 +11,11 @@ const VIEWPORT_MARGIN = 32;
 
 export function useDialogHorizontalResize(
   dialogRef: RefObject<HTMLDialogElement | null>,
-  { minWidth = MIN_WIDTH, viewportMargin = VIEWPORT_MARGIN, centered = true } = {},
+  {
+    minWidth = MIN_WIDTH,
+    viewportMargin = VIEWPORT_MARGIN,
+    centered = true,
+  } = {},
 ) {
   return useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -23,7 +27,10 @@ export function useDialogHorizontalResize(
       const handleMove = (moveEvent: PointerEvent) => {
         const maxWidth = window.innerWidth - viewportMargin;
         const width = Math.min(
-          Math.max(startWidth + (moveEvent.clientX - startX) * (centered ? 2 : 1), minWidth),
+          Math.max(
+            startWidth + (moveEvent.clientX - startX) * (centered ? 2 : 1),
+            minWidth,
+          ),
           maxWidth,
         );
         dialog.style.width = `${Math.round(width)}px`;

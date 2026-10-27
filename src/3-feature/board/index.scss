@@ -69,7 +69,9 @@
     flex-direction: row;
     flex-wrap: nowrap;
     white-space: nowrap;
-    svg { flex: 0 0 auto; }
+    svg {
+      flex: 0 0 auto;
+    }
     align-self: flex-start;
     padding-left: 0;
     border: 0;
@@ -77,11 +79,72 @@
   }
   button.board-copy {
     justify-content: space-between;
-    svg { flex: 0 0 auto; }
+    svg {
+      flex: 0 0 auto;
+    }
   }
-  .board-table-container { max-width: 100%; overflow-x: auto; border: 1px solid v.$line; border-radius: 6px; }
-  .board-table { width: 100%; min-width: 480px; border-collapse: collapse; text-align: left; font-size: v.font(13px); th, td { padding: 14px 16px; border-bottom: 1px solid v.$line; } thead { background: v.$raised; color: v.$muted; } thead th { font-weight: 500; white-space: nowrap; } tbody tr { background: v.$panel; &:hover { background: v.$raised; } &:last-child th, &:last-child td { border-bottom: 0; } } td { white-space: nowrap; color: v.$muted; } }
-  button.board-entry { width: 100%; min-width: 160px; padding: 0; justify-content: flex-start; text-align: left; border: 0; background: transparent; strong { min-width: 0; font-weight: 500; overflow-wrap: anywhere; } svg { flex: 0 0 auto; color: v.$signal; } svg:last-child { margin-left: auto; color: v.$muted; } }
+  .board-table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    border: 1px solid v.$line;
+    border-radius: 6px;
+  }
+  .board-table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: v.font(13px);
+    th,
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid v.$line;
+    }
+    thead {
+      background: v.$raised;
+      color: v.$muted;
+    }
+    thead th {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    tbody tr {
+      background: v.$panel;
+      &:hover {
+        background: v.$raised;
+      }
+      &:last-child th,
+      &:last-child td {
+        border-bottom: 0;
+      }
+    }
+    td {
+      white-space: nowrap;
+      color: v.$muted;
+    }
+  }
+  button.board-entry {
+    width: 100%;
+    min-width: 160px;
+    padding: 0;
+    justify-content: flex-start;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    strong {
+      min-width: 0;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+    svg {
+      flex: 0 0 auto;
+      color: v.$signal;
+    }
+    svg:last-child {
+      margin-left: auto;
+      color: v.$muted;
+    }
+  }
   .board-card-top,
   .board-meta,
   .board-meta span,

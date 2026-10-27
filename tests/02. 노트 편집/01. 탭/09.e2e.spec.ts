@@ -14,7 +14,10 @@ test("9. 선택한 연속 탭을 분할 패널로 함께 드래그한다", async
   const left = paneSlot(page, "left");
   const tabs = left.locator(".tab-item");
   await tabs.nth(1).getByRole("tab").click();
-  await tabs.nth(2).getByRole("tab").click({ modifiers: ["Shift"] });
+  await tabs
+    .nth(2)
+    .getByRole("tab")
+    .click({ modifiers: ["Shift"] });
   await dragTabToZone(page, tabs.nth(1), left, "Split right");
 
   await expect(left.locator(".tab-title")).toHaveText(["first", "fourth"]);

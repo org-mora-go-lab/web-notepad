@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { openSettingsPanel } from "../../__util__";
 import { fontScaleRadio, languageRadio, settingsPanel } from "../__util__";
 
-test("4. 설정 초기화 팝업을 Escape로 닫으면 현재 설정과 설정 패널을 유지한다", async ({ page }) => {
+test("4. 설정 초기화 팝업을 Escape로 닫으면 현재 설정과 설정 패널을 유지한다", async ({
+  page,
+}) => {
   await page.goto("/");
   await openSettingsPanel(page);
   const panel = settingsPanel(page);

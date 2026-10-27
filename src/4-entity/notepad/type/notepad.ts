@@ -24,7 +24,8 @@ export type NotepadSettings = {
 
 // Dashboard column; it is derived from the tab color: 1st / 2nd / 3rd color of the tab color cycle.
 // "closed" is accepted only for legacy records and is displayed as Done.
-export type TabStatus = "icebox" | "todo" | "ready" | "in-progress" | "done" | "closed";
+export type TabStatus =
+  "icebox" | "todo" | "ready" | "in-progress" | "done" | "closed";
 export type DashboardStatusNames = Partial<Record<TabStatus, string>>;
 export type DashboardVisibility = {
   icebox: boolean;
@@ -98,7 +99,14 @@ export type GroupEntry = {
 // Content that is shared between collaborators; pane layout and pin order stay local.
 export type SharedGroupData = Pick<
   GroupEntry,
-  "id" | "name" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames" | "dashboardVisibility"
+  | "id"
+  | "name"
+  | "createdAt"
+  | "updatedAt"
+  | "tabs"
+  | "bookmarks"
+  | "dashboardStatusNames"
+  | "dashboardVisibility"
 >;
 
 export type SharedNotification = {
@@ -118,7 +126,19 @@ export type PaneId = "left" | "right" | "left-bottom" | "right-bottom";
 
 export type PaneColumn = "left" | "right";
 
-export type PaneLayout = Omit<GroupEntry, "id" | "name" | "pinned" | "createdAt" | "updatedAt" | "tabs" | "bookmarks" | "dashboardStatusNames" | "dashboardVisibility" | "sortOrder">;
+export type PaneLayout = Omit<
+  GroupEntry,
+  | "id"
+  | "name"
+  | "pinned"
+  | "createdAt"
+  | "updatedAt"
+  | "tabs"
+  | "bookmarks"
+  | "dashboardStatusNames"
+  | "dashboardVisibility"
+  | "sortOrder"
+>;
 
 export type NotepadState = {
   nextTabNumber: number;
@@ -161,7 +181,10 @@ export type NotepadState = {
   createGroup: (name: string) => void;
   renameGroup: (groupId: string, name: string) => void;
   setGroupStatusNames: (groupId: string, names: DashboardStatusNames) => void;
-  setGroupDashboardVisibility: (groupId: string, visibility: DashboardVisibility) => void;
+  setGroupDashboardVisibility: (
+    groupId: string,
+    visibility: DashboardVisibility,
+  ) => void;
   toggleGroupPin: (groupId: string) => void;
   moveGroup: (groupId: string, targetId: string) => void;
   removeGroup: (groupId: string) => void;

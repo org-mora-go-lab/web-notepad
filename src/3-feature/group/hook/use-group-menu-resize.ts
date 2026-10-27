@@ -23,9 +23,7 @@ const clampWidth = (width: number) =>
 const applyWidth = (width: number) =>
   document.documentElement.style.setProperty(WIDTH_PROPERTY, `${width}px`);
 
-export function useGroupMenuResize(
-  menuRef: RefObject<HTMLDivElement | null>,
-) {
+export function useGroupMenuResize(menuRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     try {
       const stored = Number(localStorage.getItem(WIDTH_STORAGE_KEY));

@@ -13,14 +13,14 @@ http://localhost:3100 에서 실행합니다. 기본 메모 기능은 환경 변
 
 카카오 로그인을 사용하려면 `.env.example`을 `.env.local`로 복사하고 값을 설정합니다.
 
-| 환경 변수 | 용도 |
-| --- | --- |
-| `KAKAO_REST_API_KEY` | 카카오 애플리케이션의 REST API 키 |
-| `KAKAO_REDIRECT_URI` | 카카오에 등록한 콜백 주소. 로컬 기본값은 `http://localhost:3100/api/auth/oauth/kakao/callback` |
-| `AUTH_SECRET` | 세션 서명에 사용할 긴 임의 문자열 |
-| `KAKAO_CLIENT_SECRET` | 카카오 Client Secret을 활성화한 경우 설정 |
-| `TURSO_DATABASE_URL` | Turso 데이터베이스의 `libsql://` 주소 |
-| `TURSO_AUTH_TOKEN` | Turso 데이터베이스 인증 토큰. 서버 환경 변수에만 설정 |
+| 환경 변수             | 용도                                                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| `KAKAO_REST_API_KEY`  | 카카오 애플리케이션의 REST API 키                                                              |
+| `KAKAO_REDIRECT_URI`  | 카카오에 등록한 콜백 주소. 로컬 기본값은 `http://localhost:3100/api/auth/oauth/kakao/callback` |
+| `AUTH_SECRET`         | 세션 서명에 사용할 긴 임의 문자열                                                              |
+| `KAKAO_CLIENT_SECRET` | 카카오 Client Secret을 활성화한 경우 설정                                                      |
+| `TURSO_DATABASE_URL`  | Turso 데이터베이스의 `libsql://` 주소                                                          |
+| `TURSO_AUTH_TOKEN`    | Turso 데이터베이스 인증 토큰. 서버 환경 변수에만 설정                                          |
 
 카카오 개발자 콘솔의 **카카오 로그인 → 동의항목**에서 닉네임(`profile_nickname`)과 프로필 사진(`profile_image`)을 사용 설정해야 합니다. 로그인 시 두 항목의 동의를 요청하며, 받은 카카오 프로필을 이름과 사진으로 표시합니다. 기존 `Kakao user` 세션은 로그아웃 후 다시 로그인하면 갱신됩니다.
 

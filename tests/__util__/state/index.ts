@@ -1,5 +1,8 @@
 export { restoreWorkspace } from "./restore-workspace";
-export { moveGroupSourceTab, seedMoveGroupState } from "./seed-move-group-state";
+export {
+  moveGroupSourceTab,
+  seedMoveGroupState,
+} from "./seed-move-group-state";
 export { seedSortableGroups } from "./seed-sortable-groups";
 export {
   readActiveGroup,

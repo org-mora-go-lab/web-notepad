@@ -10,10 +10,18 @@ export async function overflowTabs(page: Page) {
 }
 
 // Scrolls the tab scroller to its start, middle, or end and notifies listeners.
-export async function scrollTabs(scroller: Locator, position: "start" | "middle" | "end") {
+export async function scrollTabs(
+  scroller: Locator,
+  position: "start" | "middle" | "end",
+) {
   await scroller.evaluate((element, target) => {
     const maxScroll = element.scrollWidth - element.clientWidth;
-    element.scrollLeft = target === "start" ? 0 : target === "middle" ? maxScroll / 2 : element.scrollWidth;
+    element.scrollLeft =
+      target === "start"
+        ? 0
+        : target === "middle"
+          ? maxScroll / 2
+          : element.scrollWidth;
     element.dispatchEvent(new Event("scroll"));
   }, position);
 }

@@ -2,7 +2,9 @@ import { test } from "@playwright/test";
 
 import { expectSelectedLines, lineButtons } from "../../__util__";
 
-test("7. 선택한 줄을 삭제하면 해당 선택을 제거하고 남은 선택 위치를 맞춘다", async ({ page }) => {
+test("7. 선택한 줄을 삭제하면 해당 선택을 제거하고 남은 선택 위치를 맞춘다", async ({
+  page,
+}) => {
   await page.goto("/");
   const editor = page.locator("textarea");
   const lines = lineButtons(page);

@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("6. 사이드바의 열림과 닫힘 상태를 새로고침 후 복원한다", async ({ page }) => {
+test("6. 사이드바의 열림과 닫힘 상태를 새로고침 후 복원한다", async ({
+  page,
+}) => {
   await page.goto("/");
   const menuButton = page.getByRole("button", { name: "Toggle groups" });
 

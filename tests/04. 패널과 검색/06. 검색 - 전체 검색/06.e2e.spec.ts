@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { openGlobalSearchPanel, seedStoredStateOnLoad } from "../../__util__";
 import { createGlobalSearchState } from "./__fixture__";
 
-test("6. 검색 목록과 하단 미리보기를 표시하고 스크롤 상단을 구분한다", async ({ page }) => {
+test("6. 검색 목록과 하단 미리보기를 표시하고 스크롤 상단을 구분한다", async ({
+  page,
+}) => {
   await seedStoredStateOnLoad(page, createGlobalSearchState(20));
   await openGlobalSearchPanel(page);
   await page.getByRole("searchbox", { name: "Search everything" }).fill("Work");
@@ -23,7 +25,10 @@ test("6. 검색 목록과 하단 미리보기를 표시하고 스크롤 상단�
     "Work",
   ]);
   await expect(page.locator("textarea")).toHaveValue("Current note");
-  await expect(page.locator("#global-search-popup")).toHaveAttribute("open", "");
+  await expect(page.locator("#global-search-popup")).toHaveAttribute(
+    "open",
+    "",
+  );
   const resultsBox = (await results.boundingBox())!;
   expect((await previewPane.boundingBox())!.y).toBeGreaterThanOrEqual(
     resultsBox.y + resultsBox.height,
@@ -31,13 +36,21 @@ test("6. 검색 목록과 하단 미리보기를 표시하고 스크롤 상단�
   const list = page.locator(".global-search-list");
   await list.evaluate((element) => element.scrollTo(0, 120));
   await expect(results).toHaveClass(/is-scrolled/);
-  const searchBox = (await page.locator(".global-search .search-field").boundingBox())!;
-  const itemBox = (await page.locator(".global-search-result").first().boundingBox())!;
-  expect(searchBox.x + searchBox.width).toBeCloseTo(itemBox.x + itemBox.width, 0);
+  const searchBox = (await page
+    .locator(".global-search .search-field")
+    .boundingBox())!;
+  const itemBox = (await page
+    .locator(".global-search-result")
+    .first()
+    .boundingBox())!;
+  expect(searchBox.x + searchBox.width).toBeCloseTo(
+    itemBox.x + itemBox.width,
+    0,
+  );
   await expect
     .poll(() =>
-      results.evaluate((element) =>
-        getComputedStyle(element, "::after").opacity,
+      results.evaluate(
+        (element) => getComputedStyle(element, "::after").opacity,
       ),
     )
     .toBe("1");

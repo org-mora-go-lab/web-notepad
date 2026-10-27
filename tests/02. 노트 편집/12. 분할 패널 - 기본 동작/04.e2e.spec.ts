@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { dragDividerTo } from "../../__util__";
 import { seedSplitState } from "../__util__";
 
-test("4. 구분선 드래그로 너비 비율을 조정하고 20%~80%로 제한한다", async ({ page }) => {
+test("4. 구분선 드래그로 너비 비율을 조정하고 20%~80%로 제한한다", async ({
+  page,
+}) => {
   await seedSplitState(page);
   const group = page.locator(".pane-group");
   const left = page.locator(".pane-slot").first();

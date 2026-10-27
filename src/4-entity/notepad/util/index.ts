@@ -29,4 +29,11 @@ export {
   PANE_IDS,
   setPaneActiveTabId,
 } from "./pane";
-export { applySharedGroupData, createJoinedGroup, isSharedGroupId, namespaceGroup, sharedGroupId, toSharedGroupData } from "./shared-group";
+export {
+  applySharedGroupData,
+  createJoinedGroup,
+  isSharedGroupId,
+  namespaceGroup,
+  sharedGroupId,
+  toSharedGroupData,
+} from "./shared-group";

@@ -14,7 +14,8 @@ function redirectWithError(request: NextRequest, error: string) {
   const target = new URL("/", request.url);
   target.searchParams.set("auth_error", error);
   const share = request.cookies.get(SHARE_RETURN_COOKIE)?.value;
-  if (share && readGroupShareToken(share)) target.searchParams.set("share", share);
+  if (share && readGroupShareToken(share))
+    target.searchParams.set("share", share);
   const response = NextResponse.redirect(target);
   response.cookies.delete(KAKAO_STATE_COOKIE);
   response.cookies.delete(SHARE_RETURN_COOKIE);
@@ -35,7 +36,8 @@ export async function GET(request: NextRequest) {
     const user = await getKakaoUser(accessToken);
     const target = new URL("/", request.url);
     const share = request.cookies.get(SHARE_RETURN_COOKIE)?.value;
-    if (share && readGroupShareToken(share)) target.searchParams.set("share", share);
+    if (share && readGroupShareToken(share))
+      target.searchParams.set("share", share);
     const response = NextResponse.redirect(target);
     response.cookies.delete(KAKAO_STATE_COOKIE);
     response.cookies.delete(SHARE_RETURN_COOKIE);

@@ -69,11 +69,17 @@
       border-left: 0;
       border-right: 1px solid var(--color-drawer-border);
       transform: translateX(-102%);
-      &.is-open { transform: translateX(0); }
+      &.is-open {
+        transform: translateX(0);
+      }
     }
-    .side-panel-resizer { left: auto; right: -5px; }
+    .side-panel-resizer {
+      left: auto;
+      right: -5px;
+    }
     .side-panel-drawer.is-open::before {
-      right: auto; left: 100%;
+      right: auto;
+      left: 100%;
     }
   }
 
@@ -161,7 +167,6 @@
     }
   }
 
-
   // The Panel Slide setting can turn the slide off everywhere.
   [data-panel-slide="off"] & .side-panel-drawer {
     transition: none;
@@ -170,7 +175,9 @@
   // A pinned drawer docks beside the workspace instead of covering it.
   @media (min-width: 641px) {
     &.is-pinned {
-      .side-panel-drawer.is-open::before { content: none; }
+      .side-panel-drawer.is-open::before {
+        content: none;
+      }
       .side-panel-backdrop {
         display: none;
       }
@@ -228,6 +235,5 @@
     .side-panel-header h2 {
       font-size: v.font(22px * v.$mobile-scale);
     }
-
   }
 }

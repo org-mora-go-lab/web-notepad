@@ -4,7 +4,9 @@ import { type NoteTab, useNotepadStore } from "@/src/4-entity/notepad";
 
 export function useLineSelection(tab: NoteTab) {
   const selectionAnchorByTabRef = useRef(new Map<string, number>());
-  const setTabSelectedLines = useNotepadStore((state) => state.setTabSelectedLines);
+  const setTabSelectedLines = useNotepadStore(
+    (state) => state.setTabSelectedLines,
+  );
   const selectedLines = tab.selectedLines;
   const previousTabIdRef = useRef(tab.id);
   const previousContentRef = useRef(tab.content);
@@ -91,7 +93,10 @@ export function useLineSelection(tab: NoteTab) {
         else next.add(line);
       }
     }
-    setTabSelectedLines(tab.id, [...next].sort((first, second) => first - second));
+    setTabSelectedLines(
+      tab.id,
+      [...next].sort((first, second) => first - second),
+    );
   };
 
   return { selectedLines, toggleLineSelection };

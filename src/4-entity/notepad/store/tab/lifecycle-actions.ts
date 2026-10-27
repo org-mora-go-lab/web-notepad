@@ -44,7 +44,11 @@ export const createTabLifecycleActions: StateCreator<
         patchTabAndBookmark(
           current,
           tabId,
-          { ...(tabColor ? { tabColor } : {}), dashboardStatus: auxiliary || status === "ready" ? status : undefined },
+          {
+            ...(tabColor ? { tabColor } : {}),
+            dashboardStatus:
+              auxiliary || status === "ready" ? status : undefined,
+          },
           { ...(tabColor ? { tabColor } : {}), updatedAt: Date.now() },
         ),
       );

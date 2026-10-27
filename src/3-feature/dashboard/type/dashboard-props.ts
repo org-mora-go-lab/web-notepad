@@ -1,4 +1,11 @@
-import type { DashboardStatusNames, DashboardVisibility, GroupEntry, NoteTab, TabColor, TabStatus } from "@/src/4-entity/notepad";
+import type {
+  DashboardStatusNames,
+  DashboardVisibility,
+  GroupEntry,
+  NoteTab,
+  TabColor,
+  TabStatus,
+} from "@/src/4-entity/notepad";
 
 export type DashboardProps = {
   groupId: string;

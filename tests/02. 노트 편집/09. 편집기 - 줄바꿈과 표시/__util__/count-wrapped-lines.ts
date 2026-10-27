@@ -19,7 +19,9 @@ export function countWrappedLines(editor: Locator) {
     });
     document.body.append(clone);
     const count = Math.round(
-      (clone.scrollHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)) /
+      (clone.scrollHeight -
+        parseFloat(style.paddingTop) -
+        parseFloat(style.paddingBottom)) /
         parseFloat(style.lineHeight),
     );
     clone.remove();

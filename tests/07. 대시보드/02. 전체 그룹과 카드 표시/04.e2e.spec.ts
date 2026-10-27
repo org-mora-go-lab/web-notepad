@@ -4,16 +4,31 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openPanel, writeStoredState } from "../../__util__";
 import { dashboardColumn } from "../../__util__";
 
-test("4. 카드는 과거 고정 여부와 관계없이 북마크, 일반 순서로 표시한다", async ({ page }) => {
+test("4. 카드는 과거 고정 여부와 관계없이 북마크, 일반 순서로 표시한다", async ({
+  page,
+}) => {
   await writeStoredState(page, {
     activeGroupId: "ungrouped",
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [
         createTabFixture("tab-1", "Plain first", { tabColor: "indigo" }),
-        createTabFixture("tab-2", "Bookmarked first", { bookmarked: true, tabColor: "indigo" }),
-        createTabFixture("tab-3", "Pinned first", { pinned: true, tabColor: "indigo" }),
-        createTabFixture("tab-4", "Pinned second", { pinned: true, bookmarked: true, tabColor: "indigo" }),
-        createTabFixture("tab-5", "Bookmarked second", { bookmarked: true, tabColor: "indigo" }),
+        createTabFixture("tab-2", "Bookmarked first", {
+          bookmarked: true,
+          tabColor: "indigo",
+        }),
+        createTabFixture("tab-3", "Pinned first", {
+          pinned: true,
+          tabColor: "indigo",
+        }),
+        createTabFixture("tab-4", "Pinned second", {
+          pinned: true,
+          bookmarked: true,
+          tabColor: "indigo",
+        }),
+        createTabFixture("tab-5", "Bookmarked second", {
+          bookmarked: true,
+          tabColor: "indigo",
+        }),
         createTabFixture("tab-6", "Plain second", { tabColor: "indigo" }),
       ]),
     ],

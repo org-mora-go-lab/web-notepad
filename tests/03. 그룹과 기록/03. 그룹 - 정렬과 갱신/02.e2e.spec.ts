@@ -9,5 +9,11 @@ test("2. 변경한 그룹 순서를 새로고침 후 복원한다", async ({ pag
   await handle.focus();
   await handle.press("ArrowUp");
   await page.reload();
-  await expect(page.locator(".group-item .group-select strong")).toHaveText(["가방", "나무", "다람쥐", "Zulu", "Alpha"]);
+  await expect(page.locator(".group-item .group-select strong")).toHaveText([
+    "가방",
+    "나무",
+    "다람쥐",
+    "Zulu",
+    "Alpha",
+  ]);
 });

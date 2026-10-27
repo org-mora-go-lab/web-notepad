@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버튼 높이로 표시된다", async ({ page }) => {
+test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버튼 높이로 표시된다", async ({
+  page,
+}) => {
   await page.goto("/");
   const commands = page.locator(".status-meta .status-command:visible");
   for (const width of [320, 390, 512, 513, 640, 1280]) {
@@ -18,15 +20,23 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
       expect(bounds.height).toBeCloseTo(width <= 512 ? 61.2 : 35, 1);
     }
     if (width <= 512) {
-      const centers = (await Promise.all(
-        (await commands.all()).map(async (command) => {
-          const bounds = (await command.boundingBox())!;
-          return bounds.x + bounds.width / 2;
-        }),
-      )).sort((left, right) => left - right);
-      const gaps = centers.slice(1).map((center, index) => center - centers[index]);
+      const centers = (
+        await Promise.all(
+          (await commands.all()).map(async (command) => {
+            const bounds = (await command.boundingBox())!;
+            return bounds.x + bounds.width / 2;
+          }),
+        )
+      ).sort((left, right) => left - right);
+      const gaps = centers
+        .slice(1)
+        .map((center, index) => center - centers[index]);
       expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThanOrEqual(1);
     }
-    expect(await page.locator(".footer").evaluate((bar) => bar.scrollWidth <= bar.clientWidth)).toBe(true);
+    expect(
+      await page
+        .locator(".footer")
+        .evaluate((bar) => bar.scrollWidth <= bar.clientWidth),
+    ).toBe(true);
   }
 });

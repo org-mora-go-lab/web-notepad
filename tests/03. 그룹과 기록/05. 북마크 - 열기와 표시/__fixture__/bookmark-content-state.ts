@@ -8,21 +8,29 @@ export async function seedBookmarkContentItems(page: Page) {
   await seedStoredStateOnLoad(page, {
     activeGroupId: "ungrouped",
     groups: [
-      createGroupFixture("ungrouped", "Ungrouped", [createTabFixture("tab", "")], {
-        bookmarks: [
-          ["Bookmark title", ["Bookmark title", "", ...detailLines].join("\n")],
-          ["Title only", "Title only"],
-        ].map(([title, content], index) => ({
-          id: `bookmark-${index}`,
-          sourceTabId: `missing-tab-${index}`,
-          title,
-          content,
-          tabColor: "green" as const,
-          selectedLines: [],
-          createdAt: 2 - index,
-          updatedAt: 2 - index,
-        })),
-      }),
+      createGroupFixture(
+        "ungrouped",
+        "Ungrouped",
+        [createTabFixture("tab", "")],
+        {
+          bookmarks: [
+            [
+              "Bookmark title",
+              ["Bookmark title", "", ...detailLines].join("\n"),
+            ],
+            ["Title only", "Title only"],
+          ].map(([title, content], index) => ({
+            id: `bookmark-${index}`,
+            sourceTabId: `missing-tab-${index}`,
+            title,
+            content,
+            tabColor: "green" as const,
+            selectedLines: [],
+            createdAt: 2 - index,
+            updatedAt: 2 - index,
+          })),
+        },
+      ),
     ],
   });
   await openBookmarksPanel(page);

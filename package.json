@@ -8,7 +8,9 @@
     "start": "next start -p 3100",
     "lint": "eslint",
     "test:e2e": "playwright test",
-    "test:e2e:structure": "node scripts/check-e2e-structure.mjs"
+    "test:e2e:structure": "node scripts/check-e2e-structure.mjs",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",
@@ -26,6 +28,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "eslint-plugin-simple-import-sort": "^14.0.0",
+    "prettier": "3.9.10",
     "sass": "^1.105.0",
     "typescript": "^5"
   }

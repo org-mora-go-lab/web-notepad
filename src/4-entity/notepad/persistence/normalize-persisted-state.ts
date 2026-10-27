@@ -62,8 +62,15 @@ export function normalizePersistedState(
   );
 
   for (const group of groups) {
-    group.tabs = group.tabs.map(tab => tab.dashboardStatus === "closed"
-      ? { ...tab, dashboardStatus: "done", tabColor: settings.tabColorCycle[2] ?? "teal" } : tab);
+    group.tabs = group.tabs.map((tab) =>
+      tab.dashboardStatus === "closed"
+        ? {
+            ...tab,
+            dashboardStatus: "done",
+            tabColor: settings.tabColorCycle[2] ?? "teal",
+          }
+        : tab,
+    );
   }
   const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
   if (!ungrouped) {

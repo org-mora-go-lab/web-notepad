@@ -27,7 +27,11 @@
 
   @each $name, $_ in v.$extra-tab-colors {
     &[data-tab-color="#{$name}"] {
-      --selected-line-background: color-mix(in srgb, var(--color-tab-#{$name}) 20%, transparent);
+      --selected-line-background: color-mix(
+        in srgb,
+        var(--color-tab-#{$name}) 20%,
+        transparent
+      );
       --selected-line-color: var(--color-tab-#{$name});
     }
   }

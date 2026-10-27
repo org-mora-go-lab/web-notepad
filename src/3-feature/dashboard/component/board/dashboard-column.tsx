@@ -21,17 +21,15 @@ export function DashboardColumn({
   const { t } = useI18n();
   const statusLabel = {
     icebox: t.icebox,
-    todo: t.statusTodo, ready: t.statusReady,
+    todo: t.statusTodo,
+    ready: t.statusReady,
     "in-progress": t.statusInProgress,
     done: t.statusDone,
     closed: t.closedTitle,
   }[status];
   const cardEntries = [...columnTabs].sort((left, right) => {
-    const priority = (tab: typeof left) =>
-      tab.bookmarked ? 1 : 0;
-    return (
-      priority(right) - priority(left) || left.id.localeCompare(right.id)
-    );
+    const priority = (tab: typeof left) => (tab.bookmarked ? 1 : 0);
+    return priority(right) - priority(left) || left.id.localeCompare(right.id);
   });
   return (
     <section
@@ -70,7 +68,15 @@ export function DashboardColumn({
         {cardEntries.map((tab) => (
           <DashboardCard
             key={tab.id}
-            tab={tab.dashboardStatus === "closed" ? { ...tab, tabColor: getStatusColor("done", tabColorCycle), dashboardStatus: "done" } : tab}
+            tab={
+              tab.dashboardStatus === "closed"
+                ? {
+                    ...tab,
+                    tabColor: getStatusColor("done", tabColorCycle),
+                    dashboardStatus: "done",
+                  }
+                : tab
+            }
             active={tab.id === activeTabId}
             contextMenuTarget={tab.id === contextMenuTabId}
             groupName={

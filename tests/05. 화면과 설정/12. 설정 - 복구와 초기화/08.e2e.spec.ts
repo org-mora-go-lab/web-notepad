@@ -4,17 +4,28 @@ import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { openSettingsPanel, writeStoredState } from "../../__util__";
 import { settingsPanel } from "../__util__";
 
-test("8. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우고 기본 작업공간을 연다", async ({ page }) => {
+test("8. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우고 기본 작업공간을 연다", async ({
+  page,
+}) => {
   // This requirement checks local reset; remote history restoration has separate coverage.
-  await page.route("**/api/notepad/history", route => route.fulfill({
-    json: route.request().method() === "GET" ? { latest: null, count: 0 } : { saved: true },
-  }));
+  await page.route("**/api/notepad/history", (route) =>
+    route.fulfill({
+      json:
+        route.request().method() === "GET"
+          ? { latest: null, count: 0 }
+          : { saved: true },
+    }),
+  );
   await page.setViewportSize({ width: 390, height: 844 });
   await writeStoredState(page, {
     activeGroupId: "work",
     groups: [
-      createGroupFixture("ungrouped", "Ungrouped", [createTabFixture("tab-1", "")]),
-      createGroupFixture("work", "Work", [createTabFixture("tab-2", "Delete me")]),
+      createGroupFixture("ungrouped", "Ungrouped", [
+        createTabFixture("tab-1", ""),
+      ]),
+      createGroupFixture("work", "Work", [
+        createTabFixture("tab-2", "Delete me"),
+      ]),
     ],
     nextTabNumber: 3,
   });
@@ -33,20 +44,28 @@ test("8. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우�
   await expect(popup).toContainText(
     "All notes, groups, bookmarks, closed tabs, and settings will be permanently deleted. Are you sure?",
   );
-  const cancelButton = popup.getByRole("button", { name: "Cancel", exact: true });
+  const cancelButton = popup.getByRole("button", {
+    name: "Cancel",
+    exact: true,
+  });
   await expect(cancelButton).toBeFocused();
   await expect(cancelButton).toHaveCSS("display", "flex");
-  const deleteAllButton = popup.getByRole("button", { name: "Delete all", exact: true });
+  const deleteAllButton = popup.getByRole("button", {
+    name: "Delete all",
+    exact: true,
+  });
   await expect(deleteAllButton).toHaveCSS("display", "flex");
   await expect(deleteAllButton).toHaveCSS("white-space", "nowrap");
-  const reloadedHistory = page.waitForResponse(response => response.url().endsWith("/api/notepad/history") && response.request().method() === "GET");
+  const reloadedHistory = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/notepad/history") &&
+      response.request().method() === "GET",
+  );
   await deleteAllButton.click();
   await reloadedHistory;
 
   await expect(page.locator("textarea")).toHaveValue("");
-  await expect(page.locator(".group-current-value")).toHaveText(
-    "Ungrouped",
-  );
+  await expect(page.locator(".group-current-value")).toHaveText("Ungrouped");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   expect(
     await page.evaluate(() => ({

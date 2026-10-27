@@ -11,7 +11,9 @@ test("2. Enter는 커서 위치에 줄바꿈을 삽입한다", async ({ page }) 
   await expect(editor).toHaveValue("fi\nrst");
   await expect
     .poll(() =>
-      editor.evaluate((element) => (element as HTMLTextAreaElement).selectionStart),
+      editor.evaluate(
+        (element) => (element as HTMLTextAreaElement).selectionStart,
+      ),
     )
     .toBe(3);
 });

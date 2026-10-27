@@ -78,16 +78,31 @@
       --tab-accent: var(--color-tab-yellow);
       --tab-glow: color-mix(in srgb, var(--color-tab-yellow) 55%, transparent);
       --tab-accent-muted: var(--color-tab-yellow);
-      --tab-background: color-mix(in srgb, var(--color-tab-yellow) 8%, transparent);
-      --tab-background-active: color-mix(in srgb, var(--color-tab-yellow) 16%, transparent);
+      --tab-background: color-mix(
+        in srgb,
+        var(--color-tab-yellow) 8%,
+        transparent
+      );
+      --tab-background-active: color-mix(
+        in srgb,
+        var(--color-tab-yellow) 16%,
+        transparent
+      );
     }
 
     &[data-dashboard-status="ready"][data-tab-color] {
       --tab-accent: var(--color-tab-orange);
-      --tab-background: color-mix(in srgb, var(--color-tab-orange) 8%, transparent);
-      --tab-background-active: color-mix(in srgb, var(--color-tab-orange) 16%, transparent);
+      --tab-background: color-mix(
+        in srgb,
+        var(--color-tab-orange) 8%,
+        transparent
+      );
+      --tab-background-active: color-mix(
+        in srgb,
+        var(--color-tab-orange) 16%,
+        transparent
+      );
     }
-
 
     background: var(--tab-background, transparent);
 

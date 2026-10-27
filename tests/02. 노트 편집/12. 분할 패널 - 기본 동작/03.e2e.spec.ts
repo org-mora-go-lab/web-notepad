@@ -11,13 +11,20 @@ test("3. 각 패널은 자체 탭 목록과 활성 탭을 가진다", async ({ p
 
   await rightPane.getByRole("button", { name: "New tab" }).click();
   await rightPane.locator("textarea").fill("right two");
-  await expect(rightPane.locator(".tab-title")).toHaveText([/^right$/i, "right two"]);
+  await expect(rightPane.locator(".tab-title")).toHaveText([
+    /^right$/i,
+    "right two",
+  ]);
   await expect(leftPane.locator(".tab-title")).toHaveText([/^left$/i]);
   await expect(leftPane.locator("textarea")).toHaveValue("left");
 
   await rightPane.locator('[role="tab"]').first().click();
   await expect(rightPane.locator("textarea")).toHaveValue("right");
-  await expect(rightPane.locator(".tab-item.is-active .tab-title")).toHaveText(/^right$/i);
-  await expect(leftPane.locator(".tab-item.is-active .tab-title")).toHaveText(/^left$/i);
+  await expect(rightPane.locator(".tab-item.is-active .tab-title")).toHaveText(
+    /^right$/i,
+  );
+  await expect(leftPane.locator(".tab-item.is-active .tab-title")).toHaveText(
+    /^left$/i,
+  );
   await expect(leftPane.locator("textarea")).toHaveValue("left");
 });

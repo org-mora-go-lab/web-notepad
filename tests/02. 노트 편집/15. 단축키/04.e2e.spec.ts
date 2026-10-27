@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { addTabButton } from "../../__util__";
 
-test("4. Alt/Option+Backspace는 빈 활성 탭을 확인 없이 닫는다", async ({ page }) => {
+test("4. Alt/Option+Backspace는 빈 활성 탭을 확인 없이 닫는다", async ({
+  page,
+}) => {
   await page.goto("/");
   const tabs = page.locator(".tab-item");
   const editor = page.locator("textarea");

@@ -3,10 +3,7 @@
 import { Search, X } from "lucide-react";
 import { useId, useState } from "react";
 
-import {
-  useI18n,
-  useScrollableListLayout,
-} from "@/src/5-shared/hook";
+import { useI18n, useScrollableListLayout } from "@/src/5-shared/hook";
 import { EmptyState, SearchField } from "@/src/5-shared/ui";
 import { matchesSearchQuery } from "@/src/5-shared/util";
 
@@ -49,10 +46,15 @@ export function GlobalSearch({
           .map((bookmark) => ({ group, bookmark })),
       )
     : [];
-  const tabResults = query ? groups.flatMap(group => group.tabs
-    .filter(tab => matchesSearchQuery(query, tab.title, tab.content))
-    .map(tab => ({ group, tab }))) : [];
-  const resultCount = groupResults.length + bookmarkResults.length + tabResults.length;
+  const tabResults = query
+    ? groups.flatMap((group) =>
+        group.tabs
+          .filter((tab) => matchesSearchQuery(query, tab.title, tab.content))
+          .map((tab) => ({ group, tab })),
+      )
+    : [];
+  const resultCount =
+    groupResults.length + bookmarkResults.length + tabResults.length;
   const selectedBookmark = bookmarkResults.find(
     ({ group, bookmark }) =>
       `${group.id}:${bookmark.id}` === selectedBookmarkId,
@@ -143,7 +145,9 @@ export function GlobalSearch({
                         title={bookmark.title}
                         description={bookmark.content}
                         query={query}
-                        selected={selectedBookmarkId === `${group.id}:${bookmark.id}`}
+                        selected={
+                          selectedBookmarkId === `${group.id}:${bookmark.id}`
+                        }
                         ariaLabel={t.previewBookmarkResult(bookmark.title)}
                         onSelect={() =>
                           setSelectedBookmarkId(`${group.id}:${bookmark.id}`)
@@ -152,12 +156,26 @@ export function GlobalSearch({
                     ))}
                   </SearchResultSection>
                 )}
-                {tabResults.length > 0 && <SearchResultSection title={t.tabsTitle} className="global-search-tabs">
-                  {tabResults.map(({ group, tab }) => <SearchResult key={group.id + ":" + tab.id}
-                    kind="tab" category={t.tabCategory} groupName={group.name} title={tab.title || t.emptyNote}
-                    description={tab.content} query={query} ariaLabel={t.openTabResult(tab.title || t.emptyNote)}
-                    onSelect={() => onSelectTab(group.id, tab.id)} />)}
-                </SearchResultSection>}
+                {tabResults.length > 0 && (
+                  <SearchResultSection
+                    title={t.tabsTitle}
+                    className="global-search-tabs"
+                  >
+                    {tabResults.map(({ group, tab }) => (
+                      <SearchResult
+                        key={group.id + ":" + tab.id}
+                        kind="tab"
+                        category={t.tabCategory}
+                        groupName={group.name}
+                        title={tab.title || t.emptyNote}
+                        description={tab.content}
+                        query={query}
+                        ariaLabel={t.openTabResult(tab.title || t.emptyNote)}
+                        onSelect={() => onSelectTab(group.id, tab.id)}
+                      />
+                    ))}
+                  </SearchResultSection>
+                )}
               </>
             )}
           </div>

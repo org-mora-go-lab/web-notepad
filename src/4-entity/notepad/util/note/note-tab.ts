@@ -77,10 +77,15 @@ export const getTabStatus = (
   tab: NoteTab,
   tabColorCycle: TabColor[],
 ): TabStatus => {
-  if (tab.dashboardStatus === "closed" || tab.dashboardStatus === "done") return "done";
+  if (tab.dashboardStatus === "closed" || tab.dashboardStatus === "done")
+    return "done";
   if (tab.dashboardStatus === "icebox" || tab.dashboardStatus === "ready")
     return tab.dashboardStatus;
-  return (["todo", "in-progress", "done"] as const)[Math.max(0, tabColorCycle.indexOf(tab.tabColor))] ?? "todo";
+  return (
+    (["todo", "in-progress", "done"] as const)[
+      Math.max(0, tabColorCycle.indexOf(tab.tabColor))
+    ] ?? "todo"
+  );
 };
 
 export const getStatusColor = (
@@ -90,5 +95,8 @@ export const getStatusColor = (
   if (status === "icebox") return "yellow";
   if (status === "closed") return tabColorCycle[2] ?? "teal";
   if (status === "ready") return "orange";
-  return tabColorCycle[(["todo", "in-progress", "done"] as const).indexOf(status)] ?? tabColorCycle[0];
+  return (
+    tabColorCycle[(["todo", "in-progress", "done"] as const).indexOf(status)] ??
+    tabColorCycle[0]
+  );
 };

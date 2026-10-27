@@ -5,7 +5,9 @@ import { expectSelectedLines, lineButtons } from "../../__util__";
 import { WRAPPED_NOTE as content } from "./__constant__";
 import { countWrappedLines } from "./__util__";
 
-test("4. 자동 줄바꿈된 번호를 선택하면 원본 줄의 모든 표시 줄을 강조한다", async ({ page }) => {
+test("4. 자동 줄바꿈된 번호를 선택하면 원본 줄의 모든 표시 줄을 강조한다", async ({
+  page,
+}) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
   const editor = page.locator("textarea").first();

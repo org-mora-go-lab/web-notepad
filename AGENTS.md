@@ -96,3 +96,7 @@ Do not consider the work complete until all updated E2E tests pass. Run `npm run
 - Each feature, widget, or page module must keep its main stylesheet in `index.scss` next to its `index.tsx`. Put optional SCSS files for subcomponents under that module's `style/` directory.
 - The top-level class selector in a module's `index.scss` must match the module directory name (for example, `.body` in `body/index.scss` or `.bookmark` in `bookmark/index.scss`). Apply these stylesheet rules equally to `src/3-feature/`, `src/2-widget/`, and `src/1-page/` modules.
 - Whenever a module adds `component/<sub-comp>.tsx` or `component/<concern>/<sub-comp>.tsx`, it must add the matching `style/<sub-comp>.scss` or `style/<concern>/<sub-comp>.scss` in the same change, even if the stylesheet is initially empty. Apply this pairing rule to feature, widget, and page modules.
+
+## Code Formatting
+
+Generate and edit code using the repository Prettier configuration. Run `npm run format` after changes and require `npm run format:check` to pass before committing. Apply formatting to existing unformatted source, styles, tests, and documentation. Exclude generated files, dependencies, test results, and user attachments as configured in `.prettierignore`. Keep formatting-only changes in a separate commit when practical.

@@ -1,4 +1,10 @@
-import { Check, CircleCheck, EllipsisVertical, Pencil, StickyNote } from "lucide-react";
+import {
+  Check,
+  CircleCheck,
+  EllipsisVertical,
+  Pencil,
+  StickyNote,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
@@ -74,7 +80,9 @@ export function DashboardOptions({
           >
             <StickyNote size={18} strokeWidth={1.8} />
             <span>{statusNames.icebox ?? t.icebox}</span>
-            {iceboxVisible && <Check className="dashboard-option-check" size={16} />}
+            {iceboxVisible && (
+              <Check className="dashboard-option-check" size={16} />
+            )}
           </button>
           <button
             className="dashboard-done-command"
@@ -84,26 +92,40 @@ export function DashboardOptions({
           >
             <CircleCheck size={18} strokeWidth={1.8} />
             <span>{statusNames.done ?? t.statusDone}</span>
-            {doneVisible && <Check className="dashboard-option-check" size={16} />}
+            {doneVisible && (
+              <Check className="dashboard-option-check" size={16} />
+            )}
           </button>
           <button
             className="dashboard-edit-status-command"
             type="button"
             disabled={groupId === ALL_GROUP_ID}
-            onClick={() => { setOpen(false); setEditing(true); }}
+            onClick={() => {
+              setOpen(false);
+              setEditing(true);
+            }}
           >
             <Pencil size={18} />
             <span>{t.editStatus}</span>
           </button>
-          {groupId === ALL_GROUP_ID && <p className="dashboard-status-edit-hint">{t.selectGroupToEditStatus}</p>}
+          {groupId === ALL_GROUP_ID && (
+            <p className="dashboard-status-edit-hint">
+              {t.selectGroupToEditStatus}
+            </p>
+          )}
         </div>
       )}
-      {editing && <DashboardStatusEditor
-        statusNames={statusNames}
-        groupName={groupName}
-        onSaveStatusNames={onSaveStatusNames}
-        onClose={() => { setEditing(false); triggerRef.current?.focus(); }}
-      />}
+      {editing && (
+        <DashboardStatusEditor
+          statusNames={statusNames}
+          groupName={groupName}
+          onSaveStatusNames={onSaveStatusNames}
+          onClose={() => {
+            setEditing(false);
+            triggerRef.current?.focus();
+          }}
+        />
+      )}
     </div>
   );
 }

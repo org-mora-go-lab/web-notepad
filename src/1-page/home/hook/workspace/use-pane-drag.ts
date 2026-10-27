@@ -21,7 +21,9 @@ export function usePaneDrag({ group, moveTabsToPane }: Options) {
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
   const [draggingTabIds, setDraggingTabIds] = useState<string[]>([]);
   const [selectedTabIds, setSelectedTabIds] = useState<string[]>([]);
-  const [selectionAnchorId, setSelectionAnchorId] = useState<string | null>(null);
+  const [selectionAnchorId, setSelectionAnchorId] = useState<string | null>(
+    null,
+  );
   const draggingPane =
     group && draggingTabId && group.tabs.some((tab) => tab.id === draggingTabId)
       ? getPaneOfTab(group, draggingTabId)

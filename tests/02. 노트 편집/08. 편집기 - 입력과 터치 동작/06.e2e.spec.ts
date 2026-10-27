@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
 
-test("6. 편집기를 한 번 터치하면 브라우저가 정한 접힌 커서 위치를 유지한다", async ({ browser }) => {
+test("6. 편집기를 한 번 터치하면 브라우저가 정한 접힌 커서 위치를 유지한다", async ({
+  browser,
+}) => {
   const page = await browser.newPage({
     hasTouch: true,
     isMobile: true,
@@ -15,9 +17,12 @@ test("6. 편집기를 한 번 터치하면 브라우저가 정한 접힌 커서 
     await editor.fill(content);
     await editor.tap({ position: { x: 25, y: 20 } });
     await expect(editor).toBeFocused();
-    await editor.evaluate(() => new Promise<void>((resolve) => {
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-    }));
+    await editor.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
 
     const selection = await editor.evaluate((element: HTMLTextAreaElement) => ({
       start: element.selectionStart,

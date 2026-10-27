@@ -19,8 +19,7 @@
         );
       background: color-mix(
         in srgb,
-        var(--dashboard-focus-accent, var(--dashboard-accent, #{v.$signal}))
-          12%,
+        var(--dashboard-focus-accent, var(--dashboard-accent, #{v.$signal})) 12%,
         var(--color-field)
       );
     }
@@ -100,5 +99,4 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
   }
-
 }

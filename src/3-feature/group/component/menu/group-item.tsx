@@ -1,7 +1,24 @@
 "use client";
 
-import { Check, EllipsisVertical, LogOut, Pencil, Pin, Share2, Trash2, Unlink, X } from "lucide-react";
-import { type FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  Check,
+  EllipsisVertical,
+  LogOut,
+  Pencil,
+  Pin,
+  Share2,
+  Trash2,
+  Unlink,
+  X,
+} from "lucide-react";
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
 
@@ -43,22 +60,28 @@ export function GroupItem({
     menuAnchorRef.current = anchor;
     const rect = anchor.getBoundingClientRect();
     const rowHeight = window.matchMedia("(max-width: 512px)").matches ? 44 : 40;
-    const menuHeight = dropdownRef.current?.getBoundingClientRect().height ?? 4 * rowHeight + 12;
+    const menuHeight =
+      dropdownRef.current?.getBoundingClientRect().height ?? 4 * rowHeight + 12;
     const below = rect.bottom + 8;
     setMenuPosition({
       left: Math.max(8, Math.min(rect.right - 164, window.innerWidth - 172)),
-      top: below + menuHeight <= window.innerHeight - 8 ? below : Math.max(8, rect.top - menuHeight - 8),
+      top:
+        below + menuHeight <= window.innerHeight - 8
+          ? below
+          : Math.max(8, rect.top - menuHeight - 8),
     });
   }, []);
 
   useLayoutEffect(() => {
-    if (actionsOpen && menuAnchorRef.current) positionActions(menuAnchorRef.current);
+    if (actionsOpen && menuAnchorRef.current)
+      positionActions(menuAnchorRef.current);
   }, [actionsOpen, positionActions]);
 
   useEffect(() => {
     if (!actionsOpen) return;
     const closeOutside = (event: PointerEvent) => {
-      if (!actionsRef.current?.contains(event.target as Node)) onToggleActions();
+      if (!actionsRef.current?.contains(event.target as Node))
+        onToggleActions();
     };
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -144,15 +167,15 @@ export function GroupItem({
           event.preventDefault();
           onReorderKey(event.key === "ArrowUp" ? -1 : 1);
         }}
-      >
-      </button>
+      ></button>
       <button
         className="group-select"
         type="button"
         aria-pressed={active}
         title={name}
         onClick={(event) => {
-          const row = event.currentTarget.closest<HTMLElement>("[data-group-id]");
+          const row =
+            event.currentTarget.closest<HTMLElement>("[data-group-id]");
           if (row?.dataset.reorderDragged === "true") {
             delete row.dataset.reorderDragged;
             return;
@@ -168,7 +191,8 @@ export function GroupItem({
       >
         <strong className={muted ? "is-ungrouped" : ""}>{name}</strong>
       </button>
-      {editable && <div className="group-actions" ref={actionsRef}>
+      {editable && (
+        <div className="group-actions" ref={actionsRef}>
           {editable && pinned && (
             <Pin
               className="group-pin-indicator"
@@ -215,19 +239,35 @@ export function GroupItem({
               )}
               {editable && (
                 <>
-                  {(!shared || sharingRole === "owner") && <button
-                    type="button"
-                    aria-label={canCancelSharing ? t.revokeGroupShare : t.shareGroupFor(name)}
-                    onClick={event => {
-                      const anchor = actionsRef.current?.querySelector<HTMLButtonElement>("button") ?? event.currentTarget;
-                      onToggleActions();
-                      if (canCancelSharing) onChangeSharing?.("revoke", anchor);
-                      else onShare();
-                    }}
-                  >
-                    {canCancelSharing ? <Unlink size={16} /> : <Share2 size={16} />}
-                    <span>{canCancelSharing ? t.revokeGroupShare : t.shareGroup}</span>
-                  </button>}
+                  {(!shared || sharingRole === "owner") && (
+                    <button
+                      type="button"
+                      aria-label={
+                        canCancelSharing
+                          ? t.revokeGroupShare
+                          : t.shareGroupFor(name)
+                      }
+                      onClick={(event) => {
+                        const anchor =
+                          actionsRef.current?.querySelector<HTMLButtonElement>(
+                            "button",
+                          ) ?? event.currentTarget;
+                        onToggleActions();
+                        if (canCancelSharing)
+                          onChangeSharing?.("revoke", anchor);
+                        else onShare();
+                      }}
+                    >
+                      {canCancelSharing ? (
+                        <Unlink size={16} />
+                      ) : (
+                        <Share2 size={16} />
+                      )}
+                      <span>
+                        {canCancelSharing ? t.revokeGroupShare : t.shareGroup}
+                      </span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     aria-label={t.editGroupFor(name)}
@@ -240,33 +280,44 @@ export function GroupItem({
                     <Pencil size={16} />
                     <span>{t.edit}</span>
                   </button>
-                  {!shared && <button
-                    type="button"
-                    aria-label={t.deleteGroupFor(name)}
-                    title={t.delete}
-                    onClick={(event) =>
-                      onDelete(
-                        actionsRef.current?.querySelector("button") ?? event.currentTarget,
-                      )
-                    }
-                  >
-                    <Trash2 size={16} />
-                    <span>{t.delete}</span>
-                  </button>}
-                  {shared && sharingRole === "member" && <button type="button"
-                    onClick={event => {
-                      const anchor = actionsRef.current?.querySelector<HTMLButtonElement>("button") ?? event.currentTarget;
-                      onToggleActions();
-                      onChangeSharing?.("leave", anchor);
-                    }}>
-                    <LogOut size={16} />
-                    <span>{t.leaveGroup}</span>
-                  </button>}
+                  {!shared && (
+                    <button
+                      type="button"
+                      aria-label={t.deleteGroupFor(name)}
+                      title={t.delete}
+                      onClick={(event) =>
+                        onDelete(
+                          actionsRef.current?.querySelector("button") ??
+                            event.currentTarget,
+                        )
+                      }
+                    >
+                      <Trash2 size={16} />
+                      <span>{t.delete}</span>
+                    </button>
+                  )}
+                  {shared && sharingRole === "member" && (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        const anchor =
+                          actionsRef.current?.querySelector<HTMLButtonElement>(
+                            "button",
+                          ) ?? event.currentTarget;
+                        onToggleActions();
+                        onChangeSharing?.("leave", anchor);
+                      }}
+                    >
+                      <LogOut size={16} />
+                      <span>{t.leaveGroup}</span>
+                    </button>
+                  )}
                 </>
               )}
             </div>
           )}
-        </div>}
+        </div>
+      )}
     </article>
   );
 }

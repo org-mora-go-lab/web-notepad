@@ -3,7 +3,11 @@ import { expect, type Page } from "@playwright/test";
 import { openSettingsPanel } from "./workspace";
 
 // Picks `color` (English label such as "Red") for the 1-based `order` slot of the tab color cycle, then closes the settings panel.
-export async function selectTabColorSetting(page: Page, order: number, color: string) {
+export async function selectTabColorSetting(
+  page: Page,
+  order: number,
+  color: string,
+) {
   await openSettingsPanel(page);
   const panel = page.locator("#settings-panel");
   const radio = panel

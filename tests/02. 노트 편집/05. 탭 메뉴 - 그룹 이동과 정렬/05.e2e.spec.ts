@@ -1,12 +1,24 @@
 import { expect, type Locator, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
-import { moveGroupSourceTab, openTabMenu, seedMoveGroupState, writeStoredState } from "../../__util__";
+import {
+  moveGroupSourceTab,
+  openTabMenu,
+  seedMoveGroupState,
+  writeStoredState,
+} from "../../__util__";
 
-test("5. 기본 탭 메뉴와 그룹 목록을 PC와 모바일 화면 안에 배치한다", async ({ page }) => {
-  const longName = "Very long target group name that should be truncated in the menu";
+test("5. 기본 탭 메뉴와 그룹 목록을 PC와 모바일 화면 안에 배치한다", async ({
+  page,
+}) => {
+  const longName =
+    "Very long target group name that should be truncated in the menu";
   const menu = page.getByRole("menu", { name: "Move Group", exact: true });
-  const expectInViewport = async (locator: Locator, width: number, height: number) => {
+  const expectInViewport = async (
+    locator: Locator,
+    width: number,
+    height: number,
+  ) => {
     const box = await locator.boundingBox();
     expect(box).not.toBeNull();
     expect(box!.x).toBeGreaterThanOrEqual(8);
@@ -26,7 +38,9 @@ test("5. 기본 탭 메뉴와 그룹 목록을 PC와 모바일 화면 안에 배
       viewport.width,
       viewport.height,
     );
-    await page.getByRole("menuitem", { name: "Move Group", exact: true }).click();
+    await page
+      .getByRole("menuitem", { name: "Move Group", exact: true })
+      .click();
     await expectInViewport(menu, viewport.width, viewport.height);
   }
 });

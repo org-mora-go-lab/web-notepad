@@ -13,9 +13,18 @@ export async function seedSplitState(page: Page, splitRatio = 0.5) {
         "Ungrouped",
         [
           createTabFixture("left", "left", { title: "Left", tabColor: "gray" }),
-          createTabFixture("right", "right", { title: "Right", tabColor: "gray", updatedAt: 2 }),
+          createTabFixture("right", "right", {
+            title: "Right",
+            tabColor: "gray",
+            updatedAt: 2,
+          }),
         ],
-        { createdAt: 0, rightTabIds: ["right"], activeRightTabId: "right", splitRatio },
+        {
+          createdAt: 0,
+          rightTabIds: ["right"],
+          activeRightTabId: "right",
+          splitRatio,
+        },
       ),
     ],
   });

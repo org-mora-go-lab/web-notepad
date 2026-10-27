@@ -12,7 +12,10 @@ export const normalizeTabs = (value: unknown, fallback: NoteTab[]): NoteTab[] =>
       const selectedLines = sanitizeSelectedLines(tab.selectedLines, content);
       const tabColor = normalizeTabColor(tab.tabColor, urgent);
       const dashboardStatus =
-        tab.dashboardStatus === "icebox" || tab.dashboardStatus === "closed" || tab.dashboardStatus === "ready" || tab.dashboardStatus === "done"
+        tab.dashboardStatus === "icebox" ||
+        tab.dashboardStatus === "closed" ||
+        tab.dashboardStatus === "ready" ||
+        tab.dashboardStatus === "done"
           ? tab.dashboardStatus
           : undefined;
 

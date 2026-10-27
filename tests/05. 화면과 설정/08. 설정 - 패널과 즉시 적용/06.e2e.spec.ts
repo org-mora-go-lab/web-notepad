@@ -4,14 +4,18 @@ import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { expectCssPx, openSettingsPanel } from "../../__util__";
 import { fontScaleRadio, settingsPanel } from "../__util__";
 
-test("6. 선택한 폰트 비율을 탭·편집기·하단 메뉴·우측 패널에 즉시 적용한다", async ({ page }) => {
+test("6. 선택한 폰트 비율을 탭·편집기·하단 메뉴·우측 패널에 즉시 적용한다", async ({
+  page,
+}) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
   await openSettingsPanel(page);
 
   const editor = page.locator("textarea").first();
   const tabTitle = page.locator(".tab-item.is-active .tab-title");
-  const panelTitle = settingsPanel(page).getByRole("heading", { name: "Settings" });
+  const panelTitle = settingsPanel(page).getByRole("heading", {
+    name: "Settings",
+  });
   const footer = page.locator(".footer");
   await expectCssPx(editor, "fontSize", 14.1);
   await expectCssPx(tabTitle, "fontSize", 10.5);

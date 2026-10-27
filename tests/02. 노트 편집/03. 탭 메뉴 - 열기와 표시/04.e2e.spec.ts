@@ -5,7 +5,9 @@ import { addTabButton } from "../../__util__";
 
 test.use({ hasTouch: true });
 
-test("4. 모바일 탭 제목을 더블탭해 북마크 상태를 전환한다", async ({ page }) => {
+test("4. 모바일 탭 제목을 더블탭해 북마크 상태를 전환한다", async ({
+  page,
+}) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
   await addTabButton(page).tap();
@@ -16,6 +18,8 @@ test("4. 모바일 탭 제목을 더블탭해 북마크 상태를 전환한다",
   await page.getByRole("menuitem", { name: "Bookmark", exact: true }).tap();
   await expect(tab).toHaveClass(/is-bookmarked/);
   await button.dblclick();
-  await page.getByRole("menuitem", { name: "Remove bookmark", exact: true }).tap();
+  await page
+    .getByRole("menuitem", { name: "Remove bookmark", exact: true })
+    .tap();
   await expect(tab).not.toHaveClass(/is-bookmarked/);
 });

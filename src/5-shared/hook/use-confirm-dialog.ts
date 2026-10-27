@@ -11,7 +11,10 @@ import {
 
 type Options = {
   onCancel: () => void;
-  onKeyDown?: (event: KeyboardEvent<HTMLDialogElement>, close: (action: () => void) => void) => boolean;
+  onKeyDown?: (
+    event: KeyboardEvent<HTMLDialogElement>,
+    close: (action: () => void) => void,
+  ) => boolean;
 };
 
 // Modal confirm dialog: focuses Cancel, traps Tab focus, and cancels on Escape or backdrop click.
@@ -45,7 +48,9 @@ export function useConfirmDialog({ onCancel, onKeyDown }: Options) {
       event.stopPropagation();
       if (onKeyDown?.(event, close)) return;
       if (event.key !== "Tab") return;
-      const buttons = event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)");
+      const buttons = event.currentTarget.querySelectorAll<HTMLButtonElement>(
+        "button:not(:disabled)",
+      );
       const firstButton = buttons[0];
       const lastButton = buttons[buttons.length - 1];
       if (event.shiftKey && document.activeElement === firstButton) {

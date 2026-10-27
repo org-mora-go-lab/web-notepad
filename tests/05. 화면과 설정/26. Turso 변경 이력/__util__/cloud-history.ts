@@ -7,6 +7,7 @@ export type CloudHistory = {
 
 export async function readCloudHistory(page: Page): Promise<CloudHistory> {
   const response = await page.request.get("/api/notepad/history");
-  if (!response.ok()) throw new Error(`History lookup failed: ${response.status()}`);
+  if (!response.ok())
+    throw new Error(`History lookup failed: ${response.status()}`);
   return response.json() as Promise<CloudHistory>;
 }

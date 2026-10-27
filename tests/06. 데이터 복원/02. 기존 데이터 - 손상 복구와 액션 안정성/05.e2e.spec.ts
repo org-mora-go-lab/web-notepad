@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { seedStoredStateOnLoad } from "../../__util__";
 
-test("5. 손상된 액션 이름 필드를 제거한 뒤 노트 편집이 동작한다", async ({ page }) => {
+test("5. 손상된 액션 이름 필드를 제거한 뒤 노트 편집이 동작한다", async ({
+  page,
+}) => {
   await seedStoredStateOnLoad(page, {
     activeGroupId: "ungrouped",
     groups: [

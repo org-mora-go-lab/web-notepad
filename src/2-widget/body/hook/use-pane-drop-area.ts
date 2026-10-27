@@ -2,7 +2,10 @@
 
 import { type DragEvent as ReactDragEvent, useState } from "react";
 
-export function usePaneDropArea(dragActive: boolean, onDrop: (event: ReactDragEvent<HTMLDivElement>) => void) {
+export function usePaneDropArea(
+  dragActive: boolean,
+  onDrop: (event: ReactDragEvent<HTMLDivElement>) => void,
+) {
   const [dropAreaHovered, setDropAreaHovered] = useState(false);
   // Whether the dragged tab is below the vertical middle of the pane body.
   const [pointerInLowerHalf, setPointerInLowerHalf] = useState(false);
@@ -17,7 +20,8 @@ export function usePaneDropArea(dragActive: boolean, onDrop: (event: ReactDragEv
 
   const handleDragLeave = (event: ReactDragEvent<HTMLDivElement>) => {
     const nextTarget = event.relatedTarget;
-    if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) return;
+    if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget))
+      return;
     setDropAreaHovered(false);
   };
 

@@ -90,16 +90,12 @@ export const createClosedTabActions: StateCreator<
         ),
       }));
       return {
-        ...updateGroup(
-          { ...state, ...sourceChanges },
-          target.id,
-          (group) => ({
-            ...group,
-            bookmarks: linkedBookmark
-              ? [linkedBookmark, ...group.bookmarks]
-              : group.bookmarks,
-          }),
-        ),
+        ...updateGroup({ ...state, ...sourceChanges }, target.id, (group) => ({
+          ...group,
+          bookmarks: linkedBookmark
+            ? [linkedBookmark, ...group.bookmarks]
+            : group.bookmarks,
+        })),
         closedTabs: state.closedTabs.map((item) =>
           item.id === entryId ? { ...item, groupId } : item,
         ),
@@ -118,12 +114,17 @@ export const createClosedTabActions: StateCreator<
         ...updateGroup(state, group.id, (current) => ({
           ...current,
           bookmarks: existing
-            ? current.bookmarks.filter((bookmark) => bookmark.id !== existing.id)
+            ? current.bookmarks.filter(
+                (bookmark) => bookmark.id !== existing.id,
+              )
             : [
                 {
                   id: `bookmark-${entry.tab.id}`,
                   sourceTabId: entry.tab.id,
-                  title: getTitleFromContent(entry.tab.content, entry.tab.title),
+                  title: getTitleFromContent(
+                    entry.tab.content,
+                    entry.tab.title,
+                  ),
                   content: entry.tab.content,
                   tabColor: entry.tab.tabColor,
                   selectedLines: [...entry.tab.selectedLines],

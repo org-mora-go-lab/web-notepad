@@ -63,11 +63,12 @@ export function useHome() {
   const bookmarks = activeGroup?.bookmarks ?? [];
   const activeGroupTabs = activeGroup?.tabs ?? [];
   const messages = MESSAGES[settings.language];
-  const activeGroupName = activeGroupId === ALL_GROUP_ID
-    ? messages.allGroup
-    : activeGroupId === UNGROUPED_GROUP_ID
-      ? messages.ungrouped
-      : activeGroup?.name ?? messages.ungrouped;
+  const activeGroupName =
+    activeGroupId === ALL_GROUP_ID
+      ? messages.allGroup
+      : activeGroupId === UNGROUPED_GROUP_ID
+        ? messages.ungrouped
+        : (activeGroup?.name ?? messages.ungrouped);
   const hasBookmarkUpdateToday = bookmarks.some((bookmark) =>
     isToday(bookmark.updatedAt),
   );
@@ -142,9 +143,9 @@ export function useHome() {
     adoptTo,
     dropZonesFor,
   } = usePaneDrag({
-      group: activeGroup,
-      moveTabsToPane: moveTabToPaneAndRecord,
-    });
+    group: activeGroup,
+    moveTabsToPane: moveTabToPaneAndRecord,
+  });
 
   // The search command sits on the top pane of the rightmost column.
   const menuPane: PaneId = paneTabs.right.length > 0 ? "right" : "left";
@@ -221,9 +222,11 @@ export function useHome() {
     activeTab,
     split,
     bookmarks,
-    groups: groups.map((group) => group.id === UNGROUPED_GROUP_ID
-      ? { ...group, name: messages.ungrouped }
-      : group),
+    groups: groups.map((group) =>
+      group.id === UNGROUPED_GROUP_ID
+        ? { ...group, name: messages.ungrouped }
+        : group,
+    ),
     activeGroupName,
     hasBookmarkUpdateToday,
     hasGroupUpdateToday,
@@ -240,7 +243,8 @@ export function useHome() {
     renameGroup,
     setGroupStatusNames,
     setGroupDashboardVisibility,
-    dashboardVisibility: activeGroup?.dashboardVisibility ?? DEFAULT_DASHBOARD_VISIBILITY,
+    dashboardVisibility:
+      activeGroup?.dashboardVisibility ?? DEFAULT_DASHBOARD_VISIBILITY,
     toggleGroupPin,
     moveGroup,
     removeGroup,

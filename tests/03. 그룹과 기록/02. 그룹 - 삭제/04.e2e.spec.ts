@@ -3,8 +3,11 @@ import { expect, test } from "@playwright/test";
 import { groupStatusName, readStoredState } from "../../__util__";
 import { seedDeletableGroup } from "./__util__";
 
-test("4. 그룹 삭제를 확인하면 그룹의 노트와 북마크를 Ungrouped로 옮긴다", async ({ page }) => {
-  const { toggle, menuButton, openDelete, popup } = await seedDeletableGroup(page);
+test("4. 그룹 삭제를 확인하면 그룹의 노트와 북마크를 Ungrouped로 옮긴다", async ({
+  page,
+}) => {
+  const { toggle, menuButton, openDelete, popup } =
+    await seedDeletableGroup(page);
   await toggle.click();
   await openDelete();
   await popup.getByRole("button", { name: "Delete", exact: true }).click();

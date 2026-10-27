@@ -2,7 +2,11 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { readSession, SESSION_COOKIE } from "../../auth/_lib/session";
-import { countNotepadUpdates, getLatestNotepadUpdate, saveNotepadUpdate } from "../_lib/history";
+import {
+  countNotepadUpdates,
+  getLatestNotepadUpdate,
+  saveNotepadUpdate,
+} from "../_lib/history";
 
 async function currentUserId() {
   const cookieStore = await cookies();
@@ -11,21 +15,29 @@ async function currentUserId() {
 
 export async function GET() {
   const userId = await currentUserId();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const [latest, count] = await Promise.all([
       getLatestNotepadUpdate(userId),
       countNotepadUpdates(userId),
     ]);
-    return NextResponse.json({ latest, count }, { headers: { "Cache-Control": "private, no-store" } });
+    return NextResponse.json(
+      { latest, count },
+      { headers: { "Cache-Control": "private, no-store" } },
+    );
   } catch {
-    return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
+    return NextResponse.json(
+      { error: "Database unavailable" },
+      { status: 503 },
+    );
   }
 }
 
 export async function POST(request: Request) {
   const userId = await currentUserId();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(request.url).origin) {
     return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
@@ -39,7 +51,12 @@ export async function POST(request: Request) {
   if (!input || typeof input !== "object") {
     return NextResponse.json({ error: "Invalid update" }, { status: 400 });
   }
-  const { eventId, snapshot, baseEventId, userId: ownerId } = input as Record<string, unknown>;
+  const {
+    eventId,
+    snapshot,
+    baseEventId,
+    userId: ownerId,
+  } = input as Record<string, unknown>;
   if (ownerId !== undefined && ownerId !== userId) {
     return NextResponse.json({ error: "Account changed" }, { status: 403 });
   }
@@ -48,25 +65,47 @@ export async function POST(request: Request) {
     !/^[0-9a-f-]{36}$/i.test(eventId) ||
     typeof snapshot !== "string" ||
     snapshot.length > 5_000_000 ||
-    (baseEventId !== undefined && baseEventId !== null && typeof baseEventId !== "string")
+    (baseEventId !== undefined &&
+      baseEventId !== null &&
+      typeof baseEventId !== "string")
   ) {
     return NextResponse.json({ error: "Invalid update" }, { status: 400 });
   }
   try {
     const state = JSON.parse(snapshot) as Record<string, unknown>;
-    if (!Array.isArray(state.groups) || !Array.isArray(state.closedTabs) || !state.settings) {
+    if (
+      !Array.isArray(state.groups) ||
+      !Array.isArray(state.closedTabs) ||
+      !state.settings
+    ) {
       return NextResponse.json({ error: "Invalid snapshot" }, { status: 400 });
     }
   } catch {
     return NextResponse.json({ error: "Invalid snapshot" }, { status: 400 });
   }
   try {
-    const result = await saveNotepadUpdate(userId, eventId, snapshot, baseEventId as string | null | undefined);
-    if (!result.saved) return NextResponse.json({ error: "Conflict", latest: result.latest }, {
-      status: 409, headers: { "Cache-Control": "private, no-store" },
-    });
-    return NextResponse.json({ saved: true }, { headers: { "Cache-Control": "no-store" } });
+    const result = await saveNotepadUpdate(
+      userId,
+      eventId,
+      snapshot,
+      baseEventId as string | null | undefined,
+    );
+    if (!result.saved)
+      return NextResponse.json(
+        { error: "Conflict", latest: result.latest },
+        {
+          status: 409,
+          headers: { "Cache-Control": "private, no-store" },
+        },
+      );
+    return NextResponse.json(
+      { saved: true },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch {
-    return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
+    return NextResponse.json(
+      { error: "Database unavailable" },
+      { status: 503 },
+    );
   }
 }

@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { readStoredState, seedMoveGroupState } from "../../__util__";
 import { moveTabToTarget } from "./__util__";
 
-test("4. 오른쪽 패널의 탭을 이동해 비우면 남은 왼쪽 탭으로 분할을 해제한다", async ({ page }) => {
+test("4. 오른쪽 패널의 탭을 이동해 비우면 남은 왼쪽 탭으로 분할을 해제한다", async ({
+  page,
+}) => {
   const editors = page.locator("textarea");
   await seedMoveGroupState(page, { splitSource: true, sourceRight: true });
   await expect(editors).toHaveCount(2);

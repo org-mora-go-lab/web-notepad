@@ -14,6 +14,9 @@ test("3. 우측 패널은 한 번에 하나만 열린다", async ({ page }) => {
       );
     }
     await page.locator(`#${openId} .side-panel-close`).click();
-    await expect(page.locator(`#${openId}`)).toHaveAttribute("aria-hidden", "true");
+    await expect(page.locator(`#${openId}`)).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
   }
 });

@@ -9,8 +9,13 @@ import {
   writeStoredState,
 } from "../../__util__";
 
-test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹을 제외한 목록을 연다", async ({ page }) => {
-  const moveGroup = page.getByRole("menuitem", { name: "Move Group", exact: true });
+test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹을 제외한 목록을 연다", async ({
+  page,
+}) => {
+  const moveGroup = page.getByRole("menuitem", {
+    name: "Move Group",
+    exact: true,
+  });
   const menu = page.getByRole("menu", { name: "Move Group", exact: true });
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
@@ -23,7 +28,9 @@ test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹�
         createGroupFixture("work", "Work", [
           createTabFixture("work-tab", "Work note"),
         ]),
-        createGroupFixture("target", "Target", [createTabFixture("target-tab", "Target note")]),
+        createGroupFixture("target", "Target", [
+          createTabFixture("target-tab", "Target note"),
+        ]),
       ],
     });
     await switchGroup(page, "All Group");
@@ -38,7 +45,10 @@ test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹�
     });
     await expect(menu).toBeVisible();
     await expect(ungroupedOption).toHaveCount(0);
-    const targetOption = menu.getByRole("menuitem", { name: "Target", exact: true });
+    const targetOption = menu.getByRole("menuitem", {
+      name: "Target",
+      exact: true,
+    });
     await expect(targetOption).toBeFocused();
     await expect(
       menu.getByRole("menuitem", { name: "Work", exact: true }),
@@ -46,9 +56,9 @@ test("1. PC와 모바일 탭 메뉴에 Move Group을 표시하고 현재 그룹�
     await targetOption.click();
     const groups = (await readStoredState(page)).groups;
     expect(
-      groups.find((group) => group.id === "target")?.tabs.some(
-        (tab) => tab.id === "work-tab",
-      ),
+      groups
+        .find((group) => group.id === "target")
+        ?.tabs.some((tab) => tab.id === "work-tab"),
     ).toBe(true);
   }
 });

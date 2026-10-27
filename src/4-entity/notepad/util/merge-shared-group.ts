@@ -1,6 +1,7 @@
 import type { BookmarkEntry, NoteTab, SharedGroupData } from "../type";
 
-const equal = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
+const equal = (left: unknown, right: unknown) =>
+  JSON.stringify(left) === JSON.stringify(right);
 
 function mergeField<Value>(base: Value, local: Value, remote: Value): Value {
   if (equal(local, base)) return remote;
@@ -8,11 +9,20 @@ function mergeField<Value>(base: Value, local: Value, remote: Value): Value {
   return local;
 }
 
-function mergeItems<Item extends { id: string }>(base: Item[], local: Item[], remote: Item[]): Item[] {
+function mergeItems<Item extends { id: string }>(
+  base: Item[],
+  local: Item[],
+  remote: Item[],
+): Item[] {
   const baseById = new Map(base.map((item) => [item.id, item]));
   const localById = new Map(local.map((item) => [item.id, item]));
   const remoteById = new Map(remote.map((item) => [item.id, item]));
-  const ids = [...new Set([...remote.map((item) => item.id), ...local.map((item) => item.id)])];
+  const ids = [
+    ...new Set([
+      ...remote.map((item) => item.id),
+      ...local.map((item) => item.id),
+    ]),
+  ];
   return ids.flatMap((id) => {
     const previous = baseById.get(id);
     const mine = localById.get(id);
@@ -39,8 +49,20 @@ export function mergeSharedGroupData(
     name: mergeField(base.name, local.name, remote.name),
     updatedAt: Math.max(local.updatedAt, remote.updatedAt),
     tabs: mergeItems<NoteTab>(base.tabs, local.tabs, remote.tabs),
-    bookmarks: mergeItems<BookmarkEntry>(base.bookmarks, local.bookmarks, remote.bookmarks),
-    dashboardStatusNames: mergeField(base.dashboardStatusNames, local.dashboardStatusNames, remote.dashboardStatusNames),
-    dashboardVisibility: mergeField(base.dashboardVisibility, local.dashboardVisibility, remote.dashboardVisibility),
+    bookmarks: mergeItems<BookmarkEntry>(
+      base.bookmarks,
+      local.bookmarks,
+      remote.bookmarks,
+    ),
+    dashboardStatusNames: mergeField(
+      base.dashboardStatusNames,
+      local.dashboardStatusNames,
+      remote.dashboardStatusNames,
+    ),
+    dashboardVisibility: mergeField(
+      base.dashboardVisibility,
+      local.dashboardVisibility,
+      remote.dashboardVisibility,
+    ),
   };
 }

@@ -5,7 +5,9 @@ import { dashboardPanel, openPanel, seedDashboardTabs } from "../../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
-test("9. 모바일에서 Icebox와 Done를 반복 전환해도 상태 영역을 한 열로 표시한다", async ({ page }) => {
+test("9. 모바일에서 Icebox와 Done를 반복 전환해도 상태 영역을 한 열로 표시한다", async ({
+  page,
+}) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
   await page.locator(".dashboard-options-trigger").click();
@@ -31,7 +33,9 @@ test("9. 모바일에서 Icebox와 Done를 반복 전환해도 상태 영역을 
     for (let index = 1; index < boxes.length; index += 1) {
       expect(boxes[index].x).toBeCloseTo(boxes[0].x, 0);
       expect(boxes[index].width).toBeCloseTo(boxes[0].width, 0);
-      expect(boxes[index].y - (boxes[index - 1].y + boxes[index - 1].height)).toBeCloseTo(30, 0);
+      expect(
+        boxes[index].y - (boxes[index - 1].y + boxes[index - 1].height),
+      ).toBeCloseTo(30, 0);
     }
   };
 

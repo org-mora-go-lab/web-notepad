@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { seedStoredStateOnLoad } from "../../__util__";
 
-test("2. 이전 긴급 표시 값은 참이면 그린, 거짓이면 그레이로 변환한다", async ({ page }) => {
+test("2. 이전 긴급 표시 값은 참이면 그린, 거짓이면 그레이로 변환한다", async ({
+  page,
+}) => {
   await seedStoredStateOnLoad(page, {
     activeGroupId: "ungrouped",
     groups: [

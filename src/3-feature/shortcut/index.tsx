@@ -5,10 +5,7 @@ import { SidePanel } from "@/src/5-shared/ui";
 
 import type { ShortcutProps } from "./type";
 
-export function Shortcut({
-  open,
-  onClose,
-}: ShortcutProps) {
+export function Shortcut({ open, onClose }: ShortcutProps) {
   const { t } = useI18n();
   const shortcuts = [
     { action: t.shortcutToggleGroups, keys: ["Option + F11"] },

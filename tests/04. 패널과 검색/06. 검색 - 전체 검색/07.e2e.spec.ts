@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { openGlobalSearchPanel } from "../../__util__";
 
-test("7. 메뉴 검색은 비모달 팝오버로 열리고 Escape와 바깥 클릭으로 닫는다", async ({ page }) => {
+test("7. 메뉴 검색은 비모달 팝오버로 열리고 Escape와 바깥 클릭으로 닫는다", async ({
+  page,
+}) => {
   await page.goto("/");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
@@ -18,7 +20,9 @@ test("7. 메뉴 검색은 비모달 팝오버로 열리고 Escape와 바깥 클�
     expect(bounds.y + bounds.height).toBeCloseTo(footer.y - 8, 0);
     expect(bounds.x).toBeGreaterThanOrEqual(8);
     expect(bounds.x + bounds.width).toBeLessThanOrEqual(viewport.width - 8);
-    expect(await popup.evaluate((element) => element.matches(":modal"))).toBe(false);
+    expect(await popup.evaluate((element) => element.matches(":modal"))).toBe(
+      false,
+    );
     await expect(popup.getByRole("searchbox")).toBeFocused();
     await expect(popup.locator(".global-search-preview-pane")).toBeHidden();
 

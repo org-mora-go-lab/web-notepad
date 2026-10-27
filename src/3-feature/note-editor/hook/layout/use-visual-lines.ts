@@ -27,7 +27,11 @@ export function useVisualLines(
       // Resolve the responsive/scaled target independently of the previous rounded override.
       mirror.style.lineHeight = "var(--editor-target-line-height)";
       const target = Number.parseFloat(getComputedStyle(mirror).lineHeight);
-      if (Number.isFinite(target)) editor.style.setProperty("--editor-line-height", Math.round(target) + "px");
+      if (Number.isFinite(target))
+        editor.style.setProperty(
+          "--editor-line-height",
+          Math.round(target) + "px",
+        );
       const style = getComputedStyle(textarea);
       Object.assign(mirror.style, {
         position: "fixed",

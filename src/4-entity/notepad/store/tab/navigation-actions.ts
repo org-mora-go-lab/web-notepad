@@ -26,8 +26,15 @@ export const createTabNavigationActions: StateCreator<
     const state = get();
     // The All adds new tabs to Ungrouped.
     const inAllGroup = state.activeGroupId === ALL_GROUP_ID;
-    const blank = inAllGroup ? state.groups.find(group => group.id === UNGROUPED_GROUP_ID)?.tabs.find(tab => tab.open && !tab.content.trim()) : undefined;
-    if (blank) { state.selectTab(blank.id); return; }
+    const blank = inAllGroup
+      ? state.groups
+          .find((group) => group.id === UNGROUPED_GROUP_ID)
+          ?.tabs.find((tab) => tab.open && !tab.content.trim())
+      : undefined;
+    if (blank) {
+      state.selectTab(blank.id);
+      return;
+    }
     const group = inAllGroup
       ? state.groups.find((item) => item.id === UNGROUPED_GROUP_ID)
       : getActiveGroup(state);
@@ -136,11 +143,7 @@ export const createTabNavigationActions: StateCreator<
       const remaining = group.tabs.filter((tab) => !selected.has(tab.id));
       const insertionIndex =
         targetIndex - selectedBeforeTarget + (movingRight ? 1 : 0);
-      remaining.splice(
-        Math.min(insertionIndex, remaining.length),
-        0,
-        ...moved,
-      );
+      remaining.splice(Math.min(insertionIndex, remaining.length), 0, ...moved);
       return updateGroup(state, group.id, (current) => ({
         ...current,
         tabs: remaining,

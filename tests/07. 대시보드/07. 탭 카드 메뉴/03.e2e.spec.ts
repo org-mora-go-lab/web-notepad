@@ -8,10 +8,9 @@ test("3. 우클릭한 탭 카드는 에디터에서 열지 않고 메뉴가 열�
 }) => {
   await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
-  const card = dashboardColumn(page, "in-progress").locator(
-    ".dashboard-card",
-    { hasText: "Beta task" },
-  );
+  const card = dashboardColumn(page, "in-progress").locator(".dashboard-card", {
+    hasText: "Beta task",
+  });
   const originalBackground = await card.evaluate(
     (element) => getComputedStyle(element).backgroundColor,
   );

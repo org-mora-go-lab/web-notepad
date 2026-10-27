@@ -18,7 +18,9 @@ function getSessionSecret() {
 }
 
 function sign(value: string) {
-  return createHmac("sha256", getSessionSecret()).update(value).digest("base64url");
+  return createHmac("sha256", getSessionSecret())
+    .update(value)
+    .digest("base64url");
 }
 
 export function createGroupShareToken(groupId: string, version = 0) {
@@ -29,12 +31,21 @@ export function createGroupShareToken(groupId: string, version = 0) {
 export function readGroupShareToken(token: string) {
   const parts = token.split(".");
   if (parts.length !== 2 && parts.length !== 3) return null;
-  const groupId = parts[0], signature = parts.at(-1)!;
+  const groupId = parts[0],
+    signature = parts.at(-1)!;
   if (!/^shared-[0-9a-f-]{36}$/i.test(groupId) || !signature) return null;
-  if (parts.length === 3 && (!/^[1-9][0-9]*$/.test(parts[1]) || !Number.isSafeInteger(Number(parts[1])))) return null;
+  if (
+    parts.length === 3 &&
+    (!/^[1-9][0-9]*$/.test(parts[1]) || !Number.isSafeInteger(Number(parts[1])))
+  )
+    return null;
   const payload = parts.slice(0, -1).join(".");
-  const expected = Buffer.from(sign("group-share:" + payload)), received = Buffer.from(signature);
-  return expected.length === received.length && timingSafeEqual(expected, received) ? groupId : null;
+  const expected = Buffer.from(sign("group-share:" + payload)),
+    received = Buffer.from(signature);
+  return expected.length === received.length &&
+    timingSafeEqual(expected, received)
+    ? groupId
+    : null;
 }
 
 export function groupShareVersion(token: string) {
@@ -61,7 +72,10 @@ export function readSession(value?: string): KakaoUser | null {
 
   const expected = Buffer.from(sign(encoded));
   const received = Buffer.from(signature);
-  if (expected.length !== received.length || !timingSafeEqual(expected, received)) {
+  if (
+    expected.length !== received.length ||
+    !timingSafeEqual(expected, received)
+  ) {
     return null;
   }
 
@@ -69,7 +83,8 @@ export function readSession(value?: string): KakaoUser | null {
     const payload = JSON.parse(
       Buffer.from(encoded, "base64url").toString("utf8"),
     ) as SessionPayload;
-    if (payload.expiresAt <= Date.now() || !payload.id || !payload.nickname) return null;
+    if (payload.expiresAt <= Date.now() || !payload.id || !payload.nickname)
+      return null;
     return {
       id: payload.id,
       nickname: payload.nickname,

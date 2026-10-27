@@ -1,7 +1,7 @@
 import { expect, type Locator, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { groupsCommand,openBookmarksPanel } from "../../__util__";
+import { groupsCommand, openBookmarksPanel } from "../../__util__";
 
 async function expectIconCentered(button: Locator, withoutPadding = false) {
   if (withoutPadding) {
@@ -9,7 +9,9 @@ async function expectIconCentered(button: Locator, withoutPadding = false) {
     await expect(button).toHaveCSS("padding-right", "0px");
   }
   const buttonBox = (await button.boundingBox())!;
-  const iconBox = (await button.locator(":scope > svg:only-child").boundingBox())!;
+  const iconBox = (await button
+    .locator(":scope > svg:only-child")
+    .boundingBox())!;
 
   expect(buttonBox.width).toBeGreaterThanOrEqual(44);
   expect(buttonBox.height).toBeGreaterThanOrEqual(44);
@@ -23,12 +25,16 @@ async function expectIconCentered(button: Locator, withoutPadding = false) {
   );
 }
 
-test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중앙에 배치한다", async ({ page }) => {
+test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중앙에 배치한다", async ({
+  page,
+}) => {
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
 
   await openBookmarksPanel(page);
-  await expectIconCentered(page.locator("#bookmarks-panel .corner-popover-close"));
+  await expectIconCentered(
+    page.locator("#bookmarks-panel .corner-popover-close"),
+  );
   await page.locator("#bookmarks-panel .corner-popover-close").click();
 
   await groupsCommand(page).click();

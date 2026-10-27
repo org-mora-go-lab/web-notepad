@@ -4,10 +4,44 @@
 @use "../../5-shared/ui/search-field";
 
 .board-page {
-  width: 100%; height: 100vh; height: 100dvh; min-height: 0; overflow-y: auto; overflow-x: hidden;
-  padding: 32px 20px 48px; background: v.$pit; color: v.$ink; font-family: v.$sans;
-  .board-page-container { width: min(1040px, 100%); margin: 0 auto; display: grid; gap: 24px; }
-  .board-page-header > a { min-height: 40px; display: inline-flex; align-items: center; gap: 8px; color: v.$muted; text-decoration: none; font-size: v.font(14px); &:focus-visible { outline: 2px solid v.$signal; outline-offset: 2px; } }
-  h1 { margin: 20px 0 0; font-size: v.font(32px); font-weight: 500; }
-  @media (max-width: 512px) { padding: 20px 16px 36px; .board-page-header > a { min-height: 44px; } }
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 32px 20px 48px;
+  background: v.$pit;
+  color: v.$ink;
+  font-family: v.$sans;
+  .board-page-container {
+    width: min(1040px, 100%);
+    margin: 0 auto;
+    display: grid;
+    gap: 24px;
+  }
+  .board-page-header > a {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: v.$muted;
+    text-decoration: none;
+    font-size: v.font(14px);
+    &:focus-visible {
+      outline: 2px solid v.$signal;
+      outline-offset: 2px;
+    }
+  }
+  h1 {
+    margin: 20px 0 0;
+    font-size: v.font(32px);
+    font-weight: 500;
+  }
+  @media (max-width: 512px) {
+    padding: 20px 16px 36px;
+    .board-page-header > a {
+      min-height: 44px;
+    }
+  }
 }

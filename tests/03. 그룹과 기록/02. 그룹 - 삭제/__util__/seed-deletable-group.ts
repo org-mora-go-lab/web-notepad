@@ -1,6 +1,12 @@
 import type { Page } from "@playwright/test";
 
-import { bookmarkActiveTab, chooseGroupAction, createGroups, groupActionsButton, groupsCommand } from "../../../__util__";
+import {
+  bookmarkActiveTab,
+  chooseGroupAction,
+  createGroups,
+  groupActionsButton,
+  groupsCommand,
+} from "../../../__util__";
 
 // Creates an "Archive" group with a bookmarked note and returns the delete-flow locators;
 // `openDelete` chooses Delete from the group's action dropdown; focus returns to its trigger.

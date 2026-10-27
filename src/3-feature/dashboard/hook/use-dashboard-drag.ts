@@ -8,10 +8,7 @@ type Options = Pick<DashboardProps, "onChangeStatus"> & {
   visibleTabs: NoteTab[];
 };
 
-export function useDashboardDrag({
-  visibleTabs,
-  onChangeStatus,
-}: Options) {
+export function useDashboardDrag({ visibleTabs, onChangeStatus }: Options) {
   const [draggingTabId, setDraggingTabId] = useState<string | null>(null);
   const [overStatus, setOverStatus] = useState<TabStatus | null>(null);
   const endDrag = () => {

@@ -5,10 +5,9 @@ test("8. 카카오 로그인 진입점과 안전한 OAuth 인가 요청을 제�
   request,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".header").getByRole("link", { name: "Continue with Kakao" })).toHaveAttribute(
-    "href",
-    "/api/auth/oauth/kakao",
-  );
+  await expect(
+    page.locator(".header").getByRole("link", { name: "Continue with Kakao" }),
+  ).toHaveAttribute("href", "/api/auth/oauth/kakao");
 
   const response = await request.get("/api/auth/oauth/kakao", {
     maxRedirects: 0,
@@ -23,7 +22,9 @@ test("8. 카카오 로그인 진입점과 안전한 OAuth 인가 요청을 제�
     "http://localhost:3100/api/auth/oauth/kakao/callback",
   );
   expect(location.searchParams.get("state")).toBeTruthy();
-  expect(response.headers()["set-cookie"]).toContain("web-notepad-kakao-state=");
+  expect(response.headers()["set-cookie"]).toContain(
+    "web-notepad-kakao-state=",
+  );
 
   await page.route("**/api/auth/session", (route) =>
     route.fulfill({
@@ -40,5 +41,8 @@ test("8. 카카오 로그인 진입점과 안전한 OAuth 인가 요청을 제�
   await page.reload();
   const profile = page.locator(".header .auth-command", { hasText: "Mora" });
   await expect(profile).toBeVisible();
-  await expect(profile.locator("img")).toHaveAttribute("src", "https://example.com/profile.png");
+  await expect(profile.locator("img")).toHaveAttribute(
+    "src",
+    "https://example.com/profile.png",
+  );
 });

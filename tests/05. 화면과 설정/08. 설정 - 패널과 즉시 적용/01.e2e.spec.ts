@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 import { openSettingsPanel } from "../../__util__";
 import { settingsPanel } from "../__util__";
 
-test("1. Language 아래 Panel Slide에서 On·Off를 선택할 수 있으며 기본값은 Off다", async ({ page }) => {
+test("1. Language 아래 Panel Slide에서 On·Off를 선택할 수 있으며 기본값은 Off다", async ({
+  page,
+}) => {
   await page.goto("/");
   await openSettingsPanel(page);
   const panel = settingsPanel(page);

@@ -16,8 +16,13 @@
     gap: 6px;
     padding: 0 4px 0 10px;
 
-    &.is-dragging { opacity: 0.5; }
-    &.is-drop-target { outline: 1px solid v.$signal; outline-offset: -1px; }
+    &.is-dragging {
+      opacity: 0.5;
+    }
+    &.is-drop-target {
+      outline: 1px solid v.$signal;
+      outline-offset: -1px;
+    }
 
     .group-reorder {
       position: absolute;
@@ -112,8 +117,15 @@
         white-space: nowrap;
         cursor: default;
 
-        &:hover, &:focus-visible { background: v.$line; }
-        svg { width: 18px; height: 18px; flex: 0 0 18px; }
+        &:hover,
+        &:focus-visible {
+          background: v.$line;
+        }
+        svg {
+          width: 18px;
+          height: 18px;
+          flex: 0 0 18px;
+        }
       }
     }
 

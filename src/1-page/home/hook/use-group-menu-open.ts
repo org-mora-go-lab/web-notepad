@@ -43,5 +43,9 @@ export function useGroupMenuOpen() {
     window.dispatchEvent(new Event(GROUP_MENU_OPEN_EVENT));
   }, []);
 
-  return { groupMenuOpen, updateGroupMenuOpen, getGroupMenuOpen: readGroupMenuOpen };
+  return {
+    groupMenuOpen,
+    updateGroupMenuOpen,
+    getGroupMenuOpen: readGroupMenuOpen,
+  };
 }

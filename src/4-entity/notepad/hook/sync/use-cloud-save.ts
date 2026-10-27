@@ -3,13 +3,21 @@
 import { useEffect, useState } from "react";
 
 import { DEFAULT_SETTINGS, UNGROUPED_GROUP_ID } from "../../constant";
-import { createCloudSnapshot, mergeCloudSnapshot, normalizePersistedState } from "../../persistence";
+import {
+  createCloudSnapshot,
+  mergeCloudSnapshot,
+  normalizePersistedState,
+} from "../../persistence";
 import { useNotepadStore } from "../../store";
 import type { GroupEntry } from "../../type";
 import { getPaneLayout, isSharedGroupId } from "../../util";
 
 export type CloudSaveStatus = "pending" | "saving" | "saved" | "error" | null;
-type PendingUpdate = { eventId: string; snapshot: string; baseEventId?: string | null };
+type PendingUpdate = {
+  eventId: string;
+  snapshot: string;
+  baseEventId?: string | null;
+};
 type Baseline = { eventId: string | null; snapshot: string | null };
 type CloudRecord = { eventId: string; snapshot: string; createdAt: number };
 const SAVE_DELAY_MS = 500;
@@ -17,20 +25,40 @@ const RETRY_DELAY_MS = 5_000;
 const OWNER_KEY = "web-notepad-cloud-owner";
 
 function readLocal<Value>(key: string): Value | null {
-  try { return JSON.parse(localStorage.getItem(key) ?? "null") as Value | null; }
-  catch { return null; }
+  try {
+    return JSON.parse(localStorage.getItem(key) ?? "null") as Value | null;
+  } catch {
+    return null;
+  }
 }
 function writeLocal(key: string, value: unknown) {
   try {
     if (value === null) localStorage.removeItem(key);
     else localStorage.setItem(key, JSON.stringify(value));
-  } catch { /* Local editing remains available without persistent storage. */ }
+  } catch {
+    /* Local editing remains available without persistent storage. */
+  }
 }
 function hasLocalWork(snapshot: string) {
   const state = JSON.parse(snapshot);
-  return state.closedTabs.length > 0 || Object.entries(DEFAULT_SETTINGS).some(([key, value]) => JSON.stringify(state.settings[key]) !== JSON.stringify(value))
-    || state.groups.some((group: { id: string; bookmarks: unknown[]; tabs: { content: string }[] }) =>
-      group.id !== UNGROUPED_GROUP_ID || group.bookmarks.length || group.tabs.length > 1 || group.tabs.some(tab => tab.content));
+  return (
+    state.closedTabs.length > 0 ||
+    Object.entries(DEFAULT_SETTINGS).some(
+      ([key, value]) =>
+        JSON.stringify(state.settings[key]) !== JSON.stringify(value),
+    ) ||
+    state.groups.some(
+      (group: {
+        id: string;
+        bookmarks: unknown[];
+        tabs: { content: string }[];
+      }) =>
+        group.id !== UNGROUPED_GROUP_ID ||
+        group.bookmarks.length ||
+        group.tabs.length > 1 ||
+        group.tabs.some((tab) => tab.content),
+    )
+  );
 }
 
 export function useCloudSave(hydrated: boolean) {
@@ -60,33 +88,57 @@ export function useCloudSave(hydrated: boolean) {
     const pendingKey = (id: string) => `web-notepad-cloud-pending:${id}`;
     const baseKey = (id: string) => `web-notepad-cloud-base:${id}`;
     const localKey = (id: string) => `web-notepad-cloud-local:${id}`;
-    const valid = (id: string, version: number) => active && userId === id && generation === version;
-    const clearTimer = () => { if (timer) clearTimeout(timer); timer = undefined; };
+    const valid = (id: string, version: number) =>
+      active && userId === id && generation === version;
+    const clearTimer = () => {
+      if (timer) clearTimeout(timer);
+      timer = undefined;
+    };
     const rememberBase = (latest: Baseline) => {
       baseline = latest;
       if (userId) writeLocal(baseKey(userId), baseline);
     };
-    const apply = (snapshot: string, keepView: boolean, preserveShared = true) => {
+    const apply = (
+      snapshot: string,
+      keepView: boolean,
+      preserveShared = true,
+    ) => {
       const current = useNotepadStore.getState();
       const source = JSON.parse(snapshot);
-      if (!source || !Array.isArray(source.groups) || !Array.isArray(source.closedTabs) || !source.settings) {
+      if (
+        !source ||
+        !Array.isArray(source.groups) ||
+        !Array.isArray(source.closedTabs) ||
+        !source.settings
+      ) {
         throw new Error("Invalid cloud snapshot");
       }
       // Shared groups have their own membership checks and revision protocol.
       source.groups = [
-        ...source.groups.filter((group: { id: string }) => !isSharedGroupId(group.id)),
-        ...(preserveShared ? current.groups.filter(group => isSharedGroupId(group.id)) : []),
+        ...source.groups.filter(
+          (group: { id: string }) => !isSharedGroupId(group.id),
+        ),
+        ...(preserveShared
+          ? current.groups.filter((group) => isSharedGroupId(group.id))
+          : []),
       ];
       source.closedTabs = [
-        ...source.closedTabs.filter((entry: { groupId: string }) => !isSharedGroupId(entry.groupId)),
-        ...(preserveShared ? current.closedTabs.filter(entry => isSharedGroupId(entry.groupId)) : []),
+        ...source.closedTabs.filter(
+          (entry: { groupId: string }) => !isSharedGroupId(entry.groupId),
+        ),
+        ...(preserveShared
+          ? current.closedTabs.filter((entry) => isSharedGroupId(entry.groupId))
+          : []),
       ];
-      if (keepView || (preserveShared && isSharedGroupId(current.activeGroupId))) {
+      if (
+        keepView ||
+        (preserveShared && isSharedGroupId(current.activeGroupId))
+      ) {
         source.activeGroupId = current.activeGroupId;
         source.allGroupLayout = current.allGroupLayout;
         source.allGroupActiveTabId = current.allGroupActiveTabId;
         source.groups = source.groups.map((group: GroupEntry) => {
-          const existing = current.groups.find(item => item.id === group.id);
+          const existing = current.groups.find((item) => item.id === group.id);
           return existing ? { ...group, ...getPaneLayout(existing) } : group;
         });
       }
@@ -95,25 +147,43 @@ export function useCloudSave(hydrated: boolean) {
         const normalized = normalizePersistedState(source, current);
         // Personal history must not normalize or queue changes to shared records.
         if (preserveShared) {
-          normalized.groups = normalized.groups.map(group => isSharedGroupId(group.id)
-            ? current.groups.find(existing => existing.id === group.id) ?? group : group);
+          normalized.groups = normalized.groups.map((group) =>
+            isSharedGroupId(group.id)
+              ? (current.groups.find((existing) => existing.id === group.id) ??
+                group)
+              : group,
+          );
           normalized.closedTabs = [
-            ...normalized.closedTabs.filter(entry => !isSharedGroupId(entry.groupId)),
-            ...current.closedTabs.filter(entry => isSharedGroupId(entry.groupId)),
+            ...normalized.closedTabs.filter(
+              (entry) => !isSharedGroupId(entry.groupId),
+            ),
+            ...current.closedTabs.filter((entry) =>
+              isSharedGroupId(entry.groupId),
+            ),
           ];
         }
         useNotepadStore.setState(normalized);
+      } finally {
+        applying = false;
       }
-      finally { applying = false; }
       lastSnapshot = createCloudSnapshot(useNotepadStore.getState());
       if (userId) writeLocal(localKey(userId), lastSnapshot);
       window.dispatchEvent(new Event("notepad-cloud-applied"));
       return lastSnapshot;
     };
     const queue = (snapshot: string, restored?: PendingUpdate) => {
-      if (!userId || !initialized) { changedBeforeAuth = true; return; }
-      pending = restored?.snapshot === snapshot ? { ...restored, baseEventId: baseline.eventId }
-        : { eventId: crypto.randomUUID(), snapshot, baseEventId: baseline.eventId };
+      if (!userId || !initialized) {
+        changedBeforeAuth = true;
+        return;
+      }
+      pending =
+        restored?.snapshot === snapshot
+          ? { ...restored, baseEventId: baseline.eventId }
+          : {
+              eventId: crypto.randomUUID(),
+              snapshot,
+              baseEventId: baseline.eventId,
+            };
       writeLocal(pendingKey(userId), pending);
       writeLocal(localKey(userId), snapshot);
       setStatus("pending");
@@ -125,14 +195,24 @@ export function useCloudSave(hydrated: boolean) {
       const local = createCloudSnapshot(useNotepadStore.getState());
       let next = local;
       if (latest) {
-        const dirty = !!pending || changedBeforeAuth || (baseline.snapshot !== null && local !== baseline.snapshot);
-        next = dirty || (first && !baseline.snapshot && hasLocalWork(local))
-          ? mergeCloudSnapshot(baseline.snapshot, local, latest.snapshot) : latest.snapshot;
+        const dirty =
+          !!pending ||
+          changedBeforeAuth ||
+          (baseline.snapshot !== null && local !== baseline.snapshot);
+        next =
+          dirty || (first && !baseline.snapshot && hasLocalWork(local))
+            ? mergeCloudSnapshot(baseline.snapshot, local, latest.snapshot)
+            : latest.snapshot;
       }
       const restored = pending ?? undefined;
-      const needsSave = latest ? next !== latest.snapshot : !!restored || changedBeforeAuth || hasLocalWork(next);
+      const needsSave = latest
+        ? next !== latest.snapshot
+        : !!restored || changedBeforeAuth || hasLocalWork(next);
       next = apply(next, !first);
-      rememberBase({ eventId: latest?.eventId ?? null, snapshot: latest ? (needsSave ? latest.snapshot : next) : null });
+      rememberBase({
+        eventId: latest?.eventId ?? null,
+        snapshot: latest ? (needsSave ? latest.snapshot : next) : null,
+      });
       initialized = true;
       setServerLoaded(true);
       setReady(true);
@@ -151,20 +231,37 @@ export function useCloudSave(hydrated: boolean) {
       const id = userId;
       const version = generation;
       pulling = true;
-      if (!initialized) { setReady(false); setStatus(null); }
+      if (!initialized) {
+        setReady(false);
+        setStatus(null);
+      }
       try {
-        const response = await fetch("/api/notepad/history", { cache: "no-store" });
+        const response = await fetch("/api/notepad/history", {
+          cache: "no-store",
+        });
         if (!response.ok) throw new Error("Cloud load failed");
-        const { latest } = await response.json() as { latest: CloudRecord | null };
+        const { latest } = (await response.json()) as {
+          latest: CloudRecord | null;
+        };
         if (!valid(id, version)) return;
-        if (!initialized || (latest?.eventId ?? null) !== baseline.eventId) reconcile(latest, !initialized);
-      } catch { if (valid(id, version) && !initialized) { setStatus("error"); setReady(true); } }
-      finally { pulling = false; }
+        if (!initialized || (latest?.eventId ?? null) !== baseline.eventId)
+          reconcile(latest, !initialized);
+      } catch {
+        if (valid(id, version) && !initialized) {
+          setStatus("error");
+          setReady(true);
+        }
+      } finally {
+        pulling = false;
+      }
     };
     const flush = async () => {
       timer = undefined;
       if (!active || !userId || !pending || !initialized) return;
-      if (sending) { readyToSend = true; return; }
+      if (sending) {
+        readyToSend = true;
+        return;
+      }
       sending = true;
       const update = pending;
       const id = userId;
@@ -174,19 +271,25 @@ export function useCloudSave(hydrated: boolean) {
       setSavingTabIds([...sentContents.keys()]);
       try {
         const response = await fetch("/api/notepad/history", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...update, userId: id }), cache: "no-store",
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...update, userId: id }),
+          cache: "no-store",
         });
         if (!valid(id, version)) return;
         if (response.status === 409) {
-          const { latest } = await response.json() as { latest: CloudRecord | null };
+          const { latest } = (await response.json()) as {
+            latest: CloudRecord | null;
+          };
           if (valid(id, version)) reconcile(latest, false);
           return;
         }
         if (!response.ok) throw new Error("Cloud save failed");
         rememberBase({ eventId: update.eventId, snapshot: update.snapshot });
         setLastSavedAt(Date.now());
-        for (const [tabId, content] of sentContents) if (editedContents.get(tabId) === content) editedContents.delete(tabId);
+        for (const [tabId, content] of sentContents)
+          if (editedContents.get(tabId) === content)
+            editedContents.delete(tabId);
         if (pending?.eventId === update.eventId) {
           pending = null;
           writeLocal(pendingKey(id), null);
@@ -215,31 +318,51 @@ export function useCloudSave(hydrated: boolean) {
     const unsubscribe = useNotepadStore.subscribe((state, previous) => {
       const snapshot = createCloudSnapshot(state);
       if (applying || snapshot === lastSnapshot) return;
-      const previousContents = new Map(previous.groups.filter(group => !isSharedGroupId(group.id)).flatMap(group => group.tabs.map(tab => [tab.id, tab.content] as const)));
+      const previousContents = new Map(
+        previous.groups
+          .filter((group) => !isSharedGroupId(group.id))
+          .flatMap((group) =>
+            group.tabs.map((tab) => [tab.id, tab.content] as const),
+          ),
+      );
       const changedIds: string[] = [];
-      for (const group of state.groups.filter(group => !isSharedGroupId(group.id))) {
+      for (const group of state.groups.filter(
+        (group) => !isSharedGroupId(group.id),
+      )) {
         for (const tab of group.tabs) {
-          if (previousContents.has(tab.id) && previousContents.get(tab.id) !== tab.content) {
+          if (
+            previousContents.has(tab.id) &&
+            previousContents.get(tab.id) !== tab.content
+          ) {
             editedContents.set(tab.id, tab.content);
             changedIds.push(tab.id);
           }
         }
       }
-      if (changedIds.length) setSavingTabIds(current => current.filter(id => !changedIds.includes(id)));
+      if (changedIds.length)
+        setSavingTabIds((current) =>
+          current.filter((id) => !changedIds.includes(id)),
+        );
       lastSnapshot = snapshot;
       queue(snapshot);
     });
     const refreshSession = async () => {
       const requestId = ++sessionRequest;
       try {
-        const response = await fetch("/api/auth/session", { cache: "no-store" });
+        const response = await fetch("/api/auth/session", {
+          cache: "no-store",
+        });
         if (!response.ok) throw Error("Session unavailable");
-        const result = await response.json() as { user?: { id?: string } | null };
+        const result = (await response.json()) as {
+          user?: { id?: string } | null;
+        };
         if (!active || requestId !== sessionRequest) return;
         const nextId = result.user?.id ?? null;
         if (nextId === userId) {
-          if (!nextId) { setReady(true); setServerLoaded(true); }
-          else if (!initialized) await pull();
+          if (!nextId) {
+            setReady(true);
+            setServerLoaded(true);
+          } else if (!initialized) await pull();
           return;
         }
         setReady(false);
@@ -249,25 +372,50 @@ export function useCloudSave(hydrated: boolean) {
         clearTimer();
         pending = null;
         initialized = false;
-        if (!nextId || (userId !== null && userId !== nextId)) editedContents.clear();
+        if (!nextId || (userId !== null && userId !== nextId))
+          editedContents.clear();
         userId = nextId;
         setStatus(null);
         setSavingTabIds([]);
-        if (!userId) { setReady(true); setServerLoaded(true); return; }
+        if (!userId) {
+          setReady(true);
+          setServerLoaded(true);
+          return;
+        }
         const previousOwner = readLocal<string>(OWNER_KEY);
         if (previousOwner && previousOwner !== userId) {
           editedContents.clear();
-          apply(readLocal<string>(localKey(userId)) ?? createCloudSnapshot(useNotepadStore.getInitialState()), false, false);
+          apply(
+            readLocal<string>(localKey(userId)) ??
+              createCloudSnapshot(useNotepadStore.getInitialState()),
+            false,
+            false,
+          );
           changedBeforeAuth = false;
         }
         writeLocal(OWNER_KEY, userId);
-        baseline = readLocal<Baseline>(baseKey(userId)) ?? { eventId: null, snapshot: null };
+        baseline = readLocal<Baseline>(baseKey(userId)) ?? {
+          eventId: null,
+          snapshot: null,
+        };
         const restored = readLocal<PendingUpdate>(pendingKey(userId));
-        if (restored && typeof restored.eventId === "string" && typeof restored.snapshot === "string") pending = restored;
+        if (
+          restored &&
+          typeof restored.eventId === "string" &&
+          typeof restored.snapshot === "string"
+        )
+          pending = restored;
         await pull();
-      } catch { if (active) { setReady(true); setStatus("error"); } }
+      } catch {
+        if (active) {
+          setReady(true);
+          setStatus("error");
+        }
+      }
     };
-    const refresh = () => { if (document.visibilityState !== "hidden") void pull(); };
+    const refresh = () => {
+      if (document.visibilityState !== "hidden") void pull();
+    };
     window.addEventListener("notepad-auth-changed", refreshSession);
     window.addEventListener("focus", refresh);
     window.addEventListener("online", refresh);
