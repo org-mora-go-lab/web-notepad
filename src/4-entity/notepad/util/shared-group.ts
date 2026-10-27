@@ -1,9 +1,35 @@
+import { DASHBOARD_STATUSES, DEFAULT_SETTINGS } from "../constant";
 import type { GroupEntry, SharedGroupData } from "../type";
+import { getTabStatus } from "./note";
 import { normalizeLayout } from "./pane";
 
 export const sharedGroupId = (shareId: string) => `shared-${shareId}`;
 export const isSharedGroupId = (id: string) =>
   /^shared-[0-9a-f-]{36}$/i.test(id);
+
+// Resolve legacy records against a common palette, never a viewer's preferences.
+export function normalizeSharedGroupData(
+  data: SharedGroupData,
+): SharedGroupData {
+  return {
+    ...data,
+    tabs: data.tabs.map((tab) =>
+      tab.dashboardStatus && DASHBOARD_STATUSES.includes(tab.dashboardStatus)
+        ? tab
+        : {
+            ...tab,
+            dashboardStatus: getTabStatus(
+              {
+                ...tab,
+                dashboardStatus:
+                  tab.dashboardStatus === "closed" ? "done" : undefined,
+              },
+              DEFAULT_SETTINGS.tabColorCycle,
+            ),
+          },
+    ),
+  };
+}
 
 export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
   const id = sharedGroupId(shareId);
@@ -12,7 +38,10 @@ export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
   return {
     ...group,
     id,
-    tabs: group.tabs.map((tab) => ({ ...tab, id: tabId(tab.id) })),
+    tabs: normalizeSharedGroupData(group).tabs.map((tab) => ({
+      ...tab,
+      id: tabId(tab.id),
+    })),
     bookmarks: group.bookmarks.map((bookmark) => ({
       ...bookmark,
       id: bookmarkId(bookmark.id),
@@ -35,7 +64,7 @@ export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
 }
 
 export function toSharedGroupData(group: GroupEntry): SharedGroupData {
-  return {
+  return normalizeSharedGroupData({
     id: group.id,
     name: group.name,
     createdAt: group.createdAt,
@@ -43,13 +72,14 @@ export function toSharedGroupData(group: GroupEntry): SharedGroupData {
     tabs: group.tabs,
     bookmarks: group.bookmarks,
     dashboardStatusNames: group.dashboardStatusNames,
-  };
+  });
 }
 
 export function applySharedGroupData(
   group: GroupEntry,
   data: SharedGroupData,
 ): GroupEntry {
+  data = normalizeSharedGroupData(data);
   const openIds = new Set(
     data.tabs.filter((tab) => tab.open).map((tab) => tab.id),
   );
@@ -70,6 +100,7 @@ export function applySharedGroupData(
 }
 
 export function createJoinedGroup(data: SharedGroupData): GroupEntry {
+  data = normalizeSharedGroupData(data);
   const firstOpenTab = data.tabs.find((tab) => tab.open);
   return normalizeLayout({
     ...data,

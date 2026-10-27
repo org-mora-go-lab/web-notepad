@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
+import { getTabStatus, useNotepadStore } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { GroupShareDialogProps } from "../../type";
@@ -72,7 +73,18 @@ export function GroupShareDialog({
     fetch("/api/groups/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ group }),
+      body: JSON.stringify({
+        group: {
+          ...group,
+          tabs: group.tabs.map((tab) => ({
+            ...tab,
+            dashboardStatus: getTabStatus(
+              tab,
+              useNotepadStore.getState().settings.tabColorCycle,
+            ),
+          })),
+        },
+      }),
     })
       .then(async (response) => {
         if (!active) return;

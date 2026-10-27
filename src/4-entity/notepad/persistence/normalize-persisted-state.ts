@@ -5,6 +5,7 @@ import {
   isSharedGroupId,
   normalizeDashboardStatusNames,
   normalizeDashboardVisibility,
+  normalizeSharedGroupData,
 } from "../util";
 import { finiteNumberOr, isTabColor } from "./read-value";
 import {
@@ -97,7 +98,10 @@ export function normalizePersistedState(
     createLegacyGroupTab,
   );
 
-  for (const group of groups) group.tabs = group.tabs.map(migrateStatus);
+  for (const group of groups)
+    group.tabs = isSharedGroupId(group.id)
+      ? normalizeSharedGroupData(group).tabs
+      : group.tabs.map(migrateStatus);
   const ungrouped = groups.find((group) => group.id === UNGROUPED_GROUP_ID);
   if (!ungrouped) {
     groups.unshift({

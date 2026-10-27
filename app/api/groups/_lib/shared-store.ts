@@ -5,6 +5,7 @@ import type { GroupEntry, SharedGroupData } from "@/src/4-entity/notepad";
 import {
   applySharedGroupData,
   namespaceGroup,
+  normalizeSharedGroupData,
   toSharedGroupData,
 } from "@/src/4-entity/notepad";
 
@@ -26,7 +27,9 @@ function fromRow(row: Record<string, unknown>): SharedRecord {
     id: String(row.id),
     ownerId: String(row.owner_id),
     revision: Number(row.revision),
-    data: JSON.parse(String(row.snapshot)) as SharedGroupData,
+    data: normalizeSharedGroupData(
+      JSON.parse(String(row.snapshot)) as SharedGroupData,
+    ),
     updatedAt: Number(row.updated_at),
     sharingActive: Number(row.invite_enabled ?? 1) !== 0,
     shareVersion: Number(row.token_version ?? 0),
@@ -159,6 +162,7 @@ export async function saveSharedGroup(
   baseRevision: number,
   data: SharedGroupData,
 ) {
+  data = normalizeSharedGroupData(data);
   const database = await sharedDatabase();
   const transaction = await database.transaction("write");
   try {

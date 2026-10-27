@@ -35,6 +35,7 @@ export {
   createJoinedGroup,
   isSharedGroupId,
   namespaceGroup,
+  normalizeSharedGroupData,
   sharedGroupId,
   toSharedGroupData,
 } from "./shared-group";

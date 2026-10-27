@@ -34,6 +34,7 @@ export {
   isSharedGroupId,
   mergeSharedGroupData,
   namespaceGroup,
+  normalizeSharedGroupData,
   PANE_IDS,
   sharedGroupId,
   toSharedGroupData,
