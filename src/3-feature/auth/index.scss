@@ -18,6 +18,12 @@
     background: transparent;
   }
 
+  @media (hover: hover) and (pointer: fine) {
+    &[aria-haspopup="menu"]:hover {
+      background: rgb(180 180 180 / 18%);
+    }
+  }
+
   &[aria-disabled="true"],
   &:disabled {
     cursor: wait;

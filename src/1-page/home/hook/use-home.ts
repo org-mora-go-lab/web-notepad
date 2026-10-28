@@ -14,7 +14,7 @@ import {
   useNotepadHydrated,
   useNotepadStore,
 } from "@/src/4-entity/notepad";
-import { BOARD_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
+import { HOME_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
 import { isToday } from "@/src/5-shared/util";
 
 import type { PaneColumnProps, PaneViewProps } from "../type";
@@ -34,11 +34,11 @@ export function useHome() {
   const [suppressInitialEditorFocus] = useState(() => {
     if (typeof window === "undefined") return false;
     try {
-      if (sessionStorage.getItem(BOARD_RETURN_FOCUS_KEY) === "1") return true;
+      if (sessionStorage.getItem(HOME_RETURN_FOCUS_KEY) === "1") return true;
       const referrer = new URL(document.referrer);
       return (
         referrer.origin === window.location.origin &&
-        referrer.pathname === "/board"
+        (referrer.pathname === "/board" || referrer.pathname === "/my-page")
       );
     } catch {
       return false;
@@ -46,17 +46,17 @@ export function useHome() {
   });
   useEffect(() => {
     try {
-      sessionStorage.removeItem(BOARD_RETURN_FOCUS_KEY);
+      sessionStorage.removeItem(HOME_RETURN_FOCUS_KEY);
     } catch {
       /* Keep the editor usable if session storage is unavailable. */
     }
   }, []);
   const editorRefs = usePaneRefs<HTMLTextAreaElement | null>(null);
   useEffect(() => {
-    const clearRestoredBoardFocus = () => {
+    const clearRestoredPageFocus = () => {
       try {
-        if (sessionStorage.getItem(BOARD_RETURN_FOCUS_KEY) !== "1") return;
-        sessionStorage.removeItem(BOARD_RETURN_FOCUS_KEY);
+        if (sessionStorage.getItem(HOME_RETURN_FOCUS_KEY) !== "1") return;
+        sessionStorage.removeItem(HOME_RETURN_FOCUS_KEY);
       } catch {
         return;
       }
@@ -64,9 +64,8 @@ export function useHome() {
         if (document.activeElement === editor.current) editor.current?.blur();
       }
     };
-    window.addEventListener("pageshow", clearRestoredBoardFocus);
-    return () =>
-      window.removeEventListener("pageshow", clearRestoredBoardFocus);
+    window.addEventListener("pageshow", clearRestoredPageFocus);
+    return () => window.removeEventListener("pageshow", clearRestoredPageFocus);
   }, [editorRefs]);
   const composingRefs = usePaneRefs(false);
   const store = useNotepadStore();

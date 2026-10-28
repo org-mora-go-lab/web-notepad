@@ -13,12 +13,12 @@ import {
   useNotepadStore,
   useSharedGroups,
 } from "@/src/4-entity/notepad";
-import { BOARD_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
+import { HOME_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
 import { GroupSharingContext, I18nContext } from "@/src/5-shared/hook";
 
 function markBoardReturn() {
   try {
-    sessionStorage.setItem(BOARD_RETURN_FOCUS_KEY, "1");
+    sessionStorage.setItem(HOME_RETURN_FOCUS_KEY, "1");
   } catch {
     /* Keep navigation usable if session storage is unavailable. */
   }

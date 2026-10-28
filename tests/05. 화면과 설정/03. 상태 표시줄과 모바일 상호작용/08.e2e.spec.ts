@@ -11,7 +11,7 @@ test("8. PC는 실제 아이콘에 hover했을 때만 pointer 커서를 표시�
 
   const more = page.locator(".more-command");
   const label = more.locator("span");
-  const icon = more.locator("svg");
+  const icon = page.locator(".group-select-command svg").first();
 
   await label.hover();
   await expect(more).toHaveCSS("cursor", "default");

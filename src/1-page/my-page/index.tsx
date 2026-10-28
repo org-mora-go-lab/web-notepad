@@ -22,8 +22,16 @@ import {
   useNotepadStore,
   useSharedGroups,
 } from "@/src/4-entity/notepad";
-import { MESSAGES } from "@/src/5-shared/constant";
+import { HOME_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
 import type { AccountProfile } from "@/src/5-shared/type";
+
+function markMyPageReturn() {
+  try {
+    sessionStorage.setItem(HOME_RETURN_FOCUS_KEY, "1");
+  } catch {
+    /* Keep navigation usable if session storage is unavailable. */
+  }
+}
 
 export function MyPage() {
   const hydrated = useNotepadHydrated();
@@ -36,6 +44,7 @@ export function MyPage() {
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const t = MESSAGES[settings.language];
+  useEffect(markMyPageReturn, []);
   useEffect(() => {
     let active = true;
     fetch("/api/auth/session", { cache: "no-store" })
@@ -132,7 +141,7 @@ export function MyPage() {
     <main className="my-page" aria-busy={pageLoading}>
       <div className="my-page-container">
         <header className="my-page-header">
-          <Link href="/">
+          <Link href="/" onClick={markMyPageReturn}>
             <ArrowLeft size={18} />
             {t.myPageHome}
           </Link>

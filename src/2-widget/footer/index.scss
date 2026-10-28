@@ -130,6 +130,11 @@
     &:has(> a.auth-command) {
       flex-basis: auto;
     }
+
+    &:has(> .auth-command.is-loading),
+    &:has(> button.auth-command[aria-haspopup="menu"]) {
+      flex-basis: 92.8px;
+    }
   }
 
   .auth-command {

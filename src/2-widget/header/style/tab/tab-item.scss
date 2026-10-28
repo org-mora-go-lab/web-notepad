@@ -185,7 +185,7 @@
     flex: 0 1 auto;
     margin-left: 6px;
     overflow: hidden;
-    font-size: calc(#{v.font(15px)} - 3px);
+    font-size: calc(#{v.font(15px)} - 2px);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
