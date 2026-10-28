@@ -44,9 +44,10 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   expect(dividerBox.x + dividerBox.width).toBeLessThanOrEqual(moreBox.x);
 
   await systemGroupCommand(page).click();
-  await expect(
-    page.locator("#group-system-menu > button"),
-  ).toHaveText(["All Group", "Ungrouped"]);
+  await expect(page.locator("#group-system-menu > button")).toHaveText([
+    "All Group",
+    "Ungrouped",
+  ]);
   await moreCommand(page).click();
   await expect(page.locator("#group-system-menu")).toHaveCount(0);
   await expect(page.locator("#group-more-menu").getByRole("button")).toHaveText(
