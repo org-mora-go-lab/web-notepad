@@ -35,7 +35,7 @@ test("4. 다섯 상태의 빈 영역은 동일한 디자인과 None 문구를 �
       }
       for (const area of await empty.all()) {
         await expect(area).toHaveCSS("border-top-style", "dashed");
-        await expect(area).toHaveCSS("border-radius", "5px");
+        await expect(area).toHaveCSS("border-radius", "16px");
         const status = await area.evaluate(
           (element) =>
             element.closest<HTMLElement>(".dashboard-column")!.dataset.status,
