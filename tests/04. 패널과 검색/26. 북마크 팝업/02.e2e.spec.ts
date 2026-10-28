@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { openBookmarksPanel, openPanel } from "../../__util__";
@@ -14,8 +15,11 @@ test("2. 북마크 팝업은 기존 고정 대시보드와 작업 영역 너비�
     page.viewportSize()!.width / 2,
     0,
   );
+  const viewportHeight = page.viewportSize()!.height;
+  const centeredTop = (viewportHeight - popup.height) / 2;
+  const offset = Math.max(-100, 16 - centeredTop);
   expect(popup.y + popup.height / 2).toBeCloseTo(
-    page.viewportSize()!.height / 2,
+    viewportHeight / 2 + offset,
     0,
   );
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(

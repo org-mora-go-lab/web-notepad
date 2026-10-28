@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { groupsCommand } from "../../__util__";
@@ -16,9 +17,9 @@ test("6. My Group과 Shared Group은 생성·전체 그룹 사이를 절반씩 �
       b = (await shared.boundingBox())!;
     expect(a.height).toBeCloseTo(b.height, 0);
     expect(a.y + a.height).toBeCloseTo(b.y, 0);
-    const form = (await page.locator(".group-create-form").boundingBox())!,
+    const header = (await page.locator(".group-sidebar-header").boundingBox())!,
       system = (await page.locator(".group-more").boundingBox())!;
-    expect(a.y).toBeGreaterThanOrEqual(form.y + form.height);
+    expect(a.y).toBeGreaterThanOrEqual(header.y + header.height);
     const padding = await page
       .locator(".group-list")
       .evaluate((el) => parseFloat(getComputedStyle(el).paddingBottom));
@@ -29,5 +30,59 @@ test("6. My Group과 Shared Group은 생성·전체 그룹 사이를 절반씩 �
     await expect(
       shared.getByRole("button", { name: "Shared Group", exact: true }),
     ).toHaveCSS("border-top-width", "1px");
+    if (width > 512) {
+      for (const button of [
+        my.getByRole("button", { name: "My Group", exact: true }),
+        shared.getByRole("button", { name: "Shared Group", exact: true }),
+      ]) {
+        await button.hover();
+        const hoverArea = await button.evaluate((element) => {
+          const style = getComputedStyle(element, "::before");
+          const bounds = element.getBoundingClientRect();
+          return {
+            horizontalReduction:
+              ((parseFloat(style.left) + parseFloat(style.right)) /
+                bounds.width) *
+              100,
+            verticalReduction:
+              ((parseFloat(style.top) + parseFloat(style.bottom)) /
+                bounds.height) *
+              100,
+          };
+        });
+        expect(hoverArea.horizontalReduction).toBeCloseTo(20, 0);
+        expect(hoverArea.verticalReduction).toBeCloseTo(10, 0);
+      }
+      const separator = page.getByRole("separator", {
+        name: "Resize group sections",
+      });
+      await expect(separator).toHaveAttribute("aria-valuenow", "50");
+      const separatorBox = (await separator.boundingBox())!;
+      await page.mouse.move(
+        separatorBox.x + separatorBox.width / 2,
+        separatorBox.y + separatorBox.height / 2,
+      );
+      await page.mouse.down();
+      await page.mouse.move(
+        separatorBox.x + separatorBox.width / 2,
+        separatorBox.y + separatorBox.height / 2 + 60,
+      );
+      await page.mouse.up();
+      const resized = Number(await separator.getAttribute("aria-valuenow"));
+      expect(resized).toBeGreaterThan(50);
+      await separator.focus();
+      await separator.press("ArrowUp");
+      await expect(separator).toHaveAttribute(
+        "aria-valuenow",
+        String(resized - 5),
+      );
+      await page.reload();
+      await expect(
+        page.getByRole("separator", { name: "Resize group sections" }),
+      ).toHaveAttribute("aria-valuenow", String(resized - 5));
+      await page.evaluate(() =>
+        localStorage.removeItem("web-notepad-group-split"),
+      );
+    }
   }
 });

@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../5-shared/style/variable" as v;
 
 .footer {
@@ -39,6 +40,7 @@
   }
 
   .status-command {
+    --command-hover-inline-space: 6px;
     position: relative;
     width: max-content;
     height: 35px;
@@ -133,11 +135,12 @@
 
     &:has(> .auth-command.is-loading),
     &:has(> button.auth-command[aria-haspopup="menu"]) {
-      flex-basis: 92.8px;
+      flex-basis: 84.8px;
     }
   }
 
   .auth-command {
+    --command-hover-inline-space: 6px;
     width: 100%;
     height: 35px;
     justify-content: center;

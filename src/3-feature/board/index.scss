@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../5-shared/style/variable" as v;
 
 .board {
@@ -16,7 +17,7 @@
     p {
       margin: 10px 0 0;
       color: v.$muted;
-      font-size: v.font(15px);
+      font-size: v.font(17px);
       line-height: 1.7;
     }
   }
@@ -25,7 +26,7 @@
     align-items: center;
     gap: 7px;
     color: v.$signal;
-    font: 500 v.font(13px) v.$mono;
+    font: 500 v.font(15px) v.$mono;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -84,7 +85,7 @@
     }
   }
   .search-field input {
-    font-size: v.font(16px);
+    font-size: v.font(15px);
   }
   .board-detail-actions {
     display: flex;
@@ -157,7 +158,7 @@
   }
   button.board-entry {
     width: 100%;
-    min-width: 160px;
+    min-width: 150px;
     padding: 0;
     justify-content: flex-start;
     text-align: left;
@@ -218,7 +219,7 @@
     gap: 18px;
     h3 {
       margin: 0;
-      font-size: v.font(25px);
+      font-size: v.font(27px);
       font-weight: 500;
       line-height: 1.4;
       overflow-wrap: anywhere;
@@ -229,7 +230,7 @@
     overflow-wrap: anywhere;
     margin: 4px 0 12px;
     line-height: 1.9;
-    font-size: v.font(16px);
+    font-size: v.font(18px);
   }
   .board-join-hint {
     margin: 0;
@@ -261,7 +262,22 @@
       min-height: 44px;
     }
     .search-field input {
-      font-size: v.font(14px * v.$mobile-scale + 2px);
+      font-size: v.font(14px * v.$mobile-scale + 1px);
+    }
+  }
+
+  &:has(.board-detail) {
+    .board-back {
+      font-size: v.font(17px);
+    }
+
+    .board-group-name,
+    .board-meta {
+      font-size: v.font(15px);
+    }
+
+    .board-owner {
+      font-size: v.font(17px);
     }
   }
 }
@@ -280,10 +296,12 @@
     clip-path: inset(50%);
   }
   .board-skeleton-row {
+    height: 64.5px;
     display: grid;
     grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
+    align-items: center;
     gap: 16px;
-    padding: 20px 14px;
+    padding: 14px;
     border-bottom: 1px solid var(--color-line);
   }
   .board-skeleton-row:last-child {

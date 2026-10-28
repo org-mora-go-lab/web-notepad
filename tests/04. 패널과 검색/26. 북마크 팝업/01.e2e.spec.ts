@@ -1,8 +1,9 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { openBookmarksPanel, openGlobalSearchPanel } from "../../__util__";
 
-test("1. 북마크는 화면 중앙 모달로 열고 작업 영역을 줄이지 않는다", async ({
+test("1. 검색과 북마크는 20% 넓고 중앙보다 100px 위인 모달로 연다", async ({
   page,
 }) => {
   for (const width of [1280, 320]) {
@@ -13,10 +14,10 @@ test("1. 북마크는 화면 중앙 모달로 열고 작업 영역을 줄이지 
     await openBookmarksPanel(page);
     const popup = page.locator("#bookmarks-panel"),
       box = (await popup.boundingBox())!;
-    expect(box.width).toBeCloseTo(Math.min(546, width - 32), 0);
+    expect(box.width).toBeCloseTo(Math.min(655.2, width - 32), 0);
     expect(box.height).toBeCloseTo(540.8, 0);
     expect(box.x + box.width / 2).toBeCloseTo(width / 2, 0);
-    expect(box.y + box.height / 2).toBeCloseTo(400, 0);
+    expect(box.y + box.height / 2).toBeCloseTo(300, 0);
     expect(await popup.evaluate((element) => element.matches(":modal"))).toBe(
       true,
     );

@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 "use client";
 
 import {
@@ -11,7 +12,14 @@ import {
   Settings,
   X,
 } from "lucide-react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 
 import {
@@ -68,6 +76,29 @@ function GroupSidebar({
       return { my: true, shared: true };
     }
   });
+  const [myGroupRatio, setMyGroupRatio] = useState(() => {
+    try {
+      const value = Number(localStorage.getItem("web-notepad-group-split"));
+      return Number.isFinite(value) && value >= 20 && value <= 80 ? value : 50;
+    } catch {
+      return 50;
+    }
+  });
+  const groupListRef = useRef<HTMLDivElement>(null);
+  const updateGroupRatio = (ratio: number) => {
+    const next = Math.max(20, Math.min(80, ratio));
+    setMyGroupRatio(next);
+    try {
+      localStorage.setItem("web-notepad-group-split", String(next));
+    } catch {
+      /* Keep the resized sections usable for the current session. */
+    }
+  };
+  const resizeGroupSections = (clientY: number) => {
+    const bounds = groupListRef.current?.getBoundingClientRect();
+    if (!bounds?.height) return;
+    updateGroupRatio(((clientY - bounds.top) / bounds.height) * 100);
+  };
   const toggleSection = (section: "my" | "shared") => {
     const next = { ...sectionsOpen, [section]: !sectionsOpen[section] };
     setSectionsOpen(next);
@@ -190,13 +221,11 @@ function GroupSidebar({
           </button>
         </header>
         <section className="group-section">
-          <div className="group-list" id="group-sidebar-list">
-            <GroupCreateForm
-              onCreate={(name) => {
-                if (!sectionsOpen.my) toggleSection("my");
-                onCreate(name);
-              }}
-            />
+          <div
+            className="group-list"
+            id="group-sidebar-list"
+            ref={groupListRef}
+          >
             {(["my", "shared"] as const).map((section) => {
               const rows = otherRows.filter(
                 (group) =>
@@ -206,127 +235,176 @@ function GroupSidebar({
               const label = section === "my" ? t.myGroup : t.shareGroupSection;
               const Icon = sectionsOpen[section] ? ChevronDown : ChevronRight;
               return (
-                <section className="group-category" key={section}>
-                  <h3>
-                    <button
-                      type="button"
-                      className="group-section-toggle"
-                      aria-expanded={sectionsOpen[section]}
-                      aria-controls={"group-" + section + "-list"}
-                      onClick={() => toggleSection(section)}
-                    >
-                      <span>{label}</span>
-                      <Icon size={16} aria-hidden="true" />
-                    </button>
-                  </h3>
-                  <div
-                    className="group-section-list"
-                    id={"group-" + section + "-list"}
-                    hidden={!sectionsOpen[section]}
+                <Fragment key={section}>
+                  <section
+                    className="group-category"
+                    style={{
+                      flexGrow:
+                        section === "my" ? myGroupRatio : 100 - myGroupRatio,
+                    }}
                   >
-                    {section === "shared" &&
-                      (pendingRows.length > 0 ||
-                        (accessLoading && rows.length === 0)) && (
-                        <div
-                          className="group-access-status"
-                          aria-busy={!!accessLoading}
-                        >
-                          {accessLoading ? (
-                            <div
-                              className="group-access-skeleton"
-                              role="status"
-                              aria-label={t.sharedGroupsLoading}
-                            >
-                              <span aria-hidden="true" />
-                              <span aria-hidden="true" />
-                            </div>
-                          ) : (
-                            <div className="group-access-error" role="status">
-                              <p>{t.sharedGroupsUnavailable}</p>
-                              <button
-                                type="button"
-                                onClick={async () => {
-                                  setCheckingAccess(true);
-                                  try {
-                                    await sharing?.refreshGroups();
-                                  } finally {
-                                    setCheckingAccess(false);
-                                  }
-                                }}
+                    <h3>
+                      <button
+                        type="button"
+                        className="group-section-toggle"
+                        aria-expanded={sectionsOpen[section]}
+                        aria-controls={"group-" + section + "-list"}
+                        onClick={() => toggleSection(section)}
+                      >
+                        <span>{label}</span>
+                        <Icon size={16} aria-hidden="true" />
+                      </button>
+                    </h3>
+                    <div
+                      className="group-section-list"
+                      id={"group-" + section + "-list"}
+                      hidden={!sectionsOpen[section]}
+                    >
+                      {section === "shared" &&
+                        (pendingRows.length > 0 ||
+                          (accessLoading && rows.length === 0)) && (
+                          <div
+                            className="group-access-status"
+                            aria-busy={!!accessLoading}
+                          >
+                            {accessLoading ? (
+                              <div
+                                className="group-access-skeleton"
+                                role="status"
+                                aria-label={t.sharedGroupsLoading}
                               >
-                                {t.boardRetry}
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    {rows.map((group) => (
-                      <GroupItem
-                        key={group.id}
-                        groupId={group.id}
-                        shared={isSharedGroupId(group.id)}
-                        hideActionsButton={section === "shared"}
-                        sharingRole={sharing?.accessByGroup[group.id]?.role}
-                        sharingActive={sharing?.accessByGroup[group.id]?.active}
-                        onChangeSharing={(action, anchor) => {
-                          setAccessError(false);
-                          setAccessAction({
-                            groupId: group.id,
-                            action,
-                            anchor,
-                          });
-                        }}
-                        dragging={reorder.draggingId === group.id}
-                        dropTarget={reorder.targetId === group.id}
-                        onReorderStart={(event) =>
-                          reorder.start(group.id, event)
-                        }
-                        onReorderKey={(direction) => {
-                          const peers = otherRows.filter(
-                            (item) =>
-                              item.pinned === group.pinned &&
-                              isShared(item) === isShared(group),
-                          );
-                          const target =
-                            peers[
-                              peers.findIndex((item) => item.id === group.id) +
-                                direction
-                            ];
-                          if (target) onMoveGroup(group.id, target.id);
-                        }}
-                        name={group.name}
-                        active={group.id === activeGroupId}
-                        pinned={group.pinned}
-                        editable
-                        muted={false}
-                        actionsOpen={actionsGroupId === group.id}
-                        onToggleActions={() =>
-                          setActionsGroupId((current) =>
-                            current === group.id ? null : group.id,
-                          )
-                        }
-                        onSelect={() => selectGroup(group.id)}
-                        onRename={(name) => onRename(group.id, name)}
-                        onTogglePin={() => onTogglePinGroup(group.id)}
-                        onDelete={(anchor) => {
-                          deleteAnchorRef.current = anchor;
-                          setDeletingGroupId(group.id);
-                        }}
-                        onShare={() => {
-                          shareFocusTarget.current = group.id;
-                          setSharingGroup(group);
-                        }}
-                      />
-                    ))}
-                    {rows.length === 0 &&
-                      (section === "my" ||
-                        (pendingRows.length === 0 && !accessLoading)) && (
-                        <p className="group-section-empty">
-                          {section === "my" ? t.noMyGroups : t.noSharedGroups}
-                        </p>
-                      )}
-                  </div>
-                </section>
+                                <span aria-hidden="true" />
+                                <span aria-hidden="true" />
+                              </div>
+                            ) : (
+                              <div className="group-access-error" role="status">
+                                <p>{t.sharedGroupsUnavailable}</p>
+                                <button
+                                  type="button"
+                                  onClick={async () => {
+                                    setCheckingAccess(true);
+                                    try {
+                                      await sharing?.refreshGroups();
+                                    } finally {
+                                      setCheckingAccess(false);
+                                    }
+                                  }}
+                                >
+                                  {t.boardRetry}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      {rows.map((group) => (
+                        <GroupItem
+                          key={group.id}
+                          groupId={group.id}
+                          shared={isSharedGroupId(group.id)}
+                          hideActionsButton={section === "shared"}
+                          sharingRole={sharing?.accessByGroup[group.id]?.role}
+                          sharingActive={
+                            sharing?.accessByGroup[group.id]?.active
+                          }
+                          onChangeSharing={(action, anchor) => {
+                            setAccessError(false);
+                            setAccessAction({
+                              groupId: group.id,
+                              action,
+                              anchor,
+                            });
+                          }}
+                          dragging={reorder.draggingId === group.id}
+                          dropTarget={reorder.targetId === group.id}
+                          onReorderStart={(event) =>
+                            reorder.start(group.id, event)
+                          }
+                          onReorderKey={(direction) => {
+                            const peers = otherRows.filter(
+                              (item) =>
+                                item.pinned === group.pinned &&
+                                isShared(item) === isShared(group),
+                            );
+                            const target =
+                              peers[
+                                peers.findIndex(
+                                  (item) => item.id === group.id,
+                                ) + direction
+                              ];
+                            if (target) onMoveGroup(group.id, target.id);
+                          }}
+                          name={group.name}
+                          active={group.id === activeGroupId}
+                          pinned={group.pinned}
+                          editable
+                          muted={false}
+                          actionsOpen={actionsGroupId === group.id}
+                          onToggleActions={() =>
+                            setActionsGroupId((current) =>
+                              current === group.id ? null : group.id,
+                            )
+                          }
+                          onSelect={() => selectGroup(group.id)}
+                          onRename={(name) => onRename(group.id, name)}
+                          onTogglePin={() => onTogglePinGroup(group.id)}
+                          onDelete={(anchor) => {
+                            deleteAnchorRef.current = anchor;
+                            setDeletingGroupId(group.id);
+                          }}
+                          onShare={() => {
+                            shareFocusTarget.current = group.id;
+                            setSharingGroup(group);
+                          }}
+                        />
+                      ))}
+                      {rows.length === 0 &&
+                        (section === "my" ||
+                          (pendingRows.length === 0 && !accessLoading)) && (
+                          <p className="group-section-empty">
+                            {section === "my" ? t.noMyGroups : t.noSharedGroups}
+                          </p>
+                        )}
+                    </div>
+                  </section>
+                  {section === "my" && (
+                    <div
+                      className="group-section-resizer"
+                      role="separator"
+                      aria-orientation="horizontal"
+                      aria-label={t.resizeGroupSections}
+                      aria-valuemin={20}
+                      aria-valuemax={80}
+                      aria-valuenow={Math.round(myGroupRatio)}
+                      tabIndex={0}
+                      style={{ top: `${myGroupRatio}%` }}
+                      onPointerDown={(event) => {
+                        event.currentTarget.setPointerCapture(event.pointerId);
+                        resizeGroupSections(event.clientY);
+                      }}
+                      onPointerMove={(event) => {
+                        if (
+                          event.currentTarget.hasPointerCapture(event.pointerId)
+                        )
+                          resizeGroupSections(event.clientY);
+                      }}
+                      onKeyDown={(event) => {
+                        const next =
+                          event.key === "ArrowUp"
+                            ? myGroupRatio - 5
+                            : event.key === "ArrowDown"
+                              ? myGroupRatio + 5
+                              : event.key === "Home"
+                                ? 20
+                                : event.key === "End"
+                                  ? 80
+                                  : null;
+                        if (next === null) return;
+                        event.preventDefault();
+                        updateGroupRatio(next);
+                      }}
+                    />
+                  )}
+                </Fragment>
               );
             })}
           </div>
@@ -377,6 +455,12 @@ function GroupSidebar({
                   <span>{ungrouped.name}</span>
                 </button>
               )}
+              <GroupCreateForm
+                onCreate={(name) => {
+                  if (!sectionsOpen.my) toggleSection("my");
+                  onCreate(name);
+                }}
+              />
             </div>
           )}
           <span className="group-more-divider" aria-hidden="true" />

@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import {
@@ -6,7 +7,7 @@ import {
   openPanel,
 } from "../../__util__";
 
-test("5. 검색과 북마크는 열린 대시보드 위에서도 같은 화면 중앙 크기를 유지한다", async ({
+test("5. 검색과 북마크는 열린 대시보드 위에서도 같은 위쪽 배치와 크기를 유지한다", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -32,7 +33,7 @@ test("5. 검색과 북마크는 열린 대시보드 위에서도 같은 화면 �
         })
         .toBeLessThan(2);
       const box = (await popup.boundingBox())!;
-      expect(box.y + box.height / 2).toBeCloseTo(450, 0);
+      expect(box.y + box.height / 2).toBeCloseTo(350, 0);
       const size = sizes.get(width);
       if (size) {
         expect(box.width).toBeCloseTo(size.width, 0);

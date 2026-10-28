@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../5-shared/style/variable" as v;
 @use "../../3-feature/board";
 @use "../../5-shared/ui/confirm-popup";
@@ -16,6 +17,7 @@
   font-family: v.$sans;
   font-size: v.font(18px);
   .board-page-container {
+    position: relative;
     width: min(1040px, 100%);
     margin: 0 auto;
     display: grid;
@@ -38,6 +40,18 @@
     margin: 20px 0 0;
     font-size: v.font(34px);
     font-weight: 500;
+  }
+  .board-page-container:has(.board-detail) {
+    .board-page-header > a {
+      visibility: hidden;
+    }
+
+    .board-back {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+    }
   }
   @media (max-width: 512px) {
     padding: 20px 16px 36px;

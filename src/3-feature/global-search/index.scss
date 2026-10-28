@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../5-shared/style/mixin";
 @use "../../5-shared/style/variable" as v;
 @use "./style/search-result";
@@ -13,6 +14,9 @@
   height: var(--list-popup-height);
   max-height: calc(100dvh - 32px);
   margin: auto;
+  transform: translateY(
+    max(-100px, calc(16px - (100dvh - var(--list-popup-height)) / 2))
+  );
   padding: 0;
   grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;

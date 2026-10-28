@@ -1,9 +1,9 @@
+path_helper: node.save: Permission denied
 export type TabContextMenuTargetGroup = { id: string; name: string };
 
 export type TabContextMenuProps = {
   left: number;
   top: number;
-  moveGroupFirst?: boolean;
   deleteOnly?: boolean;
   bookmarked: boolean;
   targetGroups: TabContextMenuTargetGroup[];

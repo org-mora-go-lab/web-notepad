@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 export const en = {
   sharedGroupsLoading: "Checking shared groups…",
   sharedGroupsUnavailable: "Could not check shared groups.",
@@ -126,6 +127,7 @@ export const en = {
   tabLinkCopyError: "Could not copy the tab link. Try again.",
   resizePanel: "Resize panel",
   resizeGroupMenu: "Resize group panel",
+  resizeGroupSections: "Resize group sections",
   expandDashboard: "Expand dashboard",
   collapseDashboard: "Collapse dashboard",
   resizeVerticalPanes: "Resize pane widths",

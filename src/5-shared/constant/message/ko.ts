@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import type { Messages } from "./en";
 
 export const ko: Messages = {
@@ -130,6 +131,7 @@ export const ko: Messages = {
   tabLinkCopyError: "탭 링크를 복사하지 못했습니다. 다시 시도해 주세요.",
   resizePanel: "패널 크기 조절",
   resizeGroupMenu: "그룹 패널 크기 조절",
+  resizeGroupSections: "그룹 영역 크기 조절",
   expandDashboard: "대시보드 확장",
   collapseDashboard: "대시보드 축소",
   resizeVerticalPanes: "영역 크기 조절",

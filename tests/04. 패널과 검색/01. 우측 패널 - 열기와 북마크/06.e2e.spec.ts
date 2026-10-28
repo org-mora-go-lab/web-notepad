@@ -1,7 +1,12 @@
+path_helper: node.save: Permission denied
 import { expect, type Locator, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { groupsCommand, openBookmarksPanel } from "../../__util__";
+import {
+  groupsCommand,
+  openBookmarksPanel,
+  openSystemGroupMenu,
+} from "../../__util__";
 
 async function expectIconCentered(button: Locator, withoutPadding = false) {
   if (withoutPadding) {
@@ -38,6 +43,7 @@ test("6. 모바일 아이콘 전용 버튼의 아이콘을 가로·세로 정중
   await page.locator("#bookmarks-panel .corner-popover-close").click();
 
   await groupsCommand(page).click();
+  await openSystemGroupMenu(page);
   const createInput = page.getByRole("textbox", { name: "New group name" });
   await createInput.fill("Work");
   await expectIconCentered(

@@ -1,65 +1,22 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import {
-  dashboardColumn,
-  dashboardPanel,
-  openPanel,
-  writeStoredState,
-} from "../../__util__";
+import { openPanel, seedDashboardTabs } from "../../__util__";
 
 test.use({ hasTouch: true, isMobile: true, viewport: MOBILE_VIEWPORT });
 
-test("6. 모바일 상태 제목은 자신의 세로선 끝까지 이동한 뒤 다음 상태로 고정을 넘긴다", async ({
+test("6. 모바일에서 대시보드를 닫으면 탭 카드 드롭다운도 닫는다", async ({
   page,
 }) => {
-  await writeStoredState(page, {
-    activeGroupId: "ungrouped",
-    groups: [
-      createGroupFixture(
-        "ungrouped",
-        "Ungrouped",
-        Array.from({ length: 20 }, (_, index) =>
-          createTabFixture(`tab-${index}`, `Done task ${index}\nBody`, {
-            tabColor: "teal",
-          }),
-        ),
-      ),
-    ],
-  });
+  await seedDashboardTabs(page);
   await openPanel(page, "dashboard-panel");
-  const panel = dashboardPanel(page);
-  const list = panel.locator(".dashboard-list");
-  const todo = dashboardColumn(page, "todo");
-  const title = todo.locator(".dashboard-column-status");
-  const doingTitle = dashboardColumn(page, "in-progress").locator(
-    ".dashboard-column-status",
+  await page.locator(".dashboard-card-open").first().dblclick();
+  await expect(page.getByRole("menu", { name: "Tab actions" })).toBeVisible();
+  await page.goBack();
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute(
+    "aria-hidden",
+    "true",
   );
-  const headerBox = (await panel.locator(".side-panel-header").boundingBox())!;
-  const stickyTop = headerBox.y + headerBox.height;
-  const titleHeight = (await title.boundingBox())!.height;
-  const columnBox = (await todo.boundingBox())!;
-
-  // Move the end of Todo halfway through the sticky title's height.
-  await list.evaluate(
-    (element, offset) => {
-      element.scrollTop = offset;
-    },
-    columnBox.y + columnBox.height - stickyTop - titleHeight / 2,
-  );
-  await expect
-    .poll(async () => {
-      const box = (await todo.boundingBox())!;
-      const titleBox = (await title.boundingBox())!;
-      return titleBox.y + titleBox.height - (box.y + box.height);
-    })
-    .toBeCloseTo(0, 0);
-
-  await doingTitle.evaluate((element) =>
-    element.scrollIntoView({ block: "start" }),
-  );
-  expect((await doingTitle.boundingBox())!.y).toBeCloseTo(stickyTop, 0);
-  const oldTitleBox = (await title.boundingBox())!;
-  expect(oldTitleBox.y + oldTitleBox.height).toBeLessThanOrEqual(stickyTop);
+  await expect(page.getByRole("menu", { name: "Tab actions" })).toHaveCount(0);
 });

@@ -1,10 +1,11 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { authProfile, signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("1. PC 로그인 계정 이미지와 이름 영역을 20% 줄인다", async ({
+test("1. PC 계정 영역을 좌우 4px씩 줄이고 아이콘 hover 효과를 제거한다", async ({
   page,
   context,
 }) => {
@@ -30,6 +31,20 @@ test("1. PC 로그인 계정 이미지와 이름 영역을 20% 줄인다", async
   await expect(account.locator("span")).toHaveText(authProfile.nickname);
   const container = (await page.locator(".footer-auth").boundingBox())!;
   const button = (await account.boundingBox())!;
-  expect(container.width).toBeCloseTo(116 * 0.8, 1);
+  expect(container.width).toBeCloseTo(84.8, 1);
   expect(button.width).toBeCloseTo(container.width, 1);
+
+  const commands = [
+    page.locator(".group-select-command"),
+    page.locator(".dashboard-command"),
+    account,
+  ];
+  for (const command of commands) {
+    await command.hover();
+    const hoverDecoration = await command.evaluate((element) => {
+      const style = getComputedStyle(element, "::after");
+      return [style.content, style.borderLeftWidth, style.borderRightWidth];
+    });
+    expect(hoverDecoration).toEqual(["none", "0px", "0px"]);
+  }
 });

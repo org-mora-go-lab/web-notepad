@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../../../5-shared/style/variable" as v;
 
 .group {
@@ -12,6 +13,7 @@
 
   .system-group-command,
   .more-command {
+    position: relative;
     flex: 1 1 0;
     min-width: 0;
     min-height: 42px;
@@ -30,8 +32,26 @@
     &:hover,
     &:focus-visible,
     &[aria-expanded="true"] {
-      background: v.$line;
+      background: transparent;
       color: v.$ink;
+    }
+
+    &::before {
+      position: absolute;
+      z-index: 0;
+      inset: 5% 10%;
+      border-radius: 4px;
+      content: "";
+      pointer-events: none;
+    }
+
+    &[aria-expanded="true"]::before {
+      background: v.$line;
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
     }
 
     &:focus-visible {
@@ -50,7 +70,16 @@
   @media (hover: hover) and (pointer: fine) {
     .system-group-command:hover,
     .more-command:hover {
-      background: rgb(180 180 180 / 18%);
+      background: transparent;
+      box-shadow: none;
+
+      &::before {
+        background: rgb(180 180 180 / 18%);
+      }
+
+      &::after {
+        display: none;
+      }
     }
   }
 
@@ -105,8 +134,16 @@
   }
 
   @media (min-width: 513px) {
+    .group-more {
+      box-sizing: border-box;
+      height: var(--footer-height);
+      padding-block: 6px;
+    }
+
     .system-group-command,
     .more-command {
+      min-height: 35px;
+      height: 35px;
       font-size: v.font(14px);
 
       > svg {

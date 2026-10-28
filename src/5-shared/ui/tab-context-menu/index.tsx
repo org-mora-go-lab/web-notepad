@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 "use client";
 
 import {
@@ -18,7 +19,6 @@ import type { TabContextMenuProps } from "./type";
 export function TabContextMenu({
   left,
   top,
-  moveGroupFirst = false,
   deleteOnly = false,
   bookmarked,
   targetGroups,
@@ -123,24 +123,23 @@ export function TabContextMenu({
             </button>
           ) : (
             <>
-              {moveGroupFirst && moveGroupButton}
-              <button type="button" role="menuitem" onClick={onToggleBookmark}>
-                <Bookmark size={14} />
-                <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
-              </button>
               {onCopyLink && (
                 <button type="button" role="menuitem" onClick={onCopyLink}>
                   <Link2 size={14} />
                   <span>{t.tabLink}</span>
                 </button>
               )}
+              <button type="button" role="menuitem" onClick={onToggleBookmark}>
+                <Bookmark size={14} />
+                <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
+              </button>
+              {moveGroupButton}
               {onCloseTab && (
                 <button type="button" role="menuitem" onClick={onCloseTab}>
                   <Archive size={14} />
                   <span>{t.closedTitle}</span>
                 </button>
               )}
-              {!moveGroupFirst && moveGroupButton}
             </>
           )}
         </>

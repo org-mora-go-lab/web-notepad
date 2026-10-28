@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import {
@@ -14,7 +15,7 @@ test("1. 기본 사이드바는 My Group 목록과 하단 시스템 그룹을 �
 
   const items = page.locator(".group-item");
   const systemGroups = await openSystemGroupMenu(page);
-  await expect(systemGroups.getByRole("button")).toHaveText([
+  await expect(systemGroups.locator(":scope > button")).toHaveText([
     "All Group",
     "Ungrouped",
   ]);
