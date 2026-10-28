@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import {
-  openMoreMenu,
+  openSystemGroupMenu,
   readStoredState,
   writeStoredState,
 } from "../../__util__";
@@ -21,7 +21,7 @@ test("6. 줄을 줄인 노트를 재방문하면 범위 밖 줄 선택만 제거
   await page.reload();
   await expect(page.locator("textarea")).toHaveValue("one");
   await (
-    await openMoreMenu(page)
+    await openSystemGroupMenu(page)
   )
     .getByRole("button", { name: "Ungrouped", exact: true })
     .click();

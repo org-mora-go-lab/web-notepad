@@ -21,6 +21,8 @@ const getBodyWithoutTitle = (content: string, title: string) => {
 
 export function BookmarkItem({
   bookmark,
+  groupId,
+  groupName,
   onOpen,
   onRemove,
 }: BookmarkItemProps) {
@@ -37,20 +39,21 @@ export function BookmarkItem({
           {formatDate(bookmark.createdAt)}
         </time>
       </div>
+      <span className="bookmark-item-group">{groupName}</span>
       {body.trim() ? (
         <p className="bookmark-item-content">{body}</p>
       ) : (
         <p className="bookmark-item-content is-empty" aria-hidden="true" />
       )}
       <div className="bookmark-actions">
-        <button type="button" onClick={() => onOpen(bookmark.id)}>
+        <button type="button" onClick={() => onOpen(groupId, bookmark.id)}>
           <BookmarkIcon size={14} />
           {t.open}
         </button>
         <button
           className="remove-bookmark"
           type="button"
-          onClick={() => onRemove(bookmark.id)}
+          onClick={() => onRemove(groupId, bookmark.id)}
           aria-label={t.removeBookmarkFor(bookmark.title)}
           title={t.removeBookmark}
         >

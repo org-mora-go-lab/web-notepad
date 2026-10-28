@@ -15,11 +15,11 @@ test("4. Ungrouped의 잘못된 고정 상태는 해제한다", async ({ page })
     ],
   });
   await page.getByRole("button", { name: "Toggle groups" }).click();
-  await page.locator(".more-command").click();
+  await page.locator(".system-group-command").click();
   await expect(
     page.getByRole("button", { name: "Ungrouped", exact: true }),
   ).toBeVisible();
   await expect(
-    page.locator(".group-more-menu .group-pin-indicator"),
+    page.locator(".group-system-menu .group-pin-indicator"),
   ).toHaveCount(0);
 });

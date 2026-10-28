@@ -17,9 +17,11 @@ test("4. 기본 Ungrouped 그룹은 삭제할 수 없다", async ({ page }) => {
     page.getByRole("button", { name: "Delete Work group", exact: true }),
   ).toBeVisible();
   await groupActionsButton(page, "Work").click();
-  await page.locator(".more-command").click();
+  await page.locator(".system-group-command").click();
   await expect(
-    page.locator("#group-more-menu").getByRole("button", { name: "Ungrouped" }),
+    page
+      .locator("#group-system-menu")
+      .getByRole("button", { name: "Ungrouped" }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Delete Ungrouped group" }),

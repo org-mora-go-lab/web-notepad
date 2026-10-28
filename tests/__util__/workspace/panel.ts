@@ -1,12 +1,12 @@
 import { expect, type Page } from "@playwright/test";
 
-import { openAccountMenu } from "./account";
-
 // The group button on the left of the bottom bar (icon + current group name).
 export const groupsCommand = (page: Page) =>
   page.locator(".group-select-command");
 export const groupSelectCommand = (page: Page) =>
   page.locator(".group-select-command");
+export const systemGroupCommand = (page: Page) =>
+  page.locator(".group .system-group-command");
 export const moreCommand = (page: Page) => page.locator(".group .more-command");
 export async function openBookmarksPanel(page: Page) {
   const menu = await openMoreMenu(page);
@@ -26,6 +26,14 @@ export async function openMoreMenu(page: Page) {
     await groupsCommand(page).click();
   const menu = page.locator("#group-more-menu");
   if (!(await menu.isVisible())) await moreCommand(page).click();
+  return menu;
+}
+
+export async function openSystemGroupMenu(page: Page) {
+  if ((await groupsCommand(page).getAttribute("aria-expanded")) !== "true")
+    await groupsCommand(page).click();
+  const menu = page.locator("#group-system-menu");
+  if (!(await menu.isVisible())) await systemGroupCommand(page).click();
   return menu;
 }
 
@@ -50,9 +58,9 @@ export async function openPanel(page: Page, panelId: string) {
     } else {
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
-          const account = await openAccountMenu(page);
-          await account
-            .getByRole("menuitem", { name: /SETTINGS|설정/i })
+          const more = await openMoreMenu(page);
+          await more
+            .getByRole("button", { name: /SETTINGS|설정/i })
             .press("Enter", { timeout: 1500 });
           await expect(page.locator("#settings-panel")).toHaveAttribute(
             "aria-hidden",
@@ -115,7 +123,7 @@ export async function createGroups(page: Page, ...names: string[]) {
 // Opens the group sidebar, selects the group with the exact name and closes it when needed.
 export async function switchGroup(page: Page, name: string) {
   if (name === "All Group" || name === "Ungrouped") {
-    const menu = await openMoreMenu(page);
+    const menu = await openSystemGroupMenu(page);
     await menu.getByRole("button", { name, exact: true }).click();
     if ((await groupsCommand(page).getAttribute("aria-expanded")) === "true")
       await page.keyboard.press("Escape");

@@ -10,11 +10,9 @@ test("7. PC와 모바일 더보기에는 설정을 표시하고 그룹 알림은
     await page.setViewportSize({ width, height: 844 });
     const menu = await openMoreMenu(page);
     await expect(menu.getByRole("button")).toHaveText([
-      "All Group",
-      "Ungrouped",
       "GUIDE",
       "SEARCH",
-      "Bookmark",
+      "BOOKMARK",
       "SETTINGS",
     ]);
     await expect(menu.getByRole("button", { name: /Alarm|알람/ })).toHaveCount(

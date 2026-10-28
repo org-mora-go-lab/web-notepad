@@ -6,6 +6,7 @@ import {
   groupActionsButton,
   groupsCommand,
   moreCommand,
+  systemGroupCommand,
 } from "../../__util__";
 
 test("1. 아이콘으로 여는 드롭다운의 바깥 모서리는 모두 5px이다", async ({
@@ -27,6 +28,11 @@ test("1. 아이콘으로 여는 드롭다운의 바깥 모서리는 모두 5px�
     "5px",
   );
 
+  await systemGroupCommand(page).click();
+  await expect(page.locator(".group-system-menu")).toHaveCSS(
+    "border-radius",
+    "5px",
+  );
   await moreCommand(page).click();
   await expect(page.locator(".group-more-menu")).toHaveCSS(
     "border-radius",

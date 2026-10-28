@@ -14,6 +14,10 @@
     color: v.$ink;
   }
 
+  &[aria-haspopup="menu"]:hover {
+    background: transparent;
+  }
+
   &[aria-disabled="true"],
   &:disabled {
     cursor: wait;

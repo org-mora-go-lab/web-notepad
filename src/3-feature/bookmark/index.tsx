@@ -9,13 +9,18 @@ import { BookmarkItem } from "./component";
 import type { BookmarkProps } from "./type";
 
 export function Bookmark({
-  bookmarks,
+  groups,
   open,
   onClose,
   onOpen,
   onRemove,
 }: BookmarkProps) {
   const { t } = useI18n();
+  const bookmarks = groups
+    .flatMap((group) =>
+      group.bookmarks.map((bookmark) => ({ group, bookmark })),
+    )
+    .sort((left, right) => right.bookmark.createdAt - left.bookmark.createdAt);
 
   return (
     <CornerPopover
@@ -35,10 +40,12 @@ export function Bookmark({
             message={t.emptyBookmarks}
           />
         ) : (
-          bookmarks.map((bookmark) => (
+          bookmarks.map(({ group, bookmark }) => (
             <BookmarkItem
-              key={bookmark.id}
+              key={`${group.id}:${bookmark.id}`}
               bookmark={bookmark}
+              groupId={group.id}
+              groupName={group.name}
               onOpen={onOpen}
               onRemove={onRemove}
             />

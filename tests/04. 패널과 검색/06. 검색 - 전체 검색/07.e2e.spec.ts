@@ -14,8 +14,8 @@ test("7. 메뉴 검색은 중앙 모달로 열리고 Escape와 배경 클릭으�
     const popup = page.locator("#global-search-popup");
     const bounds = (await popup.boundingBox())!;
     const trigger = page.locator(".group-select-command");
-    expect(bounds.width).toBeCloseTo(Math.min(420, viewport.width - 32), 0);
-    expect(bounds.height).toBeCloseTo(Math.min(416, viewport.height - 32), 0);
+    expect(bounds.width).toBeCloseTo(Math.min(546, viewport.width - 32), 0);
+    expect(bounds.height).toBeCloseTo(Math.min(540.8, viewport.height - 32), 0);
     expect(bounds.x + bounds.width / 2).toBeCloseTo(viewport.width / 2, 0);
     expect(bounds.y + bounds.height / 2).toBeCloseTo(viewport.height / 2, 0);
     expect(await popup.evaluate((element) => element.matches(":modal"))).toBe(

@@ -4,15 +4,20 @@
   .group-more {
     position: relative;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
     padding: 6px 14px;
     border-top: 1px solid v.$line;
   }
 
+  .system-group-command,
   .more-command {
-    width: 100%;
+    flex: 1 1 0;
+    min-width: 0;
     min-height: 42px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     padding: 0 8px;
     border: 0;
@@ -35,10 +40,17 @@
     }
   }
 
+  .group-more-divider {
+    width: 1px;
+    height: 24px;
+    flex: 0 0 1px;
+    background: v.$line;
+  }
+
+  .group-system-menu,
   .group-more-menu {
     position: absolute;
     bottom: calc(100% + 7px);
-    left: 14px;
     z-index: 90;
     width: max-content;
     min-width: 160px;
@@ -77,14 +89,18 @@
     }
   }
 
-  .group-more-separator {
-    height: 1px;
-    margin: 5px 8px;
-    background: v.$line;
+  .group-system-menu {
+    left: 14px;
+  }
+
+  .group-more-menu {
+    right: 14px;
   }
 
   @media (max-width: 512px) {
+    .system-group-command,
     .more-command,
+    .group-system-menu button,
     .group-more-menu button {
       min-height: 44px;
     }

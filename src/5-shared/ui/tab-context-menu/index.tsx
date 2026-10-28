@@ -6,6 +6,7 @@ import {
   ArrowRight,
   Bookmark,
   FolderInput,
+  Link2,
   Trash2,
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -23,6 +24,7 @@ export function TabContextMenu({
   targetGroups,
   onMoveToGroup,
   onToggleBookmark,
+  onCopyLink,
   onCloseTab,
   onDeleteTab,
   onClose,
@@ -126,6 +128,12 @@ export function TabContextMenu({
                 <Bookmark size={14} />
                 <span>{bookmarked ? t.removeBookmark : t.addBookmark}</span>
               </button>
+              {onCopyLink && (
+                <button type="button" role="menuitem" onClick={onCopyLink}>
+                  <Link2 size={14} />
+                  <span>{t.tabLink}</span>
+                </button>
+              )}
               {onCloseTab && (
                 <button type="button" role="menuitem" onClick={onCloseTab}>
                   <Archive size={14} />

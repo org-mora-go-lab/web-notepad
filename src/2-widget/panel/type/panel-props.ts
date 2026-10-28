@@ -1,12 +1,7 @@
 import type { ComponentProps } from "react";
 
 import type { Bookmark, Dashboard, GlobalSearch, Group } from "@/src/3-feature";
-import type {
-  BookmarkEntry,
-  GroupEntry,
-  NoteTab,
-  TabColor,
-} from "@/src/4-entity/notepad";
+import type { GroupEntry, NoteTab, TabColor } from "@/src/4-entity/notepad";
 import type { ViewPanel } from "@/src/5-shared";
 
 export type PanelProps = {
@@ -20,7 +15,6 @@ export type PanelProps = {
   >["onVisibilityChange"];
   openPanel: ViewPanel | null;
   backgroundPanel: ViewPanel | null;
-  bookmarks: BookmarkEntry[];
   activeGroupTabs: NoteTab[];
   activeTabId?: string;
   tabColorCycle: TabColor[];

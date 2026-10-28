@@ -4,6 +4,13 @@
 .bookmark {
   @include mixin.note-card("bookmark");
 
+  .bookmark-item-group {
+    display: block;
+    margin-top: 6px;
+    color: v.$muted;
+    font-size: v.font(12px);
+  }
+
   .bookmark-item-content {
     margin: 18px 0;
     color: v.$saved;

@@ -16,7 +16,7 @@
     p {
       margin: 10px 0 0;
       color: v.$muted;
-      font-size: v.font(13px);
+      font-size: v.font(15px);
       line-height: 1.7;
     }
   }
@@ -25,7 +25,7 @@
     align-items: center;
     gap: 7px;
     color: v.$signal;
-    font: 500 v.font(11px) v.$mono;
+    font: 500 v.font(13px) v.$mono;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -43,7 +43,7 @@
     background: transparent;
     color: v.$ink;
     font: inherit;
-    font-size: v.font(13px);
+    font-size: v.font(15px);
     text-decoration: none;
     cursor: pointer;
     &:hover {
@@ -83,6 +83,9 @@
       flex: 0 0 auto;
     }
   }
+  .search-field input {
+    font-size: v.font(16px);
+  }
   .board-detail-actions {
     display: flex;
     flex-wrap: wrap;
@@ -101,7 +104,7 @@
     min-width: 0;
     max-width: 240px;
     color: v.$muted;
-    font-size: v.font(13px);
+    font-size: v.font(15px);
     svg {
       flex: 0 0 16px;
     }
@@ -123,7 +126,7 @@
     min-width: 620px;
     border-collapse: collapse;
     text-align: left;
-    font-size: v.font(13px);
+    font-size: v.font(15px);
     th,
     td {
       padding: 14px 16px;
@@ -169,10 +172,6 @@
       flex: 0 0 auto;
       color: v.$signal;
     }
-    svg:last-child {
-      margin-left: auto;
-      color: v.$muted;
-    }
   }
   .board-card-top,
   .board-meta,
@@ -187,7 +186,7 @@
     color: v.$muted;
   }
   .board-group-name {
-    font-size: v.font(11px);
+    font-size: v.font(13px);
     color: v.$muted;
     overflow-wrap: anywhere;
   }
@@ -196,7 +195,7 @@
     column-gap: 14px;
     row-gap: 7px;
     color: v.$muted;
-    font: v.font(11px) v.$mono;
+    font: v.font(13px) v.$mono;
     time {
       margin-left: auto;
     }
@@ -205,11 +204,11 @@
     padding: 38px 10px;
     text-align: center;
     color: v.$muted;
-    font-size: v.font(13px);
+    font-size: v.font(15px);
     line-height: 1.7;
     h3 {
       color: v.$ink;
-      font-size: v.font(16px);
+      font-size: v.font(18px);
       font-weight: 500;
     }
   }
@@ -219,7 +218,7 @@
     gap: 18px;
     h3 {
       margin: 0;
-      font-size: v.font(23px);
+      font-size: v.font(25px);
       font-weight: 500;
       line-height: 1.4;
       overflow-wrap: anywhere;
@@ -230,7 +229,7 @@
     overflow-wrap: anywhere;
     margin: 4px 0 12px;
     line-height: 1.9;
-    font-size: v.font(14px);
+    font-size: v.font(16px);
   }
   .board-join-hint {
     margin: 0;
@@ -238,12 +237,12 @@
     border-left: 2px solid v.$signal;
     background: v.$raised;
     color: v.$muted;
-    font-size: v.font(12px);
+    font-size: v.font(14px);
     line-height: 1.7;
   }
   .board-error {
     color: v.$tab-red;
-    font-size: v.font(13px);
+    font-size: v.font(15px);
     line-height: 1.7;
   }
   .board-copy-status {
@@ -260,6 +259,9 @@
     button,
     a.board-primary {
       min-height: 44px;
+    }
+    .search-field input {
+      font-size: v.font(14px * v.$mobile-scale + 2px);
     }
   }
 }

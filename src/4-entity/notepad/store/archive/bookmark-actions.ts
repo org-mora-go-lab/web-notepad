@@ -119,9 +119,9 @@ export const createBookmarkActions: StateCreator<
       nextTabNumber: Math.max(state.nextTabNumber, number + 1),
     });
   },
-  removeBookmark: (bookmarkId) =>
+  removeBookmark: (groupId, bookmarkId) =>
     set((state) => {
-      const group = getActiveGroup(state);
+      const group = state.groups.find((item) => item.id === groupId);
       if (!group) return state;
       const bookmark = group.bookmarks.find((item) => item.id === bookmarkId);
       if (!bookmark) return state;
