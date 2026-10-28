@@ -1,4 +1,5 @@
 import "@/src/5-shared/style/global.scss";
+import "@/src/3-feature/theme/index.scss";
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: HomeLayoutProps) {
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
-      <body>
+      <body className="youtube-theme">
         <ThemeInitialization />
         {children}
       </body>

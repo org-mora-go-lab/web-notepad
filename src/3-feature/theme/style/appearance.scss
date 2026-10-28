@@ -1,0 +1,215 @@
+@use "../../../5-shared/style/variable" as v;
+
+// Keep brand accents separate from the persisted tab/status palette.
+body.youtube-theme {
+  font-family: v.$sans;
+
+  .home {
+    background-image: none;
+  }
+
+  .note-editor {
+    font-family: v.$mono;
+  }
+
+  :is(button, a, input, textarea):focus-visible {
+    outline-color: var(--theme-accent);
+  }
+
+  :is(
+    .auth-menu,
+    .footer-more-menu,
+    .group-action-dropdown,
+    .tab-context-menu
+  ) {
+    border-radius: 12px;
+    box-shadow: var(--theme-shadow);
+    font-family: v.$sans;
+
+    :is(button, a) {
+      border-radius: 8px;
+      font-family: inherit;
+    }
+  }
+
+  :is(.corner-popover, .global-search, .confirm-popup) {
+    border-radius: 12px;
+    box-shadow: var(--theme-shadow);
+  }
+
+  :is(.side-panel-action, .side-panel-close, .confirm-popup-close) {
+    border-radius: 50%;
+    border-color: transparent;
+    background: var(--theme-hover);
+    color: var(--color-ink);
+  }
+
+  .dashboard .dashboard-options-menu {
+    border-radius: 12px;
+    box-shadow: var(--theme-shadow);
+    button {
+      border-radius: 8px;
+    }
+  }
+
+  .search-field {
+    border-radius: 999px;
+    background: var(--color-pit);
+
+    &:focus-within {
+      border-color: #3ea6ff;
+    }
+  }
+
+  .group {
+    .group-sidebar-header h2 {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 650;
+      letter-spacing: -0.04em;
+
+      &::before {
+        content: "";
+        width: 25px;
+        height: 18px;
+        flex-shrink: 0;
+        border-radius: 6px;
+        background: var(--theme-accent);
+        clip-path: polygon(
+          0 0,
+          100% 0,
+          100% 100%,
+          0 100%,
+          0 0,
+          40% 25%,
+          40% 75%,
+          70% 50%,
+          40% 25%,
+          0 0
+        );
+      }
+    }
+
+    :is(.group-item, .group-system-item) {
+      border-radius: 10px;
+
+      strong {
+        color: var(--color-ink);
+      }
+    }
+
+    :is(.group-create-form input, .group-create-form > button) {
+      border-radius: 8px;
+    }
+
+    .group-sidebar-header > button {
+      border: 0;
+      border-radius: 50%;
+      background: var(--theme-hover);
+    }
+  }
+
+  .group .group-action-dropdown {
+    border-radius: 12px;
+    box-shadow: var(--theme-shadow);
+    button {
+      border-radius: 8px;
+    }
+  }
+
+  .side-panel-drawer {
+    background: var(--color-drawer);
+  }
+
+  .header .tab-item {
+    border-radius: 8px 8px 0 0;
+  }
+
+  .footer {
+    :is(.status-command, .auth-command) {
+      border-radius: 999px;
+      font-weight: 500;
+
+      &:hover {
+        background: var(--theme-hover);
+      }
+    }
+
+    .status-command.is-active > :is(svg, .status-icon) {
+      color: var(--theme-accent);
+    }
+  }
+
+  .dashboard {
+    .dashboard-card {
+      border-radius: 12px;
+    }
+
+    .dashboard-card-open strong {
+      color: var(--color-ink);
+      font-weight: 650;
+    }
+
+    .dashboard-empty {
+      border-radius: 12px;
+    }
+  }
+
+  .setting {
+    :is(
+      .setting-option,
+      .setting-delete-all,
+      .setting-status-defaults input,
+      .setting-status-defaults button
+    ) {
+      border-radius: 8px;
+    }
+  }
+
+  :is(.side-panel-header, .board-page, .my-page) :is(h1, h2) {
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  .board {
+    :is(button, a.board-primary) {
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .board-primary {
+      background: var(--theme-accent) !important;
+      border-color: var(--theme-accent);
+      color: var(--theme-accent-ink) !important;
+    }
+
+    .board-eyebrow {
+      color: var(--theme-accent);
+      font-family: v.$sans;
+      font-weight: 650;
+    }
+
+    :is(.board-detail, .board-table-container, .board-empty) {
+      border-radius: 12px;
+      overflow: auto;
+    }
+  }
+
+  .my-page {
+    :is(
+      .my-page-profile,
+      .my-page-sync,
+      .my-page-notice,
+      .my-page-metrics > div,
+      .my-page-sync-skeleton,
+      .my-page-metrics-skeleton > span
+    ) {
+      border-radius: 12px;
+    }
+
+    :is(a, button) {
+      border-radius: 999px;
+    }
+  }
+}
