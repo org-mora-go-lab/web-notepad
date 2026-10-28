@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import {
@@ -14,10 +15,16 @@ test("4. 사이드바 아래 GROUP과 MORE 메뉴에서 기본 그룹과 가이�
   const sidebar = page.locator("#groups-menu");
   const system = sidebar.locator(".group-more");
   const systemGroups = await openSystemGroupMenu(page);
-  await expect(systemGroups.getByRole("button")).toHaveText([
+  await expect(systemGroups.locator(":scope > button")).toHaveText([
     "All Group",
     "Ungrouped",
   ]);
+  await expect(systemGroups.locator(":scope > :last-child")).toHaveClass(
+    "group-create-form",
+  );
+  await expect(
+    systemGroups.getByRole("textbox", { name: "New group name" }),
+  ).toBeVisible();
   const sectionBox = (await sidebar.locator(".group-section").boundingBox())!;
   const systemBox = (await system.boundingBox())!;
   expect(systemBox.y).toBeGreaterThanOrEqual(sectionBox.y + sectionBox.height);

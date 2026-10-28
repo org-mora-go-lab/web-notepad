@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../../__constant__";
@@ -18,14 +19,14 @@ test("6. 선택한 폰트 비율을 탭·편집기·하단 메뉴·우측 패널
   });
   const footer = page.locator(".footer");
   await expectCssPx(editor, "fontSize", 15.1);
-  await expectCssPx(tabTitle, "fontSize", 11.5);
+  await expectCssPx(tabTitle, "fontSize", 13.5);
   await expectCssPx(panelTitle, "fontSize", 19.8);
   await expectCssPx(footer, "fontSize", 12.6);
 
   await fontScaleRadio(page, "120%").check();
   await expect(fontScaleRadio(page, "120%")).toBeChecked();
   await expectCssPx(editor, "fontSize", 20.8);
-  await expectCssPx(tabTitle, "fontSize", 16);
+  await expectCssPx(tabTitle, "fontSize", 18);
   await expectCssPx(panelTitle, "fontSize", 26.4);
   await expectCssPx(footer, "fontSize", 16.8);
 });

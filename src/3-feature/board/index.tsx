@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 "use client";
 
 import {
@@ -229,7 +230,6 @@ export function Board() {
                             className="board-entry"
                             data-group-id={post.id}
                           >
-                            <Layers size={16} aria-hidden="true" />
                             <strong>{post.title}</strong>
                           </button>
                         </th>

@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { openPanel } from "../../__util__";
@@ -14,8 +15,8 @@ test("1. PC에서 열린 탭 카드 메뉴로 북마크 상태를 전환한다",
 
   await card.click({ button: "right" });
   await expect(page.getByRole("menu").getByRole("menuitem")).toHaveText([
-    "Move Group",
     "Bookmark",
+    "Move Group",
   ]);
   await page.getByRole("menuitem", { name: "Bookmark", exact: true }).click();
 

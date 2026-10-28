@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
@@ -22,6 +23,9 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     "border-top-width",
     "1px",
   );
+  const groupMenuRow = (await page.locator(".group-more").boundingBox())!;
+  const statusBar = (await page.locator(".footer").boundingBox())!;
+  expect(groupMenuRow.height).toBe(statusBar.height);
 
   await page.setViewportSize(MOBILE_VIEWPORT);
   const dashboardBounds = (await page
@@ -42,7 +46,7 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
 
   await systemGroupCommand(page).click();
   await expect(
-    page.locator("#group-system-menu").getByRole("button"),
+    page.locator("#group-system-menu > button"),
   ).toHaveText(["All Group", "Ungrouped"]);
   await moreCommand(page).click();
   await expect(page.locator("#group-system-menu")).toHaveCount(0);

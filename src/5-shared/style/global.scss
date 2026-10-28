@@ -1,7 +1,8 @@
+path_helper: node.save: Permission denied
 @use "./variable" as v;
 
 :root {
-  --list-popup-width: min(546px, calc(100vw - 32px));
+  --list-popup-width: min(655.2px, calc(100vw - 32px));
   --list-popup-height: min(540.8px, calc(100dvh - 32px));
 }
 
@@ -82,48 +83,8 @@ button {
   color: inherit;
 }
 
-// Keep the hand cursor focused on the visual icon instead of applying it to
-// every clickable row, label and surrounding hit area.
 :is(button, a, [role="button"], [role="menuitem"]) {
   cursor: default;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  :is(button, a, [role="button"], [role="menuitem"]):hover :is(svg, img),
-  button.dirty-dot:hover {
-    cursor: pointer;
-  }
-
-  :is(button, a, [role="button"], [role="menuitem"]):has(:is(svg, img)):hover {
-    border-radius: 3px;
-    background-color: rgb(180 180 180 / 18%);
-    box-shadow: 0 0 0 4px rgb(180 180 180 / 18%);
-  }
-
-  :where(
-    :is(button, a, [role="button"], [role="menuitem"]):has(:is(svg, img)):has(
-        span
-      )
-  ) {
-    position: relative;
-  }
-
-  :is(button, a, [role="button"], [role="menuitem"]):has(:is(svg, img)):has(
-      span
-    ):hover::after {
-    position: absolute;
-    inset: -4px -6px;
-    border-inline: 2px solid rgb(180 180 180 / 18%);
-    border-radius: 7px;
-    content: "";
-    pointer-events: none;
-  }
-
-  svg:not(:is(button, a, [role="button"], [role="menuitem"]) svg):hover {
-    border-radius: 3px;
-    background: rgb(180 180 180 / 18%);
-    box-shadow: 0 0 0 4px rgb(180 180 180 / 18%);
-  }
 }
 
 // Keep icon-only controls optically centered across browsers, including iOS Safari.

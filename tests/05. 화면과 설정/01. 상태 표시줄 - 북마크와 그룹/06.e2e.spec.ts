@@ -1,7 +1,12 @@
+path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { groupsCommand, seedStoredStateOnLoad } from "../../__util__";
+import {
+  groupsCommand,
+  openSystemGroupMenu,
+  seedStoredStateOnLoad,
+} from "../../__util__";
 
 test("6. 오늘 생성되거나 변경된 그룹이 있으면 GROUP 아이콘에 붉은 점을 표시한다", async ({
   page,
@@ -22,6 +27,7 @@ test("6. 오늘 생성되거나 변경된 그룹이 있으면 GROUP 아이콘에
   await expect(dot).toHaveCount(0);
 
   await command.click();
+  await openSystemGroupMenu(page);
   await page.getByRole("textbox", { name: "New group name" }).fill("Work");
   await page.getByRole("button", { name: "Create group" }).click();
 

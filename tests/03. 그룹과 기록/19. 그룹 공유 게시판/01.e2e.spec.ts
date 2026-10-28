@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect } from "@playwright/test";
 
 import { boardTest as test } from "../../__fixture__";
@@ -22,12 +23,15 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
     "Members",
     "Updated",
   ]);
-  await expect(page.locator(".board-entry")).toHaveCount(1);
-  await expect(page.locator(".board-entry")).toContainText(boardPost.groupName);
-  await expect(page.locator(".board-table .board-owner")).toHaveText(
-    "Board owner",
-  );
-  await expect(page.locator(".board-table .board-owner svg")).toHaveCount(1);
+  const entry = page.locator(".board-entry").filter({
+    hasText: boardPost.groupName,
+  });
+  await expect(entry).toHaveCount(1);
+  await expect(entry.locator("svg")).toHaveCount(0);
+  await expect(entry).toHaveCSS("min-width", "150px");
+  const owner = entry.locator("xpath=ancestor::tr").locator(".board-owner");
+  await expect(owner).toHaveText("Board owner");
+  await expect(owner.locator("svg")).toHaveCount(1);
   await expect(
     page.getByRole("button", { name: "Publish a group" }),
   ).toHaveCount(0);

@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
@@ -11,6 +12,11 @@ test("1. 공유 그룹 탭의 Link는 그룹과 탭 주소를 복사한다", asy
     .locator(".tab-item .tab-select")
     .first()
     .click({ button: "right" });
+  await expect(owner.getByRole("menu").getByRole("menuitem")).toHaveText([
+    "Link",
+    "Bookmark",
+    "Move Group",
+  ]);
   await owner.getByRole("menuitem", { name: "Link", exact: true }).click();
 
   const copied = await owner.evaluate(() => navigator.clipboard.readText());

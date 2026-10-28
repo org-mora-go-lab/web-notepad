@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../../../5-shared/style/mixin";
 @use "../../../../5-shared/style/variable" as v;
 
@@ -47,6 +48,18 @@
         opacity: 0.45;
         cursor: default;
       }
+    }
+  }
+
+  .group-system-menu .group-create-form {
+    width: min(240px, calc(100vw - 38px));
+    margin: 5px 0 0;
+    padding: 10px 5px 5px;
+    border-top: 1px solid v.$line;
+    border-bottom: 0;
+
+    button {
+      padding: 0;
     }
   }
 

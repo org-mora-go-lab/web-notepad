@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../5-shared/style/variable" as v;
 @use "./style/menu";
 
@@ -65,6 +66,7 @@
     flex-direction: column;
   }
   .group-list {
+    position: relative;
     flex: 1;
     min-height: 0;
     display: flex;
@@ -135,11 +137,41 @@
     display: flex;
     flex-direction: column;
   }
+  .group-section-resizer {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    left: 0;
+    height: 10px;
+    cursor: row-resize;
+    touch-action: none;
+    transform: translateY(-50%);
+
+    &::before {
+      position: absolute;
+      top: 4px;
+      right: 18px;
+      left: 18px;
+      height: 2px;
+      background: transparent;
+      content: "";
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      background: v.$hover-line;
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
   .group-category h3 {
     flex-shrink: 0;
     margin: 0;
   }
   .group-section-toggle {
+    position: relative;
     width: 100%;
     min-height: 42px;
     padding: 8px 18px;
@@ -152,20 +184,46 @@
     color: v.$muted;
     font: 500 v.font(13px) v.$sans;
     text-align: left;
-    &:hover,
-    &:focus-visible {
-      background: v.$line;
+    &:hover {
+      background: transparent;
       color: v.$ink;
     }
     &:focus-visible {
+      background: v.$line;
+      color: v.$ink;
       outline: 2px solid v.$signal;
       outline-offset: -2px;
+    }
+    &::before {
+      position: absolute;
+      z-index: 0;
+      inset: 5% 10%;
+      border-radius: 3px;
+      content: "";
+      pointer-events: none;
+    }
+    > * {
+      position: relative;
+      z-index: 1;
     }
     svg {
       flex: 0 0 16px;
     }
   }
-  .group-category + .group-category .group-section-toggle {
+  @media (hover: hover) and (pointer: fine) {
+    .group-section-toggle:hover {
+      box-shadow: none;
+
+      &::before {
+        background: rgb(180 180 180 / 18%);
+      }
+
+      &::after {
+        display: none;
+      }
+    }
+  }
+  .group-section-resizer + .group-category .group-section-toggle {
     border-top: 1px solid v.$line;
   }
   .group-section-list {

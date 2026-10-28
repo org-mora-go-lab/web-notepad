@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect, type Page } from "@playwright/test";
 
 // The group button on the left of the bottom bar (icon + current group name).
@@ -109,6 +110,13 @@ export async function openGlobalSearchPanel(page: Page) {
 
 // Creates a group from the open group dropdown.
 export async function createGroup(page: Page, name: string) {
+  if (
+    !(await page
+      .getByRole("textbox", { name: "New group name" })
+      .isVisible()
+      .catch(() => false))
+  )
+    await openSystemGroupMenu(page);
   await page.getByRole("textbox", { name: "New group name" }).fill(name);
   await page.getByRole("button", { name: "Create group" }).click();
 }
@@ -117,7 +125,10 @@ export async function createGroup(page: Page, name: string) {
 export async function createGroups(page: Page, ...names: string[]) {
   await groupsCommand(page).click();
   for (const name of names) await createGroup(page, name);
-  await page.keyboard.press("Escape");
+  if (await page.locator("#group-system-menu").isVisible())
+    await page.keyboard.press("Escape");
+  if ((await groupsCommand(page).getAttribute("aria-expanded")) === "true")
+    await page.keyboard.press("Escape");
 }
 
 // Opens the group sidebar, selects the group with the exact name and closes it when needed.

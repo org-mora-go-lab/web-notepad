@@ -1,21 +1,28 @@
-import { expect, test } from "@playwright/test";
+path_helper: node.save: Permission denied
+import { expect } from "@playwright/test";
 
-import { dashboardColumn, openPanel, seedDashboardTabs } from "../../__util__";
+import { sharingTest as test } from "../../__fixture__";
+import { openPanel } from "../../__util__";
 
-test("6. 전체화면 대시보드의 Done 카드 우클릭 메뉴로 북마크를 전환한다", async ({
-  page,
+test("6. 공유 그룹 카드 메뉴의 Link는 공유 그룹과 탭 주소를 복사한다", async ({
+  sharing,
 }) => {
-  await seedDashboardTabs(page);
-  await openPanel(page, "dashboard-panel");
-  await page.locator(".dashboard-expand").click();
-  const card = dashboardColumn(page, "done").locator(".dashboard-card", {
-    hasText: "Gamma task",
-  });
-  await card.click({ button: "right" });
-  await expect(page.getByRole("menuitem")).toHaveText([
-    "Move Group",
+  const { owner, group } = sharing;
+  await owner.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await openPanel(owner, "dashboard-panel");
+  await owner.locator(".dashboard-card").first().click({ button: "right" });
+  await expect(owner.getByRole("menu").getByRole("menuitem")).toHaveText([
+    "Link",
     "Bookmark",
+    "Move Group",
   ]);
-  await page.getByRole("menuitem", { name: "Bookmark", exact: true }).click();
-  await expect(card.getByRole("img", { name: "Bookmarked" })).toBeVisible();
+  await owner.getByRole("menuitem", { name: "Link", exact: true }).click();
+  const url = new URL(
+    await owner.evaluate(() => navigator.clipboard.readText()),
+  );
+  expect(url.searchParams.get("group")).toBe(group.id);
+  expect(url.searchParams.get("leftTab")).toBe(group.tabs[0].id);
+  await expect(owner.locator(".tab-link-feedback")).toHaveText(
+    "Tab link copied",
+  );
 });
