@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
 import { moreCommand } from "../../__util__";
 
-test("1. PC와 모바일에서 더보기 버튼과 가이드·설정·검색·북마크 메뉴를 표시한다", async ({
+test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 메뉴를 표시한다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -35,5 +35,5 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·설정·검색·�
   await moreCommand(page).click();
   await expect(
     page.locator("#footer-more-menu").getByRole("button"),
-  ).toHaveText(["GUIDE", "SEARCH", "Bookmark", "BOARD"]);
+  ).toHaveText(["GUIDE", "SEARCH", "Bookmark"]);
 });
