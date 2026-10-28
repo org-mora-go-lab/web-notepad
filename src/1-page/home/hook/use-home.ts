@@ -150,15 +150,11 @@ export function useHome() {
     splitTabsLeft: splitTabsLeftAndRecord,
   });
 
-  // The search command sits on the top pane of the rightmost column.
-  const menuPane: PaneId = paneTabs.right.length > 0 ? "right" : "left";
-
   const createPaneProps = (pane: PaneId): PaneViewProps | null => {
     const paneTab = paneActiveTab(pane);
     if (!paneTab) return null;
     return {
       pane,
-      hasMenu: pane === menuPane,
       groups,
       activeGroupId,
       draggingTabId,

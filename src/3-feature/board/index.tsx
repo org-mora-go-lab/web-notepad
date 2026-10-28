@@ -3,6 +3,7 @@
 import {
   ArrowUpRight,
   ChevronLeft,
+  CircleUserRound,
   Clipboard,
   Layers,
   LogOut,
@@ -84,6 +85,14 @@ export function Board() {
               <Layers size={16} />
               {selected.groupName}
             </span>
+            <span
+              className="board-owner"
+              aria-label={t.boardOwnerColumn}
+              title={selected.ownerName || t.boardUnknownOwner}
+            >
+              <CircleUserRound size={16} aria-hidden="true" />
+              <span>{selected.ownerName || t.boardUnknownOwner}</span>
+            </span>
             <h3>{selected.title}</h3>
             <div className="board-meta">
               <span>
@@ -103,44 +112,49 @@ export function Board() {
                   ? t.boardMemberHint
                   : t.boardJoinHint}
             </p>
-            {selectedRole ? (
+            <div className="board-detail-actions">
+              {selectedRole ? (
+                <button
+                  ref={actionRef}
+                  type="button"
+                  className="board-primary board-access"
+                  onClick={() => {
+                    setAccessError(false);
+                    setAccessConfirm(true);
+                  }}
+                >
+                  <span>{accessLabel}</span>
+                  {selectedRole === "owner" ? (
+                    <Unlink size={17} aria-hidden="true" />
+                  ) : (
+                    <LogOut size={17} aria-hidden="true" />
+                  )}
+                </button>
+              ) : (
+                <a
+                  className="board-primary board-join"
+                  href={selected.inviteUrl}
+                >
+                  {t.boardJoin}
+                  <ArrowUpRight size={17} />
+                </a>
+              )}
               <button
-                ref={actionRef}
                 type="button"
-                className="board-primary board-access"
-                onClick={() => {
-                  setAccessError(false);
-                  setAccessConfirm(true);
+                className="board-copy"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(selected.inviteUrl);
+                    setCopied(true);
+                  } catch {
+                    setFailure(t.boardCopyError);
+                  }
                 }}
               >
-                <span>{accessLabel}</span>
-                {selectedRole === "owner" ? (
-                  <Unlink size={17} aria-hidden="true" />
-                ) : (
-                  <LogOut size={17} aria-hidden="true" />
-                )}
+                <span>{copied ? t.boardCopied : t.boardCopy}</span>
+                <Clipboard size={15} aria-hidden="true" />
               </button>
-            ) : (
-              <a className="board-primary board-join" href={selected.inviteUrl}>
-                {t.boardJoin}
-                <ArrowUpRight size={17} />
-              </a>
-            )}
-            <button
-              type="button"
-              className="board-copy"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(selected.inviteUrl);
-                  setCopied(true);
-                } catch {
-                  setFailure(t.boardCopyError);
-                }
-              }}
-            >
-              <span>{copied ? t.boardCopied : t.boardCopy}</span>
-              <Clipboard size={15} aria-hidden="true" />
-            </button>
+            </div>
           </article>
         ) : (
           <>
@@ -160,6 +174,7 @@ export function Board() {
                 <div aria-hidden="true">
                   {Array.from({ length: 5 }, (_, index) => (
                     <div className="board-skeleton-row" key={index}>
+                      <span />
                       <span />
                       <span />
                       <span />
@@ -187,6 +202,7 @@ export function Board() {
                   <thead>
                     <tr>
                       <th scope="col">{t.groupCategory}</th>
+                      <th scope="col">{t.boardOwnerColumn}</th>
                       <th scope="col">{t.boardNotesColumn}</th>
                       <th scope="col">{t.boardMembersColumn}</th>
                       <th scope="col">{t.boardUpdatedColumn}</th>
@@ -214,6 +230,15 @@ export function Board() {
                             <ArrowUpRight size={16} aria-hidden="true" />
                           </button>
                         </th>
+                        <td>
+                          <span
+                            className="board-owner"
+                            title={post.ownerName || t.boardUnknownOwner}
+                          >
+                            <CircleUserRound size={16} aria-hidden="true" />
+                            <span>{post.ownerName || t.boardUnknownOwner}</span>
+                          </span>
+                        </td>
                         <td>{post.noteCount}</td>
                         <td>{post.memberCount}</td>
                         <td>

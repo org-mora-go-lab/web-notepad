@@ -4,16 +4,23 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
   page,
 }) => {
   await page.goto("/");
-  const commands = page.locator(".status-meta .status-command:visible");
+  await expect(page.locator(".auth-command:not(.is-loading)")).toBeVisible();
+  const commands = page.locator(
+    ".status-meta .status-command:visible, .footer .auth-command",
+  );
   for (const width of [320, 390, 512, 513, 640, 1280]) {
     await page.setViewportSize({ width, height: 844 });
-    const count = 3;
+    const count = 4;
     await expect(commands).toHaveCount(count);
     const group = (await page.locator(".group-select-command").boundingBox())!;
     const dashboard = (await page.locator(".dashboard-command").boundingBox())!;
     const more = (await page.locator(".more-command").boundingBox())!;
     expect(group.x).toBeLessThan(dashboard.x);
-    expect(dashboard.x).toBeLessThan(more.x);
+    expect(more.x).toBeLessThan(dashboard.x);
+    const account = (await page
+      .locator(".footer .auth-command")
+      .boundingBox())!;
+    expect(dashboard.x).toBeLessThan(account.x);
     for (const command of await commands.all()) {
       await expect(command).toBeInViewport();
       const bounds = (await command.boundingBox())!;

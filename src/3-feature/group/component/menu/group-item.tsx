@@ -8,7 +8,6 @@ import {
   Pin,
   Share2,
   Trash2,
-  Unlink,
   X,
 } from "lucide-react";
 import {
@@ -50,7 +49,6 @@ export function GroupItem({
   onShare,
 }: GroupItemProps) {
   const { t } = useI18n();
-  const canCancelSharing = shared && sharingRole === "owner" && sharingActive;
   const [editingName, setEditingName] = useState<string | null>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -239,33 +237,17 @@ export function GroupItem({
               )}
               {editable && (
                 <>
-                  {(!shared || sharingRole === "owner") && (
+                  {(!shared || (sharingRole === "owner" && !sharingActive)) && (
                     <button
                       type="button"
-                      aria-label={
-                        canCancelSharing
-                          ? t.revokeGroupShare
-                          : t.shareGroupFor(name)
-                      }
-                      onClick={(event) => {
-                        const anchor =
-                          actionsRef.current?.querySelector<HTMLButtonElement>(
-                            "button",
-                          ) ?? event.currentTarget;
+                      aria-label={t.shareGroupFor(name)}
+                      onClick={() => {
                         onToggleActions();
-                        if (canCancelSharing)
-                          onChangeSharing?.("revoke", anchor);
-                        else onShare();
+                        onShare();
                       }}
                     >
-                      {canCancelSharing ? (
-                        <Unlink size={16} />
-                      ) : (
-                        <Share2 size={16} />
-                      )}
-                      <span>
-                        {canCancelSharing ? t.revokeGroupShare : t.shareGroup}
-                      </span>
+                      <Share2 size={16} />
+                      <span>{t.shareGroup}</span>
                     </button>
                   )}
                   <button

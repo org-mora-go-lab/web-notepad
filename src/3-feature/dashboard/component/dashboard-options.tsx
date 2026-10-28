@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { useNotepadStore } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 
 import type { DashboardOptionsProps } from "../type";
@@ -22,6 +23,9 @@ export function DashboardOptions({
   onToggleDone,
 }: DashboardOptionsProps) {
   const { t } = useI18n();
+  const defaults = useNotepadStore(
+    (state) => state.settings.dashboardStatusDefaults,
+  );
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -77,7 +81,7 @@ export function DashboardOptions({
             onClick={onToggleIcebox}
           >
             <StickyNote size={18} strokeWidth={1.8} />
-            <span>{statusNames.icebox ?? t.icebox}</span>
+            <span>{statusNames.icebox ?? defaults.icebox ?? t.icebox}</span>
             {iceboxVisible && (
               <Check className="dashboard-option-check" size={16} />
             )}
@@ -89,7 +93,7 @@ export function DashboardOptions({
             onClick={onToggleDone}
           >
             <CircleCheck size={18} strokeWidth={1.8} />
-            <span>{statusNames.done ?? t.statusDone}</span>
+            <span>{statusNames.done ?? defaults.done ?? t.statusDone}</span>
             {doneVisible && (
               <Check className="dashboard-option-check" size={16} />
             )}

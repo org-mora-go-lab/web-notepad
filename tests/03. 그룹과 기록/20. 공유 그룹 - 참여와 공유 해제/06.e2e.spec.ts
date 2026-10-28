@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { getApi } from "../../__util__/request";
 import { sharingTest as test } from "./__fixture__";
 
 test("6. 나가기와 공유 취소는 인증과 소유권 및 요청 출처를 검사한다", async ({
@@ -24,7 +25,8 @@ test("6. 나가기와 공유 취소는 인증과 소유권 및 요청 출처를 
       })
     ).status(),
   ).toBe(403);
-  const groups = (await (await guest.request.get("/api/groups")).json()).groups;
+  const groups = (await (await getApi(guest.request, "/api/groups")).json())
+    .groups;
   expect(
     (
       await guest.request.post("/api/groups/share", {

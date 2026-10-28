@@ -3,11 +3,10 @@
 import "./index.scss";
 
 import { useRouter } from "next/navigation";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 
 import { useCloudSave, useHome, useSharedGroups } from "@/src/1-page/home/hook";
 import { Footer, Panel } from "@/src/2-widget";
-import { useNotepadStore } from "@/src/4-entity/notepad";
 import { MESSAGES } from "@/src/5-shared/constant";
 import {
   AccountActionsContext,
@@ -68,7 +67,6 @@ export function Home() {
   } = useHome();
   const { status: cloudSaveStatus, savingTabIds } = useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { inviteStatus, dismissInvite } = shared;
   const entryOpened = useRef(false);
   const inviteRef = useRef<HTMLElement>(null);
@@ -153,10 +151,6 @@ export function Home() {
             closeGroupMenu();
             if (openPanel !== "settings") toggleSidePanel("settings");
           },
-          onOpenNotifications: () => {
-            setNotificationsOpen(true);
-            void shared.refreshNotifications();
-          },
         }}
       >
         <GroupSharingContext
@@ -196,29 +190,10 @@ export function Home() {
                   groupsOpen={groupMenuOpen}
                   onToggleDashboard={() => toggleSidePanel("dashboard")}
                   onToggleGroups={toggleGroupMenu}
-                  onOpenBoard={() => router.push("/board")}
                   onOpenShortcuts={() => toggleSidePanel("shortcuts")}
                   onToggleBookmarks={() => toggleSidePanel("bookmarks")}
                   onToggleSearch={() => toggleSidePanel("global-search")}
                   searchOpen={openPanel === "global-search"}
-                  notificationsOpen={notificationsOpen}
-                  onNotificationsOpenChange={setNotificationsOpen}
-                  notifications={shared.notifications}
-                  onClearNotifications={shared.clearNotifications}
-                  onOpenNotification={async (item) => {
-                    await shared.refreshGroups();
-                    const group = useNotepadStore
-                      .getState()
-                      .groups.find((group) => group.id === item.groupId);
-                    if (!group) return;
-                    void shared.markNotificationsRead(item.id);
-                    selectGroupAndClosePanel(group.id);
-                    const tab =
-                      group.tabs.find((tab) => tab.id === item.tabId) ??
-                      group.tabs.find((tab) => tab.open) ??
-                      group.tabs[0];
-                    if (tab) openTabAndClosePanel(tab.id);
-                  }}
                 />
               </section>
 

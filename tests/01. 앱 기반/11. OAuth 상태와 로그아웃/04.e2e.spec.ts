@@ -1,11 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 import { OAUTH_COOKIE, SESSION_COOKIE } from "../../__fixture__";
+import { getApi } from "../../__util__/request";
 
 test("4. 쿠키와 다른 상태값의 콜백은 인증을 거부하고 상태 쿠키를 지운다", async ({
   request,
 }) => {
-  const response = await request.get(
+  const response = await getApi(
+    request,
     "/api/auth/oauth/kakao/callback?code=unused&state=wrong",
     { maxRedirects: 0, headers: { Cookie: OAUTH_COOKIE + "=expected" } },
   );

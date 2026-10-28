@@ -9,13 +9,14 @@ import {
   readStoredState,
   writeStoredState,
 } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("4. 공유 그룹은 개인 색상 설정이 달라도 같은 상태와 컬럼 순서를 복원한다", async ({
   sharing: { owner, guest, id },
 }) => {
   test.setTimeout(60000);
   const record = (
-    await (await owner.request.get("/api/groups")).json()
+    await (await getApi(owner.request, "/api/groups")).json()
   ).groups.find((group: { id: string }) => group.id === id);
   const cards = [
     createTabFixture(id + "-note", "Note card", {

@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
+import { useWorkspacePopoverPosition } from "../../hook";
 import type { CornerPopoverProps } from "./type";
 
 export function CornerPopover({
@@ -22,6 +23,7 @@ export function CornerPopover({
   const ref = useRef<HTMLElement>(null);
   const closeRef = useRef(onClose);
   const triggerRef = useRef<HTMLElement | null>(null);
+  useWorkspacePopoverPosition(ref, open && position === "bottom");
   useEffect(() => {
     closeRef.current = onClose;
   }, [onClose]);

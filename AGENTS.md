@@ -28,6 +28,8 @@ Keep the numbered structure in `tests-prd/` and `tests/` in exact sync. Each `te
 
 Do not consider the work complete until all updated E2E tests pass. Run `npm run test:e2e` and require a 100% pass rate; fix implementation, test, fixture, mock, or utility issues before reporting completion.
 
+Use `getApi` from the shared request resource barrel for E2E API GET calls. It reconnects only `ECONNRESET` on known read-only paths; HTTP status errors must still reach assertions. Do not add automatic transport retries to writes or OAuth flows.
+
 ## Layer Structure
 
 - `src/` is split into numbered layers, ordered from top to bottom:

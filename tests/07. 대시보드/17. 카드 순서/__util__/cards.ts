@@ -4,6 +4,7 @@ import { DEFAULT_SETTINGS } from "@/src/4-entity/notepad";
 
 import { createGroupFixture, createTabFixture } from "../../../__fixture__";
 import { beginDashboardDrag, writeStoredState } from "../../../__util__";
+import { getApi } from "../../../__util__/request";
 
 export async function seedCards(page: Page) {
   await writeStoredState(page, {
@@ -53,7 +54,7 @@ export async function dropCard(
 }
 export async function seedSharedCards(page: Page, id: string) {
   const record = (
-    await (await page.request.get("/api/groups")).json()
+    await (await getApi(page.request, "/api/groups")).json()
   ).groups.find((g: { id: string }) => g.id === id);
   const data = {
     ...record.data,

@@ -1,5 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
+import { getApi } from "../../../__util__/request";
+
 export async function openDevice(page: Page) {
   const loaded = page.waitForResponse(
     (response) =>
@@ -21,7 +23,7 @@ export async function readHistory(page: Page): Promise<{
   count: number;
   latest: { eventId: string; snapshot: string } | null;
 }> {
-  const response = await page.request.get("/api/notepad/history");
+  const response = await getApi(page.request, "/api/notepad/history");
   expect(response.ok()).toBe(true);
   return response.json();
 }

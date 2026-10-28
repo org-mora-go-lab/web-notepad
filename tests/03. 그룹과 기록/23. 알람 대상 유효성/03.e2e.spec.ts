@@ -1,63 +1,66 @@
 import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
-import { openAccountMenu } from "../../__util__";
+import { getApi } from "../../__util__/request";
+import { changeSharedNote } from "./__util__";
 
-test("3. 사용자 ID를 기준으로 내 수정 알람은 제외한다", async ({
+test("3. 알람 변경 API는 인증과 동일 출처를 검증하고 다른 사용자의 알람 읽음을 변경하지 않는다", async ({
+  browser,
   sharing: { owner, guest, id },
 }) => {
-  let record = (
-    await (await owner.request.get("/api/groups")).json()
-  ).groups.find((group: { id: string }) => group.id === id);
-  const update = await owner.request.post("/api/groups/update", {
-    data: {
-      id,
-      baseRevision: record.revision,
-      data: {
-        ...record.data,
-        tabs: record.data.tabs.map((tab: { content: string }) => ({
-          ...tab,
-          content: "My own change",
-          title: "My own change",
-        })),
-      },
-    },
-  });
-  expect(update.ok()).toBe(true);
-  record = (await update.json()).group;
-  expect(
-    (await (await owner.request.get("/api/groups/notifications")).json())
-      .notifications,
-  ).toEqual([]);
-  expect(
-    (await (await guest.request.get("/api/groups/notifications")).json())
-      .notifications,
-  ).toHaveLength(1);
-  const user = (await (await owner.request.get("/api/auth/session")).json())
-    .user;
-  await owner.route("**/api/groups/notifications", (route) =>
-    route.fulfill({
-      json: {
-        notifications: [
-          {
-            id: 1,
-            groupId: id,
-            tabId: record.data.tabs[0].id,
-            actorId: user.id,
-            actorName: user.nickname,
-            groupName: record.data.name,
-            summary: "My own change",
-            createdAt: Date.now(),
-            unread: true,
-          },
-        ],
-      },
-    }),
+  await changeSharedNote(guest, id, "Isolated unread alarm");
+  const notifications = (
+    await (await getApi(owner.request, "/api/groups/notifications")).json()
+  ).notifications;
+  const alarm = notifications.find((n: { summary: string }) =>
+    n.summary.includes("Isolated unread alarm"),
   );
-  await owner.evaluate(() => window.dispatchEvent(new Event("focus")));
-  const account = await openAccountMenu(owner);
-  await account.getByRole("menuitem", { name: "Alarm", exact: true }).click();
-  await expect(
-    owner.locator(".footer-notifications-panel .notification-entry"),
-  ).toHaveCount(0);
+  expect(alarm.unread).toBe(true);
+  const anonymous = await browser.newContext();
+  try {
+    expect(
+      (
+        await anonymous.request.delete(
+          new URL("/api/groups/notifications", owner.url()).href,
+        )
+      ).status(),
+    ).toBe(401);
+  } finally {
+    await anonymous.close();
+  }
+  expect(
+    (
+      await owner.request.delete("/api/groups/notifications", {
+        headers: { origin: "https://example.invalid" },
+      })
+    ).status(),
+  ).toBe(403);
+  expect(
+    (
+      await owner.request.post("/api/groups/notifications/read", {
+        headers: { origin: "https://example.invalid" },
+        data: { id: alarm.id },
+      })
+    ).status(),
+  ).toBe(403);
+  expect(
+    (
+      await owner.request.post("/api/groups/notifications/read", {
+        data: { id: -1 },
+      })
+    ).status(),
+  ).toBe(400);
+  expect(
+    (
+      await guest.request.post("/api/groups/notifications/read", {
+        data: { id: alarm.id },
+      })
+    ).ok(),
+  ).toBe(true);
+  const remaining = (
+    await (await getApi(owner.request, "/api/groups/notifications")).json()
+  ).notifications;
+  expect(remaining.find((n: { id: number }) => n.id === alarm.id).unread).toBe(
+    true,
+  );
 });

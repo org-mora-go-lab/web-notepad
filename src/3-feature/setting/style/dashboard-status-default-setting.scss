@@ -1,0 +1,42 @@
+@use "../../../5-shared/style/variable" as v;
+
+.setting .setting-status-defaults {
+  form {
+    display: grid;
+    gap: 10px;
+  }
+  label {
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    color: v.$ink;
+    font-size: v.font(14px);
+  }
+  input {
+    min-width: 0;
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 1px solid v.$line;
+    border-radius: 4px;
+    background: var(--color-field);
+    color: v.$ink;
+    font: inherit;
+  }
+  button[type="submit"] {
+    justify-self: end;
+    min-height: 36px;
+    padding: 7px 14px;
+    border: 1px solid v.$line;
+    border-radius: 4px;
+    background: v.$raised;
+    color: v.$ink;
+    font: inherit;
+  }
+  @media (max-width: 512px) {
+    input,
+    button[type="submit"] {
+      min-height: 44px;
+    }
+  }
+}

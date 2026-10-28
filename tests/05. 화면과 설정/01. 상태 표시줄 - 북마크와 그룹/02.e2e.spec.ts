@@ -14,7 +14,6 @@ test("2. 더보기의 마지막 Bookmark 명령은 현재 그룹의 북마크 �
     "GUIDE",
     "SEARCH",
     "Bookmark",
-    "BOARD",
   ]);
   await menu.getByRole("button", { name: "Bookmark" }).click();
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute(

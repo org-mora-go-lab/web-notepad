@@ -40,6 +40,8 @@
   .dashboard-card-open {
     width: 100%;
     display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
     gap: 4px;
     padding: 10px;
     border: 0;
@@ -49,6 +51,8 @@
     cursor: inherit;
 
     strong {
+      min-width: 0;
+      width: 100%;
       display: -webkit-box;
       overflow: hidden;
       color: v.$signal;
@@ -75,8 +79,8 @@
     display: flex;
   }
 
-  .dashboard-card-open strong {
-    padding-right: 40px;
+  .dashboard-card:has(.dashboard-card-indicators) .dashboard-card-open strong {
+    padding-right: 18px;
   }
 
   .dashboard-card-group {

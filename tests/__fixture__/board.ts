@@ -2,6 +2,7 @@ import { test as base } from "@playwright/test";
 
 import type { BoardPost } from "@/src/4-entity/notepad";
 
+import { getApi } from "../__util__/request";
 import { SESSION_COOKIE, signedSession } from "./auth";
 import { createGroupFixture, createTabFixture } from "./notepad-state";
 
@@ -33,7 +34,7 @@ export const boardTest = base.extend<{
     if (!shared.ok())
       throw Error("Cannot prepare shared group: " + shared.status());
     const { group } = await shared.json();
-    const { posts } = (await (await request.get("/api/board")).json()) as {
+    const { posts } = (await (await getApi(request, "/api/board")).json()) as {
       posts: BoardPost[];
     };
     const post = posts.find((item) => item.id === group.id);

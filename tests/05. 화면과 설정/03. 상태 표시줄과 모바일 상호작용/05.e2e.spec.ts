@@ -18,6 +18,14 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 더보기와 대�
     .toBeLessThanOrEqual(512);
 
   const footer = page.locator(".footer");
+  await expect
+    .poll(() => footer.evaluate((bar) => bar.scrollWidth <= bar.clientWidth))
+    .toBe(true);
+  const footerBox = (await footer.boundingBox())!;
+  const accountBox = (await footer.locator(".auth-command").boundingBox())!;
+  expect(accountBox.x + accountBox.width).toBeLessThanOrEqual(
+    footerBox.x + footerBox.width,
+  );
   const commands = footer.locator(".status-command");
   await expect(footer.locator(".current-group-panel")).toBeHidden();
   await expect(footer.locator(".group-current-value")).toBeVisible();

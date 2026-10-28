@@ -34,13 +34,15 @@ test("2. 모바일 긴 이름은 말줄임되고 프로필 이미지는 줄어�
         buttonRight: buttonBox.right,
         imageWidth: imageBox.width,
         imageRight: imageBox.right,
+        imageBottom: imageBox.bottom,
+        nameTop: nameBox.top,
         nameLeft: nameBox.left,
         nameRight: nameBox.right,
         clipped: element.querySelector("span")!.scrollWidth > nameBox.width,
       };
     });
     expect(bounds.imageWidth).toBe(24);
-    expect(bounds.imageRight).toBeLessThanOrEqual(bounds.nameLeft);
+    expect(bounds.imageBottom).toBeLessThanOrEqual(bounds.nameTop);
     expect(bounds.nameRight).toBeLessThanOrEqual(bounds.buttonRight);
     expect(bounds.buttonRight).toBeLessThanOrEqual(width);
     expect(bounds.clipped).toBe(true);

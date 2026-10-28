@@ -1,5 +1,7 @@
 import { useLayoutEffect, useRef } from "react";
 
+import { useWorkspacePopoverPosition } from "@/src/5-shared/hook";
+
 export function useSearchPopover(open: boolean, onClose: () => void) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -20,39 +22,10 @@ export function useSearchPopover(open: boolean, onClose: () => void) {
       triggers.find((element) => element.getBoundingClientRect().width > 0);
     const firstOpen = !dialog.open;
     if (firstOpen) dialog.show();
-    const position = () => {
-      const viewport = window.visualViewport;
-      const viewportBottom =
-        (viewport?.height ?? window.innerHeight) + (viewport?.offsetTop ?? 0);
-      const footerHeight =
-        document.querySelector(".footer")?.getBoundingClientRect().height ?? 48;
-      dialog.style.setProperty(
-        "--global-search-available-height",
-        Math.max(
-          100,
-          (viewport?.height ?? window.innerHeight) - footerHeight - 24,
-        ) + "px",
-      );
-      const top = Math.max(
-        (viewport?.offsetTop ?? 0) + 8,
-        viewportBottom - footerHeight - 8 - dialog.offsetHeight,
-      );
-      const right =
-        (viewport?.offsetLeft ?? 0) +
-        (viewport?.width ?? window.innerWidth) -
-        16;
-      dialog.style.top = top + "px";
-      dialog.style.left =
-        Math.max((viewport?.offsetLeft ?? 0) + 16, right - dialog.offsetWidth) +
-        "px";
-    };
-    position();
     if (firstOpen)
       dialog
         .querySelector<HTMLInputElement>('input[type="search"]')
         ?.focus({ preventScroll: true });
-    const observer = new ResizeObserver(position);
-    observer.observe(dialog);
     const onPointerDown = (event: PointerEvent) => {
       if (!(event.target instanceof Node)) return;
       if (
@@ -73,18 +46,12 @@ export function useSearchPopover(open: boolean, onClose: () => void) {
     };
     window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("keydown", onKeyDown, true);
-    window.addEventListener("resize", position);
-    window.visualViewport?.addEventListener("resize", position);
-    window.visualViewport?.addEventListener("scroll", position);
     return () => {
-      observer.disconnect();
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown, true);
-      window.removeEventListener("resize", position);
-      window.visualViewport?.removeEventListener("resize", position);
-      window.visualViewport?.removeEventListener("scroll", position);
     };
   }, [open, onClose]);
 
+  useWorkspacePopoverPosition(dialogRef, open);
   return dialogRef;
 }

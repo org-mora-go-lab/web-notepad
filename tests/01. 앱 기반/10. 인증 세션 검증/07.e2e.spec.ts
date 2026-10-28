@@ -2,9 +2,10 @@ import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
 import { sessionHeaders } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("7. 사용자 ID가 없는 서명 세션을 거부한다", async ({ request }) => {
-  const response = await request.get("/api/auth/session", {
+  const response = await getApi(request, "/api/auth/session", {
     headers: sessionHeaders(
       signedSession({ nickname: "Missing ID", expiresAt: Date.now() + 60000 }),
     ),

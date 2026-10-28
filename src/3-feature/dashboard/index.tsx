@@ -8,6 +8,7 @@ import {
   getDashboardColumns,
   getTabStatus,
   UNGROUPED_GROUP_ID,
+  useNotepadStore,
 } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { SidePanel, TabContextMenu } from "@/src/5-shared/ui";
@@ -49,6 +50,10 @@ export function Dashboard({
     top: number;
   } | null>(null);
   const { t } = useI18n();
+  const defaults = useNotepadStore(
+    (state) => state.settings.dashboardStatusDefaults,
+  );
+  const displayStatusNames = { ...defaults, ...statusNames };
   const { contentRef, listRef, boardRef, scrollToCard } = useDashboardScroll(
     open,
     activeTabId,
@@ -132,7 +137,7 @@ export function Dashboard({
     >
       <div className="dashboard-content" ref={contentRef}>
         <DashboardStatuses
-          statusNames={statusNames}
+          statusNames={displayStatusNames}
           columns={columns}
           tabColorCycle={tabColorCycle}
           iceboxVisible={iceboxVisible}
@@ -145,7 +150,7 @@ export function Dashboard({
           >
             {iceboxVisible && (
               <DashboardColumn
-                statusNames={statusNames}
+                statusNames={displayStatusNames}
                 column={{ status: "icebox", tabs: iceboxTabs }}
                 drag={drag}
                 activeTabId={activeTabId}
@@ -162,7 +167,7 @@ export function Dashboard({
             {columns.map((column) => (
               <DashboardColumn
                 key={column.status}
-                statusNames={statusNames}
+                statusNames={displayStatusNames}
                 column={column}
                 drag={drag}
                 activeTabId={activeTabId}
@@ -201,7 +206,7 @@ export function Dashboard({
                 )}
                 <span>
                   {t.moveToStatus(
-                    statusNames[shortcutStatus] ??
+                    displayStatusNames[shortcutStatus] ??
                       (shortcutStatus === "icebox" ? t.icebox : t.statusDone),
                   )}
                 </span>

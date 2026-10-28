@@ -1,10 +1,14 @@
 import { expect, test } from "@playwright/test";
 
+import { getApi } from "../../__util__/request";
+
 test("1. 인증을 다시 시작하면 이전과 다른 상태값을 발급한다", async ({
   request,
 }) => {
-  const first = await request.get("/api/auth/oauth/kakao", { maxRedirects: 0 });
-  const second = await request.get("/api/auth/oauth/kakao", {
+  const first = await getApi(request, "/api/auth/oauth/kakao", {
+    maxRedirects: 0,
+  });
+  const second = await getApi(request, "/api/auth/oauth/kakao", {
     maxRedirects: 0,
   });
   const state = (response: typeof first) =>

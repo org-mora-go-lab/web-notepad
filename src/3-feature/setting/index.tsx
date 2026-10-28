@@ -9,7 +9,11 @@ import { useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, SidePanel } from "@/src/5-shared/ui";
 
 import { Theme } from "../theme";
-import { RadioSetting, TabColorSetting } from "./component";
+import {
+  DashboardStatusDefaultSetting,
+  RadioSetting,
+  TabColorSetting,
+} from "./component";
 import type { SettingProps } from "./type";
 
 export function Setting({ open, onClose }: SettingProps) {
@@ -99,6 +103,7 @@ export function Setting({ open, onClose }: SettingProps) {
             { value: "right", label: t.panelRight },
           ]}
         />
+        <DashboardStatusDefaultSetting />
         <section className="setting-section setting-danger-zone">
           <h3>{t.dataManagement}</h3>
           <button

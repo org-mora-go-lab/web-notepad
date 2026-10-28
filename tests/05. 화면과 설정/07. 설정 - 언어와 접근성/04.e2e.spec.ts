@@ -28,10 +28,11 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
     "언어",
     "패널 슬라이드 효과",
     "패널 위치",
+    "기본 상태 이름",
     "데이터",
   ]);
-  await expect(panel.locator(".setting-hint")).toContainText(
-    "새 탭은 첫 번째 색상으로 시작합니다.할 일 · 그레이 → 준비 · 오렌지 → 진행 중 · 인디고",
+  await expect(panel.locator(".setting-hint").first()).toContainText(
+    "새 탭은 첫 번째 색상으로 시작합니다.그레이 → 오렌지 → 인디고",
   );
   await expect(moreCommand(page).locator(".status-label")).toHaveText("더보기");
   await expect(page.locator(".more-command")).toHaveAccessibleName("더보기");

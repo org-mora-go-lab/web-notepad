@@ -13,7 +13,6 @@ test("7. PC와 모바일 더보기에는 설정과 그룹 알림 진입점을 �
       "GUIDE",
       "SEARCH",
       "Bookmark",
-      "BOARD",
     ]);
     await expect(
       menu.getByRole("button", { name: /Alarm|알람|SETTINGS|설정/ }),
