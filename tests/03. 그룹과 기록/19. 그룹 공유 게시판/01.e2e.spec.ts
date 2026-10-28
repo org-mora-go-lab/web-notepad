@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 import { expect } from "@playwright/test";
 
 import { boardTest as test } from "../../__fixture__";

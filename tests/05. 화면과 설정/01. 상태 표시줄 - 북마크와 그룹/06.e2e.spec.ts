@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";

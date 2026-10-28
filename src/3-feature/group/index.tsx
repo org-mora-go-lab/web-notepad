@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 "use client";
 
 import {

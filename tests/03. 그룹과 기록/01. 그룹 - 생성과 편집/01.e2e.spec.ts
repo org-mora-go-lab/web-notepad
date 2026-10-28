@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 import { expect, test } from "@playwright/test";
 
 import { groupMenu, groupsCommand, openSystemGroupMenu } from "../../__util__";

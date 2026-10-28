@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 import { expect, type Page } from "@playwright/test";
 
 // The group button on the left of the bottom bar (icon + current group name).

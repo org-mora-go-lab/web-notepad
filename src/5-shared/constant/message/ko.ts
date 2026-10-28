@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 import type { Messages } from "./en";
 
 export const ko: Messages = {

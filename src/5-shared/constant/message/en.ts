@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 export const en = {
   sharedGroupsLoading: "Checking shared groups…",
   sharedGroupsUnavailable: "Could not check shared groups.",
