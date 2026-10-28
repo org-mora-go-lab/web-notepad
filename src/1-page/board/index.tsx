@@ -13,8 +13,16 @@ import {
   useNotepadStore,
   useSharedGroups,
 } from "@/src/4-entity/notepad";
-import { MESSAGES } from "@/src/5-shared/constant";
+import { BOARD_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
 import { GroupSharingContext, I18nContext } from "@/src/5-shared/hook";
+
+function markBoardReturn() {
+  try {
+    sessionStorage.setItem(BOARD_RETURN_FOCUS_KEY, "1");
+  } catch {
+    /* Keep navigation usable if session storage is unavailable. */
+  }
+}
 
 export function BoardPage() {
   const hydrated = useNotepadHydrated();
@@ -22,6 +30,7 @@ export function BoardPage() {
   useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
   const t = MESSAGES[settings.language];
+  useEffect(markBoardReturn, []);
   useEffect(() => {
     document.documentElement.lang = settings.language;
     document.documentElement.style.setProperty(
@@ -42,7 +51,7 @@ export function BoardPage() {
         <main className="board-page" id="board-page">
           <div className="board-page-container">
             <header className="board-page-header">
-              <Link href="/">
+              <Link href="/" onClick={markBoardReturn}>
                 <ArrowLeft size={18} aria-hidden="true" />
                 {t.myPageHome}
               </Link>

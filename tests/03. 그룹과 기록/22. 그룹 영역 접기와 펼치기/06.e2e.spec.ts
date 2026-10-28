@@ -17,7 +17,7 @@ test("6. My Group과 Shared Group은 생성·전체 그룹 사이를 절반씩 �
     expect(a.height).toBeCloseTo(b.height, 0);
     expect(a.y + a.height).toBeCloseTo(b.y, 0);
     const form = (await page.locator(".group-create-form").boundingBox())!,
-      system = (await page.locator(".group-system-list").boundingBox())!;
+      system = (await page.locator(".group-more").boundingBox())!;
     expect(a.y).toBeGreaterThanOrEqual(form.y + form.height);
     const padding = await page
       .locator(".group-list")

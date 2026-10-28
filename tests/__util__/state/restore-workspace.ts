@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
+import { openMoreMenu } from "../workspace";
 import { writeStoredState } from "./stored-state";
 
 // Corrupt input intentionally stays unknown rather than pretending to be valid domain data.
@@ -24,8 +25,11 @@ export async function restoreWorkspace(
   });
   await expect(page.locator("textarea").first()).toBeVisible();
   // Selecting the current group persists the hydrated result without changing note data.
-  await page.locator(".group-select-command").click();
-  await page.getByRole("button", { name: "Ungrouped", exact: true }).click();
+  await (
+    await openMoreMenu(page)
+  )
+    .getByRole("button", { name: "Ungrouped", exact: true })
+    .click();
   if (
     (await page
       .locator(".group-select-command")

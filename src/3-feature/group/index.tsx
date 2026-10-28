@@ -1,6 +1,16 @@
 "use client";
 
-import { ChevronDown, ChevronRight, X } from "lucide-react";
+import {
+  Bookmark,
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  Ellipsis,
+  Layers,
+  Search,
+  Settings,
+  X,
+} from "lucide-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -32,6 +42,11 @@ function GroupSidebar({
   onRename,
   onTogglePinGroup,
   onMoveGroup,
+  onOpenGuide,
+  onOpenSettings,
+  onToggleBookmarks,
+  onToggleSearch,
+  searchOpen,
 }: GroupMenuProps) {
   const { t } = useI18n();
   const sharing = useContext(GroupSharingContext);
@@ -68,6 +83,8 @@ function GroupSidebar({
   const reorder = useGroupReorder(onMoveGroup);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const [sharingGroup, setSharingGroup] = useState<GroupEntry | null>(null);
   const shareFocusTarget = useRef<string | null>(null);
   const closeSharing = useCallback(() => setSharingGroup(null), []);
@@ -88,8 +105,12 @@ function GroupSidebar({
 
   useEffect(() => {
     if (sharingGroup || !shareFocusTarget.current) return;
+    const groupId = shareFocusTarget.current;
+    const target = isSharedGroupId(groupId)
+      ? ".group-select"
+      : ".group-actions > button";
     const button = sidebarRef.current?.querySelector<HTMLButtonElement>(
-      `[data-group-id="${CSS.escape(shareFocusTarget.current)}"] .group-actions > button`,
+      `[data-group-id="${CSS.escape(groupId)}"] ${target}`,
     );
     if (button) {
       button.focus();
@@ -114,15 +135,31 @@ function GroupSidebar({
   };
 
   useEffect(() => {
+    if (!moreOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!moreRef.current?.contains(event.target as Node)) setMoreOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, [moreOpen]);
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) return;
       event.preventDefault();
+      if (moreOpen) {
+        setMoreOpen(false);
+        moreRef.current
+          ?.querySelector<HTMLButtonElement>(".more-command")
+          ?.focus();
+        return;
+      }
       onClose();
       document.querySelector<HTMLElement>(ANCHOR_SELECTOR)?.focus();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
+  }, [moreOpen, onClose]);
 
   return createPortal(
     <div className="group">
@@ -223,6 +260,7 @@ function GroupSidebar({
                         key={group.id}
                         groupId={group.id}
                         shared={isSharedGroupId(group.id)}
+                        hideActionsButton={section === "shared"}
                         sharingRole={sharing?.accessByGroup[group.id]?.role}
                         sharingActive={sharing?.accessByGroup[group.id]?.active}
                         onChangeSharing={(action, anchor) => {
@@ -288,56 +326,93 @@ function GroupSidebar({
             })}
           </div>
         </section>
-        <div className="group-system-list">
-          <GroupItem
-            groupId={ALL_GROUP_ID}
-            dragging={false}
-            dropTarget={false}
-            onReorderStart={() => undefined}
-            onReorderKey={() => undefined}
-            name={t.allGroup}
-            active={activeGroupId === ALL_GROUP_ID}
-            pinned={false}
-            editable={false}
-            muted={false}
-            system
-            actionsOpen={actionsGroupId === ALL_GROUP_ID}
-            onToggleActions={() =>
-              setActionsGroupId((current) =>
-                current === ALL_GROUP_ID ? null : ALL_GROUP_ID,
-              )
-            }
-            onSelect={() => selectGroup(ALL_GROUP_ID)}
-            onRename={() => undefined}
-            onTogglePin={() => undefined}
-            onDelete={() => undefined}
-            onShare={() => undefined}
-          />
-          {ungrouped && (
-            <GroupItem
-              groupId={ungrouped.id}
-              dragging={false}
-              dropTarget={false}
-              onReorderStart={() => undefined}
-              onReorderKey={() => undefined}
-              name={ungrouped.name}
-              active={activeGroupId === UNGROUPED_GROUP_ID}
-              pinned={false}
-              editable={false}
-              muted
-              system
-              actionsOpen={actionsGroupId === ungrouped.id}
-              onToggleActions={() =>
-                setActionsGroupId((current) =>
-                  current === ungrouped.id ? null : ungrouped.id,
-                )
-              }
-              onSelect={() => selectGroup(UNGROUPED_GROUP_ID)}
-              onRename={() => undefined}
-              onTogglePin={() => undefined}
-              onDelete={() => undefined}
-              onShare={() => undefined}
-            />
+        <div className="group-more" ref={moreRef}>
+          <button
+            className="more-command"
+            type="button"
+            aria-expanded={moreOpen}
+            aria-controls="group-more-menu"
+            onClick={() => setMoreOpen((current) => !current)}
+          >
+            <Ellipsis size={25} strokeWidth={1.8} aria-hidden="true" />
+            <span>{t.more}</span>
+          </button>
+          {moreOpen && (
+            <div className="group-more-menu" id="group-more-menu" role="menu">
+              <button
+                type="button"
+                aria-pressed={activeGroupId === ALL_GROUP_ID}
+                onClick={() => {
+                  setMoreOpen(false);
+                  selectGroup(ALL_GROUP_ID);
+                }}
+              >
+                <Layers size={18} aria-hidden="true" />
+                <span>{t.allGroup}</span>
+              </button>
+              {ungrouped && (
+                <button
+                  type="button"
+                  aria-pressed={activeGroupId === UNGROUPED_GROUP_ID}
+                  onClick={() => {
+                    setMoreOpen(false);
+                    selectGroup(UNGROUPED_GROUP_ID);
+                  }}
+                >
+                  <Layers size={18} aria-hidden="true" />
+                  <span>{ungrouped.name}</span>
+                </button>
+              )}
+              <div className="group-more-separator" role="separator" />
+              <button
+                type="button"
+                onClick={() => {
+                  setMoreOpen(false);
+                  onClose();
+                  onOpenGuide();
+                }}
+              >
+                <BookOpen size={18} aria-hidden="true" />
+                <span>{t.guide}</span>
+              </button>
+              <button
+                className="global-search-command"
+                type="button"
+                aria-expanded={searchOpen}
+                aria-controls="global-search-popup"
+                aria-haspopup="dialog"
+                onClick={() => {
+                  setMoreOpen(false);
+                  onClose();
+                  onToggleSearch();
+                }}
+              >
+                <Search size={18} aria-hidden="true" />
+                <span>{t.search}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMoreOpen(false);
+                  onClose();
+                  onToggleBookmarks();
+                }}
+              >
+                <Bookmark size={18} aria-hidden="true" />
+                <span>{t.bookmark}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMoreOpen(false);
+                  onClose();
+                  onOpenSettings();
+                }}
+              >
+                <Settings size={18} aria-hidden="true" />
+                <span>{t.settings}</span>
+              </button>
+            </div>
           )}
         </div>
         <div

@@ -15,7 +15,7 @@ test("2. 하단 메뉴 항목은 연결된 메뉴·패널을 열고 활성 상�
     await expect(command).toHaveAttribute("aria-expanded", "true");
     await expect(command).toHaveClass(/is-active/);
 
-    if (panelId === "groups-menu" || panelId === "footer-more-menu") {
+    if (panelId === "groups-menu") {
       await expect(target).toBeVisible();
       await page.keyboard.press("Escape");
       continue;

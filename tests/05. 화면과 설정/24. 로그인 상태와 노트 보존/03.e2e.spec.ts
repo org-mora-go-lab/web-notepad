@@ -24,6 +24,9 @@ test("3. 프로필 이미지가 있는 계정은 실제 이미지를 대체 아�
   await page.goto("/");
   const image = page.locator("button.auth-command img");
   await expect(image).toBeVisible();
+  const bounds = (await image.boundingBox())!;
+  expect(bounds.width).toBeCloseTo(28.8, 1);
+  expect(bounds.height).toBeCloseTo(28.8, 1);
   await expect
     .poll(() =>
       image.evaluate((element: HTMLImageElement) => element.naturalWidth),

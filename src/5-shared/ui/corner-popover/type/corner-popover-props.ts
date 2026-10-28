@@ -7,9 +7,7 @@ export type CornerPopoverProps = {
   closeLabel: string;
   headerActions?: ReactNode;
   open: boolean;
-  position: "top" | "bottom";
   triggerSelector: string;
-  outsideIgnoreSelector?: string;
   onClose: () => void;
   children: ReactNode;
 };

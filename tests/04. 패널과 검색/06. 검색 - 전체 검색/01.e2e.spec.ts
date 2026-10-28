@@ -7,8 +7,9 @@ test("1. 하단 더보기의 SEARCH를 선택하면 전체 검색 팝업을 연�
   page,
 }) => {
   await seedStoredStateOnLoad(page, createGlobalSearchState());
+  await page.locator(".group-select-command").click();
   await page.locator(".more-command").click();
-  const search = page.locator(".footer .global-search-command");
+  const search = page.locator(".group .global-search-command");
   await expect(search).toBeVisible();
   await expect(
     page.locator('.header button[aria-controls="global-search-popup"]'),
@@ -19,4 +20,11 @@ test("1. 하단 더보기의 SEARCH를 선택하면 전체 검색 팝업을 연�
     "open",
     "",
   );
+  const popup = page.locator("#global-search-popup");
+  await expect(popup).toHaveCSS("border-top-width", "1px");
+  expect(
+    await popup.evaluate(
+      (element) => getComputedStyle(element).backgroundColor,
+    ),
+  ).not.toBe("rgba(0, 0, 0, 0)");
 });

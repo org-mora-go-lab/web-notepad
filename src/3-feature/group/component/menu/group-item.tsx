@@ -23,10 +23,11 @@ import { useI18n } from "@/src/5-shared/hook";
 
 import type { GroupItemProps } from "../../type";
 
-// One group row: click the name to switch; use the right-side menu for actions.
+// One group row: click the name to switch; open its menu for actions.
 export function GroupItem({
   groupId,
   shared = false,
+  hideActionsButton,
   sharingRole,
   sharingActive = true,
   onChangeSharing,
@@ -53,6 +54,7 @@ export function GroupItem({
   const actionsRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const menuAnchorRef = useRef<HTMLElement | null>(null);
+  const cancelLongPressRef = useRef<(() => void) | null>(null);
   const [menuPosition, setMenuPosition] = useState({ left: 0, top: 0 });
   const positionActions = useCallback((anchor: HTMLElement) => {
     menuAnchorRef.current = anchor;
@@ -74,6 +76,13 @@ export function GroupItem({
     if (actionsOpen && menuAnchorRef.current)
       positionActions(menuAnchorRef.current);
   }, [actionsOpen, positionActions]);
+
+  const clearLongPress = useCallback(() => {
+    cancelLongPressRef.current?.();
+    cancelLongPressRef.current = null;
+  }, []);
+
+  useEffect(() => () => clearLongPress(), [clearLongPress]);
 
   useEffect(() => {
     if (!actionsOpen) return;
@@ -171,6 +180,41 @@ export function GroupItem({
         type="button"
         aria-pressed={active}
         title={name}
+        onPointerDown={(event) => {
+          if (!hideActionsButton || event.pointerType !== "touch") return;
+          clearLongPress();
+          const anchor = event.currentTarget;
+          const row = anchor.closest<HTMLElement>("[data-group-id]");
+          const { pointerId, clientX, clientY } = event;
+          const cancelOnMove = (moveEvent: globalThis.PointerEvent) => {
+            if (
+              moveEvent.pointerId === pointerId &&
+              Math.hypot(
+                moveEvent.clientX - clientX,
+                moveEvent.clientY - clientY,
+              ) >= 6
+            )
+              clearLongPress();
+          };
+          const cancelOnEnd = (endEvent: globalThis.PointerEvent) => {
+            if (endEvent.pointerId === pointerId) clearLongPress();
+          };
+          const timer = setTimeout(() => {
+            clearLongPress();
+            if (row) row.dataset.reorderDragged = "true";
+            positionActions(anchor);
+            if (!actionsOpen) onToggleActions();
+          }, 500);
+          window.addEventListener("pointermove", cancelOnMove);
+          window.addEventListener("pointerup", cancelOnEnd);
+          window.addEventListener("pointercancel", cancelOnEnd);
+          cancelLongPressRef.current = () => {
+            clearTimeout(timer);
+            window.removeEventListener("pointermove", cancelOnMove);
+            window.removeEventListener("pointerup", cancelOnEnd);
+            window.removeEventListener("pointercancel", cancelOnEnd);
+          };
+        }}
         onClick={(event) => {
           const row =
             event.currentTarget.closest<HTMLElement>("[data-group-id]");
@@ -181,8 +225,22 @@ export function GroupItem({
           onSelect();
         }}
         onContextMenu={(event) => {
-          if (window.matchMedia("(max-width: 512px)").matches) return;
+          if (
+            !hideActionsButton &&
+            window.matchMedia("(max-width: 512px)").matches
+          )
+            return;
           event.preventDefault();
+          clearLongPress();
+          const row =
+            event.currentTarget.closest<HTMLElement>("[data-group-id]");
+          if (row?.dataset.reorderDragged === "true") return;
+          if (
+            hideActionsButton &&
+            window.matchMedia("(max-width: 512px)").matches &&
+            row
+          )
+            row.dataset.reorderDragged = "true";
           positionActions(event.currentTarget);
           if (!actionsOpen) onToggleActions();
         }}
@@ -199,19 +257,21 @@ export function GroupItem({
               aria-label={t.pinnedGroup}
             />
           )}
-          <button
-            type="button"
-            aria-label={t.groupActionsFor(name)}
-            aria-expanded={actionsOpen}
-            aria-controls={`group-actions-${groupId}`}
-            title={t.groupActions}
-            onClick={(event) => {
-              positionActions(event.currentTarget);
-              onToggleActions();
-            }}
-          >
-            <EllipsisVertical size={14} />
-          </button>
+          {!hideActionsButton && (
+            <button
+              type="button"
+              aria-label={t.groupActionsFor(name)}
+              aria-expanded={actionsOpen}
+              aria-controls={`group-actions-${groupId}`}
+              title={t.groupActions}
+              onClick={(event) => {
+                positionActions(event.currentTarget);
+                onToggleActions();
+              }}
+            >
+              <EllipsisVertical size={14} />
+            </button>
+          )}
           {actionsOpen && (
             <div
               ref={dropdownRef}

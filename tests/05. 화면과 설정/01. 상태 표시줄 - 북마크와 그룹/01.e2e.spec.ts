@@ -1,39 +1,38 @@
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
-import { moreCommand } from "../../__util__";
+import { groupsCommand, moreCommand } from "../../__util__";
 
 test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 메뉴를 표시한다", async ({
   page,
 }) => {
   await page.goto("/");
-  const label = moreCommand(page).locator(".status-label");
+  await groupsCommand(page).click();
+  const label = moreCommand(page).locator("span");
   const icon = moreCommand(page).locator("svg").first();
 
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await expect(label).toHaveText("MORE");
   await expect(label).toBeInViewport();
   await expect(icon).toBeInViewport();
-  for (const command of ["more", "dashboard"]) {
-    const footerIcon = page.locator(`.footer .${command}-command svg`);
-    await expect(footerIcon).toHaveCSS("width", "25px");
-    await expect(footerIcon).toHaveCSS("height", "25px");
-  }
+  await expect(page.locator(".footer .dashboard-command svg")).toHaveCSS(
+    "width",
+    "25px",
+  );
+  await expect(icon).toHaveCSS("width", "25px");
 
   await page.setViewportSize(MOBILE_VIEWPORT);
-  for (const command of ["more", "dashboard"]) {
-    const footerIcon = page.locator(`.footer .${command}-command svg`);
-    const bounds = (await footerIcon.boundingBox())!;
-    expect(bounds.width).toBeCloseTo(29.8, 1);
-    expect(bounds.height).toBeCloseTo(29.8, 1);
-  }
+  const dashboardBounds = (await page
+    .locator(".footer .dashboard-command svg")
+    .boundingBox())!;
+  expect(dashboardBounds.width).toBeCloseTo(29.8, 1);
   await expect(label).toBeInViewport();
   await expect(icon).toBeInViewport();
   const labelBox = (await label.boundingBox())!;
   const iconBox = (await icon.boundingBox())!;
-  expect(labelBox.y).toBeGreaterThanOrEqual(iconBox.y + iconBox.height);
+  expect(labelBox.x).toBeGreaterThanOrEqual(iconBox.x + iconBox.width);
   await moreCommand(page).click();
-  await expect(
-    page.locator("#footer-more-menu").getByRole("button"),
-  ).toHaveText(["GUIDE", "SEARCH", "Bookmark"]);
+  await expect(page.locator("#group-more-menu").getByRole("button")).toHaveText(
+    ["All Group", "Ungrouped", "GUIDE", "SEARCH", "Bookmark", "SETTINGS"],
+  );
 });

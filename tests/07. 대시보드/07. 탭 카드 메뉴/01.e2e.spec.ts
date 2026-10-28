@@ -16,9 +16,7 @@ test("1. PC에서 열린 탭 카드 메뉴로 북마크 상태를 전환한다",
   await expect(page.getByRole("menu").getByRole("menuitem")).toHaveText([
     "Move Group",
     "Bookmark",
-    "Move to Note",
   ]);
-  await expect(page.locator(".tab-context-menu-footer")).toHaveCount(1);
   await page.getByRole("menuitem", { name: "Bookmark", exact: true }).click();
 
   await expect(card.getByRole("img", { name: "Bookmarked" })).toBeVisible();

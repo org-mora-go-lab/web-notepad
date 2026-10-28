@@ -8,7 +8,8 @@ test("1. 하단 계정은 로그인, 더보기는 가이드·검색·북마크�
   await page.goto("/");
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    const trigger = page.locator(".footer .more-command");
+    await page.locator(".group-select-command").click();
+    const trigger = page.locator(".group .more-command");
     const login = page
       .locator(".footer")
       .getByRole("link", { name: "Continue with Kakao" });
@@ -35,17 +36,21 @@ test("1. 하단 계정은 로그인, 더보기는 가이드·검색·북마크�
     }
     await expect(page.locator(".header .auth-command")).toHaveCount(0);
     await trigger.click();
-    const menu = page.locator("#footer-more-menu");
+    const menu = page.locator("#group-more-menu");
     await expect(menu.getByRole("button")).toHaveText([
+      "All Group",
+      "Ungrouped",
       "GUIDE",
       "SEARCH",
       "Bookmark",
+      "SETTINGS",
     ]);
     await expect(
       menu.getByRole("link", { name: "Continue with Kakao" }),
     ).toHaveCount(0);
     await expect(menu.getByRole("switch", { name: "THEME" })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "SHORTCUT" })).toHaveCount(0);
+    await page.keyboard.press("Escape");
     await page.keyboard.press("Escape");
   }
 });

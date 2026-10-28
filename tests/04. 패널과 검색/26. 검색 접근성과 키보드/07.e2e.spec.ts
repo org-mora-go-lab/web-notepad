@@ -4,6 +4,7 @@ test("7. Escape로 검색을 닫으면 더보기 명령으로 포커스를 복�
   page,
 }) => {
   await page.goto("/");
+  await page.locator(".group-select-command").click();
   await page.locator(".more-command").click();
   const trigger = page.getByRole("button", { name: "SEARCH", exact: true });
   await trigger.click();
@@ -12,5 +13,5 @@ test("7. Escape로 검색을 닫으면 더보기 명령으로 포커스를 복�
     "open",
     "",
   );
-  await expect(page.locator(".more-command")).toBeFocused();
+  await expect(page.locator(".group-select-command")).toBeFocused();
 });

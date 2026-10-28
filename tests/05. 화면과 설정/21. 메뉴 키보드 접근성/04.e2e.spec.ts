@@ -4,6 +4,7 @@ test("4. 검색 팝업이 닫혀 있으면 검색 버튼의 펼침 상태는 fal
   page,
 }) => {
   await page.goto("/");
+  await page.locator(".group-select-command").click();
   await page.locator(".more-command").click();
   await expect(page.locator(".global-search-command")).toHaveAttribute(
     "aria-expanded",

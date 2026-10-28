@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { openMoreMenu } from "../../__util__";
 
-test("7. PC와 모바일 더보기에는 설정과 그룹 알림 진입점을 표시하지 않는다", async ({
+test("7. PC와 모바일 더보기에는 설정을 표시하고 그룹 알림은 표시하지 않는다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -10,13 +10,16 @@ test("7. PC와 모바일 더보기에는 설정과 그룹 알림 진입점을 �
     await page.setViewportSize({ width, height: 844 });
     const menu = await openMoreMenu(page);
     await expect(menu.getByRole("button")).toHaveText([
+      "All Group",
+      "Ungrouped",
       "GUIDE",
       "SEARCH",
       "Bookmark",
+      "SETTINGS",
     ]);
-    await expect(
-      menu.getByRole("button", { name: /Alarm|알람|SETTINGS|설정/ }),
-    ).toHaveCount(0);
+    await expect(menu.getByRole("button", { name: /Alarm|알람/ })).toHaveCount(
+      0,
+    );
     await expect(page.locator(".more-command .notification-count")).toHaveCount(
       0,
     );

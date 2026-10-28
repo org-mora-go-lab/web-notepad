@@ -6,13 +6,15 @@ import {
   openPanel,
 } from "../../__util__";
 
-test("5. 검색과 북마크는 열린 대시보드를 피해 같은 작업 영역 위치와 크기를 유지한다", async ({
+test("5. 검색과 북마크는 열린 대시보드 위에서도 같은 화면 중앙 크기를 유지한다", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
   await openPanel(page, "dashboard-panel");
   test.setTimeout(60000);
+  const dashboardWidth = (await page.locator("#dashboard-panel").boundingBox())!
+    .width;
   const sizes = new Map<number, { width: number; height: number }>();
   for (const [openPopup, id] of [
     [openGlobalSearchPanel, "#global-search-popup"],
@@ -25,14 +27,12 @@ test("5. 검색과 북마크는 열린 대시보드를 피해 같은 작업 영�
       await page.setViewportSize({ width, height: 900 });
       await expect
         .poll(async () => {
-          const footer = (await page.locator(".footer").boundingBox())!;
           const box = (await popup.boundingBox())!;
-          return Math.abs(box.x + box.width - footer.x - footer.width + 16);
+          return Math.abs(box.x + box.width / 2 - width / 2);
         })
         .toBeLessThan(2);
       const box = (await popup.boundingBox())!;
-      const footer = (await page.locator(".footer").boundingBox())!;
-      expect(box.y + box.height).toBeCloseTo(footer.y - 8, 0);
+      expect(box.y + box.height / 2).toBeCloseTo(450, 0);
       const size = sizes.get(width);
       if (size) {
         expect(box.width).toBeCloseTo(size.width, 0);
@@ -42,6 +42,9 @@ test("5. 검색과 북마크는 열린 대시보드를 피해 같은 작업 영�
         "aria-hidden",
         "false",
       );
+      expect(
+        (await page.locator("#dashboard-panel").boundingBox())!.width,
+      ).toBeCloseTo(dashboardWidth, 0);
     }
     await page.keyboard.press("Escape");
   }

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Bookmark,
   Dashboard,
@@ -7,6 +9,7 @@ import {
   Group,
   Setting,
   Shortcut,
+  UserGuide,
 } from "@/src/3-feature";
 import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
 
@@ -29,7 +32,6 @@ export function Panel({
   onOpenBookmark,
   onRemoveBookmark,
   onOpenDashboardTab,
-  onChangeTabStatus,
   onMoveDashboardCard,
   onSaveDashboardStatusNames,
   dashboardVisibility,
@@ -45,7 +47,12 @@ export function Panel({
   onRenameGroup,
   onToggleGroupPin,
   onMoveGroup,
+  onOpenShortcuts,
+  onOpenSettings,
+  onToggleBookmarks,
+  onToggleSearch,
 }: PanelProps) {
+  const [guideOpen, setGuideOpen] = useState(false);
   return (
     <div className="panel">
       <Bookmark
@@ -69,7 +76,6 @@ export function Panel({
         open={openPanel === "dashboard" || backgroundPanel === "dashboard"}
         onClose={onClose}
         onOpenTab={onOpenDashboardTab}
-        onChangeStatus={onChangeTabStatus}
         onMoveCard={onMoveDashboardCard}
         onMoveToGroup={onMoveDashboardTabToGroup}
         onToggleTabBookmark={onToggleDashboardTabBookmark}
@@ -86,6 +92,11 @@ export function Panel({
         onRename={onRenameGroup}
         onTogglePinGroup={onToggleGroupPin}
         onMoveGroup={onMoveGroup}
+        onOpenGuide={() => setGuideOpen(true)}
+        onOpenSettings={onOpenSettings}
+        onToggleBookmarks={onToggleBookmarks}
+        onToggleSearch={onToggleSearch}
+        searchOpen={openPanel === "global-search"}
       />
       <GlobalSearch
         groups={groups}
@@ -96,6 +107,15 @@ export function Panel({
         onSelectGroup={onSelectGroup}
         onSelectTab={onSelectSearchTab}
       />
+      {guideOpen && (
+        <UserGuide
+          onClose={() => setGuideOpen(false)}
+          onOpenShortcuts={() => {
+            setGuideOpen(false);
+            onOpenShortcuts();
+          }}
+        />
+      )}
       <Shortcut
         open={openPanel === "shortcuts" || backgroundPanel === "shortcuts"}
         onClose={onClose}

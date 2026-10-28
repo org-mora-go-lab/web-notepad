@@ -1,21 +1,39 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { type PaneId, useNotepadStore } from "@/src/4-entity/notepad";
 
 import type { PaneRefs } from "./use-pane-refs";
 
-// Focuses the active pane's editor with the caret at the end whenever the active tab or pane changes.
+// Focuses the active editor after a tab or pane change, except until the first home interaction after returning from Board.
 export function useEditorFocus(
   editorRefs: PaneRefs<HTMLTextAreaElement | null>,
   activeGroupId: string,
   activePane: PaneId,
   activeTabId: string,
   hydrated: boolean,
+  suppressInitialFocus: boolean,
 ) {
+  const allowFocusRef = useRef(!suppressInitialFocus);
   useEffect(() => {
-    if (!hydrated) return;
+    if (!suppressInitialFocus) return;
+    const allowFromHomeInteraction = (event: Event) => {
+      const home = document.querySelector(".home");
+      if (event.target instanceof Node && home?.contains(event.target))
+        allowFocusRef.current = true;
+    };
+    document.addEventListener("pointerdown", allowFromHomeInteraction);
+    document.addEventListener("keydown", allowFromHomeInteraction);
+    document.addEventListener("focusin", allowFromHomeInteraction);
+    return () => {
+      document.removeEventListener("pointerdown", allowFromHomeInteraction);
+      document.removeEventListener("keydown", allowFromHomeInteraction);
+      document.removeEventListener("focusin", allowFromHomeInteraction);
+    };
+  }, [suppressInitialFocus]);
+  useEffect(() => {
+    if (!hydrated || !allowFocusRef.current) return;
 
     const frame = window.requestAnimationFrame(() => {
       const currentTab = useNotepadStore
@@ -41,5 +59,12 @@ export function useEditorFocus(
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [activeGroupId, activePane, activeTabId, editorRefs, hydrated]);
+  }, [
+    activeGroupId,
+    activePane,
+    activeTabId,
+    editorRefs,
+    hydrated,
+    suppressInitialFocus,
+  ]);
 }

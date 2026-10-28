@@ -10,9 +10,10 @@ test("8. 언어 변경은 전체 검색 팝업과 검색 입력·닫기 조작�
   await settings
     .getByRole("button", { name: "설정 닫기", exact: true })
     .click();
+  await page.locator(".group-select-command").click();
   await page.locator(".more-command").click();
   await page
-    .locator('.footer button[aria-controls="global-search-popup"]')
+    .locator('.group button[aria-controls="global-search-popup"]')
     .click();
   await expect(page.locator("#global-search-popup")).toHaveAccessibleName(
     "검색",

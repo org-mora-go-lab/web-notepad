@@ -3,13 +3,12 @@ import { expect, test } from "@playwright/test";
 import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
 import { dashboardPanel } from "../../__util__";
 
-test("1. MORE와 계정 사이에 DASHBOARD 명령을 표시하고 패널을 연다", async ({
+test("1. 그룹 버튼과 계정 사이에 DASHBOARD 명령을 표시하고 패널을 연다", async ({
   page,
 }) => {
   await page.goto("/");
   const command = page.locator(".dashboard-command");
   const group = page.locator(".group-select-command");
-  const more = page.locator(".more-command");
   const account = page.locator(".footer-auth");
 
   await page.setViewportSize(DESKTOP_VIEWPORT);
@@ -17,9 +16,6 @@ test("1. MORE와 계정 사이에 DASHBOARD 명령을 표시하고 패널을 연
   await expect(command.locator(".status-label")).toHaveText("DASHBOARD");
   expect((await command.boundingBox())!.x).toBeGreaterThan(
     (await group.boundingBox())!.x,
-  );
-  expect((await command.boundingBox())!.x).toBeGreaterThan(
-    (await more.boundingBox())!.x,
   );
   expect((await command.boundingBox())!.x).toBeLessThan(
     (await account.boundingBox())!.x,
@@ -34,9 +30,6 @@ test("1. MORE와 계정 사이에 DASHBOARD 명령을 표시하고 패널을 연
   );
   expect((await command.boundingBox())!.x).toBeGreaterThan(
     (await group.boundingBox())!.x,
-  );
-  expect((await command.boundingBox())!.x).toBeGreaterThan(
-    (await more.boundingBox())!.x,
   );
   expect((await command.boundingBox())!.x).toBeLessThan(
     (await account.boundingBox())!.x,

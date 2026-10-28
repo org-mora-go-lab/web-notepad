@@ -24,9 +24,7 @@ export function Bookmark({
       title={t.bookmarksTitle}
       open={open}
       closeLabel={t.closePanel(t.bookmarksTitle)}
-      position="bottom"
-      triggerSelector=".footer .more-command"
-      outsideIgnoreSelector="#footer-more-menu"
+      triggerSelector=".group-select-command"
       onClose={onClose}
     >
       <div className="bookmark-list">

@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { DESKTOP_VIEWPORT, MOBILE_VIEWPORT } from "../../__constant__";
 import { authProfile } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
@@ -18,4 +19,9 @@ test("1. 로그인 계정은 별도 Logout 아이콘 없이 닉네임과 Logout 
   await expect(page.locator("button.auth-command .lucide-log-out")).toHaveCount(
     0,
   );
+  const name = page.locator("button.auth-command > span");
+  await page.setViewportSize(DESKTOP_VIEWPORT);
+  await expect(name).toHaveCSS("font-size", "16.32px");
+  await page.setViewportSize(MOBILE_VIEWPORT);
+  await expect(name).toHaveCSS("font-size", "13.2px");
 });

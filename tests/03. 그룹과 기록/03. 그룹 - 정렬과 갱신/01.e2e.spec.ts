@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { groupsCommand, seedSortableGroups } from "../../__util__";
+import {
+  groupsCommand,
+  openMoreMenu,
+  seedSortableGroups,
+} from "../../__util__";
 
 test("1. 기본 사이드바는 My Group 목록과 하단 시스템 그룹을 표시한다", async ({
   page,
@@ -9,12 +13,9 @@ test("1. 기본 사이드바는 My Group 목록과 하단 시스템 그룹을 �
   await groupsCommand(page).click();
 
   const items = page.locator(".group-item");
-  await expect(
-    page.getByRole("button", { name: "All Group", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Ungrouped", exact: true }),
-  ).toBeVisible();
+  const more = await openMoreMenu(page);
+  await expect(more.getByRole("button").first()).toHaveText("All Group");
+  await expect(more.getByRole("button").nth(1)).toHaveText("Ungrouped");
   await expect(items.filter({ hasText: "Closed" })).toHaveCount(0);
   await expect(items.first()).toContainText("가방");
 

@@ -29,6 +29,11 @@ test("1. PC 로그인 전후 계정 영역과 탭 추가 위치를 유지한다"
   await expect(page.locator("button.auth-command")).toBeVisible();
   const afterAuth = (await page.locator(".footer-auth").boundingBox())!;
   const afterAdd = (await page.locator(".header .add-tab").boundingBox())!;
-  expect(afterAuth).toEqual(beforeAuth);
+  expect(afterAuth.x + afterAuth.width).toBeCloseTo(
+    beforeAuth.x + beforeAuth.width,
+    0,
+  );
+  expect(afterAuth.y).toBe(beforeAuth.y);
+  expect(afterAuth.height).toBe(beforeAuth.height);
   expect(afterAdd).toEqual(beforeAdd);
 });

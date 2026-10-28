@@ -1,7 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { groupsCommand, seedStoredStateOnLoad } from "../../__util__";
+import {
+  groupsCommand,
+  openMoreMenu,
+  seedStoredStateOnLoad,
+} from "../../__util__";
 
 test("7. 그룹이 많아도 각 영역만 스크롤하며 Shared Group과 생성·전체 그룹을 유지한다", async ({
   page,
@@ -34,6 +38,9 @@ test("7. 그룹이 많아도 각 영역만 스크롤하며 Shared Group과 생�
     page.getByRole("textbox", { name: "New group name" }),
   ).toBeInViewport();
   await expect(
-    page.getByRole("button", { name: "All Group", exact: true }),
+    (await openMoreMenu(page)).getByRole("button", {
+      name: "All Group",
+      exact: true,
+    }),
   ).toBeInViewport();
 });

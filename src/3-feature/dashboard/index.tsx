@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCheck, Maximize2, Minimize2, StickyNote } from "lucide-react";
+import { Maximize2, Minimize2 } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -35,7 +35,6 @@ export function Dashboard({
   open,
   onClose,
   onOpenTab,
-  onChangeStatus,
   onMoveCard,
   onMoveToGroup,
   onToggleTabBookmark,
@@ -78,15 +77,6 @@ export function Dashboard({
   const contextGroup = groups.find((group) =>
     group.tabs.some((tab) => tab.id === contextMenu?.itemId),
   );
-  const contextStatus = contextTab
-    ? getTabStatus(contextTab, tabColorCycle)
-    : null;
-  const shortcutStatus =
-    contextStatus === "todo"
-      ? "icebox"
-      : contextStatus === "in-progress"
-        ? "done"
-        : null;
   const drag = useDashboardDrag({ visibleTabs, onMoveCard });
   return (
     <SidePanel
@@ -189,30 +179,6 @@ export function Dashboard({
           left={contextMenu.left}
           top={contextMenu.top}
           moveGroupFirst
-          footerAction={
-            shortcutStatus && (
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => {
-                  onChangeStatus(contextTab.id, shortcutStatus);
-                  setContextMenu(null);
-                }}
-              >
-                {shortcutStatus === "icebox" ? (
-                  <StickyNote size={14} />
-                ) : (
-                  <CheckCheck size={14} />
-                )}
-                <span>
-                  {t.moveToStatus(
-                    displayStatusNames[shortcutStatus] ??
-                      (shortcutStatus === "icebox" ? t.icebox : t.statusDone),
-                  )}
-                </span>
-              </button>
-            )
-          }
           bookmarked={contextTab.bookmarked}
           targetGroups={groups
             .filter(

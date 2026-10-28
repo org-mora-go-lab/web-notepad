@@ -53,6 +53,7 @@ test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·수정·삭제 명령을 
       const style = getComputedStyle(element);
       return properties.map((property) => style.getPropertyValue(property));
     }, surfaceProperties);
+  expect(groupSurface[2]).toBe("5px");
   const groupItem = await page
     .getByRole("button", { name: actions[0], exact: true })
     .evaluate((element, properties) => {
@@ -61,7 +62,7 @@ test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·수정·삭제 명령을 
     }, itemProperties);
 
   await moreCommand(page).click();
-  const menu = page.locator(".footer-more-menu");
+  const menu = page.locator(".group-more-menu");
   await expect(menu).toBeVisible();
   expect(
     await menu.evaluate((element, properties) => {
