@@ -1,0 +1,224 @@
+@use "../../../5-shared/style/variable" as v;
+
+// Presentation uses its own tokens; tab/status colors retain their meaning.
+body.chatgpt-theme {
+  font-family: v.$sans;
+
+  .home {
+    background-image: none;
+  }
+
+  .note-editor {
+    font-family: v.$mono;
+  }
+
+  :is(button, a, input, textarea):focus-visible {
+    outline-color: var(--theme-accent);
+  }
+
+  :is(
+    .auth-menu,
+    .footer-more-menu,
+    .group-action-dropdown,
+    .tab-context-menu
+  ) {
+    border-radius: 16px;
+    box-shadow: var(--theme-shadow);
+    font-family: v.$sans;
+
+    :is(button, a) {
+      border-radius: 10px;
+      font-family: inherit;
+    }
+  }
+
+  :is(.corner-popover, .global-search, .confirm-popup) {
+    border-radius: 20px;
+    box-shadow: var(--theme-shadow);
+  }
+
+  :is(.side-panel-action, .side-panel-close, .confirm-popup-close) {
+    border-radius: 50%;
+    border-color: transparent;
+    color: var(--color-ink);
+
+    &:hover {
+      background: var(--theme-hover);
+    }
+  }
+
+  .search-field {
+    border-radius: 24px;
+    background: var(--color-field);
+
+    &:focus-within {
+      border-color: var(--theme-accent);
+    }
+  }
+
+  .group {
+    .group-menu {
+      background: var(--theme-sidebar);
+    }
+
+    .group-sidebar-header {
+      border-bottom-color: transparent;
+
+      h2 {
+        font-weight: 550;
+        letter-spacing: -0.025em;
+      }
+
+      > button {
+        border: 0;
+        border-radius: 50%;
+
+        &:hover {
+          background: var(--theme-hover);
+        }
+      }
+    }
+
+    :is(.group-item, .group-system-item) {
+      border-radius: 10px;
+
+      strong {
+        color: var(--color-ink);
+        font-weight: 450;
+      }
+
+      &.is-active {
+        background: var(--theme-hover);
+      }
+    }
+
+    .group-category h3 {
+      color: var(--color-muted);
+    }
+
+    .group-create-form input {
+      border-radius: 24px;
+      background: var(--theme-sidebar);
+    }
+
+    .group-create-form > button {
+      border-radius: 50%;
+    }
+
+    .group-action-dropdown {
+      border-radius: 16px;
+      box-shadow: var(--theme-shadow);
+
+      button {
+        border-radius: 10px;
+      }
+    }
+  }
+
+  .header .tab-item {
+    border-radius: 12px 12px 0 0;
+  }
+
+  .footer {
+    :is(.status-command, .auth-command) {
+      border-radius: 999px;
+      font-weight: 500;
+
+      &:hover {
+        background: var(--theme-hover);
+      }
+    }
+
+    .status-command.is-active > :is(svg, .status-icon) {
+      color: var(--theme-accent);
+    }
+  }
+
+  .dashboard {
+    .dashboard-card {
+      border-radius: 16px;
+    }
+
+    .dashboard-card-open strong {
+      color: var(--color-ink);
+      font-weight: 550;
+    }
+
+    .dashboard-empty {
+      border-radius: 16px;
+    }
+
+    .dashboard-options-menu {
+      border-radius: 16px;
+      box-shadow: var(--theme-shadow);
+
+      button {
+        border-radius: 10px;
+      }
+    }
+  }
+
+  .setting {
+    :is(
+      .setting-option span,
+      .setting-delete-all,
+      .setting-status-defaults input,
+      .setting-status-defaults button
+    ) {
+      border-radius: 12px;
+    }
+  }
+
+  .setting .setting-option input:checked + span {
+    border-color: var(--theme-accent);
+    background: var(--theme-accent);
+    color: var(--theme-accent-ink);
+  }
+
+  :is(.side-panel-header, .board-page, .my-page) :is(h1, h2) {
+    font-weight: 550;
+    letter-spacing: -0.025em;
+  }
+
+  .board {
+    :is(button, a.board-primary) {
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .board-primary {
+      background: var(--theme-accent) !important;
+      border-color: var(--theme-accent);
+      color: var(--theme-accent-ink) !important;
+    }
+
+    .board-eyebrow {
+      color: var(--color-muted);
+      font-family: v.$sans;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    :is(.board-detail, .board-table-container, .board-empty) {
+      border-radius: 16px;
+      overflow: auto;
+    }
+  }
+
+  .my-page {
+    :is(
+      .my-page-profile,
+      .my-page-sync,
+      .my-page-notice,
+      .my-page-metrics > div,
+      .my-page-sync-skeleton,
+      .my-page-metrics-skeleton > span
+    ) {
+      border-radius: 20px;
+    }
+
+    :is(a, button) {
+      border-radius: 999px;
+    }
+  }
+}

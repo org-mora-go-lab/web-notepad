@@ -15,27 +15,27 @@ test("2. LIGHT는 작업 영역·편집기·하단 메뉴·그룹 메뉴를 일�
     await page.getByRole("button", { name: "Close Settings" }).click();
     await expect(page.locator(".workspace")).toHaveCSS(
       "background-color",
-      "rgb(250, 252, 251)",
+      "rgb(255, 255, 255)",
     );
     await expect(page.locator("textarea")).toHaveCSS(
       "color",
-      "rgb(32, 38, 36)",
+      "rgb(13, 13, 13)",
     );
     await expect(page.locator(".footer")).toHaveCSS(
       "background-color",
-      "rgb(240, 244, 241)",
+      "rgb(255, 255, 255)",
     );
     await page.locator(".group-select-command").press("Enter");
     await expect(page.locator("#groups-menu")).toHaveCSS(
       "background-color",
-      "rgb(233, 239, 235)",
+      "rgb(249, 249, 249)",
     );
     await page.keyboard.press("Escape");
     await openSettingsPanel(page);
     await page.getByRole("switch", { name: "THEME" }).click();
     await expect(page.locator(".workspace")).toHaveCSS(
       "background-color",
-      "rgb(17, 17, 16)",
+      "rgb(33, 33, 33)",
     );
     await page.getByRole("button", { name: "Close Settings" }).click();
   }

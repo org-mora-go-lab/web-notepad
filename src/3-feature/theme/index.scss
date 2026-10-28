@@ -1,5 +1,6 @@
 @use "../../5-shared/style/variable" as v;
 @use "./style/palette";
+@use "./style/appearance";
 
 .theme {
   display: grid;

@@ -20,7 +20,7 @@ test("3. 클릭과 키보드로 선택한 줄 번호를 활성 탭 색상으로 
   );
   await expect(page.locator(".workspace")).toHaveCSS(
     "background-color",
-    "rgb(17, 17, 16)",
+    "rgb(33, 33, 33)",
   );
   await lines.first().click();
   await expect(lines.first()).toHaveAttribute("aria-pressed", "true");
