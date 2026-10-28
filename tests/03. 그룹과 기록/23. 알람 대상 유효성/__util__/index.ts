@@ -1,1 +1,1 @@
-export { changeSharedNote, openAlarms } from "./alarms";
+export { changeSharedNote } from "./alarms";

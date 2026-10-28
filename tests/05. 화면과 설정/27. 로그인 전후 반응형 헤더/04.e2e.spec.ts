@@ -26,7 +26,7 @@ test("4. 로그인 조회 중에는 스켈레톤만 표시하고 완료 후 같�
     await expect(skeleton).toBeVisible();
     await expect(skeleton).toHaveAttribute("aria-busy", "true");
     await expect(
-      page.locator(".header-auth a, .header-auth button"),
+      page.locator(".footer-auth a, .footer-auth button"),
     ).toHaveCount(0);
     initialBounds = await skeleton.boundingBox();
   } finally {

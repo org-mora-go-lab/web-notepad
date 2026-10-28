@@ -17,12 +17,17 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   ).toBeVisible();
   await expect(page.getByRole("columnheader")).toHaveText([
     "Group",
+    "Shared by",
     "Notes",
     "Members",
     "Updated",
   ]);
   await expect(page.locator(".board-entry")).toHaveCount(1);
   await expect(page.locator(".board-entry")).toContainText(boardPost.groupName);
+  await expect(page.locator(".board-table .board-owner")).toHaveText(
+    "Board owner",
+  );
+  await expect(page.locator(".board-table .board-owner svg")).toHaveCount(1);
   await expect(
     page.getByRole("button", { name: "Publish a group" }),
   ).toHaveCount(0);

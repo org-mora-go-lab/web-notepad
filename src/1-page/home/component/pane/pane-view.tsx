@@ -6,7 +6,6 @@ import type { PaneViewProps } from "../../type";
 
 export function PaneView({
   pane,
-  hasMenu,
   tabs,
   groups,
   activeGroupId,
@@ -45,7 +44,6 @@ export function PaneView({
         onPointerDownCapture={onActivate}
       >
         <Header
-          showAuth={hasMenu}
           tabs={tabs}
           groups={groups}
           activeGroupId={activeGroupId}

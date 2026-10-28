@@ -11,7 +11,7 @@ test("3. 모바일 Logout 후 로그인 영역의 위치와 크기가 유지된�
   await page.setViewportSize(MOBILE_VIEWPORT);
   await page.goto("/");
   await expect(page.locator("a.auth-command")).toBeVisible();
-  const before = (await page.locator(".header-auth").boundingBox())!;
+  const before = (await page.locator(".footer-auth").boundingBox())!;
   await authenticateBrowser(
     context,
     signedSession({
@@ -26,5 +26,5 @@ test("3. 모바일 Logout 후 로그인 영역의 위치와 크기가 유지된�
   await logout.click();
   await page.getByRole("menuitem", { name: "Logout", exact: true }).click();
   await expect(page.locator("a.auth-command")).toBeVisible();
-  expect(await page.locator(".header-auth").boundingBox()).toEqual(before);
+  expect(await page.locator(".footer-auth").boundingBox()).toEqual(before);
 });

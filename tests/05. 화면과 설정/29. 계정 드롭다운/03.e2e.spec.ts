@@ -2,18 +2,26 @@ import { expect, test } from "@playwright/test";
 
 import { authenticateBrowser } from "../../__util__";
 
-test("3. 계정 메뉴의 Alarm을 닫으면 계정 버튼으로 포커스를 돌려준다", async ({
+test("3. 계정의 Alarm 기능과 클라이언트 알람 조회를 제거한다", async ({
   page,
   context,
 }) => {
   await authenticateBrowser(context);
+  let requests = 0;
+  page.on("request", (request) => {
+    if (request.url().includes("/api/groups/notifications")) requests++;
+  });
   await page.goto("/");
   const account = page.locator("button.auth-command");
   await account.click();
-  await page.getByRole("menuitem", { name: "Alarm", exact: true }).click();
-  await expect(page.getByRole("dialog", { name: "Alarm" })).toBeVisible();
-  await expect(page.locator("#account-menu")).toHaveCount(0);
+  await expect(
+    page.getByRole("menuitem", { name: "Board", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: "Alarm", exact: true }),
+  ).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Alarm" })).toHaveCount(0);
   await expect(account).toBeFocused();
+  expect(requests).toBe(0);
 });

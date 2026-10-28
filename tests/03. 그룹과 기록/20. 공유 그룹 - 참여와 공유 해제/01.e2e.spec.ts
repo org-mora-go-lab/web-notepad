@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { sharingTest as test } from "./__fixture__";
 import { openSharingMenu } from "./__util__";
 
-test("1. 공유 중인 주최자 메뉴는 공유하기 위치를 공유 취소 아이콘과 명칭으로 대체한다", async ({
+test("1. 공유 중인 주최자의 그룹 메뉴에는 공유하기와 공유 취소를 표시하지 않는다", async ({
   sharing: { owner, id },
 }) => {
   for (const language of ["en", "ko"] as const) {
@@ -23,11 +23,8 @@ test("1. 공유 중인 주최자 메뉴는 공유하기 위치를 공유 취소 
         name: language === "en" ? "Cancel Sharing" : "공유 취소",
         exact: true,
       });
-      await expect(cancel).toBeVisible();
-      await expect(cancel.locator("svg")).toHaveClass(/lucide-unlink/);
-      await expect(menu.getByRole("button").nth(1)).toHaveText(
-        language === "en" ? "Cancel Sharing" : "공유 취소",
-      );
+      await expect(cancel).toHaveCount(0);
+      await expect(menu.locator(".lucide-unlink")).toHaveCount(0);
       await expect(
         menu.getByRole("button", {
           name: /Share Shared team group|Shared team 그룹 공유하기|Leave group|그룹 나가기/,

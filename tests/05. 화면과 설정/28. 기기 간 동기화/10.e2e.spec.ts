@@ -7,12 +7,11 @@ test("10. 편집 없이 대기하는 동안 서버 상태를 주기적으로 조
   devices: { desktop },
 }) => {
   await desktop.clock.install();
-  const initialNotifications = desktop.waitForResponse(
-    (response) =>
-      response.url().endsWith("/api/groups/notifications") && response.ok(),
+  const initialGroups = desktop.waitForResponse(
+    (response) => response.url().endsWith("/api/groups") && response.ok(),
   );
   await openDevice(desktop);
-  await initialNotifications;
+  await initialGroups;
   const unexpectedRequest = desktop
     .waitForRequest(
       (request) =>

@@ -21,6 +21,7 @@ test("5. 설정한 폰트 크기와 탭 색상 순서는 새로고침 후에도 
     .toEqual({
       fontScale: 1.1,
       tabColorCycleVersion: 2,
+      dashboardStatusDefaults: {},
       tabColorCycle: ["gray", "yellow", "indigo"],
       language: "en",
       panelSlide: false,

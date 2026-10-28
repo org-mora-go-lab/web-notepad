@@ -78,9 +78,38 @@
     color: v.$muted;
   }
   button.board-copy {
-    justify-content: space-between;
+    justify-content: center;
     svg {
       flex: 0 0 auto;
+    }
+  }
+  .board-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    > :is(button, a) {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
+      white-space: nowrap;
+    }
+  }
+  .board-owner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    max-width: 240px;
+    color: v.$muted;
+    font-size: v.font(13px);
+    svg {
+      flex: 0 0 16px;
+    }
+    > span {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
   .board-table-container {
@@ -91,7 +120,7 @@
   }
   .board-table {
     width: 100%;
-    min-width: 480px;
+    min-width: 620px;
     border-collapse: collapse;
     text-align: left;
     font-size: v.font(13px);
@@ -250,7 +279,7 @@
   }
   .board-skeleton-row {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
     gap: 16px;
     padding: 20px 14px;
     border-bottom: 1px solid var(--color-line);

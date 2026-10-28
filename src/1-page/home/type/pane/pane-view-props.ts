@@ -6,7 +6,6 @@ import type { PaneDropZone } from "@/src/5-shared";
 export type PaneViewProps = {
   pane: PaneId;
   heightRatio?: number;
-  hasMenu: boolean;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;

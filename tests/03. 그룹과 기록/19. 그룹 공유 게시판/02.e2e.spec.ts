@@ -11,6 +11,10 @@ test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만�
   await page.goto("/");
   await openBoard(page);
   await selectBoardPost(page, boardPost.title);
+  await expect(page.locator(".board-detail .board-owner")).toHaveText(
+    "Board owner",
+  );
+  await expect(page.locator(".board-detail .board-owner svg")).toHaveCount(1);
   await expect(page.locator(".board-description")).toHaveText(
     "A shared workspace. Join to write together.",
   );

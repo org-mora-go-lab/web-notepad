@@ -4,11 +4,13 @@ import { LANGUAGES } from "@/src/5-shared/constant";
 
 import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS } from "../constant";
 import type { NotepadState } from "../type";
+import { normalizeDashboardStatusNames } from "../util";
 import { withTabColorCycle } from "./workspace";
 
 type SettingActions = Pick<
   NotepadState,
   | "setFontScale"
+  | "setDashboardStatusDefaults"
   | "setTabColorCycleColor"
   | "setLanguage"
   | "setPanelPosition"
@@ -24,6 +26,13 @@ export const createSettingActions: StateCreator<
   [],
   SettingActions
 > = (set) => ({
+  setDashboardStatusDefaults: (names) =>
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        dashboardStatusDefaults: normalizeDashboardStatusNames(names),
+      },
+    })),
   setFontScale: (fontScale) =>
     set((state) =>
       FONT_SCALES.includes(fontScale)

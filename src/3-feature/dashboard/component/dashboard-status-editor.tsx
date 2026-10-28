@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { useId, useState } from "react";
 
-import { DASHBOARD_STATUSES } from "@/src/4-entity/notepad";
+import { DASHBOARD_STATUSES, useNotepadStore } from "@/src/4-entity/notepad";
 import { useI18n, useModalDialog } from "@/src/5-shared/hook";
 
 import type { DashboardStatusEditorProps } from "../type";
@@ -13,6 +13,9 @@ export function DashboardStatusEditor({
   onClose,
 }: DashboardStatusEditorProps) {
   const { t } = useI18n();
+  const defaults = useNotepadStore(
+    (state) => state.settings.dashboardStatusDefaults,
+  );
   const titleId = useId();
   const descriptionId = useId();
   const dialogRef = useModalDialog(true, "input");
@@ -68,7 +71,7 @@ export function DashboardStatusEditor({
               <span>{labels[status]}</span>
               <input
                 value={draft[status] ?? ""}
-                placeholder={labels[status]}
+                placeholder={defaults[status] ?? labels[status]}
                 maxLength={30}
                 onChange={(event) =>
                   setDraft((current) => ({

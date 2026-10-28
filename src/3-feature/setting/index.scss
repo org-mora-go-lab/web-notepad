@@ -1,6 +1,7 @@
 @use "../../5-shared/style/variable" as v;
 @use "./style/radio-setting";
 @use "./style/tab-color-setting";
+@use "./style/dashboard-status-default-setting";
 
 .setting {
   .side-panel-drawer {

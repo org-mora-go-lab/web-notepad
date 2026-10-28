@@ -7,14 +7,13 @@ import { compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { TabContextMenu } from "@/src/5-shared/ui";
 
-import { AdditionalTools, TabItem } from "./component";
+import { TabItem } from "./component";
 import { useTabStrip } from "./hook";
 import type { HeaderProps } from "./type";
 
 type ContextMenuState = { tabId: string; left: number; top: number };
 
 export function Header({
-  showAuth = false,
   tabs,
   groups,
   activeGroupId,
@@ -70,7 +69,7 @@ export function Header({
 
   return (
     <div
-      className={`header ${showAuth ? "has-auth" : ""} ${tabsCanScrollLeft ? "has-left-overflow" : ""} ${tabsCanScrollRight ? "has-right-overflow" : ""}`}
+      className={`header ${tabsCanScrollLeft ? "has-left-overflow" : ""} ${tabsCanScrollRight ? "has-right-overflow" : ""}`}
       role="tablist"
       aria-label={t.noteTabs}
       onDragEnter={(event) => {
@@ -151,7 +150,6 @@ export function Header({
           onClose={() => setContextMenu(null)}
         />
       )}
-      {showAuth && <AdditionalTools />}
     </div>
   );
 }

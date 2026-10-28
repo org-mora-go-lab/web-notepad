@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS: NotepadSettings = {
   fontScale: 0.9,
   tabColorCycle: ["gray", "orange", "indigo"],
   tabColorCycleVersion: 2,
+  dashboardStatusDefaults: {},
   language: "en",
   panelSlide: false,
   panelPosition: "right",

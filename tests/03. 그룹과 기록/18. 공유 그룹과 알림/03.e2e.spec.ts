@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
-import { authenticateBrowser, openAccountMenu } from "../../__util__";
+import { authenticateBrowser } from "../../__util__";
 import { shareGroup } from "./__util__";
 
-test("3. 공유받은 사용자의 수정은 공유자에게 반영되고 알림으로 보인다", async ({
+test("3. 공유받은 사용자의 수정은 화면을 다시 활성화한 공유자에게 반영된다", async ({
   browser,
 }) => {
   const owner = await browser.newContext();
@@ -59,18 +59,6 @@ test("3. 공유받은 사용자의 수정은 공유자에게 반영되고 알림
     { timeout: 20_000 },
   );
 
-  const menu = await openAccountMenu(ownerPage);
-  const notification = menu.getByRole("menuitem", {
-    name: "Alarm",
-    exact: true,
-  });
-  await notification.click();
-  await expect(ownerPage.locator(".footer-notifications-panel")).toContainText(
-    "Guest",
-  );
-  await expect(ownerPage.locator(".footer-notifications-panel")).toContainText(
-    "글 수정",
-  );
   await guest.close();
   await owner.close();
 });

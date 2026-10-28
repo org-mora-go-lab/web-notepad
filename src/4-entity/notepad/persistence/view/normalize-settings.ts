@@ -3,6 +3,7 @@ import type { Language } from "@/src/5-shared/type";
 
 import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS } from "../../constant";
 import type { NotepadSettings, TabColor } from "../../type";
+import { normalizeDashboardStatusNames } from "../../util";
 import { isTabColor } from "../read-value";
 
 export const normalizeSettings = (value: unknown): NotepadSettings => {
@@ -29,6 +30,9 @@ export const normalizeSettings = (value: unknown): NotepadSettings => {
         : [...DEFAULT_SETTINGS.tabColorCycle];
   return {
     tabColorCycleVersion: 2,
+    dashboardStatusDefaults: normalizeDashboardStatusNames(
+      settings.dashboardStatusDefaults,
+    ),
     fontScale: FONT_SCALES.includes(settings.fontScale as number)
       ? (settings.fontScale as number)
       : DEFAULT_SETTINGS.fontScale,

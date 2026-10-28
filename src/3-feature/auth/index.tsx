@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  Bell,
   CircleUserRound,
   LogIn,
   LogOut,
+  MessageSquare,
   Settings,
   UserRound,
 } from "lucide-react";
@@ -21,7 +21,11 @@ export function Auth() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ left: 0, top: 0 });
+  const [menuPosition, setMenuPosition] = useState({
+    left: 0,
+    bottom: 0,
+    maxHeight: 0,
+  });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const lastItemOnOpen = useRef(false);
@@ -35,7 +39,8 @@ export function Auth() {
     lastItemOnOpen.current = last;
     setMenuPosition({
       left: Math.max(8, Math.min(bounds.right - 192, window.innerWidth - 200)),
-      top: bounds.bottom + 7,
+      bottom: window.innerHeight - bounds.top + 7,
+      maxHeight: Math.max(44, bounds.top - 15),
     });
     setMenuOpen(true);
   };
@@ -157,7 +162,7 @@ export function Auth() {
               className="auth-menu"
               role="menu"
               aria-label={t.accountMenu}
-              style={{ left: menuPosition.left, top: menuPosition.top }}
+              style={menuPosition}
               onKeyDown={(event) => {
                 if (event.key === "Escape" || event.key === "Tab") {
                   event.preventDefault();
@@ -193,17 +198,10 @@ export function Auth() {
                 <UserRound size={18} />
                 <span>{t.myPage}</span>
               </Link>
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => {
-                  closeMenu(true);
-                  actions?.onOpenNotifications();
-                }}
-              >
-                <Bell size={18} />
-                <span>{t.notifications}</span>
-              </button>
+              <Link href="/board" role="menuitem" onClick={() => closeMenu()}>
+                <MessageSquare size={18} />
+                <span>{t.board}</span>
+              </Link>
               <button
                 type="button"
                 role="menuitem"

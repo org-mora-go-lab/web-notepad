@@ -51,7 +51,7 @@ export function TabColorSetting() {
             <span key={color}>
               {index > 0 && " → "}
               <span className="setting-color-chip" data-tab-color={color}>
-                {statusLabels[index]} · {colorLabels[color]}
+                {colorLabels[color]}
               </span>
             </span>
           ))}

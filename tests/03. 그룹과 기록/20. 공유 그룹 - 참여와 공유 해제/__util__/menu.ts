@@ -17,3 +17,12 @@ export async function openSharingMenu(
   await expect(menu).toBeVisible();
   return menu;
 }
+
+export async function openSharingCancellation(page: Page, id: string) {
+  await page.goto("/board");
+  await page.locator('.board-entry[data-group-id="' + id + '"]').click();
+  await page
+    .getByRole("button", { name: "Cancel Sharing", exact: true })
+    .click();
+  return page.getByRole("alertdialog", { name: "Cancel Sharing", exact: true });
+}

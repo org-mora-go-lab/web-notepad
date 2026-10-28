@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
 
-test("1. 우측 상단은 로그인, 하단 더보기는 가이드·설정·검색·북마크를 제공한다", async ({
+test("1. 하단 계정은 로그인, 더보기는 가이드·검색·북마크를 제공한다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -10,36 +10,36 @@ test("1. 우측 상단은 로그인, 하단 더보기는 가이드·설정·검�
     await page.setViewportSize(viewport);
     const trigger = page.locator(".footer .more-command");
     const login = page
-      .locator(".header")
+      .locator(".footer")
       .getByRole("link", { name: "Continue with Kakao" });
     await expect(login).toBeVisible();
     await expect(login).toContainText("LOGIN");
     const bounds = (await login.boundingBox())!;
-    expect(bounds.x + bounds.width).toBeCloseTo(viewport.width, 1);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(viewport.width);
     const icon = (await login.locator("svg").boundingBox())!;
     const label = (await login.locator("span").boundingBox())!;
-    expect((icon.x + label.x + label.width) / 2).toBeCloseTo(
-      bounds.x + bounds.width / 2,
-      1,
-    );
-    for (const item of [icon, label]) {
-      expect(item.y + item.height / 2).toBeCloseTo(
-        bounds.y + bounds.height / 2,
+    if (viewport.width > 512) {
+      expect((icon.x + label.x + label.width) / 2).toBeCloseTo(
+        bounds.x + bounds.width / 2,
         1,
       );
+      for (const item of [icon, label]) {
+        expect(item.y + item.height / 2).toBeCloseTo(
+          bounds.y + bounds.height / 2,
+          1,
+        );
+      }
+    } else {
+      expect(icon.x + icon.width / 2).toBeCloseTo(label.x + label.width / 2, 1);
+      expect(label.y).toBeGreaterThanOrEqual(icon.y + icon.height);
     }
-    const tabsBounds = (await page
-      .locator(".tabs-scroll")
-      .first()
-      .boundingBox())!;
-    expect(tabsBounds.x + tabsBounds.width).toBeLessThanOrEqual(bounds.x + 1);
+    await expect(page.locator(".header .auth-command")).toHaveCount(0);
     await trigger.click();
     const menu = page.locator("#footer-more-menu");
     await expect(menu.getByRole("button")).toHaveText([
       "GUIDE",
       "SEARCH",
       "Bookmark",
-      "BOARD",
     ]);
     await expect(
       menu.getByRole("link", { name: "Continue with Kakao" }),

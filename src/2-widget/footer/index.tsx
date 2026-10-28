@@ -6,15 +6,12 @@ import {
   Ellipsis,
   Layers,
   LayoutDashboard,
-  MessageSquare,
   Search,
-  Trash2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { UserGuide } from "@/src/3-feature";
+import { Auth, UserGuide } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
-import { CornerPopover } from "@/src/5-shared/ui";
 
 import type { FooterProps } from "./type";
 
@@ -25,20 +22,12 @@ export function Footer({
   groupsOpen,
   onToggleDashboard,
   onToggleGroups,
-  onOpenBoard,
   onOpenShortcuts,
   onToggleBookmarks,
   onToggleSearch,
   searchOpen,
-  notificationsOpen,
-  onNotificationsOpenChange: setNotificationsOpen,
-  notifications,
-  onOpenNotification,
-  onClearNotifications,
 }: FooterProps) {
   const { t } = useI18n();
-  const [clearing, setClearing] = useState(false);
-  const [clearError, setClearError] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -99,18 +88,6 @@ export function Footer({
           </button>
           <div className="status-scroll-area">
             <div className="status-actions">
-              <button
-                className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}
-                type="button"
-                onClick={onToggleDashboard}
-                aria-expanded={dashboardOpen}
-                aria-controls="dashboard-panel"
-              >
-                <span className="status-icon">
-                  <LayoutDashboard size={16} strokeWidth={1.8} />
-                </span>
-                <span className="status-label">{t.dashboard}</span>
-              </button>
               <div className="footer-more" ref={moreRef}>
                 <button
                   className={`status-command more-command ${moreOpen || searchOpen ? "is-active" : ""}`}
@@ -118,7 +95,6 @@ export function Footer({
                   aria-expanded={moreOpen}
                   aria-controls="footer-more-menu"
                   onClick={() => {
-                    setNotificationsOpen(false);
                     setMoreOpen((current) => !current);
                   }}
                 >
@@ -167,93 +143,23 @@ export function Footer({
                       <Bookmark size={18} strokeWidth={1.8} />
                       <span className="status-label">{t.bookmark}</span>
                     </button>
-                    <button
-                      type="button"
-                      className="board-command"
-                      aria-controls="board-panel"
-                      onClick={() => {
-                        setMoreOpen(false);
-                        onOpenBoard();
-                      }}
-                    >
-                      <MessageSquare size={18} strokeWidth={1.8} />
-                      <span className="status-label">{t.board}</span>
-                    </button>
                   </div>
                 )}
-                {notificationsOpen && (
-                  <CornerPopover
-                    className="footer-notifications-panel"
-                    id="footer-notifications-panel"
-                    title={t.notifications}
-                    closeLabel={t.close}
-                    headerActions={
-                      <button
-                        type="button"
-                        className="notification-clear"
-                        aria-label={t.clearNotifications}
-                        title={t.clearNotifications}
-                        disabled={clearing || notifications.length === 0}
-                        onClick={async () => {
-                          setClearing(true);
-                          setClearError(false);
-                          try {
-                            if (!(await onClearNotifications()))
-                              setClearError(true);
-                          } finally {
-                            setClearing(false);
-                          }
-                        }}
-                      >
-                        <Trash2 size={16} aria-hidden="true" />
-                      </button>
-                    }
-                    open={notificationsOpen}
-                    position="top"
-                    triggerSelector="button.auth-command"
-                    onClose={() => setNotificationsOpen(false)}
-                  >
-                    {clearError && (
-                      <p role="alert">{t.clearNotificationsError}</p>
-                    )}
-                    {notifications.length === 0 ? (
-                      <p>{t.noNotifications}</p>
-                    ) : (
-                      <ul>
-                        {notifications.map((item) => (
-                          <li key={item.id}>
-                            <button
-                              type="button"
-                              className={`notification-entry ${item.unread ? "is-unread" : ""}`}
-                              onClick={() => {
-                                setNotificationsOpen(false);
-                                onOpenNotification(item);
-                              }}
-                            >
-                              {item.unread && (
-                                <span
-                                  className="notification-unread"
-                                  role="img"
-                                  aria-label={t.unreadNotification}
-                                />
-                              )}
-                              <strong>{item.actorName}</strong> ·{" "}
-                              {item.groupName}
-                              <span>{item.summary}</span>
-                              <time
-                                dateTime={new Date(
-                                  item.createdAt,
-                                ).toISOString()}
-                              >
-                                {new Date(item.createdAt).toLocaleString()}
-                              </time>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </CornerPopover>
-                )}
+              </div>
+              <button
+                className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}
+                type="button"
+                onClick={onToggleDashboard}
+                aria-expanded={dashboardOpen}
+                aria-controls="dashboard-panel"
+              >
+                <span className="status-icon">
+                  <LayoutDashboard size={16} strokeWidth={1.8} />
+                </span>
+                <span className="status-label">{t.dashboard}</span>
+              </button>
+              <div className="footer-auth">
+                <Auth />
               </div>
             </div>
           </div>

@@ -6,7 +6,7 @@ test("8. 카카오 로그인 진입점과 안전한 OAuth 인가 요청을 제�
 }) => {
   await page.goto("/");
   await expect(
-    page.locator(".header").getByRole("link", { name: "Continue with Kakao" }),
+    page.locator(".footer").getByRole("link", { name: "Continue with Kakao" }),
   ).toHaveAttribute("href", "/api/auth/oauth/kakao");
 
   const response = await request.get("/api/auth/oauth/kakao", {
@@ -39,7 +39,7 @@ test("8. 카카오 로그인 진입점과 안전한 OAuth 인가 요청을 제�
     }),
   );
   await page.reload();
-  const profile = page.locator(".header .auth-command", { hasText: "Mora" });
+  const profile = page.locator(".footer .auth-command", { hasText: "Mora" });
   await expect(profile).toBeVisible();
   await expect(profile.locator("img")).toHaveAttribute(
     "src",

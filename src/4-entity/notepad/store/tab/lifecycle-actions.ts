@@ -1,5 +1,6 @@
 import type { StateCreator } from "zustand";
 
+import { ALL_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
 import {
   assignTabToPane,
@@ -162,6 +163,32 @@ const hideTabFromEditor = (
   const tab = group?.tabs.find((item) => item.id === tabId);
   if (!group || !tab || !tab.open) return;
 
+  const view = getActiveGroup(state);
+  const viewPane = getPaneOfTab(view, tabId);
+  const viewIds = getPaneTabs(view, viewPane).map((item) => item.id);
+  const remainingViewIds = viewIds.filter((id) => id !== tabId);
+  const viewFallback =
+    remainingViewIds[
+      Math.min(viewIds.indexOf(tabId), remainingViewIds.length - 1)
+    ];
+  const commit = (changes: Partial<NotepadState>) => {
+    if (state.activeGroupId === ALL_GROUP_ID) {
+      changes = {
+        ...changes,
+        ...updateGroup({ ...state, ...changes }, ALL_GROUP_ID, (current) =>
+          getPaneActiveTabId(view, viewPane) === tabId &&
+          viewFallback &&
+          getPaneTabs(current, viewPane).some(
+            (item) => item.id === viewFallback,
+          )
+            ? setPaneActiveTabId(current, viewPane, viewFallback)
+            : current,
+        ),
+      };
+    }
+    set(changes);
+  };
+
   const pane = getPaneOfTab(group, tabId);
   const paneIds = getPaneTabs(group, pane).map((item) => item.id);
   const closedIndex = paneIds.indexOf(tabId);
@@ -174,7 +201,7 @@ const hideTabFromEditor = (
 
   if (remainingOpenTabs.length === 0) {
     const { tab: replacement, nextTabNumber } = allocateTab(state);
-    set({
+    commit({
       ...updateGroup(state, group.id, (current) => ({
         ...current,
         ...EMPTY_SPLIT_LAYOUT,
@@ -192,7 +219,7 @@ const hideTabFromEditor = (
     return;
   }
 
-  set(
+  commit(
     updateGroup(state, group.id, (current) => {
       let next = assignTabToPane(
         {

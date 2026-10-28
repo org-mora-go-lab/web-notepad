@@ -17,6 +17,7 @@ export type NotepadSettings = {
   // To Do / Ready / Doing colors; the first is the new-tab color.
   tabColorCycle: TabColor[];
   tabColorCycleVersion?: 2;
+  dashboardStatusDefaults: DashboardStatusNames;
   language: Language;
   // Right panels slide in and out; off shows and hides them in place.
   panelSlide: boolean;
@@ -154,6 +155,7 @@ export type NotepadState = {
   sharedDashboardVisibility: Record<string, DashboardVisibility>;
   settings: NotepadSettings;
   setFontScale: (fontScale: number) => void;
+  setDashboardStatusDefaults: (names: DashboardStatusNames) => void;
   setTabColorCycleColor: (index: number, color: TabColor) => void;
   setLanguage: (language: Language) => void;
   setPanelSlide: (panelSlide: boolean) => void;

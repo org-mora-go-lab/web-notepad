@@ -1,7 +1,6 @@
 import type { GroupEntry, NoteTab } from "@/src/4-entity/notepad";
 
 export type HeaderProps = {
-  showAuth?: boolean;
   tabs: NoteTab[];
   groups: GroupEntry[];
   activeGroupId: string;
