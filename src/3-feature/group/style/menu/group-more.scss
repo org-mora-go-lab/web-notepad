@@ -47,6 +47,13 @@
     background: v.$line;
   }
 
+  @media (hover: hover) and (pointer: fine) {
+    .system-group-command:hover,
+    .more-command:hover {
+      background: rgb(180 180 180 / 18%);
+    }
+  }
+
   .group-system-menu,
   .group-more-menu {
     position: absolute;
@@ -97,12 +104,31 @@
     right: 14px;
   }
 
+  @media (min-width: 513px) {
+    .system-group-command,
+    .more-command {
+      font-size: v.font(14px);
+
+      > svg {
+        display: none;
+      }
+    }
+  }
+
   @media (max-width: 512px) {
     .system-group-command,
     .more-command,
     .group-system-menu button,
     .group-more-menu button {
       min-height: 44px;
+    }
+
+    .system-group-command,
+    .more-command {
+      > svg,
+      > span {
+        transform: translateX(-10px);
+      }
     }
   }
 }

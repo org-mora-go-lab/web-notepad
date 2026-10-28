@@ -14,12 +14,10 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await expect(label).toHaveText("MORE");
   await expect(label).toBeInViewport();
-  await expect(icon).toBeInViewport();
   await expect(page.locator(".footer .dashboard-command svg")).toHaveCSS(
     "width",
     "25px",
   );
-  await expect(icon).toHaveCSS("width", "25px");
   await expect(page.locator(".group-more")).toHaveCSS(
     "border-top-width",
     "1px",
@@ -32,6 +30,7 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   expect(dashboardBounds.width).toBeCloseTo(29.8, 1);
   await expect(label).toBeInViewport();
   await expect(icon).toBeInViewport();
+  await expect(icon).toHaveCSS("width", "25px");
   const labelBox = (await label.boundingBox())!;
   const iconBox = (await icon.boundingBox())!;
   expect(labelBox.x).toBeGreaterThanOrEqual(iconBox.x + iconBox.width);

@@ -6,7 +6,7 @@ import { type PaneId, useNotepadStore } from "@/src/4-entity/notepad";
 
 import type { PaneRefs } from "./use-pane-refs";
 
-// Focuses the active editor after a tab or pane change, except until the first home interaction after returning from Board.
+// Focuses the active editor after a tab or pane change, except until the first home interaction after returning from another page.
 export function useEditorFocus(
   editorRefs: PaneRefs<HTMLTextAreaElement | null>,
   activeGroupId: string,
