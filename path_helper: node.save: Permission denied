@@ -1,2 +1,0 @@
-path_helper: node.save: Permission denied
-fatal: path 'path_helper: node.save: Permission denied' does not exist in 'HEAD'

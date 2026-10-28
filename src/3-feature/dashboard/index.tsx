@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 "use client";
 
 import { Maximize2, Minimize2 } from "lucide-react";

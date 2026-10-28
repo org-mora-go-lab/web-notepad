@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 import { expect, type Locator, test } from "@playwright/test";
 
 import { MOBILE_VIEWPORT } from "../../__constant__";
