@@ -24,7 +24,7 @@ test("1. PC 패널 경계선은 접근 가능한 구분선과 2px 선·좌우 �
     handle.evaluate(
       (element) => getComputedStyle(element, "::before").backgroundColor,
     );
-  await expect.poll(color).toBe("rgb(48, 48, 45)");
+  await expect.poll(color).toBe("rgb(63, 63, 63)");
   await handle.hover();
-  await expect.poll(color).toBe("rgb(102, 102, 94)");
+  await expect.poll(color).toBe("rgb(113, 113, 113)");
 });
