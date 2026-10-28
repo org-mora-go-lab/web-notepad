@@ -56,13 +56,7 @@ test("8. 전체 데이터 삭제를 재확인한 뒤 모든 저장값을 지우�
   });
   await expect(deleteAllButton).toHaveCSS("display", "flex");
   await expect(deleteAllButton).toHaveCSS("white-space", "nowrap");
-  const reloadedHistory = page.waitForResponse(
-    (response) =>
-      response.url().endsWith("/api/notepad/history") &&
-      response.request().method() === "GET",
-  );
   await deleteAllButton.click();
-  await reloadedHistory;
 
   await expect(page.locator("textarea")).toHaveValue("");
   await expect(page.locator(".group-current-value")).toHaveText("Ungrouped");

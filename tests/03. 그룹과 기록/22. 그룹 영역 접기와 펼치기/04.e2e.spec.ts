@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
-import { createGroup, openMoreMenu } from "../../__util__";
+import { createGroup, openSystemGroupMenu } from "../../__util__";
 test("4. My Group을 접은 채 그룹을 생성하면 펼쳐서 새 그룹을 보여준다", async ({
   sharing: { owner },
 }) => {
@@ -15,7 +15,11 @@ test("4. My Group을 접은 채 그룹을 생성하면 펼쳐서 새 그룹을 �
       .locator("#group-my-list")
       .getByRole("button", { name: "New personal group", exact: true }),
   ).toBeVisible();
-  const more = await openMoreMenu(owner);
-  await expect(more.getByRole("button", { name: "All Group" })).toBeVisible();
-  await expect(more.getByRole("button", { name: "Ungrouped" })).toBeVisible();
+  const systemGroups = await openSystemGroupMenu(owner);
+  await expect(
+    systemGroups.getByRole("button", { name: "All Group" }),
+  ).toBeVisible();
+  await expect(
+    systemGroups.getByRole("button", { name: "Ungrouped" }),
+  ).toBeVisible();
 });

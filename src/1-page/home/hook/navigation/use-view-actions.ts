@@ -76,14 +76,6 @@ export function useViewActions({
     [finishPanelAction],
   );
 
-  const openBookmarkInCurrentGroupAndClosePanel = useCallback(
-    (bookmarkId: string) => {
-      const state = useNotepadStore.getState();
-      openBookmarkAndClosePanel(state.activeGroupId, bookmarkId);
-    },
-    [openBookmarkAndClosePanel],
-  );
-
   const openSearchTabAndClosePanel = useCallback(
     (groupId: string, tabId: string) => {
       const state = useNotepadStore.getState();
@@ -144,7 +136,6 @@ export function useViewActions({
     createGroupAndRecord,
     removeGroupAndRecord,
     openBookmarkAndClosePanel,
-    openBookmarkInCurrentGroupAndClosePanel,
     openTabAndClosePanel,
     openSearchTabAndClosePanel,
     restoreClosedTabAndClosePanel,

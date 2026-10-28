@@ -1,8 +1,8 @@
 @use "./variable" as v;
 
 :root {
-  --list-popup-width: min(420px, calc(100vw - 32px));
-  --list-popup-height: min(416px, calc(100dvh - 32px));
+  --list-popup-width: min(546px, calc(100vw - 32px));
+  --list-popup-height: min(540.8px, calc(100dvh - 32px));
 }
 
 * {
@@ -94,7 +94,13 @@ button {
     cursor: pointer;
   }
 
-  :is(svg, :is(button, a, [role="button"], [role="menuitem"]) img):hover {
+  :is(button, a, [role="button"], [role="menuitem"]):has(:is(svg, img)):hover {
+    border-radius: 3px;
+    background-color: rgb(180 180 180 / 18%);
+    box-shadow: 0 0 0 4px rgb(180 180 180 / 18%);
+  }
+
+  svg:not(:is(button, a, [role="button"], [role="menuitem"]) svg):hover {
     border-radius: 3px;
     background: rgb(180 180 180 / 18%);
     box-shadow: 0 0 0 4px rgb(180 180 180 / 18%);

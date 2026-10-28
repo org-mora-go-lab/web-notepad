@@ -3,10 +3,12 @@
 import "./index.scss";
 
 import { useRouter } from "next/navigation";
-import { type CSSProperties, useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { useCloudSave, useHome, useSharedGroups } from "@/src/1-page/home/hook";
+import { readViewFromUrl } from "@/src/1-page/home/util";
 import { Footer, Panel } from "@/src/2-widget";
+import { isSharedGroupId, useNotepadStore } from "@/src/4-entity/notepad";
 import { MESSAGES } from "@/src/5-shared/constant";
 import {
   AccountActionsContext,
@@ -17,6 +19,9 @@ import {
 import { MobileTapFeedback } from "@/src/5-shared/ui";
 
 import { Loading, PaneColumn } from "./component";
+
+const SHARED_TAB_LINK_KEY = "web-notepad-pending-shared-tab-link";
+const SHARED_TAB_LINK_MAX_AGE = 10 * 60 * 1000;
 
 export function Home() {
   const router = useRouter();
@@ -33,12 +38,11 @@ export function Home() {
     closeSidePanels,
     activeGroupId,
     selectGroupAndClosePanel,
-    openBookmarkInCurrentGroupAndClosePanel,
+    openBookmarkAndClosePanel,
     openTabAndClosePanel,
     openSearchTabAndClosePanel,
     activeTab,
     split,
-    bookmarks,
     activeGroupTabs,
     tabColorCycle,
     moveDashboardTab,
@@ -66,6 +70,43 @@ export function Home() {
   } = useHome();
   const { status: cloudSaveStatus, savingTabIds } = useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
+  const [sharedTabLink] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const view = readViewFromUrl();
+    if (view && isSharedGroupId(view.groupId)) {
+      const link = { groupId: view.groupId, tabId: view.leftTabId };
+      try {
+        sessionStorage.setItem(
+          SHARED_TAB_LINK_KEY,
+          JSON.stringify({ ...link, savedAt: Date.now() }),
+        );
+      } catch {
+        /* The current page can still open the link. */
+      }
+      return link;
+    }
+    try {
+      const stored = JSON.parse(
+        sessionStorage.getItem(SHARED_TAB_LINK_KEY) ?? "null",
+      );
+      if (
+        stored &&
+        isSharedGroupId(stored.groupId) &&
+        typeof stored.tabId === "string" &&
+        typeof stored.savedAt === "number" &&
+        Date.now() - stored.savedAt < SHARED_TAB_LINK_MAX_AGE
+      )
+        return {
+          groupId: stored.groupId as string,
+          tabId: stored.tabId as string,
+        };
+      sessionStorage.removeItem(SHARED_TAB_LINK_KEY);
+    } catch {
+      /* A blocked or damaged session store does not block the workspace. */
+    }
+    return null;
+  });
+  const sharedTabLinkOpened = useRef(false);
   const { inviteStatus, dismissInvite } = shared;
   const entryOpened = useRef(false);
   const inviteRef = useRef<HTMLElement>(null);
@@ -84,6 +125,31 @@ export function Home() {
       String(fontScale),
     );
   }, [language, fontScale]);
+
+  useEffect(() => {
+    if (
+      !sharedTabLink ||
+      sharedTabLinkOpened.current ||
+      !hydrated ||
+      shared.loading ||
+      shared.checkingGroups ||
+      !shared.accessByGroup[sharedTabLink.groupId]?.active
+    )
+      return;
+    const state = useNotepadStore.getState();
+    const group = state.groups.find(
+      (item) => item.id === sharedTabLink.groupId,
+    );
+    if (!group?.tabs.some((tab) => tab.id === sharedTabLink.tabId)) return;
+    sharedTabLinkOpened.current = true;
+    state.selectGroup(sharedTabLink.groupId);
+    state.selectTab(sharedTabLink.tabId);
+    try {
+      sessionStorage.removeItem(SHARED_TAB_LINK_KEY);
+    } catch {
+      /* The selected tab remains available. */
+    }
+  }, [hydrated, shared, sharedTabLink]);
 
   useEffect(() => {
     if (!hydrated || entryOpened.current) return;
@@ -239,7 +305,6 @@ export function Home() {
                 activeTabId={activeTab?.id}
                 openPanel={openPanel}
                 backgroundPanel={backgroundPanel}
-                bookmarks={bookmarks}
                 activeGroupTabs={activeGroupTabs}
                 tabColorCycle={tabColorCycle}
                 groups={groups}
@@ -249,7 +314,7 @@ export function Home() {
                 globalSearchQuery={globalSearchQuery}
                 onClose={closeSidePanels}
                 onGlobalSearchQueryChange={setGlobalSearchQuery}
-                onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
+                onOpenBookmark={openBookmarkAndClosePanel}
                 onRemoveBookmark={removeBookmark}
                 onOpenDashboardTab={openTabAndClosePanel}
                 onMoveDashboardCard={moveDashboardTab}

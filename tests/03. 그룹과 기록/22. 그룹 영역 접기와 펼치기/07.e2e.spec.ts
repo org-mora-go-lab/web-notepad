@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import {
   groupsCommand,
-  openMoreMenu,
+  openSystemGroupMenu,
   seedStoredStateOnLoad,
 } from "../../__util__";
 
@@ -38,7 +38,7 @@ test("7. 그룹이 많아도 각 영역만 스크롤하며 Shared Group과 생�
     page.getByRole("textbox", { name: "New group name" }),
   ).toBeInViewport();
   await expect(
-    (await openMoreMenu(page)).getByRole("button", {
+    (await openSystemGroupMenu(page)).getByRole("button", {
       name: "All Group",
       exact: true,
     }),

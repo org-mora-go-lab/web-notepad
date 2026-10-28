@@ -1,9 +1,13 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { compareGroups, UNGROUPED_GROUP_ID } from "@/src/4-entity/notepad";
+import {
+  compareGroups,
+  isSharedGroupId,
+  UNGROUPED_GROUP_ID,
+} from "@/src/4-entity/notepad";
 import { useI18n } from "@/src/5-shared/hook";
 import { TabContextMenu } from "@/src/5-shared/ui";
 
@@ -41,6 +45,9 @@ export function Header({
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
   const { t } = useI18n();
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const [linkFeedback, setLinkFeedback] = useState<"copied" | "error" | null>(
+    null,
+  );
   const dragActive = draggingTabId !== null;
   const contextTab = tabs.find((tab) => tab.id === contextMenu?.tabId);
   const contextGroupId = contextTab
@@ -48,6 +55,25 @@ export function Header({
         group.tabs.some((tab) => tab.id === contextTab.id),
       )?.id ?? activeGroupId)
     : activeGroupId;
+
+  useEffect(() => {
+    if (!linkFeedback) return;
+    const timeout = window.setTimeout(() => setLinkFeedback(null), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [linkFeedback]);
+
+  const copyTabLink = async (groupId: string, tabId: string) => {
+    const url = new URL("/", window.location.origin);
+    url.searchParams.set("group", groupId);
+    url.searchParams.set("leftTab", tabId);
+    url.searchParams.set("pane", "left");
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setLinkFeedback("copied");
+    } catch {
+      setLinkFeedback("error");
+    }
+  };
 
   const endDrag = () => {
     setDropTargetId(null);
@@ -147,8 +173,21 @@ export function Header({
             onToggleBookmark(contextTab.id);
             setContextMenu(null);
           }}
+          onCopyLink={
+            isSharedGroupId(contextGroupId)
+              ? () => {
+                  setContextMenu(null);
+                  void copyTabLink(contextGroupId, contextTab.id);
+                }
+              : undefined
+          }
           onClose={() => setContextMenu(null)}
         />
+      )}
+      {linkFeedback && (
+        <span className="tab-link-feedback" role="status">
+          {linkFeedback === "copied" ? t.tabLinkCopied : t.tabLinkCopyError}
+        </span>
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import {
   groupsCommand,
-  openMoreMenu,
+  openSystemGroupMenu,
   seedSortableGroups,
 } from "../../__util__";
 
@@ -13,9 +13,11 @@ test("1. 기본 사이드바는 My Group 목록과 하단 시스템 그룹을 �
   await groupsCommand(page).click();
 
   const items = page.locator(".group-item");
-  const more = await openMoreMenu(page);
-  await expect(more.getByRole("button").first()).toHaveText("All Group");
-  await expect(more.getByRole("button").nth(1)).toHaveText("Ungrouped");
+  const systemGroups = await openSystemGroupMenu(page);
+  await expect(systemGroups.getByRole("button")).toHaveText([
+    "All Group",
+    "Ungrouped",
+  ]);
   await expect(items.filter({ hasText: "Closed" })).toHaveCount(0);
   await expect(items.first()).toContainText("가방");
 

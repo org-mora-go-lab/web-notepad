@@ -22,8 +22,10 @@ export {
   openPanel,
   openSettingsPanel,
   openShortcutsPanel,
+  openSystemGroupMenu,
   shortcutsCommand,
   switchGroup,
+  systemGroupCommand,
   toggleDashboardStatus,
 } from "./panel";
 export { seedSearchWorkspace } from "./search";

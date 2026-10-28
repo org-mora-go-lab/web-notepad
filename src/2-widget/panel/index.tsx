@@ -18,7 +18,6 @@ import type { PanelProps } from "./type";
 export function Panel({
   openPanel,
   backgroundPanel,
-  bookmarks,
   activeGroupTabs,
   activeTabId,
   tabColorCycle,
@@ -56,7 +55,7 @@ export function Panel({
   return (
     <div className="panel">
       <Bookmark
-        bookmarks={bookmarks}
+        groups={groups}
         open={openPanel === "bookmarks" || backgroundPanel === "bookmarks"}
         onClose={onClose}
         onOpen={onOpenBookmark}

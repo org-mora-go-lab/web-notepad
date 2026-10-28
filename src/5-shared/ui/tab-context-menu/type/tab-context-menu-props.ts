@@ -9,6 +9,7 @@ export type TabContextMenuProps = {
   targetGroups: TabContextMenuTargetGroup[];
   onMoveToGroup: (groupId: string) => void;
   onToggleBookmark: () => void;
+  onCopyLink?: () => void;
   onCloseTab?: () => void;
   onDeleteTab?: () => void;
   onClose: () => void;

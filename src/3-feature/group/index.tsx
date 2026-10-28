@@ -83,7 +83,9 @@ function GroupSidebar({
   const reorder = useGroupReorder(onMoveGroup);
   const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
   const [actionsGroupId, setActionsGroupId] = useState<string | null>(null);
-  const [moreOpen, setMoreOpen] = useState(false);
+  const [footerMenuOpen, setFooterMenuOpen] = useState<
+    "groups" | "more" | null
+  >(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const [sharingGroup, setSharingGroup] = useState<GroupEntry | null>(null);
   const shareFocusTarget = useRef<string | null>(null);
@@ -135,23 +137,26 @@ function GroupSidebar({
   };
 
   useEffect(() => {
-    if (!moreOpen) return;
+    if (!footerMenuOpen) return;
     const closeOutside = (event: PointerEvent) => {
-      if (!moreRef.current?.contains(event.target as Node)) setMoreOpen(false);
+      if (!moreRef.current?.contains(event.target as Node))
+        setFooterMenuOpen(null);
     };
     document.addEventListener("pointerdown", closeOutside);
     return () => document.removeEventListener("pointerdown", closeOutside);
-  }, [moreOpen]);
+  }, [footerMenuOpen]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) return;
       event.preventDefault();
-      if (moreOpen) {
-        setMoreOpen(false);
-        moreRef.current
-          ?.querySelector<HTMLButtonElement>(".more-command")
-          ?.focus();
+      if (footerMenuOpen) {
+        const trigger =
+          footerMenuOpen === "groups"
+            ? ".system-group-command"
+            : ".more-command";
+        setFooterMenuOpen(null);
+        moreRef.current?.querySelector<HTMLButtonElement>(trigger)?.focus();
         return;
       }
       onClose();
@@ -159,7 +164,7 @@ function GroupSidebar({
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [moreOpen, onClose]);
+  }, [footerMenuOpen, onClose]);
 
   return createPortal(
     <div className="group">
@@ -328,22 +333,31 @@ function GroupSidebar({
         </section>
         <div className="group-more" ref={moreRef}>
           <button
-            className="more-command"
+            className="system-group-command"
             type="button"
-            aria-expanded={moreOpen}
-            aria-controls="group-more-menu"
-            onClick={() => setMoreOpen((current) => !current)}
+            aria-expanded={footerMenuOpen === "groups"}
+            aria-controls="group-system-menu"
+            aria-haspopup="menu"
+            onClick={() =>
+              setFooterMenuOpen((current) =>
+                current === "groups" ? null : "groups",
+              )
+            }
           >
-            <Ellipsis size={25} strokeWidth={1.8} aria-hidden="true" />
-            <span>{t.more}</span>
+            <Layers size={18} strokeWidth={1.8} aria-hidden="true" />
+            <span>{t.group}</span>
           </button>
-          {moreOpen && (
-            <div className="group-more-menu" id="group-more-menu" role="menu">
+          {footerMenuOpen === "groups" && (
+            <div
+              className="group-system-menu"
+              id="group-system-menu"
+              role="menu"
+            >
               <button
                 type="button"
                 aria-pressed={activeGroupId === ALL_GROUP_ID}
                 onClick={() => {
-                  setMoreOpen(false);
+                  setFooterMenuOpen(null);
                   selectGroup(ALL_GROUP_ID);
                 }}
               >
@@ -355,7 +369,7 @@ function GroupSidebar({
                   type="button"
                   aria-pressed={activeGroupId === UNGROUPED_GROUP_ID}
                   onClick={() => {
-                    setMoreOpen(false);
+                    setFooterMenuOpen(null);
                     selectGroup(UNGROUPED_GROUP_ID);
                   }}
                 >
@@ -363,11 +377,30 @@ function GroupSidebar({
                   <span>{ungrouped.name}</span>
                 </button>
               )}
-              <div className="group-more-separator" role="separator" />
+            </div>
+          )}
+          <span className="group-more-divider" aria-hidden="true" />
+          <button
+            className="more-command"
+            type="button"
+            aria-expanded={footerMenuOpen === "more"}
+            aria-controls="group-more-menu"
+            aria-haspopup="menu"
+            onClick={() =>
+              setFooterMenuOpen((current) =>
+                current === "more" ? null : "more",
+              )
+            }
+          >
+            <Ellipsis size={25} strokeWidth={1.8} aria-hidden="true" />
+            <span>{t.more}</span>
+          </button>
+          {footerMenuOpen === "more" && (
+            <div className="group-more-menu" id="group-more-menu" role="menu">
               <button
                 type="button"
                 onClick={() => {
-                  setMoreOpen(false);
+                  setFooterMenuOpen(null);
                   onClose();
                   onOpenGuide();
                 }}
@@ -382,7 +415,7 @@ function GroupSidebar({
                 aria-controls="global-search-popup"
                 aria-haspopup="dialog"
                 onClick={() => {
-                  setMoreOpen(false);
+                  setFooterMenuOpen(null);
                   onClose();
                   onToggleSearch();
                 }}
@@ -393,7 +426,7 @@ function GroupSidebar({
               <button
                 type="button"
                 onClick={() => {
-                  setMoreOpen(false);
+                  setFooterMenuOpen(null);
                   onClose();
                   onToggleBookmarks();
                 }}
@@ -404,7 +437,7 @@ function GroupSidebar({
               <button
                 type="button"
                 onClick={() => {
-                  setMoreOpen(false);
+                  setFooterMenuOpen(null);
                   onClose();
                   onOpenSettings();
                 }}

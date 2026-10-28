@@ -7,6 +7,7 @@ import {
   openHeaderMenu,
   openMoreMenu,
   openSettingsPanel,
+  openSystemGroupMenu,
   readStoredState,
 } from "../../__util__";
 import { languageRadio, settingsPanel } from "../__util__";
@@ -54,7 +55,7 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
     await page.setViewportSize(viewport);
     if (viewport.width <= 512)
       await expect(page.locator(".group-command-label")).toHaveText("메뉴");
-    const groupMenu = await openMoreMenu(page);
+    const groupMenu = await openSystemGroupMenu(page);
     await expect(
       groupMenu.getByRole("button", { name: "미지정 그룹", exact: true }),
     ).toBeVisible();
@@ -62,7 +63,7 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
       .getByRole("button", { name: "모든 그룹", exact: true })
       .click();
     await expect(groupStatusName(page)).toHaveText("모든 그룹");
-    const reopenedMenu = await openMoreMenu(page);
+    const reopenedMenu = await openSystemGroupMenu(page);
     await reopenedMenu
       .getByRole("button", { name: "미지정 그룹", exact: true })
       .click();
@@ -84,10 +85,11 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await page.getByRole("button", { name: "Close Settings" }).click();
   await openMoreMenu(page);
   await expect(moreCommand(page).locator("span")).toHaveText("MORE");
+  const systemGroups = await openSystemGroupMenu(page);
   await expect(
-    page.getByRole("button", { name: "All Group", exact: true }),
+    systemGroups.getByRole("button", { name: "All Group", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Ungrouped", exact: true }),
+    systemGroups.getByRole("button", { name: "Ungrouped", exact: true }),
   ).toBeVisible();
 });

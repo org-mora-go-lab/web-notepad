@@ -5,6 +5,7 @@ import {
   groupActionsButton,
   groupsCommand,
   moreCommand,
+  systemGroupCommand,
 } from "../../__util__";
 
 test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·수정·삭제 명령을 연다", async ({
@@ -79,4 +80,14 @@ test("7. 이름 있는 그룹의 ⋮ 버튼은 고정·수정·삭제 명령을 
         return properties.map((property) => style.getPropertyValue(property));
       }, itemProperties),
   ).toEqual(groupItem);
+
+  await systemGroupCommand(page).click();
+  const systemMenu = page.locator(".group-system-menu");
+  await expect(systemMenu).toBeVisible();
+  expect(
+    await systemMenu.evaluate((element, properties) => {
+      const style = getComputedStyle(element);
+      return properties.map((property) => style.getPropertyValue(property));
+    }, surfaceProperties),
+  ).toEqual(groupSurface);
 });

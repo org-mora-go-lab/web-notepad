@@ -231,7 +231,6 @@ export function Board() {
                           >
                             <Layers size={16} aria-hidden="true" />
                             <strong>{post.title}</strong>
-                            <ArrowUpRight size={16} aria-hidden="true" />
                           </button>
                         </th>
                         <td>

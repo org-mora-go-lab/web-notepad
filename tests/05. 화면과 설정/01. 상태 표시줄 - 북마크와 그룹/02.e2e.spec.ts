@@ -2,23 +2,19 @@ import { expect, test } from "@playwright/test";
 
 import { groupsCommand, moreCommand } from "../../__util__";
 
-test("2. 더보기의 Bookmark 명령은 현재 그룹의 북마크 패널을 연다", async ({
-  page,
-}) => {
+test("2. 더보기의 BOOKMARK 명령은 북마크 팝업을 연다", async ({ page }) => {
   await page.goto("/");
   await groupsCommand(page).click();
   const command = moreCommand(page);
   await command.click();
   const menu = page.locator("#group-more-menu");
   await expect(menu.getByRole("button")).toHaveText([
-    "All Group",
-    "Ungrouped",
     "GUIDE",
     "SEARCH",
-    "Bookmark",
+    "BOOKMARK",
     "SETTINGS",
   ]);
-  await menu.getByRole("button", { name: "Bookmark" }).click();
+  await menu.getByRole("button", { name: "BOOKMARK" }).click();
   await expect(page.locator("#bookmarks-panel")).toHaveAttribute(
     "aria-hidden",
     "false",

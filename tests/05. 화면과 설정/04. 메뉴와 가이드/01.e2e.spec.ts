@@ -38,11 +38,9 @@ test("1. 하단 계정은 로그인, 더보기는 가이드·검색·북마크�
     await trigger.click();
     const menu = page.locator("#group-more-menu");
     await expect(menu.getByRole("button")).toHaveText([
-      "All Group",
-      "Ungrouped",
       "GUIDE",
       "SEARCH",
-      "Bookmark",
+      "BOOKMARK",
       "SETTINGS",
     ]);
     await expect(

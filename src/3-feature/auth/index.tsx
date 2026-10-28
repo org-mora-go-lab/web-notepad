@@ -5,19 +5,17 @@ import {
   LogIn,
   LogOut,
   MessageSquare,
-  Settings,
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { AccountActionsContext, useI18n } from "@/src/5-shared/hook";
+import { useI18n } from "@/src/5-shared/hook";
 import type { AccountProfile as AuthUser } from "@/src/5-shared/type";
 
 export function Auth() {
   const { t } = useI18n();
-  const actions = useContext(AccountActionsContext);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -202,17 +200,6 @@ export function Auth() {
                 <MessageSquare size={18} />
                 <span>{t.board}</span>
               </Link>
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => {
-                  closeMenu(true);
-                  actions?.onOpenSettings();
-                }}
-              >
-                <Settings size={18} />
-                <span>{t.settingsTitle}</span>
-              </button>
               <button
                 type="button"
                 role="menuitem"
