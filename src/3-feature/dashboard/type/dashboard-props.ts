@@ -28,7 +28,6 @@ export type DashboardProps = {
     targetId?: string,
     placement?: "before" | "after",
   ) => void;
-  onChangeStatus: (tabId: string, status: TabStatus) => void;
   onMoveToGroup: (tabId: string, groupId: string) => void;
   onToggleTabBookmark: (tabId: string) => void;
   onDeleteTab: (tabId: string) => void;

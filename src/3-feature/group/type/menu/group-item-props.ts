@@ -3,6 +3,7 @@ import type { PointerEventHandler } from "react";
 export type GroupItemProps = {
   groupId: string;
   shared?: boolean;
+  hideActionsButton: boolean;
   sharingRole?: "owner" | "member";
   sharingActive?: boolean;
   onChangeSharing?: (action: "leave" | "revoke", anchor: HTMLElement) => void;
@@ -17,7 +18,7 @@ export type GroupItemProps = {
   editable: boolean;
   muted: boolean;
   system?: boolean;
-  // Pin / edit / delete appear in a dropdown opened by the … button.
+  // Pin / edit / delete appear in the action dropdown.
   actionsOpen: boolean;
   onToggleActions: () => void;
   onSelect: () => void;

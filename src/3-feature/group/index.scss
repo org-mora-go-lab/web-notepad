@@ -74,16 +74,8 @@
   .group-create-form,
   .group-access-status,
   .group-sidebar-header,
-  .group-system-list {
+  .group-more {
     flex-shrink: 0;
-  }
-  .group-system-list {
-    padding: 4px 0;
-    border-top: 1px solid v.$line;
-
-    .group-system-item {
-      min-height: 42px;
-    }
   }
 
   .group-menu-resizer {
@@ -128,9 +120,6 @@
         width: 44px;
         height: 44px;
       }
-    }
-    .group-system-list .group-system-item {
-      min-height: 48px;
     }
     .group-menu-resizer {
       display: none;

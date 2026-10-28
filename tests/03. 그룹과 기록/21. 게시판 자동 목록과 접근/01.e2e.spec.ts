@@ -13,7 +13,7 @@ test("1. role admin은 관리자 화면을 열거나 관리 동작을 활성화�
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill(boardPost.title);
-  await page.locator(".board-entry").click();
+  await page.locator(`.board-entry[data-group-id="${boardPost.id}"]`).click();
   await expect(
     page.locator(
       ".board-admin-badge, .board-admin-actions, .board-form, .board-publish, .board-remove-confirm",

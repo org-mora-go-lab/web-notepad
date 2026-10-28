@@ -9,6 +9,15 @@ test("2. 북마크 팝업은 기존 고정 대시보드와 작업 영역 너비�
   await openPanel(page, "dashboard-panel");
   const before = (await page.locator(".workspace").boundingBox())!.width;
   await openBookmarksPanel(page);
+  const popup = (await page.locator("#bookmarks-panel").boundingBox())!;
+  expect(popup.x + popup.width / 2).toBeCloseTo(
+    page.viewportSize()!.width / 2,
+    0,
+  );
+  expect(popup.y + popup.height / 2).toBeCloseTo(
+    page.viewportSize()!.height / 2,
+    0,
+  );
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",

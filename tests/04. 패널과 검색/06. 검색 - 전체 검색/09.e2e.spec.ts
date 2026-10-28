@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { bookmarkActiveTab, openGlobalSearchPanel } from "../../__util__";
 
-test("9. 검색 팝오버는 입력·결과·미리보기·초기화에서도 콘텐츠 높이를 유지한다", async ({
+test("9. 검색 모달은 입력·결과·미리보기·초기화에서도 콘텐츠 높이를 유지한다", async ({
   page,
 }) => {
   await page.goto("/");

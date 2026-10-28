@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { groupsCommand } from "../../__util__";
 
-test("3. 하단 왼쪽 그룹 버튼은 PC에서 그룹명을 함께 표시하고 모바일은 아이콘과 GROUP을 표시한다", async ({
+test("3. 하단 왼쪽 그룹 버튼은 PC에서 그룹명을 함께 표시하고 모바일은 아이콘과 MENU를 표시한다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -15,16 +15,14 @@ test("3. 하단 왼쪽 그룹 버튼은 PC에서 그룹명을 함께 표시하�
     await expect(page.locator(".group-status-command")).toHaveCount(0);
     await expect(command).toHaveAttribute("aria-label", "Toggle groups");
     const groupBox = (await command.boundingBox())!;
-    const moreBox = (await page.locator(".more-command").boundingBox())!;
     const dashboardBox = (await page
       .locator(".dashboard-command")
       .boundingBox())!;
-    expect(groupBox.x).toBeLessThan(moreBox.x);
     expect(groupBox.x).toBeLessThan(dashboardBox.x);
 
     if (viewport.width <= 512) {
       await expect(command).toHaveCSS("gap", "4px");
-      await expect(command.locator(".group-command-label")).toHaveText("GROUP");
+      await expect(command.locator(".group-command-label")).toHaveText("MENU");
       await expect(page.locator(".current-group-panel")).toBeVisible();
       await expect(page.locator(".current-group-name")).toHaveText("Ungrouped");
       const icon = page.locator(".current-group-icon");

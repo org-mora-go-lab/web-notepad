@@ -4,7 +4,7 @@ import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 import { shareGroup } from "./__util__";
 
-test("9. 공유 팝업은 키보드로 닫고 그룹 동작 버튼에 포커스를 복원한다", async ({
+test("9. 공유 팝업은 키보드로 닫고 공유 그룹 행에 포커스를 복원한다", async ({
   page,
   context,
 }) => {
@@ -28,6 +28,8 @@ test("9. 공유 팝업은 키보드로 닫고 그룹 동작 버튼에 포커스�
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "Keyboard team group actions" }),
+    page.locator("#group-shared-list .group-select", {
+      hasText: "Keyboard team",
+    }),
   ).toBeFocused();
 });

@@ -29,10 +29,10 @@ test("8. 검색은 빈 상태와 결과와 미리보기에서도 북마크와 �
           })
           .click();
       await expect(popup).toHaveCSS("width", bookmark.width + "px");
-      expect((await popup.boundingBox())!.height).toBeCloseTo(
-        bookmark.height,
-        0,
-      );
+      const bounds = (await popup.boundingBox())!;
+      expect(bounds.height).toBeCloseTo(bookmark.height, 0);
+      expect(bounds.x).toBeCloseTo(bookmark.x, 0);
+      expect(bounds.y).toBeCloseTo(bookmark.y, 0);
     }
     const results = (await popup
       .locator(".global-search-results-pane")

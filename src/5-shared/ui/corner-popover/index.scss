@@ -2,28 +2,28 @@
 
 .corner-popover {
   position: fixed;
-  right: max(16px, env(safe-area-inset-right));
-  z-index: 80;
-  width: var(--list-popover-width);
-  max-height: min(420px, calc(100dvh - 160px));
-  display: flex;
+  inset: 0;
+  width: var(--list-popup-width);
+  max-width: calc(100vw - 32px);
+  height: var(--list-popup-height);
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
   flex-direction: column;
   border: 1px solid v.$line;
-  border-radius: 8px;
+  border-radius: 6px;
   background: v.$raised;
   color: v.$ink;
   font-family: v.$sans;
   font-size: v.font(14px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-  &[hidden] {
+  &:not([open]) {
     display: none;
   }
-  &[data-position="top"] {
-    top: max(64px, env(safe-area-inset-top));
+  &[open] {
+    display: flex;
   }
-  &[data-position="bottom"] {
-    height: var(--list-popover-height);
-    bottom: calc(48px + env(safe-area-inset-bottom) + 8px);
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.65);
   }
   .corner-popover-header {
     flex: 0 0 auto;
@@ -52,6 +52,7 @@
     color: v.$ink;
   }
   .corner-popover-content {
+    flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -61,9 +62,6 @@
     outline-offset: -2px;
   }
   @media (max-width: 512px) {
-    &[data-position="bottom"] {
-      bottom: calc(114.8px + env(safe-area-inset-bottom) + 8px);
-    }
     .corner-popover-close {
       width: 44px;
       height: 44px;

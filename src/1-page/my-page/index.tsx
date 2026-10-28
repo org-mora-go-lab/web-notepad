@@ -190,7 +190,7 @@ export function MyPage() {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <CircleUserRound size={64} aria-hidden="true" />
+                <CircleUserRound size={76.8} aria-hidden="true" />
               )}
               <div>
                 <h2>{user.nickname}</h2>

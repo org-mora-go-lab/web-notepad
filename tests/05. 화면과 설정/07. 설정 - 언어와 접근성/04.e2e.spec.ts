@@ -2,10 +2,10 @@ import { expect, test } from "@playwright/test";
 
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import {
-  groupsCommand,
   groupStatusName,
   moreCommand,
   openHeaderMenu,
+  openMoreMenu,
   openSettingsPanel,
   readStoredState,
 } from "../../__util__";
@@ -34,8 +34,6 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await expect(panel.locator(".setting-hint").first()).toContainText(
     "새 탭은 첫 번째 색상으로 시작합니다.그레이 → 오렌지 → 인디고",
   );
-  await expect(moreCommand(page).locator(".status-label")).toHaveText("더보기");
-  await expect(page.locator(".more-command")).toHaveAccessibleName("더보기");
   await expect(page.locator(".note-area")).toHaveAttribute(
     "placeholder",
     "메모를 입력하세요..",
@@ -43,21 +41,29 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
 
   await page.getByRole("button", { name: "설정 닫기" }).click();
   const tools = await openHeaderMenu(page);
+  await expect(moreCommand(page).locator("span")).toHaveText("더보기");
+  await expect(moreCommand(page)).toHaveAccessibleName("더보기");
   await expect(tools.getByRole("button", { name: "검색" })).toBeVisible();
-  await expect(tools.getByRole("button", { name: "설정" })).toHaveCount(0);
+  await expect(
+    tools.getByRole("button", { name: "설정", exact: true }),
+  ).toBeVisible();
   await expect(tools.getByRole("button", { name: "닫은 탭" })).toHaveCount(0);
   await page.keyboard.press("Escape");
 
   for (const viewport of BOTH_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    await groupsCommand(page).click();
+    if (viewport.width <= 512)
+      await expect(page.locator(".group-command-label")).toHaveText("메뉴");
+    const groupMenu = await openMoreMenu(page);
     await expect(
-      page.getByRole("button", { name: "미지정 그룹", exact: true }),
+      groupMenu.getByRole("button", { name: "미지정 그룹", exact: true }),
     ).toBeVisible();
-    await page.getByRole("button", { name: "모든 그룹", exact: true }).click();
+    await groupMenu
+      .getByRole("button", { name: "모든 그룹", exact: true })
+      .click();
     await expect(groupStatusName(page)).toHaveText("모든 그룹");
-    if (viewport.width <= 512) await groupsCommand(page).click();
-    await page
+    const reopenedMenu = await openMoreMenu(page);
+    await reopenedMenu
       .getByRole("button", { name: "미지정 그룹", exact: true })
       .click();
     await expect(groupStatusName(page)).toHaveText("미지정 그룹");
@@ -72,10 +78,12 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await openSettingsPanel(page);
   await languageRadio(page, "English").check();
   await expect(panel.locator("h2")).toHaveText("Settings");
-  await expect(moreCommand(page).locator(".status-label")).toHaveText("MORE");
+  if ((await page.viewportSize())!.width <= 512)
+    await expect(page.locator(".group-command-label")).toHaveText("MENU");
   await expect(groupStatusName(page)).toHaveText("Ungrouped");
   await page.getByRole("button", { name: "Close Settings" }).click();
-  await groupsCommand(page).click();
+  await openMoreMenu(page);
+  await expect(moreCommand(page).locator("span")).toHaveText("MORE");
   await expect(
     page.getByRole("button", { name: "All Group", exact: true }),
   ).toBeVisible();

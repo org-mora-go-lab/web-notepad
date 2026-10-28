@@ -13,6 +13,8 @@ test("7. 모바일 아이콘 클릭은 원형 배경 강조와 함께 버튼 기
   page,
 }) => {
   await page.goto("/");
+  await page.locator(".group-select-command").tap();
+  await expect(page.locator(".mobile-tap-feedback")).toHaveCount(0);
   const menu = page.locator(".more-command");
   const icon = (await menu.locator("svg").boundingBox())!;
   await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
@@ -44,7 +46,7 @@ test("7. 모바일 아이콘 클릭은 원형 배경 강조와 함께 버튼 기
   expect(scales.every((transform) => !transform || transform === "none")).toBe(
     true,
   );
-  await expect(page.locator("#footer-more-menu")).toBeVisible();
+  await expect(page.locator("#group-more-menu")).toBeVisible();
   const box = (await ripple.boundingBox())!;
   expect(box.width).toBeCloseTo(
     Math.max(40, Math.max(icon.width, icon.height) + 16),

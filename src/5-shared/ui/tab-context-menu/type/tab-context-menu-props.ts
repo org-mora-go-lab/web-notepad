@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 export type TabContextMenuTargetGroup = { id: string; name: string };
 
 export type TabContextMenuProps = {
@@ -7,7 +5,6 @@ export type TabContextMenuProps = {
   top: number;
   moveGroupFirst?: boolean;
   deleteOnly?: boolean;
-  footerAction?: ReactNode;
   bookmarked: boolean;
   targetGroups: TabContextMenuTargetGroup[];
   onMoveToGroup: (groupId: string) => void;

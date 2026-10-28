@@ -23,8 +23,9 @@ test("2. 모바일 긴 이름은 말줄임되고 프로필 이미지는 줄어�
     await expect(button).toBeVisible();
     const image = button.locator("img");
     const name = button.locator("span");
-    await expect(image).toHaveCSS("width", "24px");
-    await expect(image).toHaveCSS("height", "24px");
+    const imageBounds = (await image.boundingBox())!;
+    expect(imageBounds.width).toBeCloseTo(28.8, 1);
+    expect(imageBounds.height).toBeCloseTo(28.8, 1);
     await expect(name).toHaveCSS("text-overflow", "ellipsis");
     const bounds = await button.evaluate((element) => {
       const buttonBox = element.getBoundingClientRect();
@@ -41,7 +42,7 @@ test("2. 모바일 긴 이름은 말줄임되고 프로필 이미지는 줄어�
         clipped: element.querySelector("span")!.scrollWidth > nameBox.width,
       };
     });
-    expect(bounds.imageWidth).toBe(24);
+    expect(bounds.imageWidth).toBeCloseTo(28.8, 1);
     expect(bounds.imageBottom).toBeLessThanOrEqual(bounds.nameTop);
     expect(bounds.nameRight).toBeLessThanOrEqual(bounds.buttonRight);
     expect(bounds.buttonRight).toBeLessThanOrEqual(width);

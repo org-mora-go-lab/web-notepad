@@ -19,7 +19,6 @@ export function TabContextMenu({
   top,
   moveGroupFirst = false,
   deleteOnly = false,
-  footerAction,
   bookmarked,
   targetGroups,
   onMoveToGroup,
@@ -54,7 +53,7 @@ export function TabContextMenu({
     positionMenu();
     window.addEventListener("resize", positionMenu);
     return () => window.removeEventListener("resize", positionMenu);
-  }, [left, top, choosingGroup, targetGroups.length, footerAction]);
+  }, [left, top, choosingGroup, targetGroups.length]);
 
   useEffect(() => {
     if (choosingGroup)
@@ -135,9 +134,6 @@ export function TabContextMenu({
               )}
               {!moveGroupFirst && moveGroupButton}
             </>
-          )}
-          {footerAction && (
-            <div className="tab-context-menu-footer">{footerAction}</div>
           )}
         </>
       )}

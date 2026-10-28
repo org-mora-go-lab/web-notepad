@@ -7,8 +7,7 @@ export const groupsCommand = (page: Page) =>
   page.locator(".group-select-command");
 export const groupSelectCommand = (page: Page) =>
   page.locator(".group-select-command");
-export const moreCommand = (page: Page) =>
-  page.locator(".footer .more-command");
+export const moreCommand = (page: Page) => page.locator(".group .more-command");
 export async function openBookmarksPanel(page: Page) {
   const menu = await openMoreMenu(page);
   await menu.getByRole("button", { name: /Bookmark|북마크/i }).click();
@@ -23,7 +22,9 @@ export const shortcutsCommand = (page: Page) =>
   page.locator('button[aria-controls="shortcuts-panel"]');
 
 export async function openMoreMenu(page: Page) {
-  const menu = page.locator("#footer-more-menu");
+  if ((await groupsCommand(page).getAttribute("aria-expanded")) !== "true")
+    await groupsCommand(page).click();
+  const menu = page.locator("#group-more-menu");
   if (!(await menu.isVisible())) await moreCommand(page).click();
   return menu;
 }
@@ -47,12 +48,22 @@ export async function openPanel(page: Page, panelId: string) {
         .getByRole("button", { name: /SHORTCUT|단축키/i })
         .click();
     } else {
-      const account = await openAccountMenu(page);
-      const settingsCommand = account.getByRole("menuitem", {
-        name: /SETTINGS|설정/i,
-      });
-      await expect(settingsCommand).toBeVisible();
-      await settingsCommand.click();
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const account = await openAccountMenu(page);
+          await account
+            .getByRole("menuitem", { name: /SETTINGS|설정/i })
+            .press("Enter", { timeout: 1500 });
+          await expect(page.locator("#settings-panel")).toHaveAttribute(
+            "aria-hidden",
+            "false",
+            { timeout: 1500 },
+          );
+          break;
+        } catch (error) {
+          if (attempt === 2) throw error;
+        }
+      }
     }
   } else if (
     await page.locator('.side-panel-drawer[aria-hidden="false"]').count()
@@ -104,8 +115,8 @@ export async function createGroups(page: Page, ...names: string[]) {
 // Opens the group sidebar, selects the group with the exact name and closes it when needed.
 export async function switchGroup(page: Page, name: string) {
   if (name === "All Group" || name === "Ungrouped") {
-    await groupsCommand(page).click();
-    await page.getByRole("button", { name, exact: true }).click();
+    const menu = await openMoreMenu(page);
+    await menu.getByRole("button", { name, exact: true }).click();
     if ((await groupsCommand(page).getAttribute("aria-expanded")) === "true")
       await page.keyboard.press("Escape");
     return;

@@ -41,7 +41,6 @@ export function Home() {
     bookmarks,
     activeGroupTabs,
     tabColorCycle,
-    setTabStatus,
     moveDashboardTab,
     toggleBookmark,
     moveToGroup,
@@ -190,10 +189,6 @@ export function Home() {
                   groupsOpen={groupMenuOpen}
                   onToggleDashboard={() => toggleSidePanel("dashboard")}
                   onToggleGroups={toggleGroupMenu}
-                  onOpenShortcuts={() => toggleSidePanel("shortcuts")}
-                  onToggleBookmarks={() => toggleSidePanel("bookmarks")}
-                  onToggleSearch={() => toggleSidePanel("global-search")}
-                  searchOpen={openPanel === "global-search"}
                 />
               </section>
 
@@ -257,7 +252,6 @@ export function Home() {
                 onOpenBookmark={openBookmarkInCurrentGroupAndClosePanel}
                 onRemoveBookmark={removeBookmark}
                 onOpenDashboardTab={openTabAndClosePanel}
-                onChangeTabStatus={setTabStatus}
                 onMoveDashboardCard={moveDashboardTab}
                 onMoveDashboardTabToGroup={moveToGroup}
                 onToggleDashboardTabBookmark={toggleBookmark}
@@ -277,6 +271,12 @@ export function Home() {
                 }
                 onToggleGroupPin={toggleGroupPin}
                 onMoveGroup={moveGroup}
+                onOpenShortcuts={() => toggleSidePanel("shortcuts")}
+                onOpenSettings={() => {
+                  if (openPanel !== "settings") toggleSidePanel("settings");
+                }}
+                onToggleBookmarks={() => toggleSidePanel("bookmarks")}
+                onToggleSearch={() => toggleSidePanel("global-search")}
               />
             </main>
           </SavingTabsContext>

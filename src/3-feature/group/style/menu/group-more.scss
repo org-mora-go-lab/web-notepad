@@ -1,0 +1,92 @@
+@use "../../../../5-shared/style/variable" as v;
+
+.group {
+  .group-more {
+    position: relative;
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-top: 1px solid v.$line;
+  }
+
+  .more-command {
+    width: 100%;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: v.$muted;
+    font: inherit;
+    text-align: left;
+
+    &:hover,
+    &:focus-visible,
+    &[aria-expanded="true"] {
+      background: v.$line;
+      color: v.$ink;
+    }
+
+    &:focus-visible {
+      outline: 2px solid v.$signal;
+      outline-offset: -2px;
+    }
+  }
+
+  .group-more-menu {
+    position: absolute;
+    bottom: calc(100% + 7px);
+    left: 14px;
+    z-index: 90;
+    width: max-content;
+    min-width: 160px;
+    padding: 5px;
+    border: 1px solid v.$line;
+    border-radius: 5px;
+    background: v.$raised;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+    button {
+      width: 100%;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: v.$ink;
+      font: inherit;
+      font-size: v.font(15px);
+      text-align: left;
+      white-space: nowrap;
+
+      &:hover,
+      &:focus-visible {
+        background: v.$line;
+      }
+
+      > svg {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+      }
+    }
+  }
+
+  .group-more-separator {
+    height: 1px;
+    margin: 5px 8px;
+    background: v.$line;
+  }
+
+  @media (max-width: 512px) {
+    .more-command,
+    .group-more-menu button {
+      min-height: 44px;
+    }
+  }
+}

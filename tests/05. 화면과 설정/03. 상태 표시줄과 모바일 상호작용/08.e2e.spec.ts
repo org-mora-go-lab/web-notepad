@@ -7,9 +7,10 @@ test("8. PC는 실제 아이콘에 hover했을 때만 pointer 커서를 표시�
 }) => {
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto("/");
+  await page.locator(".group-select-command").click();
 
   const more = page.locator(".more-command");
-  const label = more.locator(".status-label");
+  const label = more.locator("span");
   const icon = more.locator("svg");
 
   await label.hover();
@@ -18,7 +19,6 @@ test("8. PC는 실제 아이콘에 hover했을 때만 pointer 커서를 표시�
 
   await icon.hover();
   await expect(icon).toHaveCSS("cursor", "pointer");
-  await page.locator(".group-select-command").click();
   await expect(page.locator(".group-menu-resizer")).toHaveCSS(
     "cursor",
     "col-resize",

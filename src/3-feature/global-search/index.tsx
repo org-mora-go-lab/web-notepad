@@ -71,7 +71,7 @@ export function GlobalSearch({
       className={`global-search ${query ? "has-query" : ""} ${selectedBookmark ? "has-preview" : ""}`}
       id="global-search-popup"
       aria-labelledby={titleId}
-      aria-modal="false"
+      aria-modal={open ? "true" : "false"}
       onCancel={(event) => {
         event.preventDefault();
         closeSearch();

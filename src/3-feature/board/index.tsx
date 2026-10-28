@@ -13,28 +13,32 @@ import {
 } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import type { BoardPost } from "@/src/4-entity/notepad";
 import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, SearchField } from "@/src/5-shared/ui";
 
-import { useBoard } from "./hook";
+import { useBoard, useBoardSelection } from "./hook";
 
 export function Board() {
   const contentRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    contentRef.current?.querySelector<HTMLElement>("button, input")?.focus();
-  }, []);
   const { t, language } = useI18n();
   const { posts, loading, error, reload } = useBoard();
+  const { selected, select, back: backSelection } = useBoardSelection(posts);
   const sharing = useContext(GroupSharingContext);
   const [accessConfirm, setAccessConfirm] = useState(false);
   const [accessError, setAccessError] = useState(false);
   const accessBusy = useRef(false);
   const actionRef = useRef<HTMLButtonElement>(null);
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<BoardPost | null>(null);
   const [failure, setFailure] = useState("");
   const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    const clearFeedback = () => {
+      setFailure("");
+      setCopied(false);
+    };
+    window.addEventListener("popstate", clearFeedback);
+    return () => window.removeEventListener("popstate", clearFeedback);
+  }, []);
   const filtered = posts.filter((post) =>
     `${post.title} ${post.description} ${post.groupName}`
       .toLocaleLowerCase()
@@ -46,7 +50,7 @@ export function Board() {
   const accessLabel =
     selectedRole === "owner" ? t.revokeGroupShare : t.leaveGroup;
   const back = () => {
-    setSelected(null);
+    backSelection();
     setFailure("");
     setCopied(false);
   };
@@ -214,7 +218,7 @@ export function Board() {
                         key={post.id}
                         data-group-id={post.id}
                         onClick={() => {
-                          setSelected(post);
+                          select(post.id);
                           setFailure("");
                           setCopied(false);
                         }}

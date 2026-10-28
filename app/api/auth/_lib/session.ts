@@ -6,6 +6,7 @@ export const KAKAO_STATE_COOKIE = "web-notepad-kakao-state";
 export const SHARE_RETURN_COOKIE = "web-notepad-share-return";
 export const SESSION_COOKIE = "web-notepad-session";
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
+const DEVELOPMENT_SESSION_SECRET = "web-notepad-local-development-session";
 
 type SessionPayload = KakaoUser & {
   expiresAt: number;
@@ -13,6 +14,8 @@ type SessionPayload = KakaoUser & {
 
 function getSessionSecret() {
   const secret = process.env.AUTH_SECRET ?? process.env.KAKAO_REST_API_KEY;
+  if (!secret && process.env.NODE_ENV === "development")
+    return DEVELOPMENT_SESSION_SECRET;
   if (!secret) throw new Error("AUTH_SECRET is not configured.");
   return secret;
 }

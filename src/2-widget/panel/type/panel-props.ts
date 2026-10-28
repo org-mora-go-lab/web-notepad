@@ -35,7 +35,6 @@ export type PanelProps = {
   onRemoveBookmark: ComponentProps<typeof Bookmark>["onRemove"];
   onOpenDashboardTab: ComponentProps<typeof Dashboard>["onOpenTab"];
   onMoveDashboardCard: ComponentProps<typeof Dashboard>["onMoveCard"];
-  onChangeTabStatus: ComponentProps<typeof Dashboard>["onChangeStatus"];
   onMoveDashboardTabToGroup: ComponentProps<typeof Dashboard>["onMoveToGroup"];
   onToggleDashboardTabBookmark: ComponentProps<
     typeof Dashboard
@@ -48,4 +47,8 @@ export type PanelProps = {
   onRenameGroup: ComponentProps<typeof Group>["onRename"];
   onMoveGroup: ComponentProps<typeof Group>["onMoveGroup"];
   onToggleGroupPin: ComponentProps<typeof Group>["onTogglePinGroup"];
+  onOpenShortcuts: () => void;
+  onOpenSettings: ComponentProps<typeof Group>["onOpenSettings"];
+  onToggleBookmarks: ComponentProps<typeof Group>["onToggleBookmarks"];
+  onToggleSearch: ComponentProps<typeof Group>["onToggleSearch"];
 };

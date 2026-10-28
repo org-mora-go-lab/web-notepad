@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   ALL_GROUP_ID,
@@ -14,7 +14,7 @@ import {
   useNotepadHydrated,
   useNotepadStore,
 } from "@/src/4-entity/notepad";
-import { MESSAGES } from "@/src/5-shared/constant";
+import { BOARD_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
 import { isToday } from "@/src/5-shared/util";
 
 import type { PaneColumnProps, PaneViewProps } from "../type";
@@ -31,7 +31,43 @@ const COLUMNS: PaneColumn[] = ["left", "right"];
 
 export function useHome() {
   const hydrated = useNotepadHydrated();
+  const [suppressInitialEditorFocus] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      if (sessionStorage.getItem(BOARD_RETURN_FOCUS_KEY) === "1") return true;
+      const referrer = new URL(document.referrer);
+      return (
+        referrer.origin === window.location.origin &&
+        referrer.pathname === "/board"
+      );
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      sessionStorage.removeItem(BOARD_RETURN_FOCUS_KEY);
+    } catch {
+      /* Keep the editor usable if session storage is unavailable. */
+    }
+  }, []);
   const editorRefs = usePaneRefs<HTMLTextAreaElement | null>(null);
+  useEffect(() => {
+    const clearRestoredBoardFocus = () => {
+      try {
+        if (sessionStorage.getItem(BOARD_RETURN_FOCUS_KEY) !== "1") return;
+        sessionStorage.removeItem(BOARD_RETURN_FOCUS_KEY);
+      } catch {
+        return;
+      }
+      for (const editor of Object.values(editorRefs)) {
+        if (document.activeElement === editor.current) editor.current?.blur();
+      }
+    };
+    window.addEventListener("pageshow", clearRestoredBoardFocus);
+    return () =>
+      window.removeEventListener("pageshow", clearRestoredBoardFocus);
+  }, [editorRefs]);
   const composingRefs = usePaneRefs(false);
   const store = useNotepadStore();
   const {
@@ -45,7 +81,6 @@ export function useHome() {
     setRowRatio,
     cycleTabColor,
     toggleBookmark,
-    setTabStatus,
     moveDashboardTab,
     deleteTab,
     removeClosedTab,
@@ -133,6 +168,7 @@ export function useHome() {
     activePane,
     activeTab?.id ?? "",
     hydrated,
+    suppressInitialEditorFocus === true,
   );
 
   const {
@@ -164,7 +200,7 @@ export function useHome() {
       activeTab: paneTab,
       editorRef: editorRefs[pane],
       composingRef: composingRefs[pane],
-      autoFocus: pane === "left",
+      autoFocus: pane === "left" && !suppressInitialEditorFocus,
       isFocused: !split || activePane === pane,
       dropZones: dropZonesFor(pane),
       onActivate: () => activatePaneWithHistory(pane),
@@ -232,7 +268,6 @@ export function useHome() {
     columns,
     activeGroupTabs,
     tabColorCycle: settings.tabColorCycle,
-    setTabStatus,
     moveDashboardTab,
     toggleBookmark,
     moveToGroup,
