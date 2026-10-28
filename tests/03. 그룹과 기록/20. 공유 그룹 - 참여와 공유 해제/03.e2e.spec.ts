@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { getApi } from "../../__util__/request";
 import { sharingTest as test } from "./__fixture__";
 import { openSharingMenu } from "./__util__";
 
@@ -13,9 +14,9 @@ test("3. 그룹 나가기는 자신의 참여만 해제하고 주최자의 노�
     .getByRole("button", { name: "Leave group", exact: true })
     .click();
   await expect(guest.locator('[data-group-id="' + id + '"]')).toHaveCount(0);
-  const guestGroups = await (await guest.request.get("/api/groups")).json();
+  const guestGroups = await (await getApi(guest.request, "/api/groups")).json();
   expect(guestGroups.groups).toHaveLength(0);
-  const ownerGroups = await (await owner.request.get("/api/groups")).json();
+  const ownerGroups = await (await getApi(owner.request, "/api/groups")).json();
   expect(ownerGroups.groups[0].data.tabs[0].content).toBe("Keep this note");
   expect(
     (await guest.request.post("/api/groups/leave", { data: { id } })).status(),

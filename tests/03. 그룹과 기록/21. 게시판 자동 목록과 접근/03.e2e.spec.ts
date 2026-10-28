@@ -7,6 +7,7 @@ import {
   signedSession,
 } from "../../__fixture__";
 import { authenticateBrowser, openBoard, sessionHeaders } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("3. Board는 로그인한 나의 공유 그룹과 다른 사용자의 공유 그룹을 모두 표시한다", async ({
   page,
@@ -44,7 +45,7 @@ test("3. Board는 로그인한 나의 공유 그룹과 다른 사용자의 공�
     await expect(
       page.locator(".board-entry", { hasText: group.name }),
     ).toBeVisible();
-    const ownGroups = (await (await page.request.get("/api/groups")).json())
+    const ownGroups = (await (await getApi(page.request, "/api/groups")).json())
       .groups;
     expect(
       ownGroups.some((entry: { id: string }) => entry.id === group.id),

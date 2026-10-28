@@ -1,11 +1,12 @@
 import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
+import { getApi } from "../../__util__/request";
 test("1. 삭제된 탭의 이전 수정 알림과 삭제 알림은 목록에서 제외한다", async ({
   sharing: { owner, guest, id },
 }) => {
   let record = (
-    await (await guest.request.get("/api/groups")).json()
+    await (await getApi(guest.request, "/api/groups")).json()
   ).groups.find((g: { id: string }) => g.id === id);
   const old = record.data.tabs[0];
   const other = {
@@ -35,7 +36,7 @@ test("1. 삭제된 탭의 이전 수정 알림과 삭제 알림은 목록에서 
   record = (await response.json()).group;
   expect(
     (
-      await (await owner.request.get("/api/groups/notifications")).json()
+      await (await getApi(owner.request, "/api/groups/notifications")).json()
     ).notifications.some((n: { tabId: string }) => n.tabId === old.id),
   ).toBe(true);
   response = await guest.request.post("/api/groups/update", {
@@ -47,7 +48,7 @@ test("1. 삭제된 탭의 이전 수정 알림과 삭제 알림은 목록에서 
   });
   expect(response.ok()).toBe(true);
   const result = await (
-    await owner.request.get("/api/groups/notifications")
+    await getApi(owner.request, "/api/groups/notifications")
   ).json();
   expect(result.notifications).toEqual([]);
 });

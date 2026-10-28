@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { boardTest as test } from "../../__fixture__";
+import { getApi } from "../../__util__/request";
 
 test("2. 게시판 쓰기 API는 role 파라미터와 관계없이 제공하지 않는다", async ({
   request,
@@ -14,7 +15,7 @@ test("2. 게시판 쓰기 API는 role 파라미터와 관계없이 제공하지 
       });
       expect(response.status()).toBe(405);
     }
-  const { posts } = await (await request.get("/api/board")).json();
+  const { posts } = await (await getApi(request, "/api/board")).json();
   expect(
     posts.find((post: { id: string }) => post.id === boardPost.id).title,
   ).toBe(boardPost.title);

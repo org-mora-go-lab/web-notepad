@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { getApi } from "../../__util__/request";
 import { sharingTest as test } from "./__fixture__";
 import { openSharingCancellation } from "./__util__";
 
@@ -8,7 +9,9 @@ test("4. 공유 취소는 기존 참여자와 초대 링크 및 게시판 접근
 }) => {
   expect(
     (
-      await (await owner.request.get("/api/board", { maxRetries: 2 })).json()
+      await (
+        await getApi(owner.request, "/api/board", { maxRetries: 2 })
+      ).json()
     ).posts.some((post: { id: string }) => post.id === id),
   ).toBe(true);
   await openSharingCancellation(owner, id);
@@ -25,11 +28,14 @@ test("4. 공유 취소는 기존 참여자와 초대 링크 및 게시판 접근
     ).status(),
   ).toBe(404);
   expect(
-    (await (await guest.request.get("/api/groups", { maxRetries: 2 })).json())
-      .groups,
+    (
+      await (
+        await getApi(guest.request, "/api/groups", { maxRetries: 2 })
+      ).json()
+    ).groups,
   ).toHaveLength(0);
   const posts = (
-    await (await owner.request.get("/api/board", { maxRetries: 2 })).json()
+    await (await getApi(owner.request, "/api/board", { maxRetries: 2 })).json()
   ).posts;
   expect(
     posts.some((post: { inviteUrl: string }) => post.inviteUrl === url),

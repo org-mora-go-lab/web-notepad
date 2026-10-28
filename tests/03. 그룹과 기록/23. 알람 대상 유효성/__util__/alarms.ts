@@ -1,12 +1,14 @@
 import { expect, type Page } from "@playwright/test";
 
+import { getApi } from "../../../__util__/request";
+
 export async function changeSharedNote(
   page: Page,
   id: string,
   content: string,
 ) {
   const record = (
-    await (await page.request.get("/api/groups")).json()
+    await (await getApi(page.request, "/api/groups")).json()
   ).groups.find((group: { id: string }) => group.id === id);
   const result = await page.request.post("/api/groups/update", {
     data: {

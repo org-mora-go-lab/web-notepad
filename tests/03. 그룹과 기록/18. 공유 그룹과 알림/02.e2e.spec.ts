@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
+import { getApi } from "../../__util__/request";
 import { shareGroup } from "./__util__";
 
 test("2. 비로그인 공유 링크는 로그인 안내와 복귀 링크를 제공한다", async ({
@@ -33,7 +34,8 @@ test("2. 비로그인 공유 링크는 로그인 안내와 복귀 링크를 제�
     "href",
     /\/api\/auth\/oauth\/kakao\?share=/,
   );
-  const response = await guest.request.get(
+  const response = await getApi(
+    guest.request,
     (await login.getAttribute("href")) ?? "",
     { maxRedirects: 0 },
   );

@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { getApi } from "../../__util__/request";
 import { sharingTest as test } from "./__fixture__";
 
 test("5. 취소 후 다시 공유하면 새 초대 링크만 사용할 수 있다", async ({
@@ -8,7 +9,7 @@ test("5. 취소 후 다시 공유하면 새 초대 링크만 사용할 수 있�
   expect(
     (await owner.request.post("/api/groups/revoke", { data: { id } })).ok(),
   ).toBe(true);
-  const previous = (await (await owner.request.get("/api/groups")).json())
+  const previous = (await (await getApi(owner.request, "/api/groups")).json())
     .groups[0];
   const reshared = await owner.request.post("/api/groups/share", {
     data: { group: { ...group, ...previous.data } },

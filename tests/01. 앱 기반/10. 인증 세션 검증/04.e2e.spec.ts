@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
 import { sessionHeaders } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("4. 서명 후 프로필을 변조한 세션을 거부한다", async ({ request }) => {
   const original = signedSession();
@@ -13,7 +14,7 @@ test("4. 서명 후 프로필을 변조한 세션을 거부한다", async ({ req
       expiresAt: Date.now() + 60000,
     }),
   ).toString("base64url");
-  const response = await request.get("/api/auth/session", {
+  const response = await getApi(request, "/api/auth/session", {
     headers: sessionHeaders(changed + "." + signature),
   });
   expect(await response.json()).toEqual({ user: null });

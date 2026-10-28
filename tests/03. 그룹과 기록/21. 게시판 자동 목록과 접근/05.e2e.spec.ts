@@ -7,6 +7,7 @@ import {
   openBoard,
   selectBoardPost,
 } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("5. 내 공유 그룹은 참여 대신 공유 취소를 제공하고 노트를 보존한다", async ({
   page,
@@ -33,7 +34,8 @@ test("5. 내 공유 그룹은 참여 대신 공유 취소를 제공하고 노트
   await expect(
     page.locator(".board-entry", { hasText: boardPost.title }),
   ).toHaveCount(0);
-  const records = (await (await page.request.get("/api/groups")).json()).groups;
+  const records = (await (await getApi(page.request, "/api/groups")).json())
+    .groups;
   expect(
     records.find((item: { id: string }) => item.id === boardPost.id)
       .sharingActive,

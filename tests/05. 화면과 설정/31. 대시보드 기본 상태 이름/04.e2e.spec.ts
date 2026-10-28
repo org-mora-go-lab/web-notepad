@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { getApi } from "../../__util__/request";
 import {
   customLabels,
   defaultForm,
@@ -20,7 +21,7 @@ test("4. 같은 계정의 다른 기기에 기본 상태 이름을 복원한다"
     .poll(
       async () => {
         const history = await (
-          await page.request.get("/api/notepad/history")
+          await getApi(page.request, "/api/notepad/history")
         ).json();
         return history.latest
           ? JSON.parse(history.latest.snapshot).settings.dashboardStatusDefaults

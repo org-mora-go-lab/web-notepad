@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
+import { getApi } from "../../__util__/request";
 import { shareGroup } from "./__util__";
 
 test("6. 오래된 버전의 동시 수정은 거부된다", async ({ browser }) => {
@@ -18,7 +19,7 @@ test("6. 오래된 버전의 동시 수정은 거부된다", async ({ browser })
   await page.goto("/");
   const { url } = await shareGroup(page, "Versioned team");
   const id = new URL(url).searchParams.get("share")!.split(".")[0];
-  const listed = await owner.request.get("/api/groups");
+  const listed = await getApi(owner.request, "/api/groups");
   const base = (await listed.json()).groups.find(
     (item: { id: string }) => item.id === id,
   );

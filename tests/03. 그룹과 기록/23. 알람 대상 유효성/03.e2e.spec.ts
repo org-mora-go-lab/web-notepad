@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
+import { getApi } from "../../__util__/request";
 import { changeSharedNote } from "./__util__";
 
 test("3. 알람 변경 API는 인증과 동일 출처를 검증하고 다른 사용자의 알람 읽음을 변경하지 않는다", async ({
@@ -9,7 +10,7 @@ test("3. 알람 변경 API는 인증과 동일 출처를 검증하고 다른 사
 }) => {
   await changeSharedNote(guest, id, "Isolated unread alarm");
   const notifications = (
-    await (await owner.request.get("/api/groups/notifications")).json()
+    await (await getApi(owner.request, "/api/groups/notifications")).json()
   ).notifications;
   const alarm = notifications.find((n: { summary: string }) =>
     n.summary.includes("Isolated unread alarm"),
@@ -57,7 +58,7 @@ test("3. 알람 변경 API는 인증과 동일 출처를 검증하고 다른 사
     ).ok(),
   ).toBe(true);
   const remaining = (
-    await (await owner.request.get("/api/groups/notifications")).json()
+    await (await getApi(owner.request, "/api/groups/notifications")).json()
   ).notifications;
   expect(remaining.find((n: { id: number }) => n.id === alarm.id).unread).toBe(
     true,

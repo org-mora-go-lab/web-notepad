@@ -2,12 +2,15 @@ import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
 import { dashboardColumn, openPanel, readStoredState } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("4. 동기화 기준이 없는 개인 보기 설정도 초기 서버 이력에 덮이지 않는다", async ({
   sharing: { owner, id },
 }) => {
   test.setTimeout(60000);
-  const { user } = await (await owner.request.get("/api/auth/session")).json();
+  const { user } = await (
+    await getApi(owner.request, "/api/auth/session")
+  ).json();
   await expect
     .poll(() =>
       owner.evaluate(
@@ -18,7 +21,7 @@ test("4. 동기화 기준이 없는 개인 보기 설정도 초기 서버 이력
     )
     .toBe(true);
   const history = await (
-    await owner.request.get("/api/notepad/history")
+    await getApi(owner.request, "/api/notepad/history")
   ).json();
   const state = await readStoredState(owner);
   const response = await owner.request.post("/api/notepad/history", {
@@ -68,7 +71,7 @@ test("4. 동기화 기준이 없는 개인 보기 설정도 초기 서버 이력
   await expect
     .poll(async () => {
       const latest = await (
-        await owner.request.get("/api/notepad/history")
+        await getApi(owner.request, "/api/notepad/history")
       ).json();
       const snapshot = JSON.parse(latest.latest.snapshot);
       return {

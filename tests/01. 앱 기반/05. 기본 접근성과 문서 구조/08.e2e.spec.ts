@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { getApi } from "../../__util__/request";
+
 test("8. 카카오 로그인 진입점과 안전한 OAuth 인가 요청을 제공한다", async ({
   page,
   request,
@@ -9,7 +11,7 @@ test("8. 카카오 로그인 진입점과 안전한 OAuth 인가 요청을 제�
     page.locator(".footer").getByRole("link", { name: "Continue with Kakao" }),
   ).toHaveAttribute("href", "/api/auth/oauth/kakao");
 
-  const response = await request.get("/api/auth/oauth/kakao", {
+  const response = await getApi(request, "/api/auth/oauth/kakao", {
     maxRedirects: 0,
   });
   expect(response.status()).toBe(307);

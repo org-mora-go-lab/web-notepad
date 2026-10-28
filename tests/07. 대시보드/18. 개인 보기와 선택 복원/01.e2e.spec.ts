@@ -6,6 +6,7 @@ import {
   openPanel,
   toggleDashboardStatus,
 } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("1. 공유 그룹의 Note Done 표시는 다른 사용자와 분리해 저장한다", async ({
   sharing: { owner, guest, id },
@@ -31,7 +32,7 @@ test("1. 공유 그룹의 Note Done 표시는 다른 사용자와 분리해 저�
   );
   expect(sharedPosts).toBe(0);
   const history = await (
-    await owner.request.get("/api/notepad/history")
+    await getApi(owner.request, "/api/notepad/history")
   ).json();
   expect(
     JSON.parse(history.latest.snapshot).sharedDashboardVisibility[id],

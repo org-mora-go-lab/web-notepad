@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
 import { openBoard, selectBoardPost } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("6. 참여한 그룹은 참여 대신 나가기를 제공하며 다른 사람의 접근을 보존한다", async ({
   sharing: { guest, owner, group, id },
@@ -22,12 +23,12 @@ test("6. 참여한 그룹은 참여 대신 나가기를 제공하며 다른 사�
     .click();
   await expect(guest.getByRole("alertdialog")).toHaveCount(0);
   expect(
-    (await (await guest.request.get("/api/groups")).json()).groups.some(
+    (await (await getApi(guest.request, "/api/groups")).json()).groups.some(
       (item: { id: string }) => item.id === id,
     ),
   ).toBe(false);
   expect(
-    (await (await owner.request.get("/api/groups")).json()).groups.some(
+    (await (await getApi(owner.request, "/api/groups")).json()).groups.some(
       (item: { id: string }) => item.id === id,
     ),
   ).toBe(true);

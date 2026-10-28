@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 
 import { boardTest as test } from "../../__fixture__";
 import { openBoard, selectBoardPost } from "../../__util__";
+import { getApi } from "../../__util__/request";
 
 test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만으로 그룹을 추가하지 않는다", async ({
   page,
@@ -21,7 +22,7 @@ test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만�
   await expect(
     page.getByRole("link", { name: "Join this group" }),
   ).toHaveAttribute("href", boardPost.inviteUrl);
-  expect(await (await request.get("/api/board")).text()).not.toContain(
+  expect(await (await getApi(request, "/api/board")).text()).not.toContain(
     "Private shared note body",
   );
   await page.getByRole("link", { name: "Back to notes", exact: true }).click();
