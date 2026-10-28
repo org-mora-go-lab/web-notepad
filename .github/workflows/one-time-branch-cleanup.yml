@@ -1,7 +1,9 @@
 name: One-time branch cleanup
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
