@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { authenticateBrowser, openMoreMenu } from "../../__util__";
 
-test("2. Board는 더보기와 계정 메뉴에서 제거하고 모바일 푸터에서 연다", async ({
+test("2. Board는 더보기와 계정 메뉴에서 제거하고 푸터에서 연다", async ({
   page,
   context,
 }) => {

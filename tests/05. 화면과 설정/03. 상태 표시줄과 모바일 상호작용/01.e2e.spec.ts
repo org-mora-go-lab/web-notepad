@@ -10,7 +10,7 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
   );
   for (const width of [320, 390, 512, 513, 640, 1280]) {
     await page.setViewportSize({ width, height: 844 });
-    const count = width <= 512 ? 4 : 3;
+    const count = 4;
     await expect(commands).toHaveCount(count);
     const group = (await page.locator(".group-select-command").boundingBox())!;
     const dashboard = (await page.locator(".dashboard-command").boundingBox())!;
@@ -24,8 +24,10 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
       expect(board!.x).toBeLessThan(dashboard.x);
       expect(dashboard.x).toBeLessThan(account.x);
     } else {
-      expect(board).toBeNull();
       expect(group.x).toBeLessThan(dashboard.x);
+      expect(board).not.toBeNull();
+      expect(group.x).toBeLessThan(board!.x);
+      expect(board!.x).toBeLessThan(dashboard.x);
       expect(dashboard.x).toBeLessThan(account.x);
     }
     for (const command of await commands.all()) {
