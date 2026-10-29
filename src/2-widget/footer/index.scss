@@ -12,7 +12,6 @@
   color: v.$muted;
   font-size: v.font(14px);
 
-  .current-group-panel,
   .group-command-label {
     display: none;
   }
@@ -113,7 +112,7 @@
     flex: 0 1 auto;
     min-width: 31px;
     gap: 7px;
-    font-size: v.font(15px);
+    font-size: inherit;
 
     &.is-active svg {
       fill: none;
@@ -148,7 +147,7 @@
     }
     &[aria-haspopup="menu"] > span {
       max-width: 120px;
-      font-size: calc(#{v.font(16.8px)} + 0.2px);
+      font-size: inherit;
     }
     &[aria-haspopup="menu"] > svg {
       width: 24px;
@@ -164,32 +163,9 @@
   }
 
   @media (max-width: 512px) {
-    min-height: calc(114.8px + env(safe-area-inset-bottom));
+    min-height: calc(76.8px + env(safe-area-inset-bottom));
     padding: 0;
-    display: grid;
-    grid-template-rows: 38px calc(76.8px + env(safe-area-inset-bottom));
-    align-items: stretch;
     font-size: v.font(12px);
-
-    .current-group-panel {
-      min-width: 0;
-      padding: 1px 21px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      border-bottom: 1px solid v.$line;
-      font-size: v.font(18px);
-    }
-
-    .current-group-icon {
-      flex-shrink: 0;
-    }
-
-    .current-group-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
 
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
@@ -224,7 +200,7 @@
       gap: 4px;
 
       &.status-command > span.status-label {
-        font-size: calc(#{v.font(10px)} + 1px);
+        font-size: calc(#{v.font(10px)} + 2px);
         line-height: 12px;
         letter-spacing: 0.04em;
         text-transform: uppercase;
@@ -233,20 +209,36 @@
 
     .group-select-command {
       grid-column: 1;
+      grid-row: 1;
 
       .group-current-value {
-        display: none;
+        display: block;
+        max-width: 100%;
+        margin-left: 0;
+      }
+
+      &.status-command > span.group-current-value {
+        font-size: calc(#{v.font(10px)} + 2px);
+        line-height: 12px;
       }
     }
 
     .dashboard-command {
       grid-column: 2;
+      grid-row: 1;
       margin-left: 0;
     }
 
     .footer-auth {
       grid-column: 3;
+      grid-row: 1;
       min-width: 0;
+    }
+
+    .group-current-value,
+    .dashboard-command > .status-label,
+    .auth-command > span {
+      margin-top: 1px;
     }
 
     .auth-command {
@@ -254,7 +246,7 @@
       height: 61.2px;
       flex-direction: column;
       gap: 4px;
-      font-size: calc(#{v.font(10px)} + 1px);
+      font-size: calc(#{v.font(10px)} + 2px);
       > span {
         max-width: 100%;
         line-height: 12px;
@@ -266,8 +258,8 @@
       }
       &[aria-haspopup="menu"] > span {
         max-width: 100%;
-        font-size: calc(#{v.font(12px)} + 2.4px);
-        line-height: 1.2;
+        font-size: inherit;
+        line-height: 12px;
       }
       &[aria-haspopup="menu"] > svg {
         width: 28.8px;
@@ -280,14 +272,6 @@
           width: 50px;
         }
       }
-    }
-
-    .status-command > span.group-command-label {
-      display: block;
-      font-size: calc(#{v.font(10px)} + 1px);
-      line-height: 12px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
     }
   }
 }

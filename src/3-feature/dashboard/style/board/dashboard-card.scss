@@ -121,3 +121,10 @@
 .dashboard .dashboard-card[data-drop-placement="after"]::after {
   bottom: -6px;
 }
+
+@media (max-width: 512px) {
+  .dashboard .dashboard-card {
+    max-height: var(--mobile-dashboard-tab-max-height);
+    overflow: hidden;
+  }
+}

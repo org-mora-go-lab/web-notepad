@@ -86,6 +86,10 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     "overflow-y",
     "hidden",
   );
+  await expect(page.locator(".board-note-tabs")).toHaveCSS(
+    "scrollbar-width",
+    "none",
+  );
   await expect(page.locator(".board-note-preview")).toHaveCSS("resize", "none");
   await expect(page.locator(".board-note-contents > h4")).toHaveCount(0);
   const sharedNotesSection = (await page
@@ -250,5 +254,15 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   expect(focusedTabBounds.x).toBeGreaterThanOrEqual(noteTabsBounds.x);
   expect(focusedTabBounds.x + focusedTabBounds.width).toBeLessThanOrEqual(
     noteTabsBounds.x + noteTabsBounds.width + 1,
+  );
+  const mobileFooter = page.locator(".board-mobile-footer .footer");
+  await expect(mobileFooter).toBeVisible();
+  const mobileFooterBounds = (await mobileFooter.boundingBox())!;
+  expect(mobileFooterBounds.y + mobileFooterBounds.height).toBeCloseTo(800, 1);
+  await mobileFooter.locator(".dashboard-command").click();
+  await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute(
+    "aria-hidden",
+    "false",
   );
 });

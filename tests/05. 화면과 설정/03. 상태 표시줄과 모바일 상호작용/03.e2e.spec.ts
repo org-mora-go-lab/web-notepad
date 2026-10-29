@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { switchGroup, writeStoredState } from "../../__util__";
 
-test("3. 모바일에서 그룹을 전환하면 별도 그룹 이름 영역과 접근성 라벨을 즉시 동기화한다", async ({
+test("3. 모바일에서 그룹을 전환하면 하단 그룹 버튼과 접근성 라벨을 즉시 동기화한다", async ({
   page,
 }) => {
   await writeStoredState(page, {
@@ -21,6 +21,6 @@ test("3. 모바일에서 그룹을 전환하면 별도 그룹 이름 영역과 �
   await page.setViewportSize({ width: 390, height: 844 });
   const command = page.locator(".group-select-command");
   await switchGroup(page, "Work");
-  await expect(page.locator(".current-group-name")).toHaveText("Work");
+  await expect(command.locator(".group-current-value")).toHaveText("Work");
   await expect(command).toHaveAttribute("aria-label", "Toggle groups");
 });

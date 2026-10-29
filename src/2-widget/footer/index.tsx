@@ -18,17 +18,6 @@ export function Footer({
   const { t } = useI18n();
   return (
     <footer className="footer">
-      <div className="current-group-panel" title={activeGroupName}>
-        <Layers
-          className="current-group-icon"
-          size={18}
-          strokeWidth={1.8}
-          aria-hidden="true"
-        />
-        <span className="current-group-name" title={activeGroupName}>
-          {activeGroupName}
-        </span>
-      </div>
       <div className="status-meta">
         <div className="status-controls">
           <button

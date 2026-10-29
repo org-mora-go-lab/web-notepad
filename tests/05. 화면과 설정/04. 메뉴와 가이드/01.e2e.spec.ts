@@ -52,7 +52,7 @@ test("1. 하단 계정은 로그인, 더보기는 가이드·검색·북마크�
     const footerBounds = (await page.locator(".group-more").boundingBox())!;
     if (viewport.width > 512) {
       expect(menuBounds.x + menuBounds.width).toBeCloseTo(
-        footerBounds.x + footerBounds.width + 44,
+        footerBounds.x + footerBounds.width + 53,
         1,
       );
     } else {

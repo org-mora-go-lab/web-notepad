@@ -27,6 +27,7 @@
     color: v.$muted;
     font: inherit;
     text-align: left;
+    text-decoration: none;
 
     &:hover,
     &:focus-visible,
@@ -38,7 +39,8 @@
     &::before {
       position: absolute;
       z-index: 0;
-      inset: 5% 10%;
+      // Expand the visual hover surface from 80% to 88% of each command.
+      inset: 5% 6%;
       border-radius: 4px;
       content: "";
       pointer-events: none;
@@ -51,6 +53,10 @@
     > * {
       position: relative;
       z-index: 1;
+    }
+
+    > svg {
+      display: none;
     }
 
     &:focus-visible {
@@ -119,7 +125,7 @@
       background: transparent;
       color: v.$ink;
       font: inherit;
-      font-size: v.font(15px);
+      font-size: calc(#{v.font(14px)} + 1px);
       text-align: left;
       white-space: nowrap;
 
@@ -149,22 +155,27 @@
     .group-more {
       box-sizing: border-box;
       height: var(--footer-height);
+      grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+      display: grid;
       padding-block: 6px;
+      padding-inline: 5px;
     }
 
     .system-group-command,
     .more-command {
       min-height: 35px;
       height: 35px;
-      font-size: v.font(14px);
-
-      > svg {
-        display: none;
-      }
+      font-size: v.font(15px);
     }
   }
 
   @media (max-width: 512px) {
+    .group-more {
+      padding-block: 5px;
+      padding-right: 19px;
+      padding-left: 9px;
+    }
+
     .group-more-menu {
       right: auto;
       left: calc(50% - 50px);
@@ -172,18 +183,13 @@
     }
 
     .system-group-command,
-    .more-command,
+    .more-command {
+      min-height: 35px;
+    }
+
     .group-system-menu button,
     .group-more-menu button {
       min-height: 44px;
-    }
-
-    .system-group-command,
-    .more-command {
-      > svg,
-      > span {
-        transform: translateX(-10px);
-      }
     }
   }
 }

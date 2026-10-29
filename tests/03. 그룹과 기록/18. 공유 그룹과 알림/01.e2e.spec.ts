@@ -1,7 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 import { signedSession } from "../../__fixture__";
-import { authenticateBrowser } from "../../__util__";
+import {
+  authenticateBrowser,
+  createGroups,
+  groupsCommand,
+} from "../../__util__";
 import { shareGroup } from "./__util__";
 
 test("1. 그룹 공유 팝업은 링크와 복사하기·닫기 버튼을 제공한다", async ({
@@ -32,4 +36,27 @@ test("1. 그룹 공유 팝업은 링크와 복사하기·닫기 버튼을 제공
     .last()
     .click();
   await expect(dialog).toHaveCount(0);
+
+  await createGroups(page, "Empty shared group");
+  await groupsCommand(page).click();
+  const row = page.locator(".group-item", { hasText: "Empty shared group" });
+  await row
+    .getByRole("button", { name: "Empty shared group group actions" })
+    .click();
+  await row
+    .getByRole("button", { name: "Share Empty shared group group" })
+    .click();
+  const emptyDialog = page.getByRole("dialog", {
+    name: "Share Empty shared group",
+  });
+  await expect(emptyDialog.getByLabel("Group share link")).toBeVisible();
+  await emptyDialog
+    .getByRole("button", { name: "Close", exact: true })
+    .last()
+    .click();
+  await expect(page.locator(".loading-mark")).toHaveCount(0);
+  await expect(page.locator("textarea").first()).toBeVisible();
+  await page.reload();
+  await expect(page.locator(".loading-mark")).toHaveCount(0);
+  await expect(page.locator("textarea").first()).toBeVisible();
 });

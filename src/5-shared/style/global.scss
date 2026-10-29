@@ -4,11 +4,12 @@
   --footer-height: 48px;
   --list-popup-width: min(655.2px, calc(100vw - 32px));
   --list-popup-height: min(540.8px, calc(100dvh - 32px));
+  --mobile-dashboard-tab-max-height: 144px;
 }
 
 @media (max-width: 512px) {
   :root {
-    --footer-height: calc(114.8px + env(safe-area-inset-bottom));
+    --footer-height: calc(76.8px + env(safe-area-inset-bottom));
   }
 }
 

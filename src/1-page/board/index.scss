@@ -1,5 +1,6 @@
 @use "../../5-shared/style/variable" as v;
 @use "../../3-feature/board";
+@use "../../2-widget/footer";
 @use "../../5-shared/ui/confirm-popup";
 @use "../../5-shared/ui/search-field";
 
@@ -34,5 +35,21 @@
     .board-page-header h1 {
       right: 16px;
     }
+  }
+}
+
+.board-mobile-footer {
+  display: none;
+}
+
+@media (max-width: 512px) {
+  .board-page {
+    padding-bottom: calc(112.8px + env(safe-area-inset-bottom));
+  }
+  .board-mobile-footer {
+    position: fixed;
+    z-index: 30;
+    inset: auto 0 0;
+    display: block;
   }
 }

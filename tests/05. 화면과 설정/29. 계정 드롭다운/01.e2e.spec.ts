@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { authenticateBrowser, writeStoredState } from "../../__util__";
 
-test("1. 하단 로그인 계정 위에 My Page·Board·Logout만 순서대로 표시한다", async ({
+test("1. 하단 로그인 계정 위에 My Page·Board·Logout을 순서대로 표시한다", async ({
   page,
   context,
 }) => {
