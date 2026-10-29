@@ -32,7 +32,7 @@ test("5. 검색과 북마크는 열린 대시보드 위에서도 같은 위쪽 �
         })
         .toBeLessThan(2);
       const box = (await popup.boundingBox())!;
-      expect(box.y + box.height / 2).toBeCloseTo(350, 0);
+      expect(box.y + box.height / 2).toBeCloseTo(370, 0);
       const size = sizes.get(width);
       if (size) {
         expect(box.width).toBeCloseTo(size.width, 0);

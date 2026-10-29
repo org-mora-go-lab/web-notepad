@@ -28,6 +28,9 @@ test("2. 공유 그룹 구성원은 링크로 들어와 해당 그룹과 탭을 
     .locator(".tab-select[aria-selected='true']")
     .click({ button: "right" });
   await owner.getByRole("menuitem", { name: "Link", exact: true }).click();
+  await expect(owner.locator(".tab-link-feedback")).toHaveText(
+    "Tab link copied",
+  );
   const url = await owner.evaluate(() => navigator.clipboard.readText());
 
   await guest.evaluate(() => localStorage.clear());

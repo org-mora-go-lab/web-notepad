@@ -5,15 +5,20 @@ import { openBoard } from "../../__util__";
 
 test("1. role admin은 관리자 화면을 열거나 관리 동작을 활성화하지 않는다", async ({
   page,
-  boardPost,
 }) => {
   await page.goto("/?role=admin");
   await expect(page.locator("#board-page")).toBeHidden();
+  await page.route("**/api/board", (route) =>
+    route.fulfill({ status: 503, json: { error: "Unavailable" } }),
+  );
   await openBoard(page);
+  await expect(page.locator(".board-entry")).toHaveCount(3);
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
-    .fill(boardPost.title);
-  await page.locator(`.board-entry[data-group-id="${boardPost.id}"]`).click();
+    .fill("Product Notes");
+  await page
+    .locator('.board-entry[data-group-id="mock-product-notes"]')
+    .click();
   await expect(
     page.locator(
       ".board-admin-badge, .board-admin-actions, .board-form, .board-publish, .board-remove-confirm",

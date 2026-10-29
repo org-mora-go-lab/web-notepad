@@ -15,6 +15,6 @@ export async function authenticateBrowser(
   }),
 ) {
   await context.addCookies([
-    { name: SESSION_COOKIE, value: token, url: "http://localhost:3100" },
+    { name: SESSION_COOKIE, value: token, url: "http://localhost:3000" },
   ]);
 }

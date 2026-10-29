@@ -38,6 +38,17 @@ export async function GET(request: Request) {
         title: group.name,
         description: "",
         noteCount: group.tabs.length,
+        bookmarkCount: group.tabs.filter((tab) => tab.bookmarked).length,
+        notes: group.tabs.map(
+          ({ id, title, content, bookmarked, selectedLines, updatedAt }) => ({
+            id,
+            title,
+            content,
+            bookmarked,
+            selectedLines,
+            updatedAt,
+          }),
+        ),
         memberCount: Number(row.member_count),
         updatedAt: Number(row.updated_at),
         inviteUrl: url.toString(),

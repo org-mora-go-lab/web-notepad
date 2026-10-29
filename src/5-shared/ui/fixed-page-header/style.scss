@@ -1,0 +1,81 @@
+@use "../../style/variable" as v;
+
+.fixed-page-header {
+  position: fixed;
+  z-index: 20;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 52px;
+  border-bottom: 1px solid v.$line;
+  background: v.$pit;
+
+  .fixed-page-header-back {
+    position: absolute;
+    top: 6px;
+    left: max(20px, calc((100vw - var(--page-content-width, 1040px)) / 2));
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px 8px 0;
+    border: 0;
+    border-radius: 5px;
+    background: v.$pit;
+    color: v.$muted;
+    font: inherit;
+    font-size: v.font(16px);
+    line-height: 1.25;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      background: v.$raised;
+    }
+    &:focus-visible {
+      outline: 2px solid v.$signal;
+      outline-offset: 2px;
+    }
+    svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+    }
+  }
+
+  h1 {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: max-content;
+    max-width: calc(100vw - 280px);
+    height: 52px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    color: v.$ink;
+    font-size: v.font(20px);
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+}
+
+.fixed-page-header-spacer {
+  height: 40px;
+}
+
+@media (max-width: 512px) {
+  .fixed-page-header {
+    .fixed-page-header-back {
+      left: 16px;
+      min-height: 44px;
+    }
+    h1 {
+      max-width: calc(100vw - 170px);
+      font-size: v.font(18px);
+    }
+  }
+}

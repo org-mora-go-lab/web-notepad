@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { sharingTest as test, signedSession } from "../../__fixture__";
 import { authenticateBrowser, readStoredState } from "../../__util__";
 
-test("3. 공유 그룹 비회원은 탭 링크로 내용을 열 수 없다", async ({
+test("3. 비회원은 초대 토큰이 포함된 탭 링크로 가입해 내용을 바로 연다", async ({
   browser,
   baseURL,
   sharing,
@@ -29,6 +29,16 @@ test("3. 공유 그룹 비회원은 탭 링크로 내용을 열 수 없다", asy
       .poll(async () => (await readStoredState(page)).activeGroupId)
       .not.toBe(sharing.id);
     await expect(page.locator("textarea")).not.toHaveValue("Keep this note");
+
+    const inviteUrl = new URL(sharing.url);
+    inviteUrl.searchParams.set("group", sharing.id);
+    inviteUrl.searchParams.set("leftTab", sharing.group.tabs[0].id);
+    inviteUrl.searchParams.set("pane", "left");
+    await page.goto(inviteUrl.toString());
+    await expect
+      .poll(async () => (await readStoredState(page)).activeGroupId)
+      .toBe(sharing.id);
+    await expect(page.locator("textarea")).toHaveValue("Keep this note");
   } finally {
     await context.close();
   }

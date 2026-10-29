@@ -113,6 +113,7 @@
     flex: 0 1 auto;
     min-width: 31px;
     gap: 7px;
+    font-size: v.font(15px);
 
     &.is-active svg {
       fill: none;
@@ -125,22 +126,14 @@
   }
 
   .footer-auth {
-    flex: 0 1 116px;
+    flex-grow: 0;
+    flex-shrink: 1;
     min-width: 31px;
-
-    &:has(> a.auth-command) {
-      flex-basis: auto;
-    }
-
-    &:has(> .auth-command.is-loading),
-    &:has(> button.auth-command[aria-haspopup="menu"]) {
-      flex-basis: 84.8px;
-    }
   }
 
   .auth-command {
     --command-hover-inline-space: 6px;
-    width: 100%;
+    width: auto;
     height: 35px;
     justify-content: center;
     min-width: 0;
@@ -154,12 +147,19 @@
       flex: 0 0 20px;
     }
     &[aria-haspopup="menu"] > span {
-      font-size: calc(#{v.font(16.8px)} + 1.2px);
+      max-width: 120px;
+      font-size: calc(#{v.font(16.8px)} + 0.2px);
     }
     &[aria-haspopup="menu"] > svg {
       width: 24px;
       height: 24px;
       flex-basis: 24px;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :is(.group-select-command, .dashboard-command, .auth-command):hover {
+      cursor: pointer;
     }
   }
 
@@ -250,6 +250,7 @@
     }
 
     .auth-command {
+      width: 100%;
       height: 61.2px;
       flex-direction: column;
       gap: 4px;
@@ -264,6 +265,7 @@
         flex-basis: 24px;
       }
       &[aria-haspopup="menu"] > span {
+        max-width: 100%;
         font-size: calc(#{v.font(12px)} + 2.4px);
         line-height: 1.2;
       }

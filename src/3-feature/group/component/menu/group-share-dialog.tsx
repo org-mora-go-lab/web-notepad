@@ -174,8 +174,10 @@ export function GroupShareDialog({
               type="button"
               onClick={() => void copy()}
             >
-              <Copy size={16} />
-              {copied ? t.shareLinkCopied : t.copyShareLink}
+              <span>
+                <Copy size={16} />
+                {copied ? t.shareLinkCopied : t.copyShareLink}
+              </span>
             </button>
           </>
         )}

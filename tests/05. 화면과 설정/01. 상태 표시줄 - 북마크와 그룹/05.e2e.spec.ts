@@ -20,7 +20,7 @@ test("5. PC에서 그룹명을 우클릭한 메뉴에는 Bookmark가 없다", as
   await expect(row.locator(".group-action-dropdown")).toBeVisible();
   await expect(
     row.locator(".group-action-dropdown").getByRole("button"),
-  ).toHaveText(["Pin", "Share", "Edit", "Delete"]);
+  ).toHaveText(["Close All", "Share", "Edit", "Delete"]);
   await expect(page.locator(".group-current-value")).toHaveText(
     selectedBefore!,
   );

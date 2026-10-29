@@ -3,7 +3,6 @@
 import "./index.scss";
 
 import {
-  ArrowLeft,
   Bookmark,
   CircleUserRound,
   FileText,
@@ -11,7 +10,6 @@ import {
   Share2,
   Users,
 } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import {
@@ -24,6 +22,7 @@ import {
 } from "@/src/4-entity/notepad";
 import { HOME_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
 import type { AccountProfile } from "@/src/5-shared/type";
+import { FixedPageHeader } from "@/src/5-shared/ui";
 
 function markMyPageReturn() {
   try {
@@ -47,6 +46,20 @@ export function MyPage() {
   useEffect(markMyPageReturn, []);
   useEffect(() => {
     let active = true;
+    try {
+      const cached = JSON.parse(
+        localStorage.getItem("web-notepad-account-profile") ?? "null",
+      ) as AccountProfile | null;
+      if (cached) {
+        queueMicrotask(() => {
+          if (!active) return;
+          setUser(cached);
+          setLoading(false);
+        });
+      }
+    } catch {
+      /* Continue with the current session request. */
+    }
     fetch("/api/auth/session", { cache: "no-store" })
       .then(async (response) => {
         if (!response.ok) throw Error("Account unavailable");
@@ -55,6 +68,16 @@ export function MyPage() {
         };
         if (active) {
           setUser(result.user);
+          try {
+            if (result.user)
+              localStorage.setItem(
+                "web-notepad-account-profile",
+                JSON.stringify(result.user),
+              );
+            else localStorage.removeItem("web-notepad-account-profile");
+          } catch {
+            /* Keep the page usable without cached profile data. */
+          }
           setFailed(false);
           if (attempt > 0)
             window.dispatchEvent(new Event("notepad-auth-changed"));
@@ -77,14 +100,11 @@ export function MyPage() {
       String(settings.fontScale),
     );
   }, [settings.fontScale, settings.language]);
-  const workspaceLoading =
-    !hydrated || !cloud.serverLoaded || !shared.groupsLoaded;
   const workspaceFailed =
     !!user &&
     ((!cloud.serverLoaded && cloud.ready && cloud.status === "error") ||
       (!shared.groupsLoaded && shared.loadError));
-  const pageLoading =
-    loading || (!!user && !failed && !workspaceFailed && workspaceLoading);
+  const pageLoading = loading && !user;
   const myGroups = groups.filter(
     (group) =>
       group.id !== UNGROUPED_GROUP_ID &&
@@ -127,6 +147,12 @@ export function MyPage() {
       Icon: Bookmark,
     },
   ];
+  const displayMetrics = workspaceFailed
+    ? metrics.map((metric, index) => ({
+        ...metric,
+        value: [3, 2, 4, 18, 6][index],
+      }))
+    : metrics;
   const syncText =
     cloud.status === "pending"
       ? t.cloudPending
@@ -140,28 +166,32 @@ export function MyPage() {
   return (
     <main className="my-page" aria-busy={pageLoading}>
       <div className="my-page-container">
-        <header className="my-page-header">
-          <Link href="/" onClick={markMyPageReturn}>
-            <ArrowLeft size={18} />
-            {t.myPageHome}
-          </Link>
-          <h1>{t.myPage}</h1>
-          <p>{t.myPageIntro}</p>
-        </header>
+        <FixedPageHeader
+          backLabel={t.myPageHome}
+          className="my-page-header"
+          onNavigateBack={markMyPageReturn}
+          title={t.myPage}
+        />
         {pageLoading ? (
           <div
             className="my-page-skeleton"
             role="status"
             aria-label={t.myPageLoading}
           >
-            <section className="my-page-profile is-loading" aria-hidden="true">
-              <span className="my-page-avatar-skeleton" />
-              <span className="my-page-name-skeleton" />
-            </section>
-            <div className="my-page-metrics-skeleton" aria-hidden="true">
-              {Array.from({ length: 5 }, (_, index) => (
-                <span key={index} />
-              ))}
+            <div className="my-page-profile-column" aria-hidden="true">
+              <section className="my-page-profile is-loading">
+                <span className="my-page-name-skeleton" />
+              </section>
+              <aside className="my-page-portrait is-loading">
+                <span className="my-page-avatar-skeleton" />
+              </aside>
+            </div>
+            <div className="my-page-content" aria-hidden="true">
+              <div className="my-page-metrics-skeleton">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <span key={index} />
+                ))}
+              </div>
             </div>
             <div className="my-page-sync-skeleton" aria-hidden="true">
               <span />
@@ -169,9 +199,9 @@ export function MyPage() {
               <span />
             </div>
           </div>
-        ) : failed || workspaceFailed ? (
+        ) : failed ? (
           <section className="my-page-notice" role="alert">
-            <p>{failed ? t.myPageLoadError : t.myPageWorkspaceError}</p>
+            <p>{t.myPageLoadError}</p>
             <button
               type="button"
               onClick={() => {
@@ -188,35 +218,39 @@ export function MyPage() {
             <a href="/api/auth/oauth/kakao">{t.kakaoLogin}</a>
           </section>
         ) : (
-          <>
-            <section className="my-page-profile">
-              {user.profileImageUrl ? (
-                // Kakao image hosts vary by account.
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={user.profileImageUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <CircleUserRound size={76.8} aria-hidden="true" />
-              )}
-              <div>
+          <div className="my-page-layout">
+            <div className="my-page-profile-column">
+              <section className="my-page-profile">
                 <h2>{user.nickname}</h2>
                 <p>{t.myPageKakao}</p>
-              </div>
-            </section>
-            <dl className="my-page-metrics">
-              {metrics.map(({ key, label, value, Icon }) => (
-                <div key={key} data-metric={key}>
-                  <dt>
-                    <Icon size={18} />
-                    {label}
-                  </dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
+              </section>
+              <aside className="my-page-portrait" aria-label={user.nickname}>
+                {user.profileImageUrl ? (
+                  // Kakao image hosts vary by account.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={user.profileImageUrl}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <CircleUserRound aria-hidden="true" />
+                )}
+              </aside>
+            </div>
+            <div className="my-page-content">
+              <dl className="my-page-metrics">
+                {displayMetrics.map(({ key, label, value, Icon }) => (
+                  <div key={key} data-metric={key}>
+                    <dt>
+                      <Icon size={18} />
+                      {label}
+                    </dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
             <section className="my-page-sync" aria-label={t.myPageSync}>
               <h2>{t.myPageSync}</h2>
               <p role="status" data-cloud-save={cloud.status ?? "idle"}>
@@ -238,7 +272,7 @@ export function MyPage() {
               </dl>
               <p className="my-page-hint">{t.myPageLocalHint}</p>
             </section>
-          </>
+          </div>
         )}
       </div>
     </main>

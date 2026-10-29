@@ -53,7 +53,19 @@ export function Auth() {
           (response) => response.json() as Promise<{ user: AuthUser | null }>,
         )
         .then(({ user: nextUser }) => {
-          if (active && current === requestId) setUser(nextUser);
+          if (active && current === requestId) {
+            setUser(nextUser);
+            try {
+              if (nextUser)
+                localStorage.setItem(
+                  "web-notepad-account-profile",
+                  JSON.stringify(nextUser),
+                );
+              else localStorage.removeItem("web-notepad-account-profile");
+            } catch {
+              /* Keep authentication usable without profile caching. */
+            }
+          }
         })
         .catch(() => undefined)
         .finally(() => {

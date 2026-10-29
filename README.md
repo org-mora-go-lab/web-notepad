@@ -9,14 +9,15 @@ npm ci
 npm run dev
 ```
 
-http://localhost:3100 에서 실행합니다. 기본 메모 기능은 환경 변수 없이 사용할 수 있습니다.
+http://localhost:3000 에서 실행합니다. 기본 메모 기능은 환경 변수 없이 사용할 수 있습니다.
+개발 모드에서는 로컬 TEST 계정과 `web-notepad-local.db` 파일 데이터베이스를 자동으로 사용하므로 그룹 공유 링크도 별도 Turso 설정 없이 생성할 수 있습니다.
 
 카카오 로그인을 사용하려면 `.env.example`을 `.env.local`로 복사하고 값을 설정합니다.
 
 | 환경 변수             | 용도                                                                                           |
 | --------------------- | ---------------------------------------------------------------------------------------------- |
 | `KAKAO_REST_API_KEY`  | 카카오 애플리케이션의 REST API 키                                                              |
-| `KAKAO_REDIRECT_URI`  | 카카오에 등록한 콜백 주소. 로컬 기본값은 `http://localhost:3100/api/auth/oauth/kakao/callback` |
+| `KAKAO_REDIRECT_URI`  | 카카오에 등록한 콜백 주소. 로컬 기본값은 `http://localhost:3000/api/auth/oauth/kakao/callback` |
 | `AUTH_SECRET`         | 세션 서명에 사용할 긴 임의 문자열                                                              |
 | `KAKAO_CLIENT_SECRET` | 카카오 Client Secret을 활성화한 경우 설정                                                      |
 | `TURSO_DATABASE_URL`  | Turso 데이터베이스의 `libsql://` 주소                                                          |
@@ -58,7 +59,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-현재 E2E는 623개이며 각 번호 파일은 상세 요구사항 하나와 대응합니다. 구조 검사는 요구사항 번호·파일 대응·파일당 단일 테스트와 공통 리소스 배럴을 확인합니다. 테스트 서버는 3100 포트에서 실행하며, 인증과 파일 기반 libSQL 테스트 환경 변수는 Playwright 설정에서 제공합니다.
+현재 E2E는 504개이며 각 번호 파일은 상세 요구사항 하나와 대응합니다. 구조 검사는 요구사항 번호·파일 대응·파일당 단일 테스트와 공통 리소스 배럴을 확인합니다. 테스트 서버는 3000 포트에서 실행하며, 인증과 파일 기반 libSQL 테스트 환경 변수는 Playwright 설정에서 제공합니다.
 
 ## 버전 및 배포
 

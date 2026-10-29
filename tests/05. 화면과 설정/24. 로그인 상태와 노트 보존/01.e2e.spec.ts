@@ -21,7 +21,12 @@ test("1. 로그인 계정은 별도 Logout 아이콘 없이 닉네임과 Logout 
   );
   const name = page.locator("button.auth-command > span");
   await page.setViewportSize(DESKTOP_VIEWPORT);
-  await expect(name).toHaveCSS("font-size", "16.32px");
+  await page.locator("button.auth-command").hover();
+  await expect(page.locator("button.auth-command")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
+  await expect(name).toHaveCSS("font-size", "15.32px");
   await page.setViewportSize(MOBILE_VIEWPORT);
   await expect(name).toHaveCSS("font-size", "13.2px");
 });

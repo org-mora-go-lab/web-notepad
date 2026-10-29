@@ -1,10 +1,11 @@
-import type { ChangeEvent, KeyboardEvent, RefObject, UIEvent } from "react";
+import type { ChangeEvent, KeyboardEvent, RefObject } from "react";
 
 import type { NoteTab } from "@/src/4-entity/notepad";
 
 export type EditorProps = {
   tab: NoteTab;
   editorRef: RefObject<HTMLTextAreaElement | null>;
+  scrollRef: RefObject<HTMLDivElement | null>;
   lineRailRef: RefObject<HTMLDivElement | null>;
   selectedLines: number[];
   autoFocus: boolean;
@@ -13,5 +14,4 @@ export type EditorProps = {
   onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onCompositionStart: () => void;
   onCompositionEnd: () => void;
-  onScroll: (event: UIEvent<HTMLTextAreaElement>) => void;
 };

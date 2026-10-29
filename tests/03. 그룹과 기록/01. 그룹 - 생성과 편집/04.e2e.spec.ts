@@ -1,11 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  chooseGroupAction,
-  createGroup,
-  groupActionsButton,
-  groupsCommand,
-} from "../../__util__";
+import { createGroup, groupActionsButton, groupsCommand } from "../../__util__";
 
 test("4. 기본 Ungrouped 그룹은 삭제할 수 없다", async ({ page }) => {
   await page.goto("/");
@@ -26,5 +21,4 @@ test("4. 기본 Ungrouped 그룹은 삭제할 수 없다", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Delete Ungrouped group" }),
   ).toHaveCount(0);
-  await chooseGroupAction(page, "Work", "고정");
 });

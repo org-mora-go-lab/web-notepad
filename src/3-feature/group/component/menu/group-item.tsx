@@ -5,10 +5,10 @@ import {
   EllipsisVertical,
   LogOut,
   Pencil,
-  Pin,
   Share2,
   Trash2,
   X,
+  XSquare,
 } from "lucide-react";
 import {
   type FormEvent,
@@ -45,7 +45,7 @@ export function GroupItem({
   onToggleActions,
   onSelect,
   onRename,
-  onTogglePin,
+  onCloseTabs,
   onDelete,
   onShare,
 }: GroupItemProps) {
@@ -249,14 +249,6 @@ export function GroupItem({
       </button>
       {editable && (
         <div className="group-actions" ref={actionsRef}>
-          {editable && pinned && (
-            <Pin
-              className="group-pin-indicator"
-              size={14}
-              role="img"
-              aria-label={t.pinnedGroup}
-            />
-          )}
           {!hideActionsButton && (
             <button
               type="button"
@@ -280,23 +272,17 @@ export function GroupItem({
               style={{ left: menuPosition.left, top: menuPosition.top }}
             >
               {editable && (
-                <button
-                  className={`group-pin ${pinned ? "is-pinned" : ""}`}
-                  type="button"
-                  aria-label={pinned ? t.unpinGroup(name) : t.pinGroup(name)}
-                  aria-pressed={pinned}
-                  title={pinned ? t.unpin : t.pin}
-                  onClick={() => {
-                    onTogglePin();
-                    onToggleActions();
-                  }}
-                >
-                  <Pin size={16} />
-                  <span>{pinned ? t.unpin : t.pin}</span>
-                </button>
-              )}
-              {editable && (
                 <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onCloseTabs();
+                      onToggleActions();
+                    }}
+                  >
+                    <XSquare size={16} />
+                    <span>{t.closeGroupTabs}</span>
+                  </button>
                   {(!shared || (sharingRole === "owner" && !sharingActive)) && (
                     <button
                       type="button"

@@ -9,7 +9,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: "line",
   use: {
-    baseURL: "http://localhost:3100",
+    baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
   projects: [
@@ -22,12 +22,12 @@ export default defineConfig({
     command: "npm run dev",
     env: {
       KAKAO_REST_API_KEY: "test-rest-key",
-      KAKAO_REDIRECT_URI: "http://localhost:3100/api/auth/oauth/kakao/callback",
+      KAKAO_REDIRECT_URI: "http://localhost:3000/api/auth/oauth/kakao/callback",
       AUTH_SECRET: "test-auth-secret",
       LOCAL_DEV_LOGIN: "0",
       TURSO_DATABASE_URL: "file:test-results/notepad-e2e.db",
     },
-    url: "http://localhost:3100",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

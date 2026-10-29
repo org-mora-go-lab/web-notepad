@@ -129,7 +129,8 @@
   }
 
   .group-more-menu {
-    right: 14px;
+    right: -44px;
+    min-width: 176px;
   }
 
   @media (min-width: 513px) {
@@ -152,6 +153,10 @@
   }
 
   @media (max-width: 512px) {
+    .group-more-menu {
+      right: -30px;
+    }
+
     .system-group-command,
     .more-command,
     .group-system-menu button,

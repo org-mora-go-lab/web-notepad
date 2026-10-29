@@ -17,15 +17,16 @@ test("1. 공유 그룹 탭의 Link는 그룹과 탭 주소를 복사한다", asy
     "Move Group",
   ]);
   await owner.getByRole("menuitem", { name: "Link", exact: true }).click();
+  await expect(owner.locator(".tab-link-feedback")).toHaveText(
+    "Tab link copied",
+  );
 
   const copied = await owner.evaluate(() => navigator.clipboard.readText());
   const url = new URL(copied);
-  expect(url.origin).toBe("http://localhost:3100");
+  expect(url.origin).toBe("http://localhost:3000");
   expect(url.pathname).toBe("/");
   expect(url.searchParams.get("group")).toBe(group.id);
   expect(url.searchParams.get("leftTab")).toBe(group.tabs[0].id);
   expect(url.searchParams.get("pane")).toBe("left");
-  await expect(owner.locator(".tab-link-feedback")).toHaveText(
-    "Tab link copied",
-  );
+  expect(url.searchParams.get("share")).toBeTruthy();
 });

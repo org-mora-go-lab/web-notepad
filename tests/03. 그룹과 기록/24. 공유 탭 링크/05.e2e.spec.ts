@@ -13,7 +13,7 @@ test("5. 로그인 뒤에도 공유 탭 링크의 그룹과 탭을 연다", asyn
   )!;
   await context.clearCookies();
   await guest.evaluate(() => localStorage.clear());
-  const url = new URL("/", "http://localhost:3100");
+  const url = new URL("/", "http://localhost:3000");
   url.searchParams.set("group", group.id);
   url.searchParams.set("leftTab", group.tabs[0].id);
   url.searchParams.set("pane", "left");

@@ -35,11 +35,13 @@ const measureCaretPosition = (
 };
 
 export function useEditorCaretScroll(
-  lineRailRef: RefObject<HTMLDivElement | null>,
+  scrollRef: RefObject<HTMLDivElement | null>,
 ) {
   return (textarea: HTMLTextAreaElement) => {
     window.requestAnimationFrame(() => {
       if (!textarea.isConnected) return;
+      const scroller = scrollRef.current;
+      if (!scroller) return;
 
       const style = window.getComputedStyle(textarea);
       const lineHeight = Number.parseFloat(style.lineHeight);
@@ -55,25 +57,24 @@ export function useEditorCaretScroll(
         paddingTop,
         paddingBottom,
       );
-      const visibleTop = textarea.scrollTop + paddingTop;
+      const visibleTop = scroller.scrollTop + paddingTop;
       const visibleBottom =
-        textarea.scrollTop + textarea.clientHeight - paddingBottom;
+        scroller.scrollTop + scroller.clientHeight - paddingBottom;
 
-      let nextScrollTop = textarea.scrollTop;
+      let nextScrollTop = scroller.scrollTop;
       if (caret.bottom > visibleBottom) {
-        nextScrollTop = caret.bottom - textarea.clientHeight + paddingBottom;
+        nextScrollTop = caret.bottom - scroller.clientHeight + paddingBottom;
       } else if (caret.top < visibleTop) {
         nextScrollTop = caret.top - paddingTop;
       }
 
       nextScrollTop = Math.max(
         0,
-        Math.min(nextScrollTop, textarea.scrollHeight - textarea.clientHeight),
+        Math.min(nextScrollTop, scroller.scrollHeight - scroller.clientHeight),
       );
-      if (nextScrollTop === textarea.scrollTop) return;
+      if (nextScrollTop === scroller.scrollTop) return;
 
-      textarea.scrollTop = nextScrollTop;
-      if (lineRailRef.current) lineRailRef.current.scrollTop = nextScrollTop;
+      scroller.scrollTop = nextScrollTop;
     });
   };
 }

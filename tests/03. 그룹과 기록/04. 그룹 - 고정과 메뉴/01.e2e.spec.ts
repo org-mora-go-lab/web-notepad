@@ -1,29 +1,20 @@
 import { expect, test } from "@playwright/test";
 
 import {
-  chooseGroupAction,
+  groupActionsButton,
   groupsCommand,
   seedSortableGroups,
 } from "../../__util__";
 
-test("1. 그룹을 고정하면 이름 있는 그룹 목록의 맨 위로 옮기고 핀 아이콘을 표시한다", async ({
+test("1. 그룹 메뉴에서 Pin을 제거하고 Close All을 제공한다", async ({
   page,
 }) => {
   await seedSortableGroups(page);
   await groupsCommand(page).click();
-  await chooseGroupAction(page, "Zulu", "고정");
+  await groupActionsButton(page, "Zulu").click();
 
-  await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "Zulu",
-    "가방",
-    "나무",
-    "다람쥐",
-    "Alpha",
-  ]);
-  await expect(
-    page
-      .locator(".group-item")
-      .filter({ hasText: "Zulu" })
-      .locator(".group-pin-indicator"),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Close All" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Pin .* group/ })).toHaveCount(
+    0,
+  );
 });

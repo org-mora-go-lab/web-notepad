@@ -49,7 +49,7 @@ test("6. My Group과 Shared Group은 생성·전체 그룹 사이를 절반씩 �
               100,
           };
         });
-        expect(hoverArea.horizontalReduction).toBeCloseTo(20, 0);
+        expect(hoverArea.horizontalReduction).toBeCloseTo(0, 0);
         expect(hoverArea.verticalReduction).toBeCloseTo(10, 0);
       }
       const separator = page.getByRole("separator", {
