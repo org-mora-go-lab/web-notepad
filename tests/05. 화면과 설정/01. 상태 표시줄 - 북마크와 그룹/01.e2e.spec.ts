@@ -17,9 +17,9 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   await expect(label).toBeInViewport();
   await expect(boardCommand).toContainText("BOARD");
   await expect(boardCommand).toHaveCSS("text-decoration-line", "none");
-  await expect(systemGroupCommand(page).locator("svg")).toBeVisible();
-  await expect(boardCommand.locator("svg")).toBeVisible();
-  await expect(icon).toBeVisible();
+  await expect(systemGroupCommand(page).locator("svg")).toBeHidden();
+  await expect(boardCommand.locator("svg")).toBeHidden();
+  await expect(icon).toBeHidden();
   await expect(page.locator(".footer .dashboard-command svg")).toHaveCSS(
     "width",
     "25px",
@@ -39,6 +39,8 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   expect(dashboardBounds.width).toBeCloseTo(29.8, 1);
   await expect(label).toBeInViewport();
   await expect(icon).toBeInViewport();
+  await expect(systemGroupCommand(page).locator("svg")).toBeVisible();
+  await expect(boardCommand.locator("svg")).toBeVisible();
   await expect(icon).toHaveCSS("width", "25px");
   const labelBox = (await label.boundingBox())!;
   const iconBox = (await icon.boundingBox())!;

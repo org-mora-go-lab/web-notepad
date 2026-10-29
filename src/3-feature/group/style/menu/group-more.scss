@@ -161,6 +161,10 @@
       min-height: 35px;
       height: 35px;
       font-size: v.font(14px);
+
+      > svg {
+        display: none;
+      }
     }
   }
 
