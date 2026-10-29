@@ -20,6 +20,20 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   await expect(systemGroupCommand(page).locator("svg")).toBeHidden();
   await expect(boardCommand.locator("svg")).toBeHidden();
   await expect(icon).toBeHidden();
+  for (const command of [
+    systemGroupCommand(page),
+    boardCommand,
+    moreCommand(page),
+  ]) {
+    const hoverWidthRatio = await command.evaluate((element) => {
+      const commandWidth = element.getBoundingClientRect().width;
+      const hoverWidth = Number.parseFloat(
+        getComputedStyle(element, "::before").width,
+      );
+      return hoverWidth / commandWidth;
+    });
+    expect(hoverWidthRatio).toBeCloseTo(0.88, 1);
+  }
   await expect(page.locator(".footer .dashboard-command svg")).toHaveCSS(
     "width",
     "25px",

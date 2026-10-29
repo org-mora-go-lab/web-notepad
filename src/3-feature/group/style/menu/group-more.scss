@@ -40,7 +40,8 @@
     &::before {
       position: absolute;
       z-index: 0;
-      inset: 5% 10%;
+      // Expand the visual hover surface from 80% to 88% of each command.
+      inset: 5% 6%;
       border-radius: 4px;
       content: "";
       pointer-events: none;
