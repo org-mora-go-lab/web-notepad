@@ -121,12 +121,7 @@
 
   .dashboard-command {
     --status-icon-growth: 1px;
-    margin-left: 0;
-  }
-
-  .board-command {
     margin-left: auto;
-    text-decoration: none;
   }
 
   .footer-auth {
@@ -162,12 +157,7 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    :is(
-      .group-select-command,
-      .dashboard-command,
-      .board-command,
-      .auth-command
-    ):hover {
+    :is(.group-select-command, .dashboard-command, .auth-command):hover {
       cursor: pointer;
     }
   }
@@ -180,7 +170,7 @@
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
     }
 
@@ -204,8 +194,7 @@
 
     // Mobile footer commands use the same icon-over-label layout.
     .group-select-command,
-    .dashboard-command,
-    .board-command {
+    .dashboard-command {
       flex-direction: column;
       justify-content: center;
       gap: 4px;
@@ -230,20 +219,13 @@
     }
 
     .dashboard-command {
-      grid-column: 3;
-      grid-row: 1;
-      margin-left: 0;
-    }
-
-    .board-command {
-      display: flex;
       grid-column: 2;
       grid-row: 1;
       margin-left: 0;
     }
 
     .footer-auth {
-      grid-column: 4;
+      grid-column: 3;
       grid-row: 1;
       min-width: 0;
     }

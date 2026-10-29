@@ -1,7 +1,6 @@
 "use client";
 
-import { Layers, LayoutDashboard, MessageSquare } from "lucide-react";
-import Link from "next/link";
+import { Layers, LayoutDashboard } from "lucide-react";
 
 import { Auth } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
@@ -48,12 +47,6 @@ export function Footer({
           </button>
           <div className="status-scroll-area">
             <div className="status-actions">
-              <Link className="status-command board-command" href="/board">
-                <span className="status-icon">
-                  <MessageSquare size={16} strokeWidth={1.8} />
-                </span>
-                <span className="status-label">{t.board.toUpperCase()}</span>
-              </Link>
               <button
                 className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}
                 type="button"

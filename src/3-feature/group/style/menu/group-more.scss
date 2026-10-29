@@ -11,6 +11,7 @@
   }
 
   .system-group-command,
+  .group-board-command,
   .more-command {
     position: relative;
     flex: 1 1 0;
@@ -27,6 +28,7 @@
     color: v.$muted;
     font: inherit;
     text-align: left;
+    text-decoration: none;
 
     &:hover,
     &:focus-visible,
@@ -80,6 +82,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     .system-group-command:hover,
+    .group-board-command:hover,
     .more-command:hover {
       background: transparent;
       box-shadow: none;
@@ -153,14 +156,11 @@
     }
 
     .system-group-command,
+    .group-board-command,
     .more-command {
       min-height: 35px;
       height: 35px;
       font-size: v.font(14px);
-
-      > svg {
-        display: none;
-      }
     }
   }
 
@@ -172,6 +172,7 @@
     }
 
     .system-group-command,
+    .group-board-command,
     .more-command,
     .group-system-menu button,
     .group-more-menu button {
@@ -179,6 +180,7 @@
     }
 
     .system-group-command,
+    .group-board-command,
     .more-command {
       > svg,
       > span {
