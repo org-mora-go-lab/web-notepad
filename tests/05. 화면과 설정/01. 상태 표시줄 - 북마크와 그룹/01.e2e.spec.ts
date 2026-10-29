@@ -10,28 +10,17 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   await groupsCommand(page).click();
   const label = moreCommand(page).locator("span");
   const icon = moreCommand(page).locator("svg").first();
-  const boardCommand = page.locator(".group-board-command");
 
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await expect(label).toHaveText("MORE");
   await expect(label).toBeInViewport();
-  await expect(boardCommand).toContainText("BOARD");
-  await expect(boardCommand).toHaveCSS("text-decoration-line", "none");
+  await expect(page.locator(".group-board-command")).toHaveCount(0);
   await expect(systemGroupCommand(page).locator("svg")).toBeHidden();
-  await expect(boardCommand.locator("svg")).toBeHidden();
   await expect(icon).toBeHidden();
-  for (const command of [
-    systemGroupCommand(page),
-    boardCommand,
-    moreCommand(page),
-  ]) {
+  for (const command of [systemGroupCommand(page), moreCommand(page)]) {
     await expect(command).toHaveCSS("font-size", "13.5px");
   }
-  for (const command of [
-    systemGroupCommand(page),
-    boardCommand,
-    moreCommand(page),
-  ]) {
+  for (const command of [systemGroupCommand(page), moreCommand(page)]) {
     const hoverWidthRatio = await command.evaluate((element) => {
       const commandWidth = element.getBoundingClientRect().width;
       const hoverWidth = Number.parseFloat(
@@ -57,22 +46,12 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   const desktopGroupLabel = (await systemGroupCommand(page)
     .locator("span")
     .boundingBox())!;
-  const desktopBoardLabel = (await boardCommand.locator("span").boundingBox())!;
   const desktopMoreLabel = (await label.boundingBox())!;
   const desktopGroupCommand = (await systemGroupCommand(page).boundingBox())!;
-  const desktopBoardCommand = (await boardCommand.boundingBox())!;
   const desktopMoreCommand = (await moreCommand(page).boundingBox())!;
   expect(desktopGroupCommand.x).toBeCloseTo(groupMenuRow.x + 5, 1);
   expect(desktopGroupLabel.x + desktopGroupLabel.width / 2).toBeCloseTo(
     desktopGroupCommand.x + desktopGroupCommand.width / 2,
-    1,
-  );
-  expect(desktopBoardLabel.x + desktopBoardLabel.width / 2).toBeCloseTo(
-    groupMenuRow.x + groupMenuContentWidth / 2,
-    1,
-  );
-  expect(desktopBoardLabel.x + desktopBoardLabel.width / 2).toBeCloseTo(
-    desktopBoardCommand.x + desktopBoardCommand.width / 2,
     1,
   );
   expect(desktopMoreLabel.x + desktopMoreLabel.width / 2).toBeCloseTo(
@@ -87,19 +66,16 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   expect(groupMenuRow.height).toBe(statusBar.height);
 
   await page.setViewportSize(MOBILE_VIEWPORT);
+  const mobileGroupMenuRow = (await page.locator(".group-more").boundingBox())!;
+  expect(mobileGroupMenuRow.height).toBeCloseTo(46, 0);
   const dashboardBounds = (await page
     .locator(".footer .dashboard-command svg")
     .boundingBox())!;
   expect(dashboardBounds.width).toBeCloseTo(29.8, 1);
   await expect(label).toBeInViewport();
   await expect(systemGroupCommand(page).locator("svg")).toBeHidden();
-  await expect(boardCommand.locator("svg")).toBeHidden();
   await expect(icon).toBeHidden();
-  for (const command of [
-    systemGroupCommand(page),
-    boardCommand,
-    moreCommand(page),
-  ]) {
+  for (const command of [systemGroupCommand(page), moreCommand(page)]) {
     const alignment = await command.evaluate((element) => {
       const bounds = element.getBoundingClientRect();
       const text = element.querySelector("span")!.getBoundingClientRect();
@@ -115,11 +91,6 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     .locator(".group-more-divider")
     .nth(0)
     .boundingBox())!;
-  const boardBox = (await boardCommand.boundingBox())!;
-  const secondDividerBox = (await page
-    .locator(".group-more-divider")
-    .nth(1)
-    .boundingBox())!;
   const moreBox = (await moreCommand(page).boundingBox())!;
   const menuBounds = (await page.locator(".group-menu").boundingBox())!;
   const controlsCenter = (systemBox.x + moreBox.x + moreBox.width) / 2;
@@ -129,10 +100,6 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   );
   expect(systemBox.x + systemBox.width).toBeLessThanOrEqual(firstDividerBox.x);
   expect(firstDividerBox.x + firstDividerBox.width).toBeLessThanOrEqual(
-    boardBox.x,
-  );
-  expect(boardBox.x + boardBox.width).toBeLessThanOrEqual(secondDividerBox.x);
-  expect(secondDividerBox.x + secondDividerBox.width).toBeLessThanOrEqual(
     moreBox.x,
   );
 

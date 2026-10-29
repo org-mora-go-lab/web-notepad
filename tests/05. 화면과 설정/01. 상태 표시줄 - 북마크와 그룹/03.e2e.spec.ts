@@ -18,9 +18,7 @@ test("3. 그룹 버튼은 PC와 모바일에서 아이콘과 현재 그룹명을
     const dashboardBox = (await page
       .locator(".dashboard-command")
       .boundingBox())!;
-    if (viewport.width <= 512)
-      expect(groupBox.x).toBeGreaterThan(dashboardBox.x);
-    else expect(groupBox.x).toBeLessThan(dashboardBox.x);
+    expect(groupBox.x).toBeLessThan(dashboardBox.x);
 
     if (viewport.width <= 512) {
       await expect(command).toHaveCSS("gap", "4px");

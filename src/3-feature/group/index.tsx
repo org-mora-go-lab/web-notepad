@@ -7,12 +7,10 @@ import {
   ChevronRight,
   Ellipsis,
   Layers,
-  MessageSquare,
   Search,
   Settings,
   X,
 } from "lucide-react";
-import Link from "next/link";
 import {
   Fragment,
   useCallback,
@@ -493,11 +491,6 @@ function GroupSidebar({
               />
             </div>
           )}
-          <span className="group-more-divider" aria-hidden="true" />
-          <Link className="group-board-command" href="/board" onClick={onClose}>
-            <MessageSquare size={18} strokeWidth={1.8} aria-hidden="true" />
-            <span>{t.board.toUpperCase()}</span>
-          </Link>
           <span className="group-more-divider" aria-hidden="true" />
           <div className="more-command-slot">
             <button

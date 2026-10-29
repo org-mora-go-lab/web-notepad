@@ -11,7 +11,6 @@
   }
 
   .system-group-command,
-  .group-board-command,
   .more-command {
     position: relative;
     flex: 1 1 0;
@@ -87,7 +86,6 @@
 
   @media (hover: hover) and (pointer: fine) {
     .system-group-command:hover,
-    .group-board-command:hover,
     .more-command:hover {
       background: transparent;
       box-shadow: none;
@@ -157,17 +155,13 @@
     .group-more {
       box-sizing: border-box;
       height: var(--footer-height);
-      grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr) 1px minmax(
-          0,
-          1fr
-        );
+      grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
       display: grid;
       padding-block: 6px;
       padding-inline: 5px;
     }
 
     .system-group-command,
-    .group-board-command,
     .more-command {
       min-height: 35px;
       height: 35px;
@@ -177,6 +171,7 @@
 
   @media (max-width: 512px) {
     .group-more {
+      padding-block: 5px;
       padding-right: 19px;
       padding-left: 9px;
     }
@@ -188,8 +183,10 @@
     }
 
     .system-group-command,
-    .group-board-command,
-    .more-command,
+    .more-command {
+      min-height: 35px;
+    }
+
     .group-system-menu button,
     .group-more-menu button {
       min-height: 44px;
