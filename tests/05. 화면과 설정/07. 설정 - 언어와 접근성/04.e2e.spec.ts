@@ -80,7 +80,7 @@ test("4. 선택한 언어를 메뉴·패널·하단 메뉴·편집기 안내 문
   await languageRadio(page, "English").check();
   await expect(panel.locator("h2")).toHaveText("Settings");
   if ((await page.viewportSize())!.width <= 512)
-    await expect(page.locator(".group-command-label")).toHaveText("MENU");
+    await expect(page.locator(".group-command-label")).toBeHidden();
   await expect(groupStatusName(page)).toHaveText("Ungrouped");
   await page.getByRole("button", { name: "Close Settings" }).click();
   await openMoreMenu(page);

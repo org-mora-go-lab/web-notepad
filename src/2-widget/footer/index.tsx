@@ -1,6 +1,7 @@
 "use client";
 
-import { Layers, LayoutDashboard } from "lucide-react";
+import { Layers, LayoutDashboard, MessageSquare } from "lucide-react";
+import Link from "next/link";
 
 import { Auth } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
@@ -18,17 +19,6 @@ export function Footer({
   const { t } = useI18n();
   return (
     <footer className="footer">
-      <div className="current-group-panel" title={activeGroupName}>
-        <Layers
-          className="current-group-icon"
-          size={18}
-          strokeWidth={1.8}
-          aria-hidden="true"
-        />
-        <span className="current-group-name" title={activeGroupName}>
-          {activeGroupName}
-        </span>
-      </div>
       <div className="status-meta">
         <div className="status-controls">
           <button
@@ -58,6 +48,12 @@ export function Footer({
           </button>
           <div className="status-scroll-area">
             <div className="status-actions">
+              <Link className="status-command board-command" href="/board">
+                <span className="status-icon">
+                  <MessageSquare size={16} strokeWidth={1.8} />
+                </span>
+                <span className="status-label">{t.board}</span>
+              </Link>
               <button
                 className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}
                 type="button"

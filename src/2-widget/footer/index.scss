@@ -12,7 +12,6 @@
   color: v.$muted;
   font-size: v.font(14px);
 
-  .current-group-panel,
   .group-command-label {
     display: none;
   }
@@ -125,6 +124,10 @@
     margin-left: auto;
   }
 
+  .board-command {
+    display: none;
+  }
+
   .footer-auth {
     flex-grow: 0;
     flex-shrink: 1;
@@ -158,43 +161,25 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    :is(.group-select-command, .dashboard-command, .auth-command):hover {
+    :is(
+      .group-select-command,
+      .dashboard-command,
+      .board-command,
+      .auth-command
+    ):hover {
       cursor: pointer;
     }
   }
 
   @media (max-width: 512px) {
-    min-height: calc(114.8px + env(safe-area-inset-bottom));
+    min-height: calc(76.8px + env(safe-area-inset-bottom));
     padding: 0;
-    display: grid;
-    grid-template-rows: 38px calc(76.8px + env(safe-area-inset-bottom));
-    align-items: stretch;
     font-size: v.font(12px);
-
-    .current-group-panel {
-      min-width: 0;
-      padding: 1px 21px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      border-bottom: 1px solid v.$line;
-      font-size: v.font(18px);
-    }
-
-    .current-group-icon {
-      flex-shrink: 0;
-    }
-
-    .current-group-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
 
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 0;
     }
 
@@ -218,7 +203,8 @@
 
     // Mobile footer commands use the same icon-over-label layout.
     .group-select-command,
-    .dashboard-command {
+    .dashboard-command,
+    .board-command {
       flex-direction: column;
       justify-content: center;
       gap: 4px;
@@ -232,20 +218,31 @@
     }
 
     .group-select-command {
-      grid-column: 1;
+      grid-column: 4;
+      grid-row: 1;
 
       .group-current-value {
-        display: none;
+        display: block;
+        max-width: 100%;
+        margin-left: 0;
       }
     }
 
     .dashboard-command {
       grid-column: 2;
+      grid-row: 1;
       margin-left: 0;
+    }
+
+    .board-command {
+      display: flex;
+      grid-column: 1;
+      grid-row: 1;
     }
 
     .footer-auth {
       grid-column: 3;
+      grid-row: 1;
       min-width: 0;
     }
 
@@ -280,14 +277,6 @@
           width: 50px;
         }
       }
-    }
-
-    .status-command > span.group-command-label {
-      display: block;
-      font-size: calc(#{v.font(10px)} + 1px);
-      line-height: 12px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
     }
   }
 }

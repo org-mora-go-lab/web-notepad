@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  CircleUserRound,
-  LogIn,
-  LogOut,
-  MessageSquare,
-  UserRound,
-} from "lucide-react";
+import { CircleUserRound, LogIn, LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -207,10 +201,6 @@ export function Auth() {
               <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}>
                 <UserRound size={18} />
                 <span>{t.myPage}</span>
-              </Link>
-              <Link href="/board" role="menuitem" onClick={() => closeMenu()}>
-                <MessageSquare size={18} />
-                <span>{t.board}</span>
               </Link>
               <button
                 type="button"
