@@ -348,6 +348,40 @@
     overflow-y: hidden;
     border-bottom: 1px solid v.$line;
     background: color-mix(in srgb, #{v.$raised} 45%, transparent);
+    &.has-left-fog {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 36px,
+        #000 100%
+      );
+      mask-image: linear-gradient(to right, transparent, #000 36px, #000 100%);
+    }
+    &.has-right-fog {
+      -webkit-mask-image: linear-gradient(
+        to left,
+        transparent,
+        #000 36px,
+        #000 100%
+      );
+      mask-image: linear-gradient(to left, transparent, #000 36px, #000 100%);
+    }
+    &.has-left-fog.has-right-fog {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 36px,
+        #000 calc(100% - 36px),
+        transparent
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 36px,
+        #000 calc(100% - 36px),
+        transparent
+      );
+    }
     > button {
       flex: 0 0 auto;
       min-height: 40px;

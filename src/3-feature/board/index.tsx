@@ -12,7 +12,7 @@ import {
   Unlink,
   Users,
 } from "lucide-react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, FixedPageHeader, SearchField } from "@/src/5-shared/ui";
@@ -36,6 +36,8 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [notePreviewHeight, setNotePreviewHeight] = useState(316.8);
   const noteResizeStart = useRef<{ y: number; height: number } | null>(null);
   const noteSwipeStart = useRef<{ x: number; y: number } | null>(null);
+  const noteTabsRef = useRef<HTMLDivElement>(null);
+  const [noteTabFog, setNoteTabFog] = useState({ left: false, right: false });
   const orderedNotes = selected
     ? [...selected.notes].sort(
         (left, right) =>
@@ -48,6 +50,34 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     : [];
   const activeNote =
     orderedNotes.find((note) => note.id === activeNoteId) ?? orderedNotes[0];
+  const updateNoteTabFog = useCallback(() => {
+    const tabs = noteTabsRef.current;
+    if (!tabs) return;
+    const overflowing = tabs.scrollWidth > tabs.clientWidth + 1;
+    const next = {
+      left: overflowing && tabs.scrollLeft > 1,
+      right:
+        overflowing &&
+        tabs.scrollLeft + tabs.clientWidth < tabs.scrollWidth - 1,
+    };
+    setNoteTabFog((current) =>
+      current.left === next.left && current.right === next.right
+        ? current
+        : next,
+    );
+  }, []);
+  useEffect(() => {
+    const tabs = noteTabsRef.current;
+    if (!tabs) return;
+    updateNoteTabFog();
+    tabs.addEventListener("scroll", updateNoteTabFog, { passive: true });
+    const observer = new ResizeObserver(updateNoteTabFog);
+    observer.observe(tabs);
+    return () => {
+      tabs.removeEventListener("scroll", updateNoteTabFog);
+      observer.disconnect();
+    };
+  }, [orderedNotes.length, selected?.id, updateNoteTabFog]);
   useEffect(() => {
     const clearFeedback = () => {
       setFailure("");
@@ -151,7 +181,8 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
             </header>
             <section className="board-detail-section board-note-contents">
               <div
-                className="board-note-tabs"
+                className={`board-note-tabs ${noteTabFog.left ? "has-left-fog" : ""} ${noteTabFog.right ? "has-right-fog" : ""}`}
+                ref={noteTabsRef}
                 role="tablist"
                 aria-label={t.boardNoteContents}
               >

@@ -149,6 +149,15 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   const mobileOverview = (await page.locator(".board-overview").boundingBox())!;
   expect(mobileEditor.x).toBeCloseTo(mobileOverview.x, 0);
   expect(mobileEditor.width).toBeCloseTo(mobileOverview.width, 0);
+  const noteTabs = page.locator(".board-note-tabs");
+  await expect(noteTabs).toHaveClass(/has-right-fog/);
+  await expect(noteTabs).not.toHaveClass(/has-left-fog/);
+  await noteTabs.evaluate((element) => {
+    element.scrollLeft = element.scrollWidth;
+    element.dispatchEvent(new Event("scroll"));
+  });
+  await expect(noteTabs).toHaveClass(/has-left-fog/);
+  await expect(noteTabs).not.toHaveClass(/has-right-fog/);
   const overviewTitle = (await page
     .locator("#board-overview-title")
     .boundingBox())!;
