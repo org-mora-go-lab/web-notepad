@@ -235,6 +235,12 @@
       min-width: 0;
     }
 
+    .group-current-value,
+    .dashboard-command > .status-label,
+    .auth-command > span {
+      margin-top: 1px;
+    }
+
     .auth-command {
       width: 100%;
       height: 61.2px;

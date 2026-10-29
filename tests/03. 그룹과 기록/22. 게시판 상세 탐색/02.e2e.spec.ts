@@ -260,7 +260,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   const mobileFooterBounds = (await mobileFooter.boundingBox())!;
   expect(mobileFooterBounds.y + mobileFooterBounds.height).toBeCloseTo(800, 1);
   await mobileFooter.locator(".dashboard-command").click();
-  await expect(page).toHaveURL(/\?panel=dashboard$/);
+  await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",

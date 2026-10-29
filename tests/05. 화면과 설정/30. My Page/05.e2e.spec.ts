@@ -65,4 +65,14 @@ test("5. 좁은 모바일에서 긴 프로필 이름과 통계를 화면 안에 
   expect(await main.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
   expect((await header.boundingBox())!.y).toBeCloseTo(headerBounds.y, 1);
   expect((await back.boundingBox())!.y).toBeCloseTo(backBounds.y, 1);
+  const mobileFooter = page.locator(".my-page-mobile-footer .footer");
+  await expect(mobileFooter).toBeVisible();
+  const mobileFooterBounds = (await mobileFooter.boundingBox())!;
+  expect(mobileFooterBounds.y + mobileFooterBounds.height).toBeCloseTo(568, 1);
+  await mobileFooter.locator(".dashboard-command").click();
+  await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute(
+    "aria-hidden",
+    "false",
+  );
 });

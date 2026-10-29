@@ -10,9 +10,13 @@ import {
   Share2,
   Users,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 
+import { Footer } from "@/src/2-widget";
 import {
+  ALL_GROUP_ID,
   isSharedGroupId,
   UNGROUPED_GROUP_ID,
   useCloudSave,
@@ -21,8 +25,10 @@ import {
   useSharedGroups,
 } from "@/src/4-entity/notepad";
 import { HOME_RETURN_FOCUS_KEY, MESSAGES } from "@/src/5-shared/constant";
+import { I18nContext } from "@/src/5-shared/hook";
 import type { AccountProfile } from "@/src/5-shared/type";
 import { FixedPageHeader } from "@/src/5-shared/ui";
+import { isToday } from "@/src/5-shared/util";
 
 function markMyPageReturn() {
   try {
@@ -32,9 +38,13 @@ function markMyPageReturn() {
   }
 }
 
+const subscribeToClient = () => () => undefined;
+
 export function MyPage() {
+  const router = useRouter();
   const hydrated = useNotepadHydrated();
   const groups = useNotepadStore((state) => state.groups);
+  const activeGroupId = useNotepadStore((state) => state.activeGroupId);
   const settings = useNotepadStore((state) => state.settings);
   const cloud = useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
@@ -42,7 +52,19 @@ export function MyPage() {
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const mounted = useSyncExternalStore(
+    subscribeToClient,
+    () => true,
+    () => false,
+  );
   const t = MESSAGES[settings.language];
+  const activeGroupName =
+    activeGroupId === ALL_GROUP_ID
+      ? t.allGroup
+      : activeGroupId === UNGROUPED_GROUP_ID
+        ? t.ungrouped
+        : (groups.find((group) => group.id === activeGroupId)?.name ??
+          t.ungrouped);
   useEffect(markMyPageReturn, []);
   useEffect(() => {
     let active = true;
@@ -275,6 +297,30 @@ export function MyPage() {
           </div>
         )}
       </div>
+      {mounted &&
+        createPortal(
+          <I18nContext value={settings.language}>
+            <div className="my-page-mobile-footer">
+              <Footer
+                hasGroupUpdateToday={groups.some((group) =>
+                  isToday(group.updatedAt),
+                )}
+                dashboardOpen={false}
+                activeGroupName={activeGroupName}
+                groupsOpen={false}
+                onToggleDashboard={() => {
+                  markMyPageReturn();
+                  router.push("/?panel=dashboard");
+                }}
+                onToggleGroups={() => {
+                  markMyPageReturn();
+                  router.push("/?panel=groups");
+                }}
+              />
+            </div>
+          </I18nContext>,
+          document.body,
+        )}
     </main>
   );
 }

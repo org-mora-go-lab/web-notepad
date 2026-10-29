@@ -27,7 +27,12 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
       page.locator(".footer .auth-command > span"),
     ]) {
       await expect(label).toHaveCSS("font-size", dashboardFontSize);
+      if (width <= 512) await expect(label).toHaveCSS("margin-top", "1px");
     }
+    if (width <= 512)
+      await expect(
+        page.locator(".dashboard-command > .status-label"),
+      ).toHaveCSS("margin-top", "1px");
     if (width <= 512) {
       expect(group.x).toBeLessThan(dashboard.x);
       expect(dashboard.x).toBeLessThan(account.x);

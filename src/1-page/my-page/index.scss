@@ -1,4 +1,5 @@
 @use "../../5-shared/style/variable" as v;
+@use "../../2-widget/footer";
 .my-page {
   --page-content-width: 1080px;
   width: 100%;
@@ -277,5 +278,21 @@
 @media (prefers-reduced-motion: reduce) {
   .my-page .my-page-skeleton {
     animation: none;
+  }
+}
+
+.my-page-mobile-footer {
+  display: none;
+}
+
+@media (max-width: 512px) {
+  .my-page {
+    padding-bottom: calc(112.8px + env(safe-area-inset-bottom));
+  }
+  .my-page-mobile-footer {
+    position: fixed;
+    z-index: 30;
+    inset: auto 0 0;
+    display: block;
   }
 }
