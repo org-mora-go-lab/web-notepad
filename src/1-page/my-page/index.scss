@@ -68,7 +68,7 @@
   .my-page-skeleton {
     min-width: 0;
     display: grid;
-    grid-template-columns: minmax(263px, 0.8fr) minmax(0, 1.4fr);
+    grid-template-columns: minmax(237px, 0.72fr) minmax(0, 1.48fr);
     gap: 24px;
     align-items: stretch;
   }
@@ -114,7 +114,7 @@
     }
     > .my-page-portrait {
       border: 0;
-      border-radius: 0;
+      border-radius: 10px;
       background: transparent;
     }
   }
