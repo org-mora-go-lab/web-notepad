@@ -29,7 +29,30 @@
 }
 
 @media (max-width: 512px) {
-  .bookmark .bookmark-item-content {
-    font-size: v.font(16px * v.$mobile-scale);
+  .bookmark {
+    .bookmark-item {
+      max-height: var(--mobile-dashboard-tab-max-height);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    .bookmark-item-heading,
+    .bookmark-item-group,
+    .bookmark-actions {
+      flex: 0 0 auto;
+    }
+
+    .bookmark-item-content {
+      min-height: 0;
+      flex: 1 1 auto;
+      display: -webkit-box;
+      margin: 6px 0;
+      overflow: hidden;
+      font-size: v.font(16px * v.$mobile-scale);
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+    }
   }
 }

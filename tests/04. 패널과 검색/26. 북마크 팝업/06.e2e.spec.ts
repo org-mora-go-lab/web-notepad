@@ -6,6 +6,7 @@ import { createBookmarkGroupsState } from "./__fixture__";
 test("6. MORE의 BOOKMARK는 모든 그룹의 북마크 내용을 표시한다", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
   await writeStoredState(page, createBookmarkGroupsState());
   await openBookmarksPanel(page);
 
@@ -23,4 +24,13 @@ test("6. MORE의 BOOKMARK는 모든 그룹의 북마크 내용을 표시한다",
   await expect(items.nth(1).locator(".bookmark-item-content")).toHaveText(
     "Home content",
   );
+  const bookmarkMaxHeight = await items
+    .first()
+    .evaluate((element) => getComputedStyle(element).maxHeight);
+  expect(bookmarkMaxHeight).toBe("144px");
+  await page.locator("#bookmarks-panel .corner-popover-close").click();
+  await page.locator(".dashboard-command").click();
+  const dashboardCard = page.locator(".dashboard-card").first();
+  await expect(dashboardCard).toBeVisible();
+  await expect(dashboardCard).toHaveCSS("max-height", bookmarkMaxHeight);
 });
