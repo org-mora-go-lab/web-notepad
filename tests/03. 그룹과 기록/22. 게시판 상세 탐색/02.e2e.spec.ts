@@ -41,7 +41,14 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     .locator(".board-note-contents")
     .boundingBox())!;
   const heroBounds = (await page.locator(".board-detail-hero").boundingBox())!;
+  const collaborationBounds = (await page
+    .locator(".board-collaboration")
+    .boundingBox())!;
   expect(sharedNotesBounds.y).toBeLessThan(heroBounds.y);
+  expect(heroBounds.y - (sharedNotesBounds.y + sharedNotesBounds.height)).toBe(
+    36,
+  );
+  expect(collaborationBounds.y - (heroBounds.y + heroBounds.height)).toBe(36);
   const noteLayout = await page
     .locator(".board-note-preview")
     .evaluate((element) => {
