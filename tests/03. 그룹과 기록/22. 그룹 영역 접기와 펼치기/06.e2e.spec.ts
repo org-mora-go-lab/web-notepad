@@ -12,6 +12,19 @@ test("6. My Group과 Shared Group은 생성·전체 그룹 사이를 절반씩 �
       await groupsCommand(page).click();
     const my = page.locator(".group-category").first(),
       shared = page.locator(".group-category").last();
+    const fontScale = await page.evaluate(() =>
+      Number(
+        getComputedStyle(document.documentElement).getPropertyValue(
+          "--font-scale",
+        ),
+      ),
+    );
+    for (const button of [
+      my.getByRole("button", { name: "My Group", exact: true }),
+      shared.getByRole("button", { name: "Shared Group", exact: true }),
+    ]) {
+      await expect(button).toHaveCSS("font-size", `${14 * fontScale}px`);
+    }
     const a = (await my.boundingBox())!,
       b = (await shared.boundingBox())!;
     expect(a.height).toBeCloseTo(b.height, 0);

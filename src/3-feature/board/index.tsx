@@ -35,7 +35,12 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const orderedNotes = selected
     ? [...selected.notes].sort(
-        (left, right) => Number(right.bookmarked) - Number(left.bookmarked),
+        (left, right) =>
+          Number(right.bookmarked) - Number(left.bookmarked) ||
+          left.title.localeCompare(right.title, language, {
+            numeric: true,
+            sensitivity: "base",
+          }),
       )
     : [];
   const activeNote =
@@ -186,26 +191,24 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                   role="tabpanel"
                 >
                   <pre>
-                    {(activeNote.content.trim() || t.emptyNote)
-                      .split("\n")
-                      .map((line, index) => (
+                    {activeNote.content.split("\n").map((line, index) => (
+                      <span
+                        className={`board-note-line ${activeNote.selectedLines?.includes(index) ? "is-selected" : ""}`}
+                        data-line={index}
+                        key={index}
+                      >
                         <span
-                          className={`board-note-line ${activeNote.selectedLines?.includes(index) ? "is-selected" : ""}`}
-                          data-line={index}
-                          key={index}
+                          className="board-note-line-number"
+                          aria-hidden="true"
                         >
-                          <span
-                            className="board-note-line-number"
-                            aria-hidden="true"
-                          >
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <span className="board-note-text">
-                            {line || "\u200b"}
-                            {"\n"}
-                          </span>
+                          {String(index + 1).padStart(2, "0")}
                         </span>
-                      ))}
+                        <span className="board-note-text">
+                          {line || "\u200b"}
+                          {"\n"}
+                        </span>
+                      </span>
+                    ))}
                   </pre>
                 </article>
               )}

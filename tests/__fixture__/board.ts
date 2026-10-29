@@ -39,6 +39,7 @@ export const boardTest = base.extend<{
               bookmarked: true,
             },
           ),
+          createTabFixture("empty-" + suffix, ""),
         ]),
       },
     });

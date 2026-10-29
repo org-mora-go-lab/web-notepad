@@ -66,6 +66,18 @@
     background: v.$line;
   }
 
+  .more-command-slot {
+    position: relative;
+    min-width: 0;
+    flex: 1 1 0;
+    align-self: stretch;
+    display: flex;
+
+    .more-command {
+      width: 100%;
+    }
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .system-group-command:hover,
     .more-command:hover {
@@ -129,7 +141,7 @@
   }
 
   .group-more-menu {
-    right: -44px;
+    right: -58px;
     min-width: 176px;
   }
 
@@ -154,7 +166,9 @@
 
   @media (max-width: 512px) {
     .group-more-menu {
-      right: -30px;
+      right: auto;
+      left: calc(50% - 50px);
+      transform: translateX(-50%);
     }
 
     .system-group-command,

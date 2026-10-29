@@ -44,4 +44,7 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
         .evaluate((bar) => bar.scrollWidth <= bar.clientWidth),
     ).toBe(true);
   }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator(".dashboard-command").click();
+  await expect(page.locator(".mobile-tap-feedback")).toHaveCount(0);
 });

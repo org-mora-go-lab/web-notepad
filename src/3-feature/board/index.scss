@@ -389,10 +389,12 @@
   }
   .board-note-preview {
     min-width: 0;
-    height: 264px;
-    max-height: 264px;
+    height: 316.8px;
+    min-height: 316.8px;
+    max-height: none;
     overflow-x: hidden;
     overflow-y: auto;
+    resize: vertical;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
     border: 1px solid v.$line;

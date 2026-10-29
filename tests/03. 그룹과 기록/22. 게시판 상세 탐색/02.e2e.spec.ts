@@ -42,13 +42,17 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
       const style = getComputedStyle(element);
       return {
         height: Number.parseFloat(style.height),
-        maxHeight: Number.parseFloat(style.maxHeight),
+        minHeight: Number.parseFloat(style.minHeight),
+        maxHeight: style.maxHeight,
         overflowY: style.overflowY,
+        resize: style.resize,
       };
     });
-  expect(noteLayout.height).toBeCloseTo(220 * 1.2, 0);
-  expect(noteLayout.maxHeight).toBeCloseTo(noteLayout.height, 0);
+  expect(noteLayout.height).toBeCloseTo(220 * 1.2 * 1.2, 0);
+  expect(noteLayout.minHeight).toBeCloseTo(noteLayout.height, 0);
+  expect(noteLayout.maxHeight).toBe("none");
   expect(noteLayout.overflowY).toBe("auto");
+  expect(noteLayout.resize).toBe("vertical");
   const noteText = await page
     .locator(".board-note-preview pre")
     .evaluate((element) => {
@@ -127,6 +131,11 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   await expect(page.getByRole("tab")).toHaveCount(boardPost.notes.length);
   const tabs = page.getByRole("tab");
   await expect(tabs.first()).toContainText("Follow-up shared note body");
+  await expect(tabs.locator(".board-note-title")).toHaveText([
+    "Follow-up shared note body",
+    "",
+    "Private shared note body",
+  ]);
   await expect(tabs.first().locator(".board-note-bookmark")).toHaveCount(1);
   await expect(tabs.nth(1).locator(".board-note-bookmark")).toHaveCount(0);
   const bookmarkBounds = (await tabs
@@ -146,4 +155,13 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   );
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await expect(page.locator(".board-note-preview")).toHaveCount(1);
+  expect(boardPost.notes.some((note) => note.content === "Empty note")).toBe(
+    false,
+  );
+  expect(boardPost.notes.some((note) => note.content === "")).toBe(true);
+  await tabs.nth(1).click();
+  await expect(page.locator(".board-note-preview")).not.toContainText(
+    "Empty note",
+  );
+  await expect(page.locator(".board-note-line")).toHaveCount(1);
 });

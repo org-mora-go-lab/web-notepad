@@ -491,71 +491,73 @@ function GroupSidebar({
             </div>
           )}
           <span className="group-more-divider" aria-hidden="true" />
-          <button
-            className="more-command"
-            type="button"
-            aria-expanded={footerMenuOpen === "more"}
-            aria-controls="group-more-menu"
-            aria-haspopup="menu"
-            onClick={() =>
-              setFooterMenuOpen((current) =>
-                current === "more" ? null : "more",
-              )
-            }
-          >
-            <Ellipsis size={25} strokeWidth={1.8} aria-hidden="true" />
-            <span>{t.more}</span>
-          </button>
-          {footerMenuOpen === "more" && (
-            <div className="group-more-menu" id="group-more-menu" role="menu">
-              <button
-                type="button"
-                onClick={() => {
-                  setFooterMenuOpen(null);
-                  onClose();
-                  onOpenGuide();
-                }}
-              >
-                <BookOpen size={18} aria-hidden="true" />
-                <span>{t.guide}</span>
-              </button>
-              <button
-                className="global-search-command"
-                type="button"
-                aria-expanded={searchOpen}
-                aria-controls="global-search-popup"
-                aria-haspopup="dialog"
-                onClick={() => {
-                  setFooterMenuOpen(null);
-                  onToggleSearch();
-                }}
-              >
-                <Search size={18} aria-hidden="true" />
-                <span>{t.search}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setFooterMenuOpen(null);
-                  onToggleBookmarks();
-                }}
-              >
-                <Bookmark size={18} aria-hidden="true" />
-                <span>{t.bookmark}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setFooterMenuOpen(null);
-                  onClose();
-                  onOpenSettings();
-                }}
-              >
-                <Settings size={18} aria-hidden="true" />
-                <span>{t.settings}</span>
-              </button>
-            </div>
-          )}
+          <div className="more-command-slot">
+            <button
+              className="more-command"
+              type="button"
+              aria-expanded={footerMenuOpen === "more"}
+              aria-controls="group-more-menu"
+              aria-haspopup="menu"
+              onClick={() =>
+                setFooterMenuOpen((current) =>
+                  current === "more" ? null : "more",
+                )
+              }
+            >
+              <Ellipsis size={25} strokeWidth={1.8} aria-hidden="true" />
+              <span>{t.more}</span>
+            </button>
+            {footerMenuOpen === "more" && (
+              <div className="group-more-menu" id="group-more-menu" role="menu">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFooterMenuOpen(null);
+                    onClose();
+                    onOpenGuide();
+                  }}
+                >
+                  <BookOpen size={18} aria-hidden="true" />
+                  <span>{t.guide}</span>
+                </button>
+                <button
+                  className="global-search-command"
+                  type="button"
+                  aria-expanded={searchOpen}
+                  aria-controls="global-search-popup"
+                  aria-haspopup="dialog"
+                  onClick={() => {
+                    setFooterMenuOpen(null);
+                    onToggleSearch();
+                  }}
+                >
+                  <Search size={18} aria-hidden="true" />
+                  <span>{t.search}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFooterMenuOpen(null);
+                    onToggleBookmarks();
+                  }}
+                >
+                  <Bookmark size={18} aria-hidden="true" />
+                  <span>{t.bookmark}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFooterMenuOpen(null);
+                    onClose();
+                    onOpenSettings();
+                  }}
+                >
+                  <Settings size={18} aria-hidden="true" />
+                  <span>{t.settings}</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <div
           className="group-menu-resizer"
