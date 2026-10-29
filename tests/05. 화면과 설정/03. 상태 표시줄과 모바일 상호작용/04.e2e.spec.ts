@@ -1,12 +1,33 @@
 import { expect, test } from "@playwright/test";
 
-test("4. 패널은 X로 닫고 하단 메뉴 활성 표시를 해제한다", async ({ page }) => {
+import { openPanel, openSettingsPanel } from "../../__util__";
+
+test("4. 모바일 패널은 푸터 위에서 끝나고 X로 닫으면 활성 표시를 해제한다", async ({
+  page,
+}) => {
   await page.goto("/");
+  await page.setViewportSize({ width: 360, height: 800 });
   const command = page.locator(".dashboard-command");
   const panel = page.locator("#dashboard-panel");
   await command.click();
+  const footerTop = (await page.locator(".footer").boundingBox())!.y;
+  const expectAboveFooter = async (locator: typeof panel) => {
+    const bounds = (await locator.boundingBox())!;
+    expect(bounds.y + bounds.height).toBeCloseTo(footerTop, 1);
+  };
+  await expectAboveFooter(panel);
   await page.locator("#dashboard-panel .side-panel-close").click();
   await expect(panel).toHaveAttribute("aria-hidden", "true");
   await expect(command).toHaveAttribute("aria-expanded", "false");
   await expect(command).not.toHaveClass(/is-active/);
+
+  await page.locator(".group-select-command").click();
+  await expectAboveFooter(page.locator(".group-menu"));
+  await page.locator(".group-sidebar-header > button").click();
+
+  await openSettingsPanel(page);
+  await expectAboveFooter(page.locator("#settings-panel"));
+  await page.locator("#settings-panel .side-panel-close").click();
+  await openPanel(page, "dashboard-panel");
+  await expectAboveFooter(panel);
 });

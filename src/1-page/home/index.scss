@@ -25,11 +25,6 @@
 @use "../../3-feature/user-guide";
 
 .home {
-  --footer-height: 48px;
-
-  @media (max-width: 512px) {
-    --footer-height: calc(114.8px + env(safe-area-inset-bottom));
-  }
   width: 100%;
   height: 100vh;
   height: 100dvh;
