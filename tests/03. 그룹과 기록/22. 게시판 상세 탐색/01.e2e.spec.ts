@@ -13,8 +13,11 @@ test("1. 브라우저와 갤럭시 크기 모바일의 뒤로가기는 게시판
     const listBack = page.locator(".board-page-header > a");
     const heading = page.getByRole("heading", { name: "Shared groups" });
     const listHeadingBounds = (await heading.boundingBox())!;
-    expect(listHeadingBounds.x + listHeadingBounds.width / 2).toBeCloseTo(
-      width / 2,
+    const listContentBounds = (await page
+      .locator(".board-content")
+      .boundingBox())!;
+    expect(listHeadingBounds.x + listHeadingBounds.width).toBeCloseTo(
+      listContentBounds.x + listContentBounds.width,
       1,
     );
     await expect(listBack.locator(".lucide-chevron-left")).toHaveCount(1);
@@ -57,9 +60,14 @@ test("1. 브라우저와 갤럭시 크기 모바일의 뒤로가기는 게시판
       (element) => getComputedStyle(element).backgroundColor,
     );
     const detailBounds = (await detailBack.boundingBox())!;
-    const detailHeadingBounds = (await heading.boundingBox())!;
-    expect(detailHeadingBounds.x + detailHeadingBounds.width / 2).toBeCloseTo(
-      width / 2,
+    const detailHeading = page.locator(".fixed-page-header h1");
+    await expect(detailHeading).toHaveText(boardPost.groupName);
+    const detailHeadingBounds = (await detailHeading.boundingBox())!;
+    const detailContentBounds = (await page
+      .locator(".board-content")
+      .boundingBox())!;
+    expect(detailHeadingBounds.x + detailHeadingBounds.width).toBeCloseTo(
+      detailContentBounds.x + detailContentBounds.width,
       1,
     );
     expect(detailHeadingBounds.y).toBeCloseTo(listHeadingBounds.y, 1);
@@ -76,7 +84,7 @@ test("1. 브라우저와 갤럭시 크기 모바일의 뒤로가기는 게시판
       .poll(async () => (await detailBack.boundingBox())?.y)
       .toBeCloseTo(detailBounds.y, 1);
     await expect
-      .poll(async () => (await heading.boundingBox())?.y)
+      .poll(async () => (await detailHeading.boundingBox())?.y)
       .toBeCloseTo(detailHeadingBounds.y, 1);
     await detailBack.hover();
     expect(

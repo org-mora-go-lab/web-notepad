@@ -18,5 +18,6 @@ export async function selectBoardPost(
     ? page.locator(`.board-entry[data-group-id="${groupId}"]`)
     : page.locator(".board-entry", { hasText: title });
   await card.click();
-  await expect(page.locator(".board-detail h3")).toHaveText(title);
+  await expect(page).toHaveURL(/[?&]post=/);
+  await expect(page.locator(".board-detail")).toBeVisible();
 }

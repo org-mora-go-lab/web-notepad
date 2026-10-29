@@ -22,6 +22,16 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
     "Members",
     "Updated",
   ]);
+  const [groupHeader, ownerHeader] = await page
+    .getByRole("columnheader")
+    .evaluateAll((headers) =>
+      headers.slice(0, 2).map((header) => ({
+        paddingLeft: getComputedStyle(header).paddingLeft,
+        paddingRight: getComputedStyle(header).paddingRight,
+      })),
+    );
+  expect(Number.parseFloat(groupHeader.paddingRight)).toBe(11);
+  expect(Number.parseFloat(ownerHeader.paddingLeft)).toBe(11);
   const entry = page.locator(".board-entry").filter({
     hasText: boardPost.groupName,
   });

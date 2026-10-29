@@ -16,9 +16,8 @@ test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만�
     "Board owner",
   );
   await expect(page.locator(".board-detail .board-owner svg")).toHaveCount(1);
-  await expect(page.locator(".board-description")).toHaveText(
-    "A shared workspace. Join to write together.",
-  );
+  await expect(page.locator(".board-description")).toHaveCount(0);
+  await page.getByRole("tab", { name: "Private shared note body" }).click();
   expect(
     (await page.locator(".board-note-text").allTextContents()).map((line) =>
       line.trim(),

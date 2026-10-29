@@ -23,7 +23,16 @@
     display: grid;
     gap: 24px;
   }
+  .board-page-header h1 {
+    right: max(20px, calc((100vw - var(--page-content-width)) / 2));
+    left: auto;
+    transform: none;
+  }
   @media (max-width: 512px) {
     padding: 20px 16px 36px;
+
+    .board-page-header h1 {
+      right: 16px;
+    }
   }
 }
