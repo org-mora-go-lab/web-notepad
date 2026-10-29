@@ -116,6 +116,16 @@ export function Home() {
     saved: messages.cloudSaved,
     error: messages.cloudError,
   };
+  const isMobileViewport = () =>
+    window.matchMedia("(max-width: 512px)").matches;
+  const toggleDashboardFromFooter = () => {
+    if (isMobileViewport()) closeGroupMenu();
+    toggleSidePanel("dashboard");
+  };
+  const toggleGroupsFromFooter = () => {
+    if (isMobileViewport()) closeSidePanels();
+    toggleGroupMenu();
+  };
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -163,11 +173,25 @@ export function Home() {
       router.replace("/board");
       return;
     }
-    if (panel === "settings") {
-      closeGroupMenu();
-      toggleSidePanel(panel);
+    if (panel === "groups") {
+      closeSidePanels();
+      if (!groupMenuOpen) toggleGroupMenu();
+      return;
     }
-  }, [hydrated, closeGroupMenu, toggleSidePanel, router]);
+    if (panel === "settings" || panel === "dashboard") {
+      closeGroupMenu();
+      if (openPanel !== panel) toggleSidePanel(panel);
+    }
+  }, [
+    hydrated,
+    closeGroupMenu,
+    closeSidePanels,
+    groupMenuOpen,
+    openPanel,
+    toggleGroupMenu,
+    toggleSidePanel,
+    router,
+  ]);
 
   useEffect(() => {
     if (!inviteStatus || inviteStatus === "joining") return;
@@ -256,8 +280,8 @@ export function Home() {
                   }
                   activeGroupName={activeGroupName}
                   groupsOpen={groupMenuOpen}
-                  onToggleDashboard={() => toggleSidePanel("dashboard")}
-                  onToggleGroups={toggleGroupMenu}
+                  onToggleDashboard={toggleDashboardFromFooter}
+                  onToggleGroups={toggleGroupsFromFooter}
                 />
               </section>
 

@@ -54,8 +54,8 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
   await page.locator(".group-select-command").click();
   await expect(page.locator("#groups-menu")).toBeVisible();
   await expect(page.locator(".footer")).toBeVisible();
-  await page.locator(".group-select-command").click();
   await page.locator(".dashboard-command").click();
+  await expect(page.locator("#groups-menu")).toHaveCount(0);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",
