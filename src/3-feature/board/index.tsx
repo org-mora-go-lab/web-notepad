@@ -36,6 +36,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [notePreviewHeight, setNotePreviewHeight] = useState(316.8);
   const noteResizeStart = useRef<{ y: number; height: number } | null>(null);
   const noteSwipeStart = useRef<{ x: number; y: number } | null>(null);
+  const noteTabFocusRequested = useRef(false);
   const noteTabsRef = useRef<HTMLDivElement>(null);
   const [noteTabFog, setNoteTabFog] = useState({ left: false, right: false });
   const orderedNotes = selected
@@ -78,6 +79,23 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
       observer.disconnect();
     };
   }, [orderedNotes.length, selected?.id, updateNoteTabFog]);
+  useEffect(() => {
+    if (!noteTabFocusRequested.current) return;
+    noteTabFocusRequested.current = false;
+    const tabs = noteTabsRef.current;
+    const activeTab = tabs?.querySelector<HTMLButtonElement>(
+      '[role="tab"][aria-selected="true"]',
+    );
+    if (!tabs || !activeTab) return;
+    activeTab.focus({ preventScroll: true });
+    const tabLeft = activeTab.offsetLeft;
+    const tabRight = tabLeft + activeTab.offsetWidth;
+    if (tabLeft < tabs.scrollLeft) tabs.scrollLeft = tabLeft;
+    else if (tabRight > tabs.scrollLeft + tabs.clientWidth)
+      tabs.scrollLeft = tabRight - tabs.clientWidth;
+    const frame = requestAnimationFrame(updateNoteTabFog);
+    return () => cancelAnimationFrame(frame);
+  }, [activeNote?.id, updateNoteTabFog]);
   useEffect(() => {
     const clearFeedback = () => {
       setFailure("");
@@ -244,6 +262,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                       const next =
                         (current + direction + orderedNotes.length) %
                         orderedNotes.length;
+                      noteTabFocusRequested.current = true;
                       setActiveNoteId(orderedNotes[next].id);
                     }}
                     onTouchCancel={() => {

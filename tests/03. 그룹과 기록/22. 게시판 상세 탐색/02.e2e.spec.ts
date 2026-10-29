@@ -142,7 +142,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     page.locator(".board-meta > span").nth(2).locator("strong"),
   ).toHaveText("1");
   expect(desktopBookmarksMetric.width).toBeCloseTo(desktopNotesMetric.width, 0);
-  await page.setViewportSize({ width: 360, height: 800 });
+  await page.setViewportSize({ width: 320, height: 800 });
   const mobileEditor = (await page
     .locator(".board-note-preview")
     .boundingBox())!;
@@ -150,6 +150,11 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   expect(mobileEditor.x).toBeCloseTo(mobileOverview.x, 0);
   expect(mobileEditor.width).toBeCloseTo(mobileOverview.width, 0);
   const noteTabs = page.locator(".board-note-tabs");
+  const tabScrollSize = await noteTabs.evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  }));
+  expect(tabScrollSize.scrollWidth).toBeGreaterThan(tabScrollSize.clientWidth);
   await expect(noteTabs).toHaveClass(/has-right-fog/);
   await expect(noteTabs).not.toHaveClass(/has-left-fog/);
   await noteTabs.evaluate((element) => {
@@ -182,6 +187,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   await expect(tabs.locator(".board-note-title")).toHaveText([
     "Follow-up shared note body",
     "abc",
+    "Overflow verification shared note with a deliberately long title",
     "Private shared note body",
   ]);
   await expect(tabs.first().locator(".board-note-bookmark")).toHaveCount(1);
@@ -207,7 +213,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     true,
   );
   expect(boardPost.notes.some((note) => note.content === "abc")).toBe(true);
-  await page.setViewportSize({ width: 360, height: 800 });
+  await page.setViewportSize({ width: 320, height: 800 });
   await tabs.first().click();
   const swipe = async (from: number, to: number) => {
     await page.locator(".board-note-preview").evaluate(
@@ -231,6 +237,18 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   };
   await swipe(300, 80);
   await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+  await expect(tabs.nth(1)).toBeFocused();
   await swipe(80, 300);
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  await swipe(300, 80);
+  await swipe(300, 80);
+  await swipe(300, 80);
+  await expect(tabs.nth(3)).toHaveAttribute("aria-selected", "true");
+  await expect(tabs.nth(3)).toBeFocused();
+  const focusedTabBounds = (await tabs.nth(3).boundingBox())!;
+  const noteTabsBounds = (await noteTabs.boundingBox())!;
+  expect(focusedTabBounds.x).toBeGreaterThanOrEqual(noteTabsBounds.x);
+  expect(focusedTabBounds.x + focusedTabBounds.width).toBeLessThanOrEqual(
+    noteTabsBounds.x + noteTabsBounds.width + 1,
+  );
 });
