@@ -25,6 +25,13 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     boardCommand,
     moreCommand(page),
   ]) {
+    await expect(command).toHaveCSS("font-size", "13.5px");
+  }
+  for (const command of [
+    systemGroupCommand(page),
+    boardCommand,
+    moreCommand(page),
+  ]) {
     const hoverWidthRatio = await command.evaluate((element) => {
       const commandWidth = element.getBoundingClientRect().width;
       const hoverWidth = Number.parseFloat(
@@ -59,6 +66,25 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   const labelBox = (await label.boundingBox())!;
   const iconBox = (await icon.boundingBox())!;
   expect(labelBox.x).toBeGreaterThanOrEqual(iconBox.x + iconBox.width);
+  for (const command of [
+    systemGroupCommand(page),
+    boardCommand,
+    moreCommand(page),
+  ]) {
+    const alignment = await command.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      const children = Array.from(element.children).map((child) =>
+        child.getBoundingClientRect(),
+      );
+      const contentLeft = Math.min(...children.map((child) => child.left));
+      const contentRight = Math.max(...children.map((child) => child.right));
+      return {
+        commandCenter: bounds.left + bounds.width / 2,
+        contentCenter: (contentLeft + contentRight) / 2,
+      };
+    });
+    expect(alignment.contentCenter).toBeCloseTo(alignment.commandCenter, 1);
+  }
   const systemBox = (await systemGroupCommand(page).boundingBox())!;
   const firstDividerBox = (await page
     .locator(".group-more-divider")

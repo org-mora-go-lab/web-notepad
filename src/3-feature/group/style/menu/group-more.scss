@@ -123,7 +123,7 @@
       background: transparent;
       color: v.$ink;
       font: inherit;
-      font-size: v.font(15px);
+      font-size: calc(#{v.font(14px)} + 1px);
       text-align: left;
       white-space: nowrap;
 
@@ -161,7 +161,7 @@
     .more-command {
       min-height: 35px;
       height: 35px;
-      font-size: v.font(14px);
+      font-size: v.font(15px);
 
       > svg {
         display: none;
@@ -182,15 +182,6 @@
     .group-system-menu button,
     .group-more-menu button {
       min-height: 44px;
-    }
-
-    .system-group-command,
-    .group-board-command,
-    .more-command {
-      > svg,
-      > span {
-        transform: translateX(-10px);
-      }
     }
   }
 }
