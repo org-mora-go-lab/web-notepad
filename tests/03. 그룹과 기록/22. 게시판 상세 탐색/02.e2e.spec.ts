@@ -86,6 +86,10 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     "overflow-y",
     "hidden",
   );
+  await expect(page.locator(".board-note-tabs")).toHaveCSS(
+    "scrollbar-width",
+    "none",
+  );
   await expect(page.locator(".board-note-preview")).toHaveCSS("resize", "none");
   await expect(page.locator(".board-note-contents > h4")).toHaveCount(0);
   const sharedNotesSection = (await page

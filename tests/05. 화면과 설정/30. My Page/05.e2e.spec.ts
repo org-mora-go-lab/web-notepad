@@ -24,7 +24,13 @@ test("5. 좁은 모바일에서 긴 프로필 이름과 통계를 화면 안에 
   const headerBounds = (await header.boundingBox())!;
   const backBounds = (await back.boundingBox())!;
   const titleBounds = (await title.boundingBox())!;
-  expect(titleBounds.x + titleBounds.width / 2).toBeCloseTo(160, 1);
+  const containerBounds = (await page
+    .locator(".my-page-container")
+    .boundingBox())!;
+  expect(titleBounds.x + titleBounds.width).toBeCloseTo(
+    containerBounds.x + containerBounds.width,
+    1,
+  );
   expect(await back.locator("svg").evaluate((icon) => icon.clientWidth)).toBe(
     18,
   );

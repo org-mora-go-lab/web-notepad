@@ -17,6 +17,11 @@
     display: grid;
     gap: 24px;
   }
+  .my-page-header h1 {
+    right: max(20px, calc((100vw - var(--page-content-width)) / 2));
+    left: auto;
+    transform: none;
+  }
   h2 {
     margin: 0;
     font-size: v.font(20px);
@@ -186,6 +191,9 @@
   }
   @media (max-width: 512px) {
     padding: 20px 16px 36px;
+    .my-page-header h1 {
+      right: 16px;
+    }
     .my-page-profile,
     .my-page-sync,
     .my-page-notice {

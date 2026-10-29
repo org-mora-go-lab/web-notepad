@@ -347,8 +347,15 @@
     padding: 0;
     overflow-x: auto;
     overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     border-bottom: 1px solid v.$line;
     background: color-mix(in srgb, #{v.$raised} 45%, transparent);
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
     &.has-left-fog {
       -webkit-mask-image: linear-gradient(
         to right,
