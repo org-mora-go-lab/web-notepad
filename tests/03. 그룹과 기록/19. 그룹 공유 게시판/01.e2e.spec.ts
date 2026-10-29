@@ -8,7 +8,20 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   boardPost,
 }) => {
   await page.goto("/");
+  let releaseBoard!: () => void;
+  const boardResponse = new Promise<void>((resolve) => {
+    releaseBoard = resolve;
+  });
+  await page.route("**/api/board", async (route) => {
+    await boardResponse;
+    await route.continue();
+  });
   await openBoard(page);
+  const skeletonRowHeight = (await page
+    .locator(".board-skeleton-row")
+    .first()
+    .boundingBox())!.height;
+  releaseBoard();
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill(boardPost.title);
@@ -28,17 +41,36 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
       headers.slice(0, 2).map((header) => ({
         paddingLeft: getComputedStyle(header).paddingLeft,
         paddingRight: getComputedStyle(header).paddingRight,
+        transform: getComputedStyle(header).transform,
       })),
     );
   expect(Number.parseFloat(groupHeader.paddingRight)).toBe(11);
   expect(Number.parseFloat(ownerHeader.paddingLeft)).toBe(11);
+  expect(ownerHeader.transform).toBe("matrix(1, 0, 0, 1, -30, 0)");
   const entry = page.locator(".board-entry").filter({
     hasText: boardPost.groupName,
   });
   await expect(entry).toHaveCount(1);
+  expect(boardPost.notes.every((note) => note.content.trim().length > 2)).toBe(
+    true,
+  );
+  expect(boardPost.noteCount).toBe(boardPost.notes.length);
+  expect(boardPost.noteCount).toBe(4);
+  const boardRow = entry.locator("xpath=ancestor::tr");
+  await expect(boardRow.locator("td").nth(1)).toHaveText(
+    String(boardPost.noteCount),
+  );
+  const boardRowHeight = (await entry
+    .locator("xpath=ancestor::tr")
+    .boundingBox())!.height;
+  expect(Math.abs(skeletonRowHeight - boardRowHeight)).toBeLessThanOrEqual(1);
   await expect(entry.locator("svg")).toHaveCount(0);
   await expect(entry).toHaveCSS("min-width", "150px");
   const owner = entry.locator("xpath=ancestor::tr").locator(".board-owner");
+  await expect(owner.locator("xpath=ancestor::td")).toHaveCSS(
+    "transform",
+    "matrix(1, 0, 0, 1, -30, 0)",
+  );
   await expect(owner).toHaveText("Board owner");
   await expect(owner.locator("svg")).toHaveCount(1);
   await expect(

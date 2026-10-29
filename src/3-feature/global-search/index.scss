@@ -29,6 +29,15 @@
     display: grid;
   }
 
+  &.is-position-locked {
+    top: var(--global-search-locked-top);
+    bottom: auto;
+    height: var(--global-search-locked-height);
+    max-height: none;
+    margin: 0 auto;
+    transform: none;
+  }
+
   &::backdrop {
     background: rgba(0, 0, 0, 0.65);
   }

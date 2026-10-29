@@ -2,6 +2,9 @@ import "server-only";
 
 import { type Client, createClient } from "@libsql/client";
 
+import type { SharedGroupData } from "@/src/4-entity/notepad/type";
+import { pruneShortSharedTabs } from "@/src/4-entity/notepad/util/shared-group";
+
 let client: Client | undefined;
 let schemaReady: Promise<void> | undefined;
 
@@ -78,6 +81,25 @@ export async function sharedDatabase() {
           "ALTER TABLE shared_group_access ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0",
         );
       }
+      const snapshots = await database.execute(
+        "SELECT id, snapshot FROM shared_groups",
+      );
+      const updates = snapshots.rows.flatMap((row) => {
+        try {
+          const data = JSON.parse(String(row.snapshot)) as SharedGroupData;
+          const pruned = pruneShortSharedTabs(data);
+          if (pruned.tabs.length === data.tabs.length) return [];
+          return [
+            {
+              sql: "UPDATE shared_groups SET snapshot = ? WHERE id = ?",
+              args: [JSON.stringify(pruned), String(row.id)],
+            },
+          ];
+        } catch {
+          return [];
+        }
+      });
+      if (updates.length) await database.batch(updates, "write");
     })
     .catch((error: unknown) => {
       schemaReady = undefined;

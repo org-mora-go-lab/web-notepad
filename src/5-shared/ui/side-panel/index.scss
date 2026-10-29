@@ -222,6 +222,18 @@
   }
 
   @media (max-width: 512px) {
+    &:is(.dashboard, .setting) {
+      .side-panel-backdrop {
+        bottom: var(--footer-height);
+      }
+
+      .side-panel-drawer,
+      .side-panel-drawer.is-open {
+        bottom: var(--footer-height);
+        height: auto;
+      }
+    }
+
     .side-panel-resizer {
       display: none;
     }

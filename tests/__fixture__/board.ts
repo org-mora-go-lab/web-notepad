@@ -40,6 +40,13 @@ export const boardTest = base.extend<{
             },
           ),
           createTabFixture("empty-" + suffix, ""),
+          createTabFixture("one-character-" + suffix, "-"),
+          createTabFixture("two-characters-" + suffix, "ab"),
+          createTabFixture("three-characters-" + suffix, "abc"),
+          createTabFixture(
+            "overflow-" + suffix,
+            "Overflow verification shared note with a deliberately long title",
+          ),
         ]),
       },
     });

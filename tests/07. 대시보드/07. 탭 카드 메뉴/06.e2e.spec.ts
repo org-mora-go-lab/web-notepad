@@ -16,12 +16,12 @@ test("6. 공유 그룹 카드 메뉴의 Link는 공유 그룹과 탭 주소를 �
     "Move Group",
   ]);
   await owner.getByRole("menuitem", { name: "Link", exact: true }).click();
+  await expect(owner.locator(".tab-link-feedback")).toHaveText(
+    "Tab link copied",
+  );
   const url = new URL(
     await owner.evaluate(() => navigator.clipboard.readText()),
   );
   expect(url.searchParams.get("group")).toBe(group.id);
   expect(url.searchParams.get("leftTab")).toBe(group.tabs[0].id);
-  await expect(owner.locator(".tab-link-feedback")).toHaveText(
-    "Tab link copied",
-  );
 });

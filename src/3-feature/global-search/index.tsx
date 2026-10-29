@@ -79,6 +79,23 @@ export function GlobalSearch({
       onClick={(event) => {
         if (event.target === event.currentTarget) closeSearch();
       }}
+      onFocusCapture={(event) => {
+        if (
+          !(event.target instanceof HTMLInputElement) ||
+          event.currentTarget.classList.contains("is-position-locked")
+        )
+          return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        event.currentTarget.style.setProperty(
+          "--global-search-locked-top",
+          `${bounds.top}px`,
+        );
+        event.currentTarget.style.setProperty(
+          "--global-search-locked-height",
+          `${bounds.height}px`,
+        );
+        event.currentTarget.classList.add("is-position-locked");
+      }}
     >
       <div className="global-search-header">
         <div className="global-search-heading">

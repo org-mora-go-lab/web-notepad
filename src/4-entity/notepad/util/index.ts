@@ -33,9 +33,11 @@ export {
 export {
   applySharedGroupData,
   createJoinedGroup,
+  hasPersistableSharedContent,
   isSharedGroupId,
   namespaceGroup,
   normalizeSharedGroupData,
+  pruneShortSharedTabs,
   sharedGroupId,
   toSharedGroupData,
 } from "./shared-group";

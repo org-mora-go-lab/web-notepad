@@ -13,6 +13,6 @@ test("1. 검색 명령은 팝업 제어 대상과 펼침 상태를 제공한다"
   await expect(page.locator("#global-search-popup")).toBeVisible();
   await expect(page.locator(".group-select-command")).toHaveAttribute(
     "aria-expanded",
-    "false",
+    "true",
   );
 });

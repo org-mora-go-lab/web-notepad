@@ -1,7 +1,7 @@
 "use client";
 
 import { Copy, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import type { GroupEntry } from "@/src/4-entity/notepad";
@@ -25,6 +25,16 @@ export function GroupShareDialog({
   const dialogRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const returnGroupId = useRef(group.id);
+  const initialGroup = useRef(group);
+  const onSharedRef = useRef(onShared);
+  const sharedResult = useRef<GroupEntry | null>(null);
+  const completeAndClose = useCallback(() => {
+    if (sharedResult.current) {
+      onSharedRef.current(initialGroup.current.id, sharedResult.current);
+      sharedResult.current = null;
+    }
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     const previous =
@@ -35,7 +45,7 @@ export function GroupShareDialog({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        completeAndClose();
         return;
       }
       if (event.key !== "Tab") return;
@@ -66,17 +76,18 @@ export function GroupShareDialog({
           )
           ?.focus();
     };
-  }, [group.id, onClose]);
+  }, [completeAndClose, group.id]);
 
   useEffect(() => {
     let active = true;
+    const requestGroup = initialGroup.current;
     fetch("/api/groups/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         group: {
-          ...group,
-          tabs: group.tabs.map((tab) => ({
+          ...requestGroup,
+          tabs: requestGroup.tabs.map((tab) => ({
             ...tab,
             dashboardStatus: getTabStatus(
               tab,
@@ -104,7 +115,7 @@ export function GroupShareDialog({
         setUrl(result.url);
         setStatus("ready");
         returnGroupId.current = result.group.id;
-        onShared(group.id, result.group);
+        sharedResult.current = result.group;
       })
       .catch(() => {
         if (active) setStatus("error");
@@ -112,7 +123,7 @@ export function GroupShareDialog({
     return () => {
       active = false;
     };
-  }, [group, onShared]);
+  }, []);
 
   const copy = async () => {
     if (!url) return;
@@ -128,7 +139,7 @@ export function GroupShareDialog({
     <div
       className="group-share-backdrop"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) completeAndClose();
       }}
     >
       <section
@@ -143,7 +154,7 @@ export function GroupShareDialog({
           <button
             ref={closeRef}
             type="button"
-            onClick={onClose}
+            onClick={completeAndClose}
             aria-label={t.close}
           >
             <X size={18} />
@@ -181,7 +192,11 @@ export function GroupShareDialog({
             </button>
           </>
         )}
-        <button className="group-share-close" type="button" onClick={onClose}>
+        <button
+          className="group-share-close"
+          type="button"
+          onClick={completeAndClose}
+        >
           {t.close}
         </button>
       </section>

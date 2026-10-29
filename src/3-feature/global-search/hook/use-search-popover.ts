@@ -8,6 +8,9 @@ export function useSearchPopover(open: boolean, onClose: () => void) {
     if (!dialog) return;
     if (!open) {
       if (dialog.open) dialog.close();
+      dialog.classList.remove("is-position-locked");
+      dialog.style.removeProperty("--global-search-locked-top");
+      dialog.style.removeProperty("--global-search-locked-height");
       return;
     }
     const triggers = Array.from(

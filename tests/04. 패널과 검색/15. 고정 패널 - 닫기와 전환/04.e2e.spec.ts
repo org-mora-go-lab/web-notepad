@@ -12,13 +12,14 @@ test("4. 검색 팝업을 열고 닫아도 고정 대시보드를 유지한다",
   await openPanel(page, "dashboard-panel");
   const pinnedWorkspaceWidth = (await workspaceBounds(page)).width;
   await openGlobalSearchPanel(page);
+  const workspaceWidthWithMenu = (await workspaceBounds(page)).width;
 
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",
   );
   expect((await workspaceBounds(page)).width).toBeCloseTo(
-    pinnedWorkspaceWidth,
+    workspaceWidthWithMenu,
     0,
   );
 
@@ -30,5 +31,10 @@ test("4. 검색 팝업을 열고 닫아도 고정 대시보드를 유지한다",
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",
+  );
+  expect(workspaceWidthWithMenu).toBeLessThan(pinnedWorkspaceWidth);
+  expect((await workspaceBounds(page)).width).toBeCloseTo(
+    workspaceWidthWithMenu,
+    0,
   );
 });

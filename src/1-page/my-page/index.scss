@@ -85,6 +85,7 @@
       height: calc(100% - 30px);
       display: block;
       object-fit: contain;
+      border-radius: 10px;
     }
     > svg {
       width: min(48%, 180px);

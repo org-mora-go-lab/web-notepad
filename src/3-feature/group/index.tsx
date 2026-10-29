@@ -176,6 +176,7 @@ function GroupSidebar({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) return;
+      if (document.querySelector("dialog:modal")) return;
       event.preventDefault();
       if (footerMenuOpen) {
         const trigger =

@@ -7,10 +7,28 @@ export const sharedGroupId = (shareId: string) => `shared-${shareId}`;
 export const isSharedGroupId = (id: string) =>
   /^shared-[0-9a-f-]{36}$/i.test(id);
 
+export const hasPersistableSharedContent = (content: string) =>
+  content.trim().length > 2;
+
+export function pruneShortSharedTabs(data: SharedGroupData): SharedGroupData {
+  const tabs = data.tabs.filter((tab) =>
+    hasPersistableSharedContent(tab.content),
+  );
+  const tabIds = new Set(tabs.map((tab) => tab.id));
+  return {
+    ...data,
+    tabs,
+    bookmarks: data.bookmarks.filter((bookmark) =>
+      tabIds.has(bookmark.sourceTabId),
+    ),
+  };
+}
+
 // Resolve legacy records against a common palette, never a viewer's preferences.
 export function normalizeSharedGroupData(
   data: SharedGroupData,
 ): SharedGroupData {
+  data = pruneShortSharedTabs(data);
   return {
     ...data,
     tabs: data.tabs.map((tab) =>
@@ -35,14 +53,15 @@ export function namespaceGroup(group: GroupEntry, shareId: string): GroupEntry {
   const id = sharedGroupId(shareId);
   const tabId = (value: string) => `${id}-${value}`;
   const bookmarkId = (value: string) => `${id}-${value}`;
+  const data = normalizeSharedGroupData(group);
   return {
     ...group,
     id,
-    tabs: normalizeSharedGroupData(group).tabs.map((tab) => ({
+    tabs: data.tabs.map((tab) => ({
       ...tab,
       id: tabId(tab.id),
     })),
-    bookmarks: group.bookmarks.map((bookmark) => ({
+    bookmarks: data.bookmarks.map((bookmark) => ({
       ...bookmark,
       id: bookmarkId(bookmark.id),
       sourceTabId: tabId(bookmark.sourceTabId),
