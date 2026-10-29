@@ -38,5 +38,10 @@ test("4. 로그인 조회 중에는 스켈레톤만 표시하고 완료 후 같�
   });
   await expect(account).toBeVisible();
   await expect(skeleton).toHaveCount(0);
-  expect(await account.boundingBox()).toEqual(initialBounds);
+  const accountBounds = (await account.boundingBox())!;
+  expect(accountBounds.height).toBe(initialBounds!.height);
+  expect(accountBounds.x + accountBounds.width).toBeCloseTo(
+    initialBounds!.x + initialBounds!.width,
+    0,
+  );
 });

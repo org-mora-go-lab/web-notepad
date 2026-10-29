@@ -39,5 +39,11 @@ test("1. 그룹 이동 시 탭 ID, 내용, 색상, 고정, 줄 선택과 연결 
     await page.getByRole("button", { name: "Open", exact: true }).click();
     await expect(page.getByRole("tab")).toHaveCount(2);
     await expect(editor).toHaveValue("Move me\nselected line");
+    if (
+      (await page
+        .locator(".group-select-command")
+        .getAttribute("aria-expanded")) === "true"
+    )
+      await page.locator(".group-select-command").click();
   }
 });

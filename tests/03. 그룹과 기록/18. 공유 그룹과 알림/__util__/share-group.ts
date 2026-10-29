@@ -4,6 +4,7 @@ import { createGroups, groupsCommand } from "../../../__util__";
 
 export async function shareGroup(page: Page, name: string) {
   await createGroups(page, name);
+  await page.locator("textarea").first().fill(`${name} shared note`);
   await groupsCommand(page).click();
   const row = page.locator(".group-item", { hasText: name });
   await row.getByRole("button", { name: `${name} group actions` }).click();

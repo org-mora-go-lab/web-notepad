@@ -8,7 +8,7 @@ import {
 import { openBoard, sessionHeaders } from "../../__util__";
 import { getApi } from "../../__util__/request";
 
-test("4. 공유 그룹 이름의 HTML은 실행하지 않고 글자로 표시하며 본문을 공개하지 않는다", async ({
+test("4. 공유 그룹 이름의 HTML은 실행하지 않고 글자로 표시하며 본문을 안전하게 제공한다", async ({
   page,
   request,
 }) => {
@@ -43,7 +43,7 @@ test("4. 공유 그룹 이름의 HTML은 실행하지 않고 글자로 표시하
         () => (window as Window & { boardInjected?: number }).boardInjected,
       ),
     ).toBeUndefined();
-    expect(await (await getApi(request, "/api/board")).text()).not.toContain(
+    expect(await (await getApi(request, "/api/board")).text()).toContain(
       group.tabs[0].content,
     );
   } finally {

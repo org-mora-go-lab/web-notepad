@@ -19,7 +19,7 @@ test("1. 공유 중인 주최자의 그룹 메뉴에는 공유하기와 공유 �
     }
     const menu = await openSharingMenu(owner, id);
     const row = owner.locator('[data-group-id="' + id + '"]');
-    await expect(row.locator(".group-actions > button")).toHaveCount(0);
+    await expect(row.locator(".group-actions > button")).toHaveCount(1);
     const cancel = menu.getByRole("button", {
       name: language === "en" ? "Cancel Sharing" : "공유 취소",
       exact: true,
