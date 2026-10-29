@@ -1,4 +1,3 @@
-path_helper: node.save: Permission denied
 import { expect, type Page } from "@playwright/test";
 
 export async function openBoard(page: Page) {
