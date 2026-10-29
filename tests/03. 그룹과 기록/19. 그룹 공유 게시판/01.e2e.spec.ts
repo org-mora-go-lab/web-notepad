@@ -41,10 +41,12 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
       headers.slice(0, 2).map((header) => ({
         paddingLeft: getComputedStyle(header).paddingLeft,
         paddingRight: getComputedStyle(header).paddingRight,
+        transform: getComputedStyle(header).transform,
       })),
     );
   expect(Number.parseFloat(groupHeader.paddingRight)).toBe(11);
   expect(Number.parseFloat(ownerHeader.paddingLeft)).toBe(11);
+  expect(ownerHeader.transform).toBe("matrix(1, 0, 0, 1, -30, 0)");
   const entry = page.locator(".board-entry").filter({
     hasText: boardPost.groupName,
   });
@@ -65,6 +67,10 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   await expect(entry.locator("svg")).toHaveCount(0);
   await expect(entry).toHaveCSS("min-width", "150px");
   const owner = entry.locator("xpath=ancestor::tr").locator(".board-owner");
+  await expect(owner.locator("xpath=ancestor::td")).toHaveCSS(
+    "transform",
+    "matrix(1, 0, 0, 1, -30, 0)",
+  );
   await expect(owner).toHaveText("Board owner");
   await expect(owner.locator("svg")).toHaveCount(1);
   await expect(
