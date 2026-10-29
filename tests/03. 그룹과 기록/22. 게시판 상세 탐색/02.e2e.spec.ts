@@ -162,7 +162,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
         .boundingBox())!;
       return footer.y - (editor.y + editor.height);
     })
-    .toBeCloseTo(50, 0);
+    .toBeCloseTo(20, 0);
   const mobileEditor = (await page
     .locator(".board-note-preview")
     .boundingBox())!;

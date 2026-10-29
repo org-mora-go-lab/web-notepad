@@ -113,7 +113,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
         preview.getBoundingClientRect().top + (page?.scrollTop ?? 0);
       const footerHeight = footer?.getBoundingClientRect().height ?? 0;
       setNotePreviewHeight(
-        Math.max(316.8, viewportHeight - previewTop - footerHeight - 50),
+        Math.max(316.8, viewportHeight - previewTop - footerHeight - 20),
       );
     };
     const frame = requestAnimationFrame(updateMobilePreviewHeight);
