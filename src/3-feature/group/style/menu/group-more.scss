@@ -170,6 +170,11 @@
   }
 
   @media (max-width: 512px) {
+    .group-more {
+      padding-right: 19px;
+      padding-left: 9px;
+    }
+
     .group-more-menu {
       right: auto;
       left: calc(50% - 50px);

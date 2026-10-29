@@ -88,6 +88,12 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     .nth(1)
     .boundingBox())!;
   const moreBox = (await moreCommand(page).boundingBox())!;
+  const menuBounds = (await page.locator(".group-menu").boundingBox())!;
+  const controlsCenter = (systemBox.x + moreBox.x + moreBox.width) / 2;
+  expect(controlsCenter).toBeCloseTo(
+    menuBounds.x + menuBounds.width / 2 - 5,
+    1,
+  );
   expect(systemBox.x + systemBox.width).toBeLessThanOrEqual(firstDividerBox.x);
   expect(firstDividerBox.x + firstDividerBox.width).toBeLessThanOrEqual(
     boardBox.x,
