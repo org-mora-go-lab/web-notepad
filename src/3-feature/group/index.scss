@@ -196,8 +196,7 @@
     &::before {
       position: absolute;
       z-index: 0;
-      inset: 5% 10%;
-      border-radius: 3px;
+      inset: 5% 0;
       content: "";
       pointer-events: none;
     }

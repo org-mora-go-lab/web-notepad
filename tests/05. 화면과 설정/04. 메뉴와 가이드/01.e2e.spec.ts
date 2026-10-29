@@ -48,6 +48,19 @@ test("1. 하단 계정은 로그인, 더보기는 가이드·검색·북마크�
     ).toHaveCount(0);
     await expect(menu.getByRole("switch", { name: "THEME" })).toHaveCount(0);
     await expect(menu.getByRole("button", { name: "SHORTCUT" })).toHaveCount(0);
+    const menuBounds = (await menu.boundingBox())!;
+    const footerBounds = (await page.locator(".group-more").boundingBox())!;
+    if (viewport.width > 512) {
+      expect(menuBounds.x + menuBounds.width).toBeCloseTo(
+        footerBounds.x + footerBounds.width + 44,
+        1,
+      );
+    } else {
+      expect(menuBounds.x + menuBounds.width).toBeCloseTo(
+        footerBounds.x + footerBounds.width + 30,
+        1,
+      );
+    }
     await page.keyboard.press("Escape");
     await page.keyboard.press("Escape");
   }

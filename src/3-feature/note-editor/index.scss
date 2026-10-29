@@ -8,6 +8,7 @@
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   --editor-top-padding: 10px;
+  --editor-visual-line-count: 1;
   --selected-line-background: rgba(184, 184, 176, 0.2);
   --selected-line-color: #{v.$saved};
 
@@ -39,30 +40,38 @@
   min-height: 0;
   display: grid;
   grid-template-columns: 39px minmax(0, 1fr);
-  overflow: hidden;
+  overflow: auto;
+  overscroll-behavior: contain;
 
   @media (max-width: 512px) {
     grid-template-columns: 41px minmax(0, 1fr);
   }
 
   .line-rail {
-    padding: var(--editor-top-padding) 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    overflow: hidden;
+    min-height: 100%;
+    align-self: stretch;
+    overflow: visible;
+    overflow-anchor: none;
     border-right: 1px solid var(--color-rail-border);
     color: var(--color-rail-text);
     font-size: v.font(12px);
     user-select: none;
 
-    &.has-first-line-selected {
+    .line-rail-content {
+      width: 100%;
+      min-height: 100%;
+      padding: var(--editor-top-padding) 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    &.has-first-line-selected .line-rail-content {
       background: linear-gradient(
           var(--selected-line-background),
           var(--selected-line-background)
         )
         0 0 / 100% var(--editor-top-padding) no-repeat;
-      background-attachment: local;
     }
 
     span {
@@ -89,10 +98,16 @@
 
   .note-area {
     width: 105.263%;
-    height: 100%;
+    min-height: 100%;
+    height: calc(
+      var(--editor-top-padding) * 2 + var(--editor-line-height) *
+        var(--editor-visual-line-count)
+    );
     transform: scaleX(0.95);
     transform-origin: top left;
     resize: none;
+    overflow: hidden;
+    overflow-anchor: none;
     margin: 0;
     appearance: none;
     -webkit-appearance: none;

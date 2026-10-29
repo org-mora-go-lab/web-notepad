@@ -1,5 +1,6 @@
 @use "../../5-shared/style/variable" as v;
 .my-page {
+  --page-content-width: 1080px;
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -11,15 +12,10 @@
   color: v.$ink;
   font-family: v.$sans;
   .my-page-container {
-    width: min(880px, 100%);
+    width: min(1080px, 100%);
     margin: 0 auto;
     display: grid;
     gap: 24px;
-  }
-  h1 {
-    margin: 20px 0 8px;
-    font-size: v.font(32px);
-    font-weight: 500;
   }
   h2 {
     margin: 0;
@@ -55,12 +51,6 @@
       outline-offset: 2px;
     }
   }
-  .my-page-header > a {
-    padding-left: 0;
-    border: 0;
-    background: transparent;
-    color: v.$muted;
-  }
   .my-page-profile,
   .my-page-sync,
   .my-page-notice {
@@ -69,35 +59,81 @@
     border: 1px solid v.$line;
     border-radius: 6px;
   }
-  .my-page-profile {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  .my-page-layout,
+  .my-page-skeleton {
     min-width: 0;
-    min-height: 126.8px;
+    display: grid;
+    grid-template-columns: minmax(202px, 0.612fr) minmax(0, 1.588fr);
+    gap: 24px;
+    align-items: stretch;
+  }
+  .my-page-portrait {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    padding-bottom: 30px;
+    border: 1px solid v.$line;
+    border-radius: 6px;
+    background: v.$panel;
     > img {
-      width: 76.8px;
-      height: 76.8px;
-      border-radius: 50%;
-      object-fit: cover;
+      position: absolute;
+      inset: 0 0 auto;
+      width: 100%;
+      height: calc(100% - 30px);
+      display: block;
+      object-fit: contain;
     }
-    > svg,
-    > img {
-      flex: 0 0 76.8px;
+    > svg {
+      width: min(48%, 180px);
+      height: auto;
+      color: v.$muted;
+      stroke-width: 1;
     }
-    > div {
-      min-width: 0;
+  }
+  .my-page-profile-column {
+    min-width: 0;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    border: 1px solid v.$line;
+    border-radius: 6px;
+    background: v.$panel;
+    > .my-page-profile {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
+    > .my-page-portrait {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+  }
+  .my-page-content {
+    min-width: 0;
+    display: grid;
+    align-content: start;
+    gap: 16px;
+  }
+  .my-page-sync,
+  .my-page-sync-skeleton {
+    grid-column: 1 / -1;
+  }
+  .my-page-profile {
+    min-width: 0;
     h2 {
       font-size: v.font(24px);
       overflow-wrap: anywhere;
     }
   }
   .my-page-avatar-skeleton {
-    width: 76.8px;
-    height: 76.8px;
-    flex: 0 0 76.8px;
-    border-radius: 50%;
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
+    height: calc(100% - 30px);
     background: v.$line;
   }
   .my-page-name-skeleton {
@@ -107,8 +143,10 @@
     background: v.$line;
   }
   .my-page-metrics {
+    height: 100%;
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     margin: 0;
     > div {
@@ -117,6 +155,9 @@
       background: v.$panel;
       border: 1px solid v.$line;
       border-radius: 6px;
+    }
+    > div:last-child {
+      grid-column: 1 / -1;
     }
     dt {
       display: flex;
@@ -149,30 +190,38 @@
     .my-page-notice {
       padding: 18px;
     }
+    .my-page-layout,
+    .my-page-skeleton {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+    .my-page-portrait {
+      min-height: 0;
+      height: min(62vw, 240px);
+    }
+    .my-page-profile-column {
+      grid-template-rows: auto auto;
+    }
     a,
     button {
       min-height: 44px;
-    }
-    .my-page-metrics {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 }
 
 .my-page {
-  .my-page-skeleton {
-    display: grid;
-    gap: 24px;
-  }
   .my-page-metrics-skeleton {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     span {
       height: 106px;
       background: v.$panel;
       border: 1px solid v.$line;
       border-radius: 6px;
+    }
+    span:last-child {
+      grid-column: 1 / -1;
     }
   }
   .my-page-sync-skeleton {
@@ -196,11 +245,6 @@
   }
   .my-page-skeleton {
     animation: my-page-pulse 1.5s ease-in-out infinite;
-  }
-  @media (max-width: 512px) {
-    .my-page-metrics-skeleton {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 }
 @keyframes my-page-pulse {

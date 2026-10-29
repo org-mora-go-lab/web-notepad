@@ -19,10 +19,55 @@ test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만�
   await expect(page.locator(".board-description")).toHaveText(
     "A shared workspace. Join to write together.",
   );
+  expect(
+    (await page.locator(".board-note-text").allTextContents()).map((line) =>
+      line.trim(),
+    ),
+  ).toEqual([
+    "Private shared note body",
+    "Selected shared line",
+    "Final shared line",
+  ]);
+  await expect(page.locator(".board-note-line-number")).toHaveText([
+    "01",
+    "02",
+    "03",
+  ]);
+  await expect(page.locator('.board-note-line[data-line="1"]')).toHaveClass(
+    /is-selected/,
+  );
+  await expect(page.locator('.board-note-line[data-line="0"]')).not.toHaveClass(
+    /is-selected/,
+  );
+  const selectedLineLayout = await page
+    .locator('.board-note-line[data-line="1"]')
+    .evaluate((line) => {
+      const preview = line.closest<HTMLElement>(".board-note-preview")!;
+      const marker = document.createElement("span");
+      marker.style.color = "var(--color-tab-teal)";
+      document.body.append(marker);
+      const doneColor = getComputedStyle(marker).color;
+      marker.remove();
+      return {
+        borderColor: getComputedStyle(line).borderLeftColor,
+        doneColor,
+        rightGap:
+          preview.getBoundingClientRect().left +
+          preview.clientWidth -
+          line.getBoundingClientRect().right,
+      };
+    });
+  expect(selectedLineLayout.borderColor).toBe(selectedLineLayout.doneColor);
+  expect(Math.abs(selectedLineLayout.rightGap)).toBeLessThanOrEqual(1);
+  await page.getByRole("tab", { name: "Follow-up shared note body" }).click();
+  await expect(page.locator(".board-note-text")).toHaveText(
+    "Follow-up shared note body",
+  );
+  await expect(page.locator(".board-note-line-number")).toHaveText("01");
   await expect(
     page.getByRole("link", { name: "Join this group" }),
   ).toHaveAttribute("href", boardPost.inviteUrl);
-  expect(await (await getApi(request, "/api/board")).text()).not.toContain(
+  expect(await (await getApi(request, "/api/board")).text()).toContain(
     "Private shared note body",
   );
   await page

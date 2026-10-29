@@ -8,6 +8,7 @@ import {
   isSharedGroupId,
   UNGROUPED_GROUP_ID,
 } from "@/src/4-entity/notepad";
+import { createSharedTabLink } from "@/src/4-entity/notepad/util";
 import { useI18n } from "@/src/5-shared/hook";
 import { TabContextMenu } from "@/src/5-shared/ui";
 
@@ -63,12 +64,12 @@ export function Header({
   }, [linkFeedback]);
 
   const copyTabLink = async (groupId: string, tabId: string) => {
-    const url = new URL("/", window.location.origin);
-    url.searchParams.set("group", groupId);
-    url.searchParams.set("leftTab", tabId);
-    url.searchParams.set("pane", "left");
     try {
-      await navigator.clipboard.writeText(url.toString());
+      const group = groups.find((item) => item.id === groupId);
+      if (!group) throw new Error("Shared group unavailable");
+      await navigator.clipboard.writeText(
+        await createSharedTabLink(group, tabId),
+      );
       setLinkFeedback("copied");
     } catch {
       setLinkFeedback("error");

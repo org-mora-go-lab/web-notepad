@@ -47,7 +47,6 @@ function GroupSidebar({
   onSelect,
   onRemove,
   onRename,
-  onTogglePinGroup,
   onMoveGroup,
   onOpenGuide,
   onOpenSettings,
@@ -128,11 +127,9 @@ function GroupSidebar({
     .filter((group) => group.id !== UNGROUPED_GROUP_ID);
 
   const hasAccess = (group: GroupEntry) =>
-    !isSharedGroupId(group.id) || !!sharing?.accessByGroup[group.id];
+    !isSharedGroupId(group.id) ||
+    sharing?.accessByGroup[group.id]?.active !== false;
   const pendingRows = otherRows.filter((group) => !hasAccess(group));
-  const isShared = (group: GroupEntry) =>
-    isSharedGroupId(group.id) &&
-    sharing?.accessByGroup[group.id]?.active === true;
   const accessLoading = sharing?.loading || checkingAccess;
 
   useEffect(() => {
@@ -225,41 +222,53 @@ function GroupSidebar({
             id="group-sidebar-list"
             ref={groupListRef}
           >
-            {(["my", "shared"] as const).map((section) => {
-              const rows = otherRows.filter(
-                (group) =>
-                  hasAccess(group) &&
-                  isShared(group) === (section === "shared"),
-              );
-              const label = section === "my" ? t.myGroup : t.shareGroupSection;
-              const Icon = sectionsOpen[section] ? ChevronDown : ChevronRight;
+            {[
+              { id: "my", name: t.myGroup },
+              { id: "shared", name: t.shareGroupSection },
+            ].map((section, sectionIndex, allSections) => {
+              const rows = otherRows.filter((group) => {
+                if (section.id === "shared")
+                  return isSharedGroupId(group.id) && hasAccess(group);
+                if (
+                  isSharedGroupId(group.id) &&
+                  sharing?.accessByGroup[group.id]?.active !== false
+                )
+                  return false;
+                return section.id === "my";
+              });
+              const sectionOpen = sectionsOpen[section.id as "my" | "shared"];
+              const Icon = sectionOpen ? ChevronDown : ChevronRight;
               return (
-                <Fragment key={section}>
+                <Fragment key={section.id}>
                   <section
                     className="group-category"
                     style={{
                       flexGrow:
-                        section === "my" ? myGroupRatio : 100 - myGroupRatio,
+                        section.id === "shared"
+                          ? 100 - myGroupRatio
+                          : myGroupRatio,
                     }}
                   >
                     <h3>
                       <button
                         type="button"
                         className="group-section-toggle"
-                        aria-expanded={sectionsOpen[section]}
-                        aria-controls={"group-" + section + "-list"}
-                        onClick={() => toggleSection(section)}
+                        aria-expanded={sectionOpen}
+                        aria-controls={"group-" + section.id + "-list"}
+                        onClick={() => {
+                          toggleSection(section.id as "my" | "shared");
+                        }}
                       >
-                        <span>{label}</span>
+                        <span>{section.name}</span>
                         <Icon size={16} aria-hidden="true" />
                       </button>
                     </h3>
                     <div
                       className="group-section-list"
-                      id={"group-" + section + "-list"}
-                      hidden={!sectionsOpen[section]}
+                      id={"group-" + section.id + "-list"}
+                      hidden={!sectionOpen}
                     >
-                      {section === "shared" &&
+                      {section.id === "shared" &&
                         (pendingRows.length > 0 ||
                           (accessLoading && rows.length === 0)) && (
                           <div
@@ -300,7 +309,7 @@ function GroupSidebar({
                           key={group.id}
                           groupId={group.id}
                           shared={isSharedGroupId(group.id)}
-                          hideActionsButton={section === "shared"}
+                          hideActionsButton={false}
                           sharingRole={sharing?.accessByGroup[group.id]?.role}
                           sharingActive={
                             sharing?.accessByGroup[group.id]?.active
@@ -322,7 +331,8 @@ function GroupSidebar({
                             const peers = otherRows.filter(
                               (item) =>
                                 item.pinned === group.pinned &&
-                                isShared(item) === isShared(group),
+                                isSharedGroupId(item.id) ===
+                                  isSharedGroupId(group.id),
                             );
                             const target =
                               peers[
@@ -345,7 +355,23 @@ function GroupSidebar({
                           }
                           onSelect={() => selectGroup(group.id)}
                           onRename={(name) => onRename(group.id, name)}
-                          onTogglePin={() => onTogglePinGroup(group.id)}
+                          onCloseTabs={() => {
+                            const state = useNotepadStore.getState();
+                            const previousGroupId = state.activeGroupId;
+                            const openTabIds = state.groups
+                              .find((item) => item.id === group.id)
+                              ?.tabs.filter((tab) => tab.open !== false)
+                              .map((tab) => tab.id);
+                            if (!openTabIds?.length) return;
+                            state.selectGroup(group.id);
+                            openTabIds.forEach((tabId) =>
+                              useNotepadStore.getState().closeTab(tabId),
+                            );
+                            if (previousGroupId !== group.id)
+                              useNotepadStore
+                                .getState()
+                                .selectGroup(previousGroupId);
+                          }}
                           onDelete={(anchor) => {
                             deleteAnchorRef.current = anchor;
                             setDeletingGroupId(group.id);
@@ -357,15 +383,17 @@ function GroupSidebar({
                         />
                       ))}
                       {rows.length === 0 &&
-                        (section === "my" ||
+                        (section.id !== "shared" ||
                           (pendingRows.length === 0 && !accessLoading)) && (
                           <p className="group-section-empty">
-                            {section === "my" ? t.noMyGroups : t.noSharedGroups}
+                            {section.id === "shared"
+                              ? t.noSharedGroups
+                              : t.noMyGroups}
                           </p>
                         )}
                     </div>
                   </section>
-                  {section === "my" && (
+                  {sectionIndex === allSections.length - 2 && (
                     <div
                       className="group-section-resizer"
                       role="separator"
@@ -499,7 +527,6 @@ function GroupSidebar({
                 aria-haspopup="dialog"
                 onClick={() => {
                   setFooterMenuOpen(null);
-                  onClose();
                   onToggleSearch();
                 }}
               >
@@ -510,7 +537,6 @@ function GroupSidebar({
                 type="button"
                 onClick={() => {
                   setFooterMenuOpen(null);
-                  onClose();
                   onToggleBookmarks();
                 }}
               >

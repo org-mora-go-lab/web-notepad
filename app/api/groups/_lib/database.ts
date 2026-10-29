@@ -6,7 +6,11 @@ let client: Client | undefined;
 let schemaReady: Promise<void> | undefined;
 
 export async function sharedDatabase() {
-  const url = process.env.TURSO_DATABASE_URL;
+  const url =
+    process.env.TURSO_DATABASE_URL ??
+    (process.env.NODE_ENV === "development"
+      ? "file:web-notepad-local.db"
+      : undefined);
   const authToken = process.env.TURSO_AUTH_TOKEN;
   if (!url || (!url.startsWith("file:") && !authToken)) {
     throw new Error("Turso database credentials are not configured.");

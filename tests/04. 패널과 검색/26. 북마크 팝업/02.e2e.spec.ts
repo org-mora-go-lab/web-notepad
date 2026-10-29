@@ -16,7 +16,7 @@ test("2. 북마크 팝업은 기존 고정 대시보드와 작업 영역 너비�
   );
   const viewportHeight = page.viewportSize()!.height;
   const centeredTop = (viewportHeight - popup.height) / 2;
-  const offset = Math.max(-100, 16 - centeredTop);
+  const offset = Math.max(-80, 36 - centeredTop);
   expect(popup.y + popup.height / 2).toBeCloseTo(
     viewportHeight / 2 + offset,
     0,

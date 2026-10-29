@@ -20,6 +20,7 @@ test("1. 하단 더보기의 SEARCH를 선택하면 전체 검색 팝업을 연�
     "open",
     "",
   );
+  await expect(page.locator("#groups-menu")).toBeVisible();
   const popup = page.locator("#global-search-popup");
   await expect(popup).toHaveCSS("border-top-width", "1px");
   expect(

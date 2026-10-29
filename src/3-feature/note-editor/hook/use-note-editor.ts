@@ -1,4 +1,4 @@
-import type { ChangeEvent, KeyboardEvent, UIEvent } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
 import { type RefObject, useEffect, useRef } from "react";
 
 import type { NoteTab } from "@/src/4-entity/notepad";
@@ -18,10 +18,11 @@ type Options = {
 };
 
 export function useNoteEditor({ tab, composingRef, onChange }: Options) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const lineRailRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef(tab.content);
   const pendingTabInsertionRef = useRef<HTMLTextAreaElement | null>(null);
-  const followCaretOnEnter = useEditorCaretScroll(lineRailRef);
+  const followCaretOnEnter = useEditorCaretScroll(scrollRef);
   const { selectedLines, toggleLineSelection } = useLineSelection(tab);
 
   useEffect(() => {
@@ -97,13 +98,8 @@ export function useNoteEditor({ tab, composingRef, onChange }: Options) {
     });
   };
 
-  const handleScroll = (event: UIEvent<HTMLTextAreaElement>) => {
-    if (lineRailRef.current) {
-      lineRailRef.current.scrollTop = event.currentTarget.scrollTop;
-    }
-  };
-
   return {
+    scrollRef,
     lineRailRef,
     selectedLines,
     toggleLineSelection,
@@ -111,6 +107,5 @@ export function useNoteEditor({ tab, composingRef, onChange }: Options) {
     handleKeyDown,
     handleCompositionStart,
     handleCompositionEnd,
-    handleScroll,
   };
 }

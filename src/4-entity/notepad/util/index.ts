@@ -39,3 +39,4 @@ export {
   sharedGroupId,
   toSharedGroupData,
 } from "./shared-group";
+export { createSharedTabLink } from "./shared-tab-link";

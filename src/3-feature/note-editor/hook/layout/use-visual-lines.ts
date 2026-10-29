@@ -5,7 +5,6 @@ import { useNotepadStore } from "@/src/4-entity/notepad";
 export function useVisualLines(
   content: string,
   editorRef: RefObject<HTMLTextAreaElement | null>,
-  lineRailRef: RefObject<HTMLDivElement | null>,
 ) {
   const [visualLines, setVisualLines] = useState<number[]>([0]);
   // Font size changes rewrap lines without resizing the textarea.
@@ -66,6 +65,10 @@ export function useVisualLines(
           () => index,
         ),
       );
+      editor.style.setProperty(
+        "--editor-visual-line-count",
+        String(nextLines.length),
+      );
       setVisualLines((previous) =>
         previous.length === nextLines.length &&
         previous.every((line, index) => line === nextLines[index])
@@ -87,12 +90,6 @@ export function useVisualLines(
       mirror.remove();
     };
   }, [content, editorRef, fontScale]);
-
-  useLayoutEffect(() => {
-    if (lineRailRef.current && editorRef.current) {
-      lineRailRef.current.scrollTop = editorRef.current.scrollTop;
-    }
-  }, [visualLines, editorRef, lineRailRef]);
 
   return visualLines;
 }

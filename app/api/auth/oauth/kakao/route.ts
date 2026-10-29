@@ -11,6 +11,20 @@ import {
   SHARE_RETURN_COOKIE,
 } from "../../_lib/session";
 
+const localDevelopmentState = globalThis as typeof globalThis & {
+  webNotepadLocalUserSequence?: number;
+};
+
+function nextLocalDevelopmentUser() {
+  const sequence = (localDevelopmentState.webNotepadLocalUserSequence ?? 0) + 1;
+  localDevelopmentState.webNotepadLocalUserSequence = sequence;
+  return {
+    id: `local-test-user-${sequence}`,
+    nickname: `Test ${sequence}`,
+    profileImageUrl: "/test-user.svg",
+  };
+}
+
 function isLocalDevelopmentLogin(request: Request) {
   const hostname = new URL(request.url).hostname;
   return (
@@ -27,11 +41,7 @@ export async function GET(request: Request) {
     const response = NextResponse.redirect(new URL("/", request.url));
     response.cookies.set(
       SESSION_COOKIE,
-      createSession({
-        id: "local-test-user",
-        nickname: "TEST",
-        profileImageUrl: "/test-user.svg",
-      }),
+      createSession(nextLocalDevelopmentUser()),
       {
         httpOnly: true,
         sameSite: "lax",

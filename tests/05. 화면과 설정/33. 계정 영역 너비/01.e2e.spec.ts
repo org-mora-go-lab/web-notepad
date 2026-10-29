@@ -1,13 +1,14 @@
 import { expect, test } from "@playwright/test";
 
 import { DESKTOP_VIEWPORT } from "../../__constant__";
-import { authProfile, signedSession } from "../../__fixture__";
+import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("1. PC 계정 영역을 좌우 4px씩 줄이고 아이콘 hover 효과를 제거한다", async ({
+test("1. PC 계정 이름을 최대 120px까지 표시하고 아이콘 hover 효과를 제거한다", async ({
   page,
   context,
 }) => {
+  const nickname = "A very long account profile nickname";
   await page.route("https://example.test/avatar.svg", (route) =>
     route.fulfill({
       contentType: "image/svg+xml",
@@ -17,7 +18,8 @@ test("1. PC 계정 영역을 좌우 4px씩 줄이고 아이콘 hover 효과를 �
   await authenticateBrowser(
     context,
     signedSession({
-      ...authProfile,
+      id: "account-width-user",
+      nickname,
       profileImageUrl: "https://example.test/avatar.svg",
       expiresAt: Date.now() + 60_000,
     }),
@@ -27,10 +29,15 @@ test("1. PC 계정 영역을 좌우 4px씩 줄이고 아이콘 hover 효과를 �
 
   const account = page.locator("button.auth-command");
   await expect(account.locator("img")).toBeVisible();
-  await expect(account.locator("span")).toHaveText(authProfile.nickname);
+  await expect(account.locator("span")).toHaveText(nickname);
+  await expect(account.locator("span")).toHaveCSS("max-width", "120px");
+  expect(
+    (await account.locator("span").boundingBox())!.width,
+  ).toBeLessThanOrEqual(120);
   const container = (await page.locator(".footer-auth").boundingBox())!;
   const button = (await account.boundingBox())!;
-  expect(container.width).toBeCloseTo(84.8, 1);
+  await expect(page.locator(".footer-auth")).toHaveCSS("flex-basis", "auto");
+  expect(container.width).toBeLessThanOrEqual(155.8);
   expect(button.width).toBeCloseTo(container.width, 1);
 
   const commands = [

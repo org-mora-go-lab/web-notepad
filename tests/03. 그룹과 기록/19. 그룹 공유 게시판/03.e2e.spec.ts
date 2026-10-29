@@ -28,6 +28,6 @@ test("3. 로그인한 방문자는 게시글 초대를 수락해 실제 공유 �
     page.getByText("Shared group added. You can edit it now."),
   ).toBeVisible();
   await expect(page.locator("textarea.note-area").first()).toHaveValue(
-    "Private shared note body",
+    "Private shared note body\nSelected shared line\nFinal shared line",
   );
 });

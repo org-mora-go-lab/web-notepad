@@ -12,6 +12,7 @@ export function NoteEditor({
   onChange,
 }: NoteEditorProps) {
   const {
+    scrollRef,
     lineRailRef,
     selectedLines,
     toggleLineSelection,
@@ -19,13 +20,13 @@ export function NoteEditor({
     handleKeyDown,
     handleCompositionStart,
     handleCompositionEnd,
-    handleScroll,
   } = useNoteEditor({ tab, composingRef, onChange });
 
   return (
     <Editor
       tab={tab}
       editorRef={editorRef}
+      scrollRef={scrollRef}
       lineRailRef={lineRailRef}
       selectedLines={selectedLines}
       autoFocus={autoFocus}
@@ -34,7 +35,6 @@ export function NoteEditor({
       onKeyDown={handleKeyDown}
       onCompositionStart={handleCompositionStart}
       onCompositionEnd={handleCompositionEnd}
-      onScroll={handleScroll}
     />
   );
 }

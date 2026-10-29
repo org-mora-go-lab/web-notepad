@@ -20,7 +20,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     &[aria-haspopup="menu"]:hover {
-      background: rgb(180 180 180 / 18%);
+      background: transparent;
     }
   }
 

@@ -9,7 +9,7 @@
   max-height: calc(100dvh - 32px);
   margin: auto;
   transform: translateY(
-    max(-100px, calc(16px - (100dvh - var(--list-popup-height)) / 2))
+    max(-80px, calc(36px - (100dvh - var(--list-popup-height)) / 2))
   );
   padding: 0;
   flex-direction: column;

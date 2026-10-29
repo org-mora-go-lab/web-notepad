@@ -8,6 +8,7 @@ import type { EditorProps } from "../type";
 export function Editor({
   tab,
   editorRef,
+  scrollRef,
   lineRailRef,
   selectedLines,
   autoFocus,
@@ -16,10 +17,9 @@ export function Editor({
   onKeyDown,
   onCompositionStart,
   onCompositionEnd,
-  onScroll,
 }: EditorProps) {
   const { t } = useI18n();
-  const visualLines = useVisualLines(tab.content, editorRef, lineRailRef);
+  const visualLines = useVisualLines(tab.content, editorRef);
   const selectedLineRanges: { start: number; end: number }[] = [];
   for (const [line, logicalLine] of visualLines.entries()) {
     if (!selectedLines.includes(logicalLine)) continue;
@@ -35,33 +35,38 @@ export function Editor({
     <div
       className={`note-editor ${selectedLines.length > 0 ? "has-selected-line" : ""}`}
       data-tab-color={tab.tabColor}
+      ref={scrollRef}
     >
       <div
         className={`line-rail ${selectedLines.includes(0) ? "has-first-line-selected" : ""}`}
         ref={lineRailRef}
         aria-label={t.lineNumbers}
       >
-        {visualLines.map((logicalLine, index) => (
-          <span
-            key={index}
-            className={selectedLines.includes(logicalLine) ? "is-selected" : ""}
-            role="button"
-            tabIndex={0}
-            aria-pressed={selectedLines.includes(logicalLine)}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={(event) =>
-              onToggleLineSelection(logicalLine, event.shiftKey)
-            }
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                onToggleLineSelection(logicalLine);
+        <div className="line-rail-content">
+          {visualLines.map((logicalLine, index) => (
+            <span
+              key={index}
+              className={
+                selectedLines.includes(logicalLine) ? "is-selected" : ""
               }
-            }}
-          >
-            {String(index + 1).padStart(2, "0")}
-          </span>
-        ))}
+              role="button"
+              tabIndex={0}
+              aria-pressed={selectedLines.includes(logicalLine)}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={(event) =>
+                onToggleLineSelection(logicalLine, event.shiftKey)
+              }
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onToggleLineSelection(logicalLine);
+                }
+              }}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          ))}
+        </div>
       </div>
 
       <textarea
@@ -72,7 +77,6 @@ export function Editor({
         onKeyDown={onKeyDown}
         onCompositionStart={onCompositionStart}
         onCompositionEnd={onCompositionEnd}
-        onScroll={onScroll}
         placeholder={t.notePlaceholder}
         autoFocus={autoFocus}
         spellCheck={false}
@@ -100,7 +104,7 @@ export function Editor({
             backgroundRepeat: selectedLineRanges
               .map(() => "no-repeat")
               .join(", "),
-            backgroundAttachment: "local",
+            backgroundAttachment: "scroll",
           } as CSSProperties
         }
       />

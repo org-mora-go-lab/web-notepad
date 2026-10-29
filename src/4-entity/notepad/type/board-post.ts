@@ -6,6 +6,15 @@ export type BoardPost = {
   title: string;
   description: string;
   noteCount: number;
+  bookmarkCount: number;
+  notes: {
+    id: string;
+    title: string;
+    content: string;
+    bookmarked: boolean;
+    selectedLines?: number[];
+    updatedAt: number;
+  }[];
   memberCount: number;
   updatedAt: number;
   inviteUrl: string;

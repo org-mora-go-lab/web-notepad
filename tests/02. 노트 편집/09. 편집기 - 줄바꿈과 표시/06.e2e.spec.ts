@@ -27,7 +27,7 @@ test("6. 모바일 WebView의 긴 문서에서 편집기와 번호의 줄 간격
         const area = el as HTMLTextAreaElement,
           style = getComputedStyle(el);
         const rail = el.closest(".note-editor")!.querySelector(".line-rail")!;
-        const rows = Array.from(rail.children);
+        const rows = Array.from(rail.querySelectorAll("span"));
         return {
           pitch: parseFloat(style.lineHeight),
           first: rows[0].getBoundingClientRect().top,
@@ -47,18 +47,29 @@ test("6. 모바일 WebView의 긴 문서에서 편집기와 번호의 줄 간격
       expect(metrics.last - metrics.first).toBeCloseTo(159 * metrics.pitch, 1);
       expect(metrics.nativeHeight).toBeCloseTo(160 * metrics.pitch, 0);
       expect(metrics.adjust).toBe("100%");
-      await editor.evaluate((el) => {
-        el.scrollTop = el.scrollHeight;
-        el.dispatchEvent(new Event("scroll"));
-      });
-      await expect
-        .poll(() =>
-          page
-            .locator(".line-rail")
-            .first()
-            .evaluate((el) => el.scrollTop),
-        )
-        .toBe(await editor.evaluate((el) => el.scrollTop));
+      for (const ratio of [0.25, 0.7, 1]) {
+        await editor.evaluate((el, scrollRatio) => {
+          const scroller = el.closest<HTMLElement>(".note-editor")!;
+          scroller.scrollTop =
+            (scroller.scrollHeight - scroller.clientHeight) * scrollRatio;
+        }, ratio);
+        await expect
+          .poll(() =>
+            editor.evaluate((el) => {
+              const rail = el
+                .closest(".note-editor")!
+                .querySelector<HTMLElement>(".line-rail")!;
+              const firstLine = rail.querySelector("span")!;
+              const expectedTop =
+                el.getBoundingClientRect().top +
+                Number.parseFloat(getComputedStyle(el).paddingTop);
+              return Math.abs(
+                firstLine.getBoundingClientRect().top - expectedTop,
+              );
+            }),
+          )
+          .toBeLessThanOrEqual(0.5);
+      }
     }
   } finally {
     await context.close();

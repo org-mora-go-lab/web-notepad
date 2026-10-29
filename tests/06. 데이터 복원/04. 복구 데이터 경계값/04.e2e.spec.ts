@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 import { seedStoredStateOnLoad } from "../../__util__";
 
-test("4. Ungrouped의 잘못된 고정 상태는 해제한다", async ({ page }) => {
+test("4. Ungrouped의 잘못된 고정 상태는 메뉴에 노출하지 않는다", async ({
+  page,
+}) => {
   await seedStoredStateOnLoad(page, {
     activeGroupId: "ungrouped",
     groups: [
@@ -20,6 +22,6 @@ test("4. Ungrouped의 잘못된 고정 상태는 해제한다", async ({ page })
     page.getByRole("button", { name: "Ungrouped", exact: true }),
   ).toBeVisible();
   await expect(
-    page.locator(".group-system-menu .group-pin-indicator"),
+    page.getByRole("button", { name: /Pin Ungrouped group/ }),
   ).toHaveCount(0);
 });

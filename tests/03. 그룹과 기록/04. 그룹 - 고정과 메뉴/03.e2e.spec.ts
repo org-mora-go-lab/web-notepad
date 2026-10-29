@@ -3,28 +3,21 @@ import { expect, test } from "@playwright/test";
 import {
   chooseGroupAction,
   groupsCommand,
+  readStoredState,
   seedSortableGroups,
 } from "../../__util__";
 
-test("3. 고정한 그룹의 Unpin 명령은 고정을 해제하고 원래 정렬 위치로 되돌린다", async ({
+test("3. Close All은 선택한 그룹의 열린 에디터 탭을 모두 닫는다", async ({
   page,
 }) => {
   await seedSortableGroups(page);
   await groupsCommand(page).click();
-  await chooseGroupAction(page, "Zulu", "고정");
-  await chooseGroupAction(page, "Zulu", "고정 해제");
+  await chooseGroupAction(page, "Zulu", "탭 닫기");
 
-  await expect(page.locator(".group-item .group-select strong")).toHaveText([
-    "가방",
-    "나무",
-    "다람쥐",
-    "Alpha",
-    "Zulu",
-  ]);
-  await expect(
-    page
-      .locator(".group-item")
-      .filter({ hasText: "Zulu" })
-      .locator(".group-pin-indicator"),
-  ).toHaveCount(0);
+  const zulu = (await readStoredState(page)).groups.find(
+    (group) => group.id === "zulu",
+  );
+  expect(zulu?.tabs.find((tab) => tab.id === "tab-2")?.open).toBe(false);
+  expect(zulu?.tabs.filter((tab) => tab.open)).toHaveLength(1);
+  expect(zulu?.tabs.find((tab) => tab.open)?.content).toBe("");
 });

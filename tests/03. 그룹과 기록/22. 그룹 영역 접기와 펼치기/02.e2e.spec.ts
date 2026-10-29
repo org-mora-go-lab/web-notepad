@@ -14,6 +14,9 @@ test("2. 두 영역을 독립적으로 접고 펼치며 선택한 노트를 보�
   await my.press("Enter");
   await expect(my).toHaveAttribute("aria-expanded", "false");
   await expect(shared).toHaveAttribute("aria-expanded", "true");
+  await expect(
+    guest.getByRole("button", { name: "Shared team group actions" }),
+  ).toBeVisible();
   await shared.click();
   await expect(guest.locator('[data-group-id="' + id + '"]')).toBeHidden();
   await expect(guest.locator("textarea").first()).toHaveValue("Keep this note");

@@ -19,6 +19,7 @@ export {
   applySharedGroupData,
   compareGroups,
   createJoinedGroup,
+  createSharedTabLink,
   DEFAULT_DASHBOARD_VISIBILITY,
   getBottomPane,
   getClosedTabItems,

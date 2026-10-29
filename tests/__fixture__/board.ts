@@ -27,7 +27,18 @@ export const boardTest = base.extend<{
       headers,
       data: {
         group: createGroupFixture("board-" + suffix, title, [
-          createTabFixture("note-" + suffix, "Private shared note body"),
+          createTabFixture(
+            "note-" + suffix,
+            "Private shared note body\nSelected shared line\nFinal shared line",
+            { selectedLines: [1] },
+          ),
+          createTabFixture(
+            "follow-up-" + suffix,
+            "Follow-up shared note body",
+            {
+              bookmarked: true,
+            },
+          ),
         ]),
       },
     });

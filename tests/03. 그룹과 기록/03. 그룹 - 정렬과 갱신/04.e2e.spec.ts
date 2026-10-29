@@ -18,12 +18,18 @@ test("4. 사이드바 아래 GROUP과 MORE 메뉴에서 기본 그룹과 가이�
     "All Group",
     "Ungrouped",
   ]);
-  await expect(systemGroups.locator(":scope > :last-child")).toHaveClass(
-    "group-create-form",
+  await expect(systemGroups.locator(".group-create-form")).toBeVisible();
+  await expect(systemGroups.locator(".group-section-create-form")).toHaveCount(
+    0,
   );
   await expect(
     systemGroups.getByRole("textbox", { name: "New group name" }),
   ).toBeVisible();
+  const form = systemGroups.locator(".group-create-form");
+  const inputBox = (await form.locator("input").boundingBox())!;
+  const buttonBox = (await form.locator("button").boundingBox())!;
+  expect(inputBox.width).toBeGreaterThanOrEqual(buttonBox.width * 5);
+  expect(buttonBox.width).toBeCloseTo(28, 0);
   const sectionBox = (await sidebar.locator(".group-section").boundingBox())!;
   const systemBox = (await system.boundingBox())!;
   expect(systemBox.y).toBeGreaterThanOrEqual(sectionBox.y + sectionBox.height);

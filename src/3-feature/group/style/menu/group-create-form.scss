@@ -31,10 +31,9 @@
       }
     }
 
-    // Square, matching the 34px input height.
     button {
-      width: 34px;
-      height: 34px;
+      width: 28px;
+      height: 28px;
       display: grid;
       place-items: center;
       padding: 0;
@@ -51,18 +50,32 @@
   }
 
   .group-system-menu .group-create-form {
-    width: min(240px, calc(100vw - 38px));
+    width: min(260px, calc(100vw - 38px));
     margin: 5px 0 0;
     padding: 10px 5px 5px;
     border-top: 1px solid v.$line;
     border-bottom: 0;
 
     button {
+      width: 28px;
+      min-height: 28px;
+      flex: 0 0 28px;
       padding: 0;
     }
   }
 
   @media (max-width: 512px) {
+    .group-system-menu .group-create-form {
+      width: calc(100vw - 38px);
+
+      button {
+        width: 44px;
+        min-height: 44px;
+        height: 44px;
+        flex-basis: 44px;
+      }
+    }
+
     .group-create-form {
       input {
         height: 34px * v.$mobile-scale;
@@ -71,8 +84,8 @@
       }
 
       button {
-        width: 44px;
-        height: 44px;
+        width: 36px;
+        height: 36px;
 
         svg {
           width: 16px * v.$mobile-scale;

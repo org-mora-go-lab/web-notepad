@@ -1,29 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  chooseGroupAction,
-  groupsCommand,
-  readStoredState,
-  seedSortableGroups,
-} from "../../__util__";
+import { groupsCommand, seedSortableGroups } from "../../__util__";
 
-test("2. 그룹 고정 상태를 저장하고 새로고침 후 복원한다", async ({ page }) => {
+test("2. 그룹 드롭다운에는 그룹 추가만 표시하고 섹션 추가는 표시하지 않는다", async ({
+  page,
+}) => {
   await seedSortableGroups(page);
   await groupsCommand(page).click();
-  await chooseGroupAction(page, "Zulu", "고정");
-  expect(
-    (await readStoredState(page)).groups.find((group) => group.id === "zulu")
-      ?.pinned,
-  ).toBe(true);
-
-  await page.reload();
+  await page.locator(".system-group-command").click();
   await expect(
-    page.locator(".group-item .group-select strong").first(),
-  ).toHaveText("Zulu");
-  await expect(
-    page
-      .locator(".group-item")
-      .filter({ hasText: "Zulu" })
-      .locator(".group-pin-indicator"),
+    page.getByRole("textbox", { name: "New group name" }),
   ).toBeVisible();
+  await expect(page.locator(".group-section-create-form")).toHaveCount(0);
 });

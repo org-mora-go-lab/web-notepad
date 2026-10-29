@@ -8,6 +8,7 @@ test("2. 더보기의 BOOKMARK 명령은 북마크 팝업을 연다", async ({ p
   const command = moreCommand(page);
   await command.click();
   const menu = page.locator("#group-more-menu");
+  await expect(menu).toHaveCSS("width", "176px");
   await expect(menu.getByRole("button")).toHaveText([
     "GUIDE",
     "SEARCH",
@@ -19,7 +20,7 @@ test("2. 더보기의 BOOKMARK 명령은 북마크 팝업을 연다", async ({ p
     "aria-hidden",
     "false",
   );
-  await expect(page.locator("#groups-menu")).toHaveCount(0);
+  await expect(page.locator("#groups-menu")).toBeVisible();
   await expect(command.locator(".status-count")).toHaveCount(0);
   await expect(command.locator(".status-dot")).toHaveCount(0);
 });
