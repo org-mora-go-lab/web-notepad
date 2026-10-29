@@ -18,6 +18,16 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
     const account = (await page
       .locator(".footer .auth-command")
       .boundingBox())!;
+    const dashboardFontSize = await page
+      .locator(".dashboard-command > .status-label")
+      .evaluate((element) => getComputedStyle(element).fontSize);
+    if (width <= 512) expect(dashboardFontSize).toBe("11px");
+    for (const label of [
+      page.locator(".group-current-value"),
+      page.locator(".footer .auth-command > span"),
+    ]) {
+      await expect(label).toHaveCSS("font-size", dashboardFontSize);
+    }
     if (width <= 512) {
       expect(group.x).toBeLessThan(dashboard.x);
       expect(dashboard.x).toBeLessThan(account.x);

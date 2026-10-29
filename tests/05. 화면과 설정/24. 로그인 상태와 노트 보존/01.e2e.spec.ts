@@ -26,7 +26,17 @@ test("1. 로그인 계정은 별도 Logout 아이콘 없이 닉네임과 Logout 
     "background-color",
     "rgba(0, 0, 0, 0)",
   );
-  await expect(name).toHaveCSS("font-size", "15.32px");
+  await expect(name).toHaveCSS(
+    "font-size",
+    await page
+      .locator(".dashboard-command > .status-label")
+      .evaluate((element) => getComputedStyle(element).fontSize),
+  );
   await page.setViewportSize(MOBILE_VIEWPORT);
-  await expect(name).toHaveCSS("font-size", "13.2px");
+  await expect(name).toHaveCSS(
+    "font-size",
+    await page
+      .locator(".dashboard-command > .status-label")
+      .evaluate((element) => getComputedStyle(element).fontSize),
+  );
 });

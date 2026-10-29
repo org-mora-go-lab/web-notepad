@@ -112,7 +112,7 @@
     flex: 0 1 auto;
     min-width: 31px;
     gap: 7px;
-    font-size: v.font(15px);
+    font-size: inherit;
 
     &.is-active svg {
       fill: none;
@@ -147,7 +147,7 @@
     }
     &[aria-haspopup="menu"] > span {
       max-width: 120px;
-      font-size: calc(#{v.font(16.8px)} + 0.2px);
+      font-size: inherit;
     }
     &[aria-haspopup="menu"] > svg {
       width: 24px;
@@ -200,7 +200,7 @@
       gap: 4px;
 
       &.status-command > span.status-label {
-        font-size: calc(#{v.font(10px)} + 1px);
+        font-size: calc(#{v.font(10px)} + 2px);
         line-height: 12px;
         letter-spacing: 0.04em;
         text-transform: uppercase;
@@ -215,6 +215,11 @@
         display: block;
         max-width: 100%;
         margin-left: 0;
+      }
+
+      &.status-command > span.group-current-value {
+        font-size: calc(#{v.font(10px)} + 2px);
+        line-height: 12px;
       }
     }
 
@@ -235,7 +240,7 @@
       height: 61.2px;
       flex-direction: column;
       gap: 4px;
-      font-size: calc(#{v.font(10px)} + 1px);
+      font-size: calc(#{v.font(10px)} + 2px);
       > span {
         max-width: 100%;
         line-height: 12px;
@@ -247,8 +252,8 @@
       }
       &[aria-haspopup="menu"] > span {
         max-width: 100%;
-        font-size: calc(#{v.font(12px)} + 2.4px);
-        line-height: 1.2;
+        font-size: inherit;
+        line-height: 12px;
       }
       &[aria-haspopup="menu"] > svg {
         width: 28.8px;
