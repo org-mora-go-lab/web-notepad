@@ -52,7 +52,7 @@ export function Footer({
                 <span className="status-icon">
                   <MessageSquare size={16} strokeWidth={1.8} />
                 </span>
-                <span className="status-label">{t.board}</span>
+                <span className="status-label">{t.board.toUpperCase()}</span>
               </Link>
               <button
                 className={`status-command dashboard-command ${dashboardOpen ? "is-active" : ""}`}

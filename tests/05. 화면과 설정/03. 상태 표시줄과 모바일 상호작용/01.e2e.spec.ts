@@ -5,6 +5,19 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
 }) => {
   await page.goto("/");
   await expect(page.locator(".auth-command:not(.is-loading)")).toBeVisible();
+  const boardLabel = page.locator(".board-command > .status-label");
+  const dashboardLabel = page.locator(".dashboard-command > .status-label");
+  await expect(boardLabel).toHaveText("BOARD");
+  await expect(page.locator(".board-command")).toHaveCSS(
+    "text-decoration-line",
+    "none",
+  );
+  await expect(boardLabel).toHaveCSS(
+    "font-size",
+    await dashboardLabel.evaluate(
+      (element) => getComputedStyle(element).fontSize,
+    ),
+  );
   const commands = page.locator(
     ".status-meta .status-command:visible, .footer .auth-command:visible",
   );
