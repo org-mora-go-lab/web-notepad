@@ -23,6 +23,11 @@ test("2. 모바일 긴 이름은 말줄임되고 프로필 이미지는 줄어�
     await expect(button).toBeVisible();
     const image = button.locator("img");
     const name = button.locator("span");
+    const groupBounds = (await page
+      .locator(".group-select-command")
+      .boundingBox())!;
+    const accountBounds = (await button.boundingBox())!;
+    expect(groupBounds.x).toBeLessThan(accountBounds.x);
     const imageBounds = (await image.boundingBox())!;
     expect(imageBounds.width).toBeCloseTo(28.8, 1);
     expect(imageBounds.height).toBeCloseTo(28.8, 1);

@@ -21,8 +21,8 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
     if (width <= 512) {
       expect(board).not.toBeNull();
       expect(board!.x).toBeLessThan(dashboard.x);
-      expect(dashboard.x).toBeLessThan(account.x);
-      expect(account.x).toBeLessThan(group.x);
+      expect(dashboard.x).toBeLessThan(group.x);
+      expect(group.x).toBeLessThan(account.x);
     } else {
       expect(board).toBeNull();
       expect(group.x).toBeLessThan(dashboard.x);
