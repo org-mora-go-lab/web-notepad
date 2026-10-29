@@ -31,7 +31,16 @@ test("1. 계정 메뉴에서 My Page로 이동해 프로필과 내 공유 현황
   expect(content).not.toBeNull();
   expect(sync).not.toBeNull();
   expect(portrait!.x + portrait!.width).toBeLessThan(content!.x);
-  expect(profileColumn!.width / content!.width).toBeLessThan(0.42);
+  expect(profileColumn!.width / content!.width).toBeGreaterThan(0.54);
+  expect(profileColumn!.width / content!.width).toBeLessThan(0.6);
+  const profileName = (await owner
+    .locator(".my-page-profile h2")
+    .boundingBox())!;
+  const connection = (await owner.locator(".my-page-profile p").boundingBox())!;
+  expect(connection.x).toBeGreaterThanOrEqual(
+    profileName.x + profileName.width,
+  );
+  expect(connection.y + connection.height).toBeGreaterThan(profileName.y);
   expect(profile!.y + profile!.height).toBeCloseTo(portrait!.y, 0);
   expect(profileColumn!.height).toBeCloseTo(content!.height, 0);
   expect(Math.abs(sync!.x - portrait!.x)).toBeLessThanOrEqual(1);
