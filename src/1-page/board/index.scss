@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 @use "../../5-shared/style/variable" as v;
 @use "../../3-feature/board";
 @use "../../5-shared/ui/confirm-popup";
@@ -23,7 +24,16 @@
     display: grid;
     gap: 24px;
   }
+  .board-page-header h1 {
+    right: max(20px, calc((100vw - var(--page-content-width)) / 2));
+    left: auto;
+    transform: none;
+  }
   @media (max-width: 512px) {
     padding: 20px 16px 36px;
+
+    .board-page-header h1 {
+      right: 16px;
+    }
   }
 }

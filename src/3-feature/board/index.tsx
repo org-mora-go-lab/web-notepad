@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 "use client";
 
 import {
@@ -33,6 +34,8 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [failure, setFailure] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [notePreviewHeight, setNotePreviewHeight] = useState(316.8);
+  const noteResizeStart = useRef<{ y: number; height: number } | null>(null);
   const noteSwipeStart = useRef<{ x: number; y: number } | null>(null);
   const orderedNotes = selected
     ? [...selected.notes].sort(
@@ -74,10 +77,10 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     <section className="board">
       <FixedPageHeader
         backLabel={selected ? t.boardBack : t.myPageHome}
-        className="board-page-header"
+        className={`board-page-header ${selected ? "is-detail" : "is-list"}`}
         onBack={selected ? back : undefined}
         onNavigateBack={onReturnHome}
-        title={t.boardTitle}
+        title={selected?.groupName ?? t.boardTitle}
       />
       <div
         className="board-content"
@@ -94,13 +97,13 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
       >
         {selected ? (
           <article className="board-detail">
-            <header className="board-detail-hero">
-              <div className="board-detail-summary">
-                <div className="board-detail-context">
-                  <span className="board-group-name">
-                    <Layers size={16} aria-hidden="true" />
-                    {selected.groupName}
-                  </span>
+            <header
+              className="board-detail-hero board-overview"
+              aria-labelledby="board-overview-title"
+            >
+              <div className="board-overview-header">
+                <h4 id="board-overview-title">{t.boardOverview}</h4>
+                <div className="board-overview-owner">
                   <span className="board-role">
                     {selectedRole === "owner"
                       ? t.boardOwnerRole
@@ -108,57 +111,46 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                         ? t.boardMemberRole
                         : t.boardGuestRole}
                   </span>
+                  <span
+                    className="board-owner"
+                    aria-label={t.boardOwnerColumn}
+                    title={selected.ownerName || t.boardUnknownOwner}
+                  >
+                    <CircleUserRound size={16} aria-hidden="true" />
+                    <span>{selected.ownerName || t.boardUnknownOwner}</span>
+                  </span>
                 </div>
-                <h3>{selected.title}</h3>
-                <span
-                  className="board-owner"
-                  aria-label={t.boardOwnerColumn}
-                  title={selected.ownerName || t.boardUnknownOwner}
-                >
-                  <CircleUserRound size={16} aria-hidden="true" />
-                  <span>{selected.ownerName || t.boardUnknownOwner}</span>
-                </span>
-                <p className="board-description">{t.boardSharedWorkspace}</p>
               </div>
-              <section
-                className="board-overview"
-                aria-labelledby="board-overview-title"
-              >
-                <h4 id="board-overview-title">{t.boardOverview}</h4>
-                <div className="board-meta">
-                  <span>
-                    <NotebookPen size={18} aria-hidden="true" />
-                    <small>{t.boardNotesColumn}</small>
-                    <strong>{selected.noteCount}</strong>
-                  </span>
-                  <span>
-                    <Users size={18} aria-hidden="true" />
-                    <small>{t.boardMembersColumn}</small>
-                    <strong>{selected.memberCount}</strong>
-                  </span>
-                  <span>
-                    <Bookmark size={18} aria-hidden="true" />
-                    <small>{t.boardBookmarksColumn}</small>
-                    <strong>{selected.bookmarkCount}</strong>
-                  </span>
-                  <span>
-                    <CalendarClock size={18} aria-hidden="true" />
-                    <small>{t.boardUpdatedColumn}</small>
-                    <strong>
-                      <time
-                        dateTime={new Date(selected.updatedAt).toISOString()}
-                      >
-                        {new Date(selected.updatedAt).toLocaleDateString(
-                          language === "ko" ? "ko-KR" : "en-US",
-                        )}
-                      </time>
-                    </strong>
-                  </span>
-                </div>
-              </section>
+              <div className="board-meta">
+                <span>
+                  <NotebookPen size={18} aria-hidden="true" />
+                  <small>{t.boardNotesColumn}</small>
+                  <strong>{selected.noteCount}</strong>
+                </span>
+                <span>
+                  <Users size={18} aria-hidden="true" />
+                  <small>{t.boardMembersColumn}</small>
+                  <strong>{selected.memberCount}</strong>
+                </span>
+                <span>
+                  <Bookmark size={18} aria-hidden="true" />
+                  <small>{t.boardBookmarksColumn}</small>
+                  <strong>{selected.bookmarkCount}</strong>
+                </span>
+                <span>
+                  <CalendarClock size={18} aria-hidden="true" />
+                  <small>{t.boardUpdatedColumn}</small>
+                  <strong>
+                    <time dateTime={new Date(selected.updatedAt).toISOString()}>
+                      {new Date(selected.updatedAt).toLocaleDateString(
+                        language === "ko" ? "ko-KR" : "en-US",
+                      )}
+                    </time>
+                  </strong>
+                </span>
+              </div>
             </header>
             <section className="board-detail-section board-note-contents">
-              <h4>{t.boardNoteContents}</h4>
               <div
                 className="board-note-tabs"
                 role="tablist"
@@ -186,67 +178,98 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                 ))}
               </div>
               {activeNote && (
-                <article
-                  className="board-note-preview"
-                  id="board-active-note"
-                  role="tabpanel"
-                  onTouchStart={(event) => {
-                    if (
-                      !window.matchMedia("(max-width: 512px)").matches ||
-                      event.touches.length !== 1
-                    )
-                      return;
-                    noteSwipeStart.current = {
-                      x: event.touches[0].clientX,
-                      y: event.touches[0].clientY,
-                    };
-                  }}
-                  onTouchEnd={(event) => {
-                    const start = noteSwipeStart.current;
-                    noteSwipeStart.current = null;
-                    const touch = event.changedTouches[0];
-                    if (!start || !touch || orderedNotes.length < 2) return;
-                    const horizontal = touch.clientX - start.x;
-                    const vertical = touch.clientY - start.y;
-                    if (
-                      Math.abs(horizontal) < 50 ||
-                      Math.abs(horizontal) <= Math.abs(vertical)
-                    )
-                      return;
-                    const current = orderedNotes.findIndex(
-                      (note) => note.id === activeNote.id,
-                    );
-                    const direction = horizontal < 0 ? 1 : -1;
-                    const next =
-                      (current + direction + orderedNotes.length) %
-                      orderedNotes.length;
-                    setActiveNoteId(orderedNotes[next].id);
-                  }}
-                  onTouchCancel={() => {
-                    noteSwipeStart.current = null;
-                  }}
-                >
-                  <pre>
-                    {activeNote.content.split("\n").map((line, index) => (
-                      <span
-                        className={`board-note-line ${activeNote.selectedLines?.includes(index) ? "is-selected" : ""}`}
-                        data-line={index}
-                        key={index}
-                      >
+                <div className="board-note-preview-shell">
+                  <article
+                    className="board-note-preview"
+                    id="board-active-note"
+                    role="tabpanel"
+                    style={{ height: notePreviewHeight }}
+                    onTouchStart={(event) => {
+                      if (
+                        !window.matchMedia("(max-width: 512px)").matches ||
+                        event.touches.length !== 1
+                      )
+                        return;
+                      noteSwipeStart.current = {
+                        x: event.touches[0].clientX,
+                        y: event.touches[0].clientY,
+                      };
+                    }}
+                    onTouchEnd={(event) => {
+                      const start = noteSwipeStart.current;
+                      noteSwipeStart.current = null;
+                      const touch = event.changedTouches[0];
+                      if (!start || !touch || orderedNotes.length < 2) return;
+                      const horizontal = touch.clientX - start.x;
+                      const vertical = touch.clientY - start.y;
+                      if (
+                        Math.abs(horizontal) < 50 ||
+                        Math.abs(horizontal) <= Math.abs(vertical)
+                      )
+                        return;
+                      const current = orderedNotes.findIndex(
+                        (note) => note.id === activeNote.id,
+                      );
+                      const direction = horizontal < 0 ? 1 : -1;
+                      const next =
+                        (current + direction + orderedNotes.length) %
+                        orderedNotes.length;
+                      setActiveNoteId(orderedNotes[next].id);
+                    }}
+                    onTouchCancel={() => {
+                      noteSwipeStart.current = null;
+                    }}
+                  >
+                    <pre>
+                      {activeNote.content.split("\n").map((line, index) => (
                         <span
-                          className="board-note-line-number"
-                          aria-hidden="true"
+                          className={`board-note-line ${activeNote.selectedLines?.includes(index) ? "is-selected" : ""}`}
+                          data-line={index}
+                          key={index}
                         >
-                          {String(index + 1).padStart(2, "0")}
+                          <span
+                            className="board-note-line-number"
+                            aria-hidden="true"
+                          >
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span className="board-note-text">
+                            {line || "\u200b"}
+                            {"\n"}
+                          </span>
                         </span>
-                        <span className="board-note-text">
-                          {line || "\u200b"}
-                          {"\n"}
-                        </span>
-                      </span>
-                    ))}
-                  </pre>
-                </article>
+                      ))}
+                    </pre>
+                  </article>
+                  <div
+                    className="board-note-resizer"
+                    data-testid="board-note-resizer"
+                    aria-hidden="true"
+                    onPointerDown={(event) => {
+                      noteResizeStart.current = {
+                        y: event.clientY,
+                        height: notePreviewHeight,
+                      };
+                      event.currentTarget.setPointerCapture(event.pointerId);
+                    }}
+                    onPointerMove={(event) => {
+                      const start = noteResizeStart.current;
+                      if (!start) return;
+                      setNotePreviewHeight(
+                        Math.max(316.8, start.height + event.clientY - start.y),
+                      );
+                    }}
+                    onPointerUp={(event) => {
+                      noteResizeStart.current = null;
+                      event.currentTarget.releasePointerCapture(
+                        event.pointerId,
+                      );
+                    }}
+                    onPointerCancel={() => {
+                      noteResizeStart.current = null;
+                    }}
+                  />
+                </div>
               )}
             </section>
             <section className="board-detail-section board-collaboration">

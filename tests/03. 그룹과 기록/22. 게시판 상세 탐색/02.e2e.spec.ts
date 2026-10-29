@@ -1,3 +1,4 @@
+path_helper: node.save: Permission denied
 import { expect } from "@playwright/test";
 
 import { boardTest as test } from "../../__fixture__";
@@ -20,11 +21,8 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
 
   for (const [selector, size] of [
     [".board-back", 16],
-    [".board-group-name", 15],
     [".board-owner", 17],
-    [".board-detail h3", 27],
     [".board-meta", 15],
-    [".board-description", 18],
     [".board-join-hint", 14],
     [".board-detail-actions .board-primary", 15],
     [".board-detail-actions .board-copy", 15],
@@ -36,6 +34,15 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     expect(actual).toBeCloseTo(size * fontScale, 1);
   }
   await expect(page.locator(".board-detail-hero")).toBeVisible();
+  await expect(page.locator(".board-detail-summary")).toHaveCount(0);
+  await expect(page.locator(".board-detail h3")).toHaveCount(0);
+  await expect(page.locator(".board-group-name")).toHaveCount(0);
+  await expect(page.locator(".board-description")).toHaveCount(0);
+  const sharedNotesBounds = (await page
+    .locator(".board-note-contents")
+    .boundingBox())!;
+  const heroBounds = (await page.locator(".board-detail-hero").boundingBox())!;
+  expect(sharedNotesBounds.y).toBeLessThan(heroBounds.y);
   const noteLayout = await page
     .locator(".board-note-preview")
     .evaluate((element) => {
@@ -52,7 +59,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   expect(noteLayout.minHeight).toBeCloseTo(noteLayout.height, 0);
   expect(noteLayout.maxHeight).toBe("none");
   expect(noteLayout.overflowY).toBe("auto");
-  expect(noteLayout.resize).toBe("vertical");
+  expect(noteLayout.resize).toBe("none");
   const noteText = await page
     .locator(".board-note-preview pre")
     .evaluate((element) => {
@@ -80,22 +87,47 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     "overflow-y",
     "hidden",
   );
+  await expect(page.locator(".board-note-preview")).toHaveCSS("resize", "none");
+  await expect(page.locator(".board-note-contents > h4")).toHaveCount(0);
+  const sharedNotesSection = (await page
+    .locator(".board-note-contents")
+    .boundingBox())!;
+  const firstSharedNoteTab = (await page
+    .locator(".board-note-tabs > button")
+    .first()
+    .boundingBox())!;
+  expect(firstSharedNoteTab.x).toBeCloseTo(sharedNotesSection.x, 0);
+  await expect(page.locator(".board-note-contents")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
+  const preview = page.locator(".board-note-preview");
+  const initialPreviewHeight = (await preview.boundingBox())!.height;
+  const resizer = (await page.getByTestId("board-note-resizer").boundingBox())!;
+  await page.mouse.move(
+    resizer.x + resizer.width / 2,
+    resizer.y + resizer.height / 2,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    resizer.x + resizer.width / 2,
+    resizer.y + resizer.height / 2 + 80,
+  );
+  await page.mouse.up();
+  expect((await preview.boundingBox())!.height).toBeCloseTo(
+    initialPreviewHeight + 80,
+    0,
+  );
   await expect(page.locator(".board-intro")).toHaveCount(0);
   await expect(page.locator(".board-detail-section")).toHaveCount(2);
-  await expect(
-    page.locator(".board-detail-hero > .board-overview"),
-  ).toHaveCount(1);
-  const desktopSummary = (await page
-    .locator(".board-detail-summary")
-    .boundingBox())!;
+  await expect(page.locator(".board-detail-hero.board-overview")).toHaveCount(
+    1,
+  );
   const desktopOverview = (await page
     .locator(".board-overview")
     .boundingBox())!;
-  expect(desktopOverview.x).toBeGreaterThan(desktopSummary.x);
-  await expect(page.locator(".board-overview")).toHaveCSS(
-    "align-self",
-    "start",
-  );
+  expect(desktopOverview.x).toBeCloseTo(sharedNotesBounds.x, 0);
+  expect(desktopOverview.width).toBeCloseTo(sharedNotesBounds.width, 0);
   const desktopNotesMetric = (await page
     .locator(".board-meta > span")
     .nth(0)
@@ -112,12 +144,14 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   ).toHaveText("1");
   expect(desktopBookmarksMetric.width).toBeCloseTo(desktopNotesMetric.width, 0);
   await page.setViewportSize({ width: 360, height: 800 });
-  const mobileSummary = (await page
-    .locator(".board-detail-summary")
+  const overviewTitle = (await page
+    .locator("#board-overview-title")
     .boundingBox())!;
-  const mobileOverview = (await page.locator(".board-overview").boundingBox())!;
-  expect(mobileOverview.y).toBeGreaterThanOrEqual(
-    mobileSummary.y + mobileSummary.height,
+  const mobileOwner = (await page
+    .locator(".board-overview-owner")
+    .boundingBox())!;
+  expect(mobileOwner.y).toBeGreaterThanOrEqual(
+    overviewTitle.y + overviewTitle.height,
   );
   await expect(page.locator(".board-meta > span")).toHaveCount(4);
   await expect(page.locator(".board-meta time")).toHaveAttribute(
