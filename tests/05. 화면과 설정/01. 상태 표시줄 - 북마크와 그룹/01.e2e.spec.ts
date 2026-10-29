@@ -59,12 +59,27 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     .boundingBox())!;
   const desktopBoardLabel = (await boardCommand.locator("span").boundingBox())!;
   const desktopMoreLabel = (await label.boundingBox())!;
-  expect(desktopGroupLabel.x).toBeCloseTo(groupMenuRow.x + 5, 1);
+  const desktopGroupCommand = (await systemGroupCommand(page).boundingBox())!;
+  const desktopBoardCommand = (await boardCommand.boundingBox())!;
+  const desktopMoreCommand = (await moreCommand(page).boundingBox())!;
+  expect(desktopGroupCommand.x).toBeCloseTo(groupMenuRow.x + 5, 1);
+  expect(desktopGroupLabel.x + desktopGroupLabel.width / 2).toBeCloseTo(
+    desktopGroupCommand.x + desktopGroupCommand.width / 2,
+    1,
+  );
   expect(desktopBoardLabel.x + desktopBoardLabel.width / 2).toBeCloseTo(
     groupMenuRow.x + groupMenuContentWidth / 2,
     1,
   );
-  expect(desktopMoreLabel.x + desktopMoreLabel.width).toBeCloseTo(
+  expect(desktopBoardLabel.x + desktopBoardLabel.width / 2).toBeCloseTo(
+    desktopBoardCommand.x + desktopBoardCommand.width / 2,
+    1,
+  );
+  expect(desktopMoreLabel.x + desktopMoreLabel.width / 2).toBeCloseTo(
+    desktopMoreCommand.x + desktopMoreCommand.width / 2,
+    1,
+  );
+  expect(desktopMoreCommand.x + desktopMoreCommand.width).toBeCloseTo(
     groupMenuRow.x + groupMenuContentWidth - 5,
     1,
   );

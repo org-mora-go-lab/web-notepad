@@ -173,16 +173,6 @@
       height: 35px;
       font-size: calc(#{v.font(15px)} - 1px);
     }
-
-    .system-group-command {
-      justify-content: flex-start;
-      padding-left: 0;
-    }
-
-    .more-command {
-      justify-content: flex-end;
-      padding-right: 0;
-    }
   }
 
   @media (max-width: 512px) {
