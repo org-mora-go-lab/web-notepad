@@ -8,7 +8,20 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   boardPost,
 }) => {
   await page.goto("/");
+  let releaseBoard!: () => void;
+  const boardResponse = new Promise<void>((resolve) => {
+    releaseBoard = resolve;
+  });
+  await page.route("**/api/board", async (route) => {
+    await boardResponse;
+    await route.continue();
+  });
   await openBoard(page);
+  const skeletonRowHeight = (await page
+    .locator(".board-skeleton-row")
+    .first()
+    .boundingBox())!.height;
+  releaseBoard();
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill(boardPost.title);
@@ -36,6 +49,10 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
     hasText: boardPost.groupName,
   });
   await expect(entry).toHaveCount(1);
+  const boardRowHeight = (await entry
+    .locator("xpath=ancestor::tr")
+    .boundingBox())!.height;
+  expect(Math.abs(skeletonRowHeight - boardRowHeight)).toBeLessThanOrEqual(1);
   await expect(entry.locator("svg")).toHaveCount(0);
   await expect(entry).toHaveCSS("min-width", "150px");
   const owner = entry.locator("xpath=ancestor::tr").locator(".board-owner");

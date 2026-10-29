@@ -612,6 +612,7 @@
     clip-path: inset(50%);
   }
   .board-skeleton-row {
+    box-sizing: border-box;
     height: 64.5px;
     display: grid;
     grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
