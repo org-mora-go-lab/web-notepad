@@ -172,7 +172,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   await expect(tabs.first()).toContainText("Follow-up shared note body");
   await expect(tabs.locator(".board-note-title")).toHaveText([
     "Follow-up shared note body",
-    "",
+    "abc",
     "Private shared note body",
   ]);
   await expect(tabs.first().locator(".board-note-bookmark")).toHaveCount(1);
@@ -194,15 +194,10 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   );
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await expect(page.locator(".board-note-preview")).toHaveCount(1);
-  expect(boardPost.notes.some((note) => note.content === "Empty note")).toBe(
-    false,
+  expect(boardPost.notes.every((note) => note.content.trim().length > 2)).toBe(
+    true,
   );
-  expect(boardPost.notes.some((note) => note.content === "")).toBe(true);
-  await tabs.nth(1).click();
-  await expect(page.locator(".board-note-preview")).not.toContainText(
-    "Empty note",
-  );
-  await expect(page.locator(".board-note-line")).toHaveCount(1);
+  expect(boardPost.notes.some((note) => note.content === "abc")).toBe(true);
   await page.setViewportSize({ width: 360, height: 800 });
   await tabs.first().click();
   const swipe = async (from: number, to: number) => {

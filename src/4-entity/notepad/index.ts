@@ -32,11 +32,13 @@ export {
   getPaneWorkspace,
   getStatusColor,
   getTabStatus,
+  hasPersistableSharedContent,
   isSharedGroupId,
   mergeSharedGroupData,
   namespaceGroup,
   normalizeSharedGroupData,
   PANE_IDS,
+  pruneShortSharedTabs,
   sharedGroupId,
   toSharedGroupData,
 } from "./util";
