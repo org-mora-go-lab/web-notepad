@@ -25,7 +25,7 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     boardCommand,
     moreCommand(page),
   ]) {
-    await expect(command).toHaveCSS("font-size", "13.5px");
+    await expect(command).toHaveCSS("font-size", "12.5px");
   }
   for (const command of [
     systemGroupCommand(page),
@@ -49,7 +49,25 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     "border-top-width",
     "1px",
   );
-  const groupMenuRow = (await page.locator(".group-more").boundingBox())!;
+  const groupMenuRowLocator = page.locator(".group-more");
+  const groupMenuRow = (await groupMenuRowLocator.boundingBox())!;
+  const groupMenuContentWidth = await groupMenuRowLocator.evaluate(
+    (element) => element.clientWidth,
+  );
+  const desktopGroupLabel = (await systemGroupCommand(page)
+    .locator("span")
+    .boundingBox())!;
+  const desktopBoardLabel = (await boardCommand.locator("span").boundingBox())!;
+  const desktopMoreLabel = (await label.boundingBox())!;
+  expect(desktopGroupLabel.x).toBeCloseTo(groupMenuRow.x + 5, 1);
+  expect(desktopBoardLabel.x + desktopBoardLabel.width / 2).toBeCloseTo(
+    groupMenuRow.x + groupMenuContentWidth / 2,
+    1,
+  );
+  expect(desktopMoreLabel.x + desktopMoreLabel.width).toBeCloseTo(
+    groupMenuRow.x + groupMenuContentWidth - 5,
+    1,
+  );
   const statusBar = (await page.locator(".footer").boundingBox())!;
   expect(groupMenuRow.height).toBe(statusBar.height);
 

@@ -157,7 +157,13 @@
     .group-more {
       box-sizing: border-box;
       height: var(--footer-height);
+      grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr) 1px minmax(
+          0,
+          1fr
+        );
+      display: grid;
       padding-block: 6px;
+      padding-inline: 5px;
     }
 
     .system-group-command,
@@ -165,7 +171,17 @@
     .more-command {
       min-height: 35px;
       height: 35px;
-      font-size: v.font(15px);
+      font-size: calc(#{v.font(15px)} - 1px);
+    }
+
+    .system-group-command {
+      justify-content: flex-start;
+      padding-left: 0;
+    }
+
+    .more-command {
+      justify-content: flex-end;
+      padding-right: 0;
     }
   }
 
