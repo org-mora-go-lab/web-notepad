@@ -154,6 +154,15 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   ).toHaveText("1");
   expect(desktopBookmarksMetric.width).toBeCloseTo(desktopNotesMetric.width, 0);
   await page.setViewportSize({ width: 320, height: 800 });
+  await expect
+    .poll(async () => {
+      const editor = (await page.locator(".board-note-preview").boundingBox())!;
+      const footer = (await page
+        .locator(".board-mobile-footer")
+        .boundingBox())!;
+      return footer.y - (editor.y + editor.height);
+    })
+    .toBeCloseTo(50, 0);
   const mobileEditor = (await page
     .locator(".board-note-preview")
     .boundingBox())!;

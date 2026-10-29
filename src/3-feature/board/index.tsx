@@ -34,6 +34,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [copied, setCopied] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [notePreviewHeight, setNotePreviewHeight] = useState(316.8);
+  const notePreviewRef = useRef<HTMLElement>(null);
   const noteResizeStart = useRef<{ y: number; height: number } | null>(null);
   const noteSwipeStart = useRef<{ x: number; y: number } | null>(null);
   const noteTabFocusRequested = useRef(false);
@@ -96,6 +97,40 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     const frame = requestAnimationFrame(updateNoteTabFog);
     return () => cancelAnimationFrame(frame);
   }, [activeNote?.id, updateNoteTabFog]);
+  useEffect(() => {
+    if (!selected?.id || !activeNote?.id) return;
+    const updateMobilePreviewHeight = () => {
+      if (!window.matchMedia("(max-width: 512px)").matches) return;
+      const preview = notePreviewRef.current;
+      if (!preview) return;
+      const page = preview.closest<HTMLElement>(".board-page");
+      const footer = document.querySelector<HTMLElement>(
+        ".board-mobile-footer",
+      );
+      const viewportHeight =
+        window.visualViewport?.height ?? window.innerHeight;
+      const previewTop =
+        preview.getBoundingClientRect().top + (page?.scrollTop ?? 0);
+      const footerHeight = footer?.getBoundingClientRect().height ?? 0;
+      setNotePreviewHeight(
+        Math.max(316.8, viewportHeight - previewTop - footerHeight - 50),
+      );
+    };
+    const frame = requestAnimationFrame(updateMobilePreviewHeight);
+    window.addEventListener("resize", updateMobilePreviewHeight);
+    window.visualViewport?.addEventListener(
+      "resize",
+      updateMobilePreviewHeight,
+    );
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateMobilePreviewHeight);
+      window.visualViewport?.removeEventListener(
+        "resize",
+        updateMobilePreviewHeight,
+      );
+    };
+  }, [activeNote?.id, selected?.id]);
   useEffect(() => {
     const clearFeedback = () => {
       setFailure("");
@@ -228,6 +263,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
               {activeNote && (
                 <div className="board-note-preview-shell">
                   <article
+                    ref={notePreviewRef}
                     className="board-note-preview"
                     id="board-active-note"
                     role="tabpanel"
