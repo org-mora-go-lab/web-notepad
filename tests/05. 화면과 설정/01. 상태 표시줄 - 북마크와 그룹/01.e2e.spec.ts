@@ -59,13 +59,9 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     .boundingBox())!;
   expect(dashboardBounds.width).toBeCloseTo(29.8, 1);
   await expect(label).toBeInViewport();
-  await expect(icon).toBeInViewport();
-  await expect(systemGroupCommand(page).locator("svg")).toBeVisible();
-  await expect(boardCommand.locator("svg")).toBeVisible();
-  await expect(icon).toHaveCSS("width", "25px");
-  const labelBox = (await label.boundingBox())!;
-  const iconBox = (await icon.boundingBox())!;
-  expect(labelBox.x).toBeGreaterThanOrEqual(iconBox.x + iconBox.width);
+  await expect(systemGroupCommand(page).locator("svg")).toBeHidden();
+  await expect(boardCommand.locator("svg")).toBeHidden();
+  await expect(icon).toBeHidden();
   for (const command of [
     systemGroupCommand(page),
     boardCommand,
@@ -73,14 +69,10 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   ]) {
     const alignment = await command.evaluate((element) => {
       const bounds = element.getBoundingClientRect();
-      const children = Array.from(element.children).map((child) =>
-        child.getBoundingClientRect(),
-      );
-      const contentLeft = Math.min(...children.map((child) => child.left));
-      const contentRight = Math.max(...children.map((child) => child.right));
+      const text = element.querySelector("span")!.getBoundingClientRect();
       return {
         commandCenter: bounds.left + bounds.width / 2,
-        contentCenter: (contentLeft + contentRight) / 2,
+        contentCenter: text.left + text.width / 2,
       };
     });
     expect(alignment.contentCenter).toBeCloseTo(alignment.commandCenter, 1);
