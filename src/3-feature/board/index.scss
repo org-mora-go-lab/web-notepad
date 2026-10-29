@@ -395,6 +395,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     resize: vertical;
+    touch-action: pan-y;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
     border: 1px solid v.$line;

@@ -164,4 +164,30 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     "Empty note",
   );
   await expect(page.locator(".board-note-line")).toHaveCount(1);
+  await page.setViewportSize({ width: 360, height: 800 });
+  await tabs.first().click();
+  const swipe = async (from: number, to: number) => {
+    await page.locator(".board-note-preview").evaluate(
+      (element, points) => {
+        const dispatch = (
+          type: "touchstart" | "touchend",
+          key: "touches" | "changedTouches",
+          x: number,
+        ) => {
+          const event = new Event(type, { bubbles: true, cancelable: true });
+          Object.defineProperty(event, key, {
+            value: [{ clientX: x, clientY: 120 }],
+          });
+          element.dispatchEvent(event);
+        };
+        dispatch("touchstart", "touches", points.from);
+        dispatch("touchend", "changedTouches", points.to);
+      },
+      { from, to },
+    );
+  };
+  await swipe(300, 80);
+  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+  await swipe(80, 300);
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
 });

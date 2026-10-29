@@ -33,6 +33,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [failure, setFailure] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const noteSwipeStart = useRef<{ x: number; y: number } | null>(null);
   const orderedNotes = selected
     ? [...selected.notes].sort(
         (left, right) =>
@@ -189,6 +190,41 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                   className="board-note-preview"
                   id="board-active-note"
                   role="tabpanel"
+                  onTouchStart={(event) => {
+                    if (
+                      !window.matchMedia("(max-width: 512px)").matches ||
+                      event.touches.length !== 1
+                    )
+                      return;
+                    noteSwipeStart.current = {
+                      x: event.touches[0].clientX,
+                      y: event.touches[0].clientY,
+                    };
+                  }}
+                  onTouchEnd={(event) => {
+                    const start = noteSwipeStart.current;
+                    noteSwipeStart.current = null;
+                    const touch = event.changedTouches[0];
+                    if (!start || !touch || orderedNotes.length < 2) return;
+                    const horizontal = touch.clientX - start.x;
+                    const vertical = touch.clientY - start.y;
+                    if (
+                      Math.abs(horizontal) < 50 ||
+                      Math.abs(horizontal) <= Math.abs(vertical)
+                    )
+                      return;
+                    const current = orderedNotes.findIndex(
+                      (note) => note.id === activeNote.id,
+                    );
+                    const direction = horizontal < 0 ? 1 : -1;
+                    const next =
+                      (current + direction + orderedNotes.length) %
+                      orderedNotes.length;
+                    setActiveNoteId(orderedNotes[next].id);
+                  }}
+                  onTouchCancel={() => {
+                    noteSwipeStart.current = null;
+                  }}
                 >
                   <pre>
                     {activeNote.content.split("\n").map((line, index) => (
