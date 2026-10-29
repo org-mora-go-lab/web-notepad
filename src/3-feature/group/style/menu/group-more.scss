@@ -171,7 +171,7 @@
     .more-command {
       min-height: 35px;
       height: 35px;
-      font-size: calc(#{v.font(15px)} - 1px);
+      font-size: v.font(15px);
     }
   }
 

@@ -25,7 +25,7 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
     boardCommand,
     moreCommand(page),
   ]) {
-    await expect(command).toHaveCSS("font-size", "12.5px");
+    await expect(command).toHaveCSS("font-size", "13.5px");
   }
   for (const command of [
     systemGroupCommand(page),
