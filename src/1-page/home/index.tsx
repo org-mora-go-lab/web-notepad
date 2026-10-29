@@ -126,6 +126,11 @@ export function Home() {
   }, [language, fontScale]);
 
   useEffect(() => {
+    if (!hydrated || activeTab) return;
+    useNotepadStore.getState().addTab();
+  }, [activeGroupId, activeTab, hydrated]);
+
+  useEffect(() => {
     if (
       !sharedTabLink ||
       sharedTabLinkOpened.current ||
