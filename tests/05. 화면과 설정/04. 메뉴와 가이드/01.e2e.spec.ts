@@ -56,8 +56,9 @@ test("1. 하단 계정은 로그인, 더보기는 가이드·검색·북마크�
         1,
       );
     } else {
-      expect(menuBounds.x + menuBounds.width).toBeCloseTo(
-        footerBounds.x + footerBounds.width + 30,
+      const triggerBounds = (await trigger.boundingBox())!;
+      expect(menuBounds.x + menuBounds.width / 2).toBeCloseTo(
+        triggerBounds.x + triggerBounds.width / 2 - 50,
         1,
       );
     }

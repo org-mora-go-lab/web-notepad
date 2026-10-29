@@ -16,7 +16,6 @@ import {
   I18nContext,
   SavingTabsContext,
 } from "@/src/5-shared/hook";
-import { MobileTapFeedback } from "@/src/5-shared/ui";
 
 import { Loading, PaneColumn } from "./component";
 
@@ -227,7 +226,6 @@ export function Home() {
           }}
         >
           <SavingTabsContext value={[...savingTabIds, ...shared.savingTabIds]}>
-            <MobileTapFeedback />
             <main
               className={`home ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed" && openPanel !== "bookmarks") ? "is-panel-pinned" : ""}`}
               style={{ "--font-scale": fontScale } as CSSProperties}
