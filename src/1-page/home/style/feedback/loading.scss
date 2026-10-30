@@ -33,6 +33,7 @@
   );
   box-shadow: 0 0 8px
     color-mix(in srgb, var(--initial-sync-color) 72%, transparent);
+  opacity: 0.8;
   transform: translate3d(calc(-100% - 4px), 0, 0);
   animation: initial-sync-slide 1.05s cubic-bezier(0.45, 0, 0.35, 1) infinite;
   will-change: transform;
@@ -49,6 +50,5 @@
     animation: none;
     width: 100%;
     transform: none;
-    opacity: 0.85;
   }
 }
