@@ -68,7 +68,12 @@ export async function seedSharedCards(page: Page, id: string) {
   expect(
     (
       await page.request.post("/api/groups/update", {
-        data: { id, baseRevision: record.revision, data },
+        data: {
+          id,
+          baseRevision: record.revision,
+          data,
+          deletedTabIds: record.data.tabs.map((tab: { id: string }) => tab.id),
+        },
       })
     ).ok(),
   ).toBe(true);
