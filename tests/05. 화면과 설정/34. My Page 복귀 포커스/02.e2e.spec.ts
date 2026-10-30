@@ -15,7 +15,7 @@ test("2. My Page의 메모로 돌아가기 링크를 누르면 에디터에 자�
     await page.locator("button.auth-command").click();
     await page.getByRole("menuitem", { name: "My Page" }).click();
     await expect(page).toHaveURL(/\/my-page$/);
-    await page.getByRole("link", { name: "Back to notes" }).click();
+    await page.getByRole("link", { name: "Back" }).click();
 
     const editor = page.locator(".note-area").first();
     await expect(editor).toBeVisible();

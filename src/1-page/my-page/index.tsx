@@ -189,7 +189,6 @@ export function MyPage() {
     <main className="my-page" aria-busy={pageLoading}>
       <div className="my-page-container">
         <FixedPageHeader
-          backLabel={t.myPageHome}
           className="my-page-header"
           onNavigateBack={markMyPageReturn}
           title={t.myPage}

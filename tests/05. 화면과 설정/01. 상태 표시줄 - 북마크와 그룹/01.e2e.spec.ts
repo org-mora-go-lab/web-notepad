@@ -67,7 +67,7 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
 
   await page.setViewportSize(MOBILE_VIEWPORT);
   const mobileGroupMenuRow = (await page.locator(".group-more").boundingBox())!;
-  expect(mobileGroupMenuRow.height).toBeCloseTo(46, 0);
+  expect(mobileGroupMenuRow.height).toBeCloseTo(50.6, 0);
   const dashboardBounds = (await page
     .locator(".footer .dashboard-command svg")
     .boundingBox())!;

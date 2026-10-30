@@ -70,7 +70,7 @@ test("2. 게시글 상세는 소개와 참여 링크를 제공하고 클릭만�
     "Private shared note body",
   );
   await page
-    .getByRole("button", { name: "Back to groups", exact: true })
+    .getByRole("button", { name: "Back", exact: true })
     .click();
   await expect(page.locator(".board-list")).toBeVisible();
 });

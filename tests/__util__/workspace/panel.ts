@@ -94,8 +94,15 @@ export async function toggleDashboardStatus(
   const trigger = page.locator(".dashboard-options-trigger");
   if ((await trigger.getAttribute("aria-expanded")) !== "true")
     await trigger.click();
-  await page.locator(`.dashboard-${status}-command`).click();
-  await trigger.click();
+  const command = page.locator(`.dashboard-${status}-command`);
+  const previous = await command.getAttribute("aria-pressed");
+  await command.click();
+  await expect(command).toHaveAttribute(
+    "aria-pressed",
+    previous === "true" ? "false" : "true",
+  );
+  if ((await trigger.getAttribute("aria-expanded")) === "true")
+    await trigger.click();
 }
 export const openShortcutsPanel = (page: Page) =>
   openPanel(page, "shortcuts-panel");

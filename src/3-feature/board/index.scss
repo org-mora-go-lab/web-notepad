@@ -334,6 +334,7 @@
   }
   .board-note-contents {
     order: -1;
+    margin-top: 10px;
     padding: 0;
     border: 0;
     border-radius: 0;
@@ -443,6 +444,12 @@
     background: v.$panel;
     scrollbar-color: v.$muted transparent;
     scrollbar-width: thin;
+    &.is-slide-left {
+      animation: board-note-slide-left 180ms ease-out;
+    }
+    &.is-slide-right {
+      animation: board-note-slide-right 180ms ease-out;
+    }
     pre {
       position: relative;
       width: 100%;
@@ -603,6 +610,20 @@
     .board-owner {
       font-size: v.font(17px);
     }
+  }
+}
+
+@keyframes board-note-slide-left {
+  from {
+    opacity: 0.65;
+    transform: translateX(18px);
+  }
+}
+
+@keyframes board-note-slide-right {
+  from {
+    opacity: 0.65;
+    transform: translateX(-18px);
   }
 }
 

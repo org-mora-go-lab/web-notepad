@@ -1,5 +1,6 @@
 export type BoardPost = {
   id: string;
+  local?: boolean;
   viewerRole?: "owner" | "member" | null;
   groupName: string;
   ownerName: string;

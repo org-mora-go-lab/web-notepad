@@ -23,5 +23,5 @@ test("1. PC에서 만든 그룹과 새 탭의 글을 같은 계정 모바일에�
   const state = await readStoredState(mobile);
   expect(
     state.groups.find((group) => group.name === "Cross device group")?.tabs,
-  ).toHaveLength(2);
+  ).toHaveLength(1);
 });

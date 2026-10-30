@@ -1,6 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import type { BoardPost } from "@/src/4-entity/notepad";
+import {
+  type BoardPost,
+  hasPersistableSharedContent,
+  isSharedGroupId,
+  useNotepadStore,
+} from "@/src/4-entity/notepad";
 
 const MOCK_BOARD_POSTS: BoardPost[] = [
   {
@@ -69,6 +74,7 @@ const MOCK_BOARD_POSTS: BoardPost[] = [
 ];
 
 export function useBoard() {
+  const localGroups = useNotepadStore((state) => state.groups);
   const [posts, setPosts] = useState<BoardPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -97,5 +103,52 @@ export function useBoard() {
       });
     return () => controller.abort();
   }, [revision]);
-  return { posts, loading, error, reload };
+  const localPosts = useMemo<BoardPost[]>(
+    () =>
+      localGroups
+        .filter((group) => !isSharedGroupId(group.id))
+        .map((group) => {
+          const tabs = group.tabs.filter(
+            (tab) => tab.open && hasPersistableSharedContent(tab.content),
+          );
+          return {
+            id: `local-${group.id}`,
+            local: true,
+            viewerRole: "owner",
+            groupName: group.name,
+            ownerName: "Me",
+            title: group.name,
+            description: "",
+            noteCount: tabs.length,
+            bookmarkCount: tabs.filter((tab) => tab.bookmarked).length,
+            notes: tabs.map(
+              ({
+                id,
+                title,
+                content,
+                bookmarked,
+                selectedLines,
+                updatedAt,
+              }) => ({
+                id,
+                title,
+                content,
+                bookmarked,
+                selectedLines,
+                updatedAt,
+              }),
+            ),
+            memberCount: 1,
+            updatedAt: group.updatedAt,
+            inviteUrl: "",
+          };
+        }),
+    [localGroups],
+  );
+  return {
+    posts: [...localPosts, ...posts],
+    loading,
+    error,
+    reload,
+  };
 }

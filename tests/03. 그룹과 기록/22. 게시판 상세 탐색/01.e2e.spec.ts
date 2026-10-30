@@ -11,7 +11,7 @@ test("1. 브라우저와 갤럭시 크기 모바일의 뒤로가기는 게시판
     await page.setViewportSize({ width, height: 800 });
     await openBoard(page);
     const listBack = page.locator(".board-page-header > a");
-    const heading = page.getByRole("heading", { name: "Shared groups" });
+    const heading = page.getByRole("heading", { name: "Board" });
     const listHeadingBounds = (await heading.boundingBox())!;
     const listContentBounds = (await page
       .locator(".board-content")

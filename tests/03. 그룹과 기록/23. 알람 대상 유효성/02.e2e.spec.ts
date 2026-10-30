@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 
 import { sharingTest as test } from "../../__fixture__";
 import { getApi } from "../../__util__/request";
-test("2. X로 닫은 탭은 영구 삭제가 아니므로 알람을 보존한다", async ({
+test("2. X로 닫아 DB에서 제거한 탭의 알람도 목록에서 제거한다", async ({
   sharing: { owner, guest, id },
 }) => {
   const record = (
@@ -31,6 +31,6 @@ test("2. X로 닫은 탭은 영구 삭제가 아니므로 알람을 보존한다
     await getApi(owner.request, "/api/groups/notifications")
   ).json();
   expect(notifications.some((n: { tabId: string }) => n.tabId === tab.id)).toBe(
-    true,
+    false,
   );
 });

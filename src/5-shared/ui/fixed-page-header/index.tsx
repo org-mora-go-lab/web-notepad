@@ -6,7 +6,6 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 type FixedPageHeaderProps = {
-  backLabel: string;
   className?: string;
   onBack?: () => void;
   onNavigateBack?: () => void;
@@ -14,7 +13,6 @@ type FixedPageHeaderProps = {
 };
 
 export function FixedPageHeader({
-  backLabel,
   className = "",
   onBack,
   onNavigateBack,
@@ -23,7 +21,7 @@ export function FixedPageHeader({
   const backContent = (
     <>
       <ChevronLeft size={18} aria-hidden="true" />
-      <span>{backLabel}</span>
+      <span>Back</span>
     </>
   );
 

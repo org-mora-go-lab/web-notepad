@@ -2,6 +2,8 @@ import "server-only";
 
 import { type Client, createClient } from "@libsql/client";
 
+import { sanitizeCloudSnapshot } from "@/src/4-entity/notepad/persistence";
+
 let client: Client | undefined;
 let schemaReady: Promise<void> | undefined;
 
@@ -71,6 +73,10 @@ export async function saveNotepadUpdate(
         (event_id, user_id, snapshot, created_at) VALUES (?, ?, ?, ?)`,
       args: [eventId, userId, snapshot, Date.now()],
     });
+    await transaction.execute({
+      sql: "DELETE FROM notepad_update_history WHERE user_id = ? AND event_id <> ?",
+      args: [userId, eventId],
+    });
     await transaction.commit();
     return { saved: true };
   } finally {
@@ -86,13 +92,30 @@ export async function getLatestNotepadUpdate(userId: string) {
     args: [userId],
   });
   const row = result.rows[0];
-  return row
-    ? {
-        eventId: String(row.event_id),
-        snapshot: String(row.snapshot),
-        createdAt: Number(row.created_at),
-      }
-    : null;
+  if (!row) return null;
+  const eventId = String(row.event_id);
+  const original = String(row.snapshot);
+  const snapshot = sanitizeCloudSnapshot(original);
+  const transaction = await database.transaction("write");
+  try {
+    if (snapshot !== original)
+      await transaction.execute({
+        sql: "UPDATE notepad_update_history SET snapshot = ? WHERE user_id = ? AND event_id = ?",
+        args: [snapshot, userId, eventId],
+      });
+    await transaction.execute({
+      sql: "DELETE FROM notepad_update_history WHERE user_id = ? AND event_id <> ?",
+      args: [userId, eventId],
+    });
+    await transaction.commit();
+  } finally {
+    transaction.close();
+  }
+  return {
+    eventId,
+    snapshot,
+    createdAt: Number(row.created_at),
+  };
 }
 
 export async function countNotepadUpdates(userId: string) {

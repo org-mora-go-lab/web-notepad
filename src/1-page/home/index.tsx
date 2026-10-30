@@ -67,7 +67,11 @@ export function Home() {
     panelSlide,
     panelPosition,
   } = useHome();
-  const { status: cloudSaveStatus, savingTabIds } = useCloudSave(hydrated);
+  const {
+    status: cloudSaveStatus,
+    savingTabIds,
+    initialSyncing,
+  } = useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
   const [sharedTabLink] = useState(() => {
     if (typeof window === "undefined") return null;
@@ -232,7 +236,7 @@ export function Home() {
     };
   }, [inviteStatus, dismissInvite]);
 
-  if (!hydrated || !activeTab) {
+  if (!hydrated || !activeTab || initialSyncing) {
     return <Loading />;
   }
 
