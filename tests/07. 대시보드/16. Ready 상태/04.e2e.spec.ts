@@ -36,6 +36,7 @@ test("4. 공유 그룹은 개인 색상 설정이 달라도 같은 상태와 컬
       id,
       baseRevision: record.revision,
       data: { ...record.data, tabs: cards },
+      deletedTabIds: record.data.tabs.map((tab: { id: string }) => tab.id),
     },
   });
   expect(saved.ok()).toBe(true);
