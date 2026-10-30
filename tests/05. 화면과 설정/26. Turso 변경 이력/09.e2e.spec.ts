@@ -3,14 +3,14 @@ import { expect, test } from "@playwright/test";
 import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("9. 로그인 사용자의 첫 진입은 최신 DB 동기화가 끝날 때까지 skeleton을 표시한다", async ({
+test("9. 로그인 사용자의 첫 진입은 상단 진행 바를 표시하고 최신 DB 동기화가 끝날 때까지 입력을 차단한다", async ({
   page,
   context,
 }) => {
   await authenticateBrowser(
     context,
     signedSession({
-      id: `cloud-skeleton-${crypto.randomUUID()}`,
+      id: `cloud-loader-${crypto.randomUUID()}`,
       nickname: "Cloud User",
       expiresAt: Date.now() + 60_000,
     }),
@@ -24,13 +24,46 @@ test("9. 로그인 사용자의 첫 진입은 최신 DB 동기화가 끝날 때�
     await route.continue();
   });
   await page.goto("/");
-  await expect(
-    page.getByRole("status", { name: "Syncing notes" }),
-  ).toBeVisible();
-  await expect(page.locator(".loading-skeleton-editor i")).toHaveCount(3);
-  release();
-  await expect(page.getByRole("status", { name: "Syncing notes" })).toHaveCount(
-    0,
+  const loader = page.getByRole("status", { name: "Syncing notes" });
+  await expect(loader).toBeVisible();
+  await expect(loader).toHaveAttribute("aria-busy", "true");
+  await expect(page.locator(".loading-skeleton, .loading-mark")).toHaveCount(0);
+  await expect(page.locator(".initial-sync-progress")).toBeVisible();
+
+  const editor = page.locator("textarea").first();
+  await expect(editor).toBeVisible();
+  const loaderStyles = await loader.evaluate((element) => {
+    const lock = getComputedStyle(element);
+    const progress = getComputedStyle(
+      element.querySelector(".initial-sync-progress")!,
+    );
+    return {
+      lockPosition: lock.position,
+      pointerEvents: lock.pointerEvents,
+      touchAction: lock.touchAction,
+      progressPosition: progress.position,
+      progressTop: progress.top,
+      progressColor: progress.backgroundImage,
+    };
+  });
+  expect(loaderStyles).toMatchObject({
+    lockPosition: "fixed",
+    pointerEvents: "auto",
+    touchAction: "none",
+    progressPosition: "fixed",
+    progressTop: "0px",
+  });
+  expect(loaderStyles.progressColor).not.toBe("none");
+
+  const editorBounds = (await editor.boundingBox())!;
+  await page.mouse.click(
+    editorBounds.x + editorBounds.width / 2,
+    editorBounds.y + editorBounds.height / 2,
   );
-  await expect(page.locator("textarea").first()).toBeVisible();
+  await expect(editor).not.toBeFocused();
+
+  release();
+  await expect(loader).toHaveCount(0);
+  await editor.click();
+  await expect(editor).toBeFocused();
 });

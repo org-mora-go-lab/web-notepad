@@ -71,6 +71,7 @@ export function Home() {
     status: cloudSaveStatus,
     savingTabIds,
     initialSyncing,
+    ready: cloudReady,
   } = useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
   const [sharedTabLink] = useState(() => {
@@ -236,9 +237,15 @@ export function Home() {
     };
   }, [inviteStatus, dismissInvite]);
 
-  if (!hydrated || !activeTab || initialSyncing) {
-    return <Loading />;
+  if (!hydrated || !activeTab) {
+    return (
+      <main className="home is-loading" aria-busy="true">
+        <Loading />
+      </main>
+    );
   }
+
+  const syncLocked = !cloudReady || initialSyncing;
 
   return (
     <I18nContext value={language}>
@@ -260,12 +267,14 @@ export function Home() {
         >
           <SavingTabsContext value={[...savingTabIds, ...shared.savingTabIds]}>
             <main
-              className={`home ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed" && openPanel !== "bookmarks") ? "is-panel-pinned" : ""}`}
+              className={`home ${syncLocked ? "is-loading" : ""} ${groupMenuOpen ? "is-group-sidebar-open" : ""} ${backgroundPanel || (openPanel && openPanel !== "global-search" && openPanel !== "closed" && openPanel !== "bookmarks") ? "is-panel-pinned" : ""}`}
               style={{ "--font-scale": fontScale } as CSSProperties}
               data-panel-position={panelPosition}
               data-panel-slide={panelSlide ? "on" : "off"}
               data-cloud-save={cloudSaveStatus ?? "idle"}
+              aria-busy={syncLocked}
             >
+              {syncLocked && <Loading />}
               <section className="workspace">
                 <div className={`pane-group ${split ? "is-split" : ""}`}>
                   {columns.map((column) => (

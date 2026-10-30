@@ -1,86 +1,54 @@
 @use "../../../../5-shared/style/variable" as v;
 
 .home.is-loading {
-  position: relative;
-
-  .loading-skeleton {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    grid-template-rows: 48px 42px minmax(0, 1fr) 42px;
-    opacity: 0.55;
-  }
-
-  .loading-skeleton-header,
-  .loading-skeleton-tab,
-  .loading-skeleton-footer,
-  .loading-skeleton-editor {
-    border-bottom: 1px solid v.$line;
-    background: v.$panel;
-  }
-
-  .loading-skeleton-header,
-  .loading-skeleton-tab,
-  .loading-skeleton-footer,
-  .loading-skeleton-editor i {
-    background-image: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, #{v.$ink} 8%, transparent),
-      transparent
-    );
-    background-size: 220% 100%;
-    animation: loading-skeleton-wave 1.2s ease-in-out infinite;
-  }
-
-  .loading-skeleton-tab {
-    width: 180px;
-    border-right: 1px solid v.$line;
-  }
-
-  .loading-skeleton-editor {
-    padding: 32px 7%;
-    i {
-      width: min(620px, 72%);
-      height: 12px;
-      display: block;
-      margin-bottom: 18px;
-      border-radius: 3px;
-      &:nth-child(2) {
-        width: min(480px, 58%);
-      }
-      &:nth-child(3) {
-        width: min(550px, 65%);
-      }
-    }
-  }
-
-  .loading-mark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    padding: 8px 12px;
-    transform: translate(-50%, -50%);
-    border: 1px solid v.$line;
-    border-radius: 4px;
-    background: v.$panel;
-    color: v.$signal;
-    font-size: 14px;
-
-    @media (max-width: 512px) {
-      font-size: 14px * v.$mobile-scale;
-    }
-  }
+  cursor: progress;
 }
 
-@keyframes loading-skeleton-wave {
+.initial-sync-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: transparent;
+  cursor: progress;
+  pointer-events: auto;
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+.initial-sync-progress {
+  --initial-sync-color: color-mix(in srgb, #{v.$signal} 84%, white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: clamp(120px, 36vw, 520px);
+  height: 3px;
+  border-radius: 0 999px 999px 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--initial-sync-color) 28%,
+    var(--initial-sync-color) 82%,
+    transparent
+  );
+  box-shadow: 0 0 8px
+    color-mix(in srgb, var(--initial-sync-color) 72%, transparent);
+  transform: translate3d(calc(-100% - 4px), 0, 0);
+  animation: initial-sync-slide 1.05s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+  will-change: transform;
+}
+
+@keyframes initial-sync-slide {
   to {
-    background-position: -220% 0;
+    transform: translate3d(100vw, 0, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home.is-loading .loading-skeleton * {
+  .initial-sync-progress {
     animation: none;
+    width: 100%;
+    transform: none;
+    opacity: 0.85;
   }
 }
