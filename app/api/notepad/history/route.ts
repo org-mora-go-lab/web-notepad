@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { sanitizeCloudSnapshot } from "@/src/4-entity/notepad/persistence";
+
 import { readSession, SESSION_COOKIE } from "../../auth/_lib/session";
 import {
   countNotepadUpdates,
@@ -18,10 +20,8 @@ export async function GET() {
   if (!userId)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
-    const [latest, count] = await Promise.all([
-      getLatestNotepadUpdate(userId),
-      countNotepadUpdates(userId),
-    ]);
+    const latest = await getLatestNotepadUpdate(userId);
+    const count = await countNotepadUpdates(userId);
     return NextResponse.json(
       { latest, count },
       { headers: { "Cache-Control": "private, no-store" } },
@@ -71,6 +71,7 @@ export async function POST(request: Request) {
   ) {
     return NextResponse.json({ error: "Invalid update" }, { status: 400 });
   }
+  let sanitizedSnapshot: string;
   try {
     const state = JSON.parse(snapshot) as Record<string, unknown>;
     if (
@@ -80,6 +81,7 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json({ error: "Invalid snapshot" }, { status: 400 });
     }
+    sanitizedSnapshot = sanitizeCloudSnapshot(snapshot);
   } catch {
     return NextResponse.json({ error: "Invalid snapshot" }, { status: 400 });
   }
@@ -87,7 +89,7 @@ export async function POST(request: Request) {
     const result = await saveNotepadUpdate(
       userId,
       eventId,
-      snapshot,
+      sanitizedSnapshot,
       baseEventId as string | null | undefined,
     );
     if (!result.saved)

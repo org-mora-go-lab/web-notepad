@@ -52,7 +52,7 @@ export function Editor({
               role="button"
               tabIndex={0}
               aria-pressed={selectedLines.includes(logicalLine)}
-              onMouseDown={(event) => event.preventDefault()}
+              onPointerDown={(event) => event.preventDefault()}
               onClick={(event) =>
                 onToggleLineSelection(logicalLine, event.shiftKey)
               }

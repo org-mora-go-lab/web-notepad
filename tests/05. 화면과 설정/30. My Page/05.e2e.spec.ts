@@ -19,7 +19,7 @@ test("5. 좁은 모바일에서 긴 프로필 이름과 통계를 화면 안에 
   await page.goto("/my-page");
   await expect(page.locator(".my-page-metrics")).toBeVisible();
   const header = page.locator(".fixed-page-header");
-  const back = header.getByRole("link", { name: "Back to notes" });
+  const back = header.getByRole("link", { name: "Back" });
   const title = header.getByRole("heading", { name: "My Page" });
   const headerBounds = (await header.boundingBox())!;
   const backBounds = (await back.boundingBox())!;

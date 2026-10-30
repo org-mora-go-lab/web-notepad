@@ -62,8 +62,16 @@ export async function dashboardLabels(page: Page) {
     "false"
   )
     await openPanel(page, "dashboard-panel");
-  if (!(await dashboardColumn(page, "icebox").count()))
+  const icebox = dashboardColumn(page, "icebox");
+  for (let attempt = 0; attempt < 2 && !(await icebox.count()); attempt += 1) {
     await toggleDashboardStatus(page, "icebox");
+    try {
+      await expect(icebox).toHaveCount(1, { timeout: 1_500 });
+    } catch {
+      // A late cloud visibility restore can race the first toggle. Re-read the
+      // rendered state and retry once rather than toggling a stale value.
+    }
+  }
   const labels = page.locator(".dashboard-statuses .dashboard-status-label");
   await expect(labels).toHaveCount(5);
   return labels;

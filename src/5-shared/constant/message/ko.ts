@@ -27,7 +27,7 @@ export const ko: Messages = {
   myPage: "내 페이지",
   statusReady: "준비",
   board: "게시판",
-  boardTitle: "그룹 공유 게시판",
+  boardTitle: "Board",
   boardCommunity: "함께 쓰는 작업 공간",
   boardIntro: "공유된 그룹을 둘러보고, 함께 기록할 작업 공간에 참여하세요.",
   boardBack: "게시판 목록",

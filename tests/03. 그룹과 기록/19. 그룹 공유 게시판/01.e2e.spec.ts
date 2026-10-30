@@ -25,9 +25,7 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill(boardPost.title);
-  await expect(
-    page.getByRole("table", { name: "Shared groups" }),
-  ).toBeVisible();
+  await expect(page.getByRole("table", { name: "Board" })).toBeVisible();
   await expect(page.getByRole("columnheader")).toHaveText([
     "Group",
     "Shared by",

@@ -70,7 +70,9 @@ export function createSession(user: KakaoUser) {
 
 export function readSession(value?: string): KakaoUser | null {
   if (!value) return null;
-  const [encoded, signature] = value.split(".");
+  const parts = value.split(".");
+  if (parts.length !== 2) return null;
+  const [encoded, signature] = parts;
   if (!encoded || !signature) return null;
 
   const expected = Buffer.from(sign(encoded));

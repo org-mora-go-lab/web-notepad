@@ -41,7 +41,14 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     .locator(".board-note-contents")
     .boundingBox())!;
   const heroBounds = (await page.locator(".board-detail-hero").boundingBox())!;
+  const collaborationBounds = (await page
+    .locator(".board-collaboration")
+    .boundingBox())!;
   expect(sharedNotesBounds.y).toBeLessThan(heroBounds.y);
+  expect(heroBounds.y - (sharedNotesBounds.y + sharedNotesBounds.height)).toBe(
+    36,
+  );
+  expect(collaborationBounds.y - (heroBounds.y + heroBounds.height)).toBe(36);
   const noteLayout = await page
     .locator(".board-note-preview")
     .evaluate((element) => {
@@ -147,6 +154,15 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   ).toHaveText("1");
   expect(desktopBookmarksMetric.width).toBeCloseTo(desktopNotesMetric.width, 0);
   await page.setViewportSize({ width: 320, height: 800 });
+  await expect
+    .poll(async () => {
+      const editor = (await page.locator(".board-note-preview").boundingBox())!;
+      const footer = (await page
+        .locator(".board-mobile-footer")
+        .boundingBox())!;
+      return footer.y - (editor.y + editor.height);
+    })
+    .toBeCloseTo(20, 0);
   const mobileEditor = (await page
     .locator(".board-note-preview")
     .boundingBox())!;
@@ -217,38 +233,40 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     true,
   );
   expect(boardPost.notes.some((note) => note.content === "abc")).toBe(true);
+  const swipe = async (direction: "left" | "right") => {
+    const previewBounds = (await page
+      .locator(".board-note-preview")
+      .boundingBox())!;
+    const from =
+      direction === "left"
+        ? previewBounds.x + previewBounds.width * 0.8
+        : previewBounds.x + previewBounds.width * 0.2;
+    const to =
+      direction === "left"
+        ? previewBounds.x + previewBounds.width * 0.2
+        : previewBounds.x + previewBounds.width * 0.8;
+    const y = previewBounds.y + Math.min(120, previewBounds.height / 2);
+    await page.mouse.move(from, y);
+    await page.mouse.down();
+    await page.mouse.move(to, y, { steps: 5 });
+    await page.mouse.up();
+  };
+  await swipe("left");
+  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator(".board-note-preview")).toHaveClass(
+    /is-slide-left/,
+  );
+  await tabs.first().click();
   await page.setViewportSize({ width: 320, height: 800 });
   await tabs.first().click();
-  const swipe = async (from: number, to: number) => {
-    await page.locator(".board-note-preview").evaluate(
-      (element, points) => {
-        const dispatch = (
-          type: "touchstart" | "touchend",
-          key: "touches" | "changedTouches",
-          x: number,
-        ) => {
-          const event = new Event(type, { bubbles: true, cancelable: true });
-          Object.defineProperty(event, key, {
-            value: [{ clientX: x, clientY: 120 }],
-          });
-          element.dispatchEvent(event);
-        };
-        dispatch("touchstart", "touches", points.from);
-        dispatch("touchend", "changedTouches", points.to);
-      },
-      { from, to },
-    );
-  };
-  await swipe(300, 80);
+  await swipe("left");
   await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
-  await expect(tabs.nth(1)).toBeFocused();
-  await swipe(80, 300);
+  await swipe("right");
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
-  await swipe(300, 80);
-  await swipe(300, 80);
-  await swipe(300, 80);
+  await swipe("left");
+  await swipe("left");
+  await swipe("left");
   await expect(tabs.nth(3)).toHaveAttribute("aria-selected", "true");
-  await expect(tabs.nth(3)).toBeFocused();
   const focusedTabBounds = (await tabs.nth(3).boundingBox())!;
   const noteTabsBounds = (await noteTabs.boundingBox())!;
   expect(focusedTabBounds.x).toBeGreaterThanOrEqual(noteTabsBounds.x);

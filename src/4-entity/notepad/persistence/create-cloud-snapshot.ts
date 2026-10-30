@@ -1,21 +1,24 @@
 import type { NotepadState } from "../type";
 import { isSharedGroupId } from "../util";
+import { sanitizeCloudSnapshot } from "./sanitize-cloud-snapshot";
 
 export function createCloudSnapshot(state: NotepadState) {
-  return JSON.stringify({
-    nextTabNumber: state.nextTabNumber,
-    groups: state.groups.filter((group) => !isSharedGroupId(group.id)),
-    activeGroupId: isSharedGroupId(state.activeGroupId)
-      ? "ungrouped"
-      : state.activeGroupId,
-    closedTabs: state.closedTabs.filter(
-      (entry) => !isSharedGroupId(entry.groupId),
-    ),
-    allGroupActiveTabId: state.allGroupActiveTabId,
-    allGroupLayout: state.allGroupLayout,
-    allGroupDashboardVisibility: state.allGroupDashboardVisibility,
-    allGroupDashboardStatusNames: state.allGroupDashboardStatusNames,
-    sharedDashboardVisibility: state.sharedDashboardVisibility,
-    settings: state.settings,
-  });
+  return sanitizeCloudSnapshot(
+    JSON.stringify({
+      nextTabNumber: state.nextTabNumber,
+      groups: state.groups.filter((group) => !isSharedGroupId(group.id)),
+      activeGroupId: isSharedGroupId(state.activeGroupId)
+        ? "ungrouped"
+        : state.activeGroupId,
+      closedTabs: state.closedTabs.filter(
+        (entry) => !isSharedGroupId(entry.groupId),
+      ),
+      allGroupActiveTabId: state.allGroupActiveTabId,
+      allGroupLayout: state.allGroupLayout,
+      allGroupDashboardVisibility: state.allGroupDashboardVisibility,
+      allGroupDashboardStatusNames: state.allGroupDashboardStatusNames,
+      sharedDashboardVisibility: state.sharedDashboardVisibility,
+      settings: state.settings,
+    }),
+  );
 }

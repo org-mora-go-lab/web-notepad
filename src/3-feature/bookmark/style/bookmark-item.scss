@@ -31,7 +31,7 @@
 @media (max-width: 512px) {
   .bookmark {
     .bookmark-item {
-      max-height: var(--mobile-dashboard-tab-max-height);
+      max-height: calc(var(--mobile-dashboard-tab-max-height) * 1.3);
       display: flex;
       flex-direction: column;
       overflow: hidden;

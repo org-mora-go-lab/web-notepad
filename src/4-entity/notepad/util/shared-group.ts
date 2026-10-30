@@ -11,8 +11,8 @@ export const hasPersistableSharedContent = (content: string) =>
   content.trim().length > 2;
 
 export function pruneShortSharedTabs(data: SharedGroupData): SharedGroupData {
-  const tabs = data.tabs.filter((tab) =>
-    hasPersistableSharedContent(tab.content),
+  const tabs = data.tabs.filter(
+    (tab) => tab.open !== false && hasPersistableSharedContent(tab.content),
   );
   const tabIds = new Set(tabs.map((tab) => tab.id));
   return {

@@ -4,7 +4,7 @@ import { signedSession } from "../../__fixture__";
 import { authenticateBrowser, expectTabSavingLine } from "../../__util__";
 import { readCloudHistory } from "./__util__";
 
-test("1. 에디터 수정 후 정확히 0.5초 대기한 뒤 저장 중에만 탭 상단 선을 움직인다", async ({
+test("1. 에디터 수정 후 0.25초 대기한 뒤 저장 중에만 탭 상단 선을 움직인다", async ({
   page,
   context,
 }) => {
@@ -41,7 +41,7 @@ test("1. 에디터 수정 후 정확히 0.5초 대기한 뒤 저장 중에만 �
   const tab = page.locator(".tab-item.is-active");
   try {
     await page.locator("textarea").first().fill("마지막 글");
-    await page.clock.runFor(499);
+    await page.clock.runFor(249);
     expect(posts).toBe(0);
     await expectTabSavingLine(tab, false);
     await page.clock.runFor(1);

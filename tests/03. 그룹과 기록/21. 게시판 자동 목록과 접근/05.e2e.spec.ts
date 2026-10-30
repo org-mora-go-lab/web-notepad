@@ -40,7 +40,7 @@ test("5. 내 공유 그룹은 참여 대신 공유 취소를 제공하고 노트
     records.find((item: { id: string }) => item.id === boardPost.id)
       .sharingActive,
   ).toBe(false);
-  await page.getByRole("link", { name: "Back to notes", exact: true }).click();
+  await page.getByRole("link", { name: "Back", exact: true }).click();
   if ((await groupsCommand(page).getAttribute("aria-expanded")) !== "true")
     await groupsCommand(page).click();
   await expect(

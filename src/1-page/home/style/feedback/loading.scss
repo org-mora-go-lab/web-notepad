@@ -1,15 +1,86 @@
 @use "../../../../5-shared/style/variable" as v;
 
 .home.is-loading {
-  display: grid;
-  place-items: center;
+  position: relative;
+
+  .loading-skeleton {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: 48px 42px minmax(0, 1fr) 42px;
+    opacity: 0.55;
+  }
+
+  .loading-skeleton-header,
+  .loading-skeleton-tab,
+  .loading-skeleton-footer,
+  .loading-skeleton-editor {
+    border-bottom: 1px solid v.$line;
+    background: v.$panel;
+  }
+
+  .loading-skeleton-header,
+  .loading-skeleton-tab,
+  .loading-skeleton-footer,
+  .loading-skeleton-editor i {
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, #{v.$ink} 8%, transparent),
+      transparent
+    );
+    background-size: 220% 100%;
+    animation: loading-skeleton-wave 1.2s ease-in-out infinite;
+  }
+
+  .loading-skeleton-tab {
+    width: 180px;
+    border-right: 1px solid v.$line;
+  }
+
+  .loading-skeleton-editor {
+    padding: 32px 7%;
+    i {
+      width: min(620px, 72%);
+      height: 12px;
+      display: block;
+      margin-bottom: 18px;
+      border-radius: 3px;
+      &:nth-child(2) {
+        width: min(480px, 58%);
+      }
+      &:nth-child(3) {
+        width: min(550px, 65%);
+      }
+    }
+  }
 
   .loading-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 8px 12px;
+    transform: translate(-50%, -50%);
+    border: 1px solid v.$line;
+    border-radius: 4px;
+    background: v.$panel;
     color: v.$signal;
     font-size: 14px;
 
     @media (max-width: 512px) {
       font-size: 14px * v.$mobile-scale;
     }
+  }
+}
+
+@keyframes loading-skeleton-wave {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home.is-loading .loading-skeleton * {
+    animation: none;
   }
 }

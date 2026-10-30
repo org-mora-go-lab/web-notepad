@@ -27,25 +27,8 @@ function merge(base: unknown, local: unknown, remote: unknown): unknown {
       const right = theirs.get(id);
       if (!left) return before && same(right, before) ? [] : [right];
       if (!right) return before && same(left, before) ? [] : [left];
-      // Two devices can independently allocate tab-2 or edit the same note.
-      // Keep both versions as separate tabs instead of discarding either text.
-      if (
-        typeof left.content === "string" &&
-        "open" in left &&
-        left.content !== right.content &&
-        left.content !== before?.content &&
-        right.content !== before?.content
-      ) {
-        return [
-          right,
-          {
-            ...left,
-            id: `${id}-recovered-${crypto.randomUUID()}`,
-            title: `${left.title} (Recovered)`,
-            open: true,
-          },
-        ];
-      }
+      // The active device wins simultaneous edits. Duplicating a conflicted
+      // note used to create confusing "(Recovered)" tabs on every reconnect.
       return [merge(before, left, right)];
     });
   }
@@ -80,7 +63,7 @@ export function mergeCloudSnapshot(
     const replacements = new Map<string, string>();
     group.tabs = group.tabs.map((tab) => {
       const id = ids.has(tab.id)
-        ? `${tab.id}-recovered-${crypto.randomUUID()}`
+        ? `${tab.id}-copy-${crypto.randomUUID()}`
         : tab.id;
       ids.add(id);
       if (id === tab.id) return tab;

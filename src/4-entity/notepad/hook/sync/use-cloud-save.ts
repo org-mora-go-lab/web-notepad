@@ -20,7 +20,7 @@ type PendingUpdate = {
 };
 type Baseline = { eventId: string | null; snapshot: string | null };
 type CloudRecord = { eventId: string; snapshot: string; createdAt: number };
-const SAVE_DELAY_MS = 500;
+const SAVE_DELAY_MS = 250;
 const RETRY_DELAY_MS = 5_000;
 const OWNER_KEY = "web-notepad-cloud-owner";
 
@@ -65,6 +65,7 @@ function hasLocalWork(snapshot: string) {
 
 export function useCloudSave(hydrated: boolean) {
   const [ready, setReady] = useState(false);
+  const [initialSyncing, setInitialSyncing] = useState(false);
   const [serverLoaded, setServerLoaded] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [savingTabIds, setSavingTabIds] = useState<string[]>([]);
@@ -223,6 +224,7 @@ export function useCloudSave(hydrated: boolean) {
         snapshot: latest ? (needsSave ? latest.snapshot : next) : null,
       });
       initialized = true;
+      setInitialSyncing(false);
       setServerLoaded(true);
       setReady(true);
       setLastSavedAt(latest?.createdAt ?? null);
@@ -241,6 +243,7 @@ export function useCloudSave(hydrated: boolean) {
       const version = generation;
       pulling = true;
       if (!initialized) {
+        setInitialSyncing(true);
         setReady(false);
         setStatus(null);
       }
@@ -257,6 +260,7 @@ export function useCloudSave(hydrated: boolean) {
           reconcile(latest, !initialized);
       } catch {
         if (valid(id, version) && !initialized) {
+          setInitialSyncing(false);
           setStatus("error");
           setReady(true);
         }
@@ -264,7 +268,7 @@ export function useCloudSave(hydrated: boolean) {
         pulling = false;
       }
     };
-    const flush = async () => {
+    const flush = async (keepalive = false) => {
       timer = undefined;
       if (!active || !userId || !pending || !initialized) return;
       if (sending) {
@@ -284,6 +288,7 @@ export function useCloudSave(hydrated: boolean) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...update, userId: id }),
           cache: "no-store",
+          keepalive,
         });
         if (!valid(id, version)) return;
         if (response.status === 409) {
@@ -375,6 +380,7 @@ export function useCloudSave(hydrated: boolean) {
           return;
         }
         setReady(false);
+        setInitialSyncing(false);
         setServerLoaded(false);
         setLastSavedAt(null);
         generation += 1;
@@ -417,20 +423,30 @@ export function useCloudSave(hydrated: boolean) {
         await pull();
       } catch {
         if (active) {
+          setInitialSyncing(false);
           setReady(true);
           setStatus("error");
         }
       }
     };
     const refresh = () => {
-      if (document.visibilityState !== "hidden") void pull();
+      if (document.visibilityState === "hidden") {
+        clearTimer();
+        void flush(true);
+      } else void pull();
+    };
+    const flushBeforeLeave = () => {
+      clearTimer();
+      void flush(true);
     };
     window.addEventListener("notepad-auth-changed", refreshSession);
     window.addEventListener("focus", refresh);
     window.addEventListener("online", refresh);
     document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("pagehide", flushBeforeLeave);
     void refreshSession();
     return () => {
+      flushBeforeLeave();
       active = false;
       unsubscribe();
       clearTimer();
@@ -438,8 +454,16 @@ export function useCloudSave(hydrated: boolean) {
       window.removeEventListener("focus", refresh);
       window.removeEventListener("online", refresh);
       document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("pagehide", flushBeforeLeave);
     };
   }, [hydrated]);
 
-  return { status, savingTabIds, ready, serverLoaded, lastSavedAt };
+  return {
+    status,
+    savingTabIds,
+    ready,
+    initialSyncing,
+    serverLoaded,
+    lastSavedAt,
+  };
 }

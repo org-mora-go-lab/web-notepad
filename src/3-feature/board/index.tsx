@@ -34,9 +34,18 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [copied, setCopied] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [notePreviewHeight, setNotePreviewHeight] = useState(316.8);
+  const notePreviewRef = useRef<HTMLElement>(null);
   const noteResizeStart = useRef<{ y: number; height: number } | null>(null);
-  const noteSwipeStart = useRef<{ x: number; y: number } | null>(null);
-  const noteTabFocusRequested = useRef(false);
+  const noteSwipeStart = useRef<{
+    x: number;
+    y: number;
+    pointerId: number;
+  } | null>(null);
+  const noteTabRevealRequested = useRef(false);
+  const [noteSlide, setNoteSlide] = useState<{
+    direction: "left" | "right";
+    sequence: number;
+  } | null>(null);
   const noteTabsRef = useRef<HTMLDivElement>(null);
   const [noteTabFog, setNoteTabFog] = useState({ left: false, right: false });
   const orderedNotes = selected
@@ -51,6 +60,17 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     : [];
   const activeNote =
     orderedNotes.find((note) => note.id === activeNoteId) ?? orderedNotes[0];
+  const activateNote = useCallback(
+    (id: string, direction: "left" | "right") => {
+      noteTabRevealRequested.current = true;
+      setNoteSlide((current) => ({
+        direction,
+        sequence: (current?.sequence ?? 0) + 1,
+      }));
+      setActiveNoteId(id);
+    },
+    [],
+  );
   const updateNoteTabFog = useCallback(() => {
     const tabs = noteTabsRef.current;
     if (!tabs) return;
@@ -80,14 +100,13 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     };
   }, [orderedNotes.length, selected?.id, updateNoteTabFog]);
   useEffect(() => {
-    if (!noteTabFocusRequested.current) return;
-    noteTabFocusRequested.current = false;
+    if (!noteTabRevealRequested.current) return;
+    noteTabRevealRequested.current = false;
     const tabs = noteTabsRef.current;
     const activeTab = tabs?.querySelector<HTMLButtonElement>(
       '[role="tab"][aria-selected="true"]',
     );
     if (!tabs || !activeTab) return;
-    activeTab.focus({ preventScroll: true });
     const tabLeft = activeTab.offsetLeft;
     const tabRight = tabLeft + activeTab.offsetWidth;
     if (tabLeft < tabs.scrollLeft) tabs.scrollLeft = tabLeft;
@@ -96,6 +115,40 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     const frame = requestAnimationFrame(updateNoteTabFog);
     return () => cancelAnimationFrame(frame);
   }, [activeNote?.id, updateNoteTabFog]);
+  useEffect(() => {
+    if (!selected?.id || !activeNote?.id) return;
+    const updateMobilePreviewHeight = () => {
+      if (!window.matchMedia("(max-width: 512px)").matches) return;
+      const preview = notePreviewRef.current;
+      if (!preview) return;
+      const page = preview.closest<HTMLElement>(".board-page");
+      const footer = document.querySelector<HTMLElement>(
+        ".board-mobile-footer",
+      );
+      const viewportHeight =
+        window.visualViewport?.height ?? window.innerHeight;
+      const previewTop =
+        preview.getBoundingClientRect().top + (page?.scrollTop ?? 0);
+      const footerHeight = footer?.getBoundingClientRect().height ?? 0;
+      setNotePreviewHeight(
+        Math.max(316.8, viewportHeight - previewTop - footerHeight - 20),
+      );
+    };
+    const frame = requestAnimationFrame(updateMobilePreviewHeight);
+    window.addEventListener("resize", updateMobilePreviewHeight);
+    window.visualViewport?.addEventListener(
+      "resize",
+      updateMobilePreviewHeight,
+    );
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateMobilePreviewHeight);
+      window.visualViewport?.removeEventListener(
+        "resize",
+        updateMobilePreviewHeight,
+      );
+    };
+  }, [activeNote?.id, selected?.id]);
   useEffect(() => {
     const clearFeedback = () => {
       setFailure("");
@@ -123,7 +176,6 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   return (
     <section className="board">
       <FixedPageHeader
-        backLabel={selected ? t.boardBack : t.myPageHome}
         className={`board-page-header ${selected ? "is-detail" : "is-list"}`}
         onBack={selected ? back : undefined}
         onNavigateBack={onReturnHome}
@@ -212,7 +264,15 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                     role="tab"
                     aria-selected={note.id === activeNote?.id}
                     aria-controls="board-active-note"
-                    onClick={() => setActiveNoteId(note.id)}
+                    onClick={() => {
+                      const current = orderedNotes.findIndex(
+                        (item) => item.id === activeNote?.id,
+                      );
+                      const next = orderedNotes.findIndex(
+                        (item) => item.id === note.id,
+                      );
+                      activateNote(note.id, next < current ? "right" : "left");
+                    }}
                   >
                     {note.bookmarked && (
                       <Bookmark
@@ -228,28 +288,38 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
               {activeNote && (
                 <div className="board-note-preview-shell">
                   <article
-                    className="board-note-preview"
+                    key={`${activeNote.id}-${noteSlide?.sequence ?? 0}`}
+                    ref={notePreviewRef}
+                    className={`board-note-preview ${noteSlide ? `is-slide-${noteSlide.direction}` : ""}`}
                     id="board-active-note"
                     role="tabpanel"
                     style={{ height: notePreviewHeight }}
-                    onTouchStart={(event) => {
-                      if (
-                        !window.matchMedia("(max-width: 512px)").matches ||
-                        event.touches.length !== 1
-                      )
-                        return;
+                    onPointerDown={(event) => {
+                      if (!event.isPrimary || event.button !== 0) return;
                       noteSwipeStart.current = {
-                        x: event.touches[0].clientX,
-                        y: event.touches[0].clientY,
+                        x: event.clientX,
+                        y: event.clientY,
+                        pointerId: event.pointerId,
                       };
+                      event.currentTarget.setPointerCapture(event.pointerId);
                     }}
-                    onTouchEnd={(event) => {
+                    onPointerUp={(event) => {
                       const start = noteSwipeStart.current;
                       noteSwipeStart.current = null;
-                      const touch = event.changedTouches[0];
-                      if (!start || !touch || orderedNotes.length < 2) return;
-                      const horizontal = touch.clientX - start.x;
-                      const vertical = touch.clientY - start.y;
+                      if (
+                        event.currentTarget.hasPointerCapture(event.pointerId)
+                      )
+                        event.currentTarget.releasePointerCapture(
+                          event.pointerId,
+                        );
+                      if (
+                        !start ||
+                        start.pointerId !== event.pointerId ||
+                        orderedNotes.length < 2
+                      )
+                        return;
+                      const horizontal = event.clientX - start.x;
+                      const vertical = event.clientY - start.y;
                       if (
                         Math.abs(horizontal) < 50 ||
                         Math.abs(horizontal) <= Math.abs(vertical)
@@ -262,10 +332,13 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                       const next =
                         (current + direction + orderedNotes.length) %
                         orderedNotes.length;
-                      noteTabFocusRequested.current = true;
-                      setActiveNoteId(orderedNotes[next].id);
+                      event.preventDefault();
+                      activateNote(
+                        orderedNotes[next].id,
+                        direction > 0 ? "left" : "right",
+                      );
                     }}
-                    onTouchCancel={() => {
+                    onPointerCancel={() => {
                       noteSwipeStart.current = null;
                     }}
                   >
@@ -321,59 +394,61 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                 </div>
               )}
             </section>
-            <section className="board-detail-section board-collaboration">
-              <h4>{t.boardCollaboration}</h4>
-              <p className="board-join-hint">
-                {selectedRole === "owner"
-                  ? t.boardOwnerHint
-                  : selectedRole === "member"
-                    ? t.boardMemberHint
-                    : t.boardJoinHint}
-              </p>
-              <div className="board-detail-actions">
-                {selectedRole ? (
+            {!selected.local && (
+              <section className="board-detail-section board-collaboration">
+                <h4>{t.boardCollaboration}</h4>
+                <p className="board-join-hint">
+                  {selectedRole === "owner"
+                    ? t.boardOwnerHint
+                    : selectedRole === "member"
+                      ? t.boardMemberHint
+                      : t.boardJoinHint}
+                </p>
+                <div className="board-detail-actions">
+                  {selectedRole ? (
+                    <button
+                      ref={actionRef}
+                      type="button"
+                      className="board-primary board-access"
+                      onClick={() => {
+                        setAccessError(false);
+                        setAccessConfirm(true);
+                      }}
+                    >
+                      <span>{accessLabel}</span>
+                      {selectedRole === "owner" ? (
+                        <Unlink size={17} aria-hidden="true" />
+                      ) : (
+                        <LogOut size={17} aria-hidden="true" />
+                      )}
+                    </button>
+                  ) : (
+                    <a
+                      className="board-primary board-join"
+                      href={selected.inviteUrl}
+                    >
+                      {t.boardJoin}
+                      <ArrowUpRight size={17} aria-hidden="true" />
+                    </a>
+                  )}
                   <button
-                    ref={actionRef}
                     type="button"
-                    className="board-primary board-access"
-                    onClick={() => {
-                      setAccessError(false);
-                      setAccessConfirm(true);
+                    className="board-copy"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(selected.inviteUrl);
+                        setCopied(true);
+                      } catch {
+                        setFailure(t.boardCopyError);
+                      }
                     }}
                   >
-                    <span>{accessLabel}</span>
-                    {selectedRole === "owner" ? (
-                      <Unlink size={17} aria-hidden="true" />
-                    ) : (
-                      <LogOut size={17} aria-hidden="true" />
-                    )}
+                    <span>{copied ? t.boardCopied : t.boardCopy}</span>
+                    <Clipboard size={15} aria-hidden="true" />
                   </button>
-                ) : (
-                  <a
-                    className="board-primary board-join"
-                    href={selected.inviteUrl}
-                  >
-                    {t.boardJoin}
-                    <ArrowUpRight size={17} aria-hidden="true" />
-                  </a>
-                )}
-                <button
-                  type="button"
-                  className="board-copy"
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(selected.inviteUrl);
-                      setCopied(true);
-                    } catch {
-                      setFailure(t.boardCopyError);
-                    }
-                  }}
-                >
-                  <span>{copied ? t.boardCopied : t.boardCopy}</span>
-                  <Clipboard size={15} aria-hidden="true" />
-                </button>
-              </div>
-            </section>
+                </div>
+              </section>
+            )}
           </article>
         ) : (
           <>

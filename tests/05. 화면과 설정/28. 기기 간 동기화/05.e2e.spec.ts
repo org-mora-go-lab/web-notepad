@@ -4,7 +4,7 @@ import { readStoredState } from "../../__util__";
 import { syncTest as test } from "./__fixture__";
 import { openDevice, waitForSaved } from "./__util__";
 
-test("5. 같은 글의 동시 수정이 충돌하면 복구 탭으로 양쪽 본문을 남긴다", async ({
+test("5. 같은 글의 동시 수정이 충돌해도 Recovered 중복 탭을 만들지 않는다", async ({
   devices: { desktop, mobile },
 }) => {
   await openDevice(desktop);
@@ -24,8 +24,13 @@ test("5. 같은 글의 동시 수정이 충돌하면 복구 탭으로 양쪽 본
         group.tabs.map((tab) => tab.content),
       ),
     )
-    .toEqual(
-      expect.arrayContaining(["PC에서 수정한 본문", "모바일에서 수정한 본문"]),
-    );
+    .toContain("모바일에서 수정한 본문");
+  const tabs = (await readStoredState(mobile)).groups.flatMap(
+    (group) => group.tabs,
+  );
+  expect(tabs.some((tab) => tab.title.includes("(Recovered)"))).toBe(false);
+  expect(
+    tabs.filter((tab) => tab.content === "모바일에서 수정한 본문"),
+  ).toHaveLength(1);
   await waitForSaved(mobile);
 });

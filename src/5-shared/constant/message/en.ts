@@ -25,7 +25,7 @@ export const en = {
   myPage: "My Page",
   statusReady: "Ready",
   board: "Board",
-  boardTitle: "Shared groups",
+  boardTitle: "Board",
   boardCommunity: "Community board",
   boardIntro: "Find a group to join, share ideas, and write together.",
   boardBack: "Back to groups",

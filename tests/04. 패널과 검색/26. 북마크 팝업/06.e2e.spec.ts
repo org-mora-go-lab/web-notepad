@@ -27,10 +27,10 @@ test("6. MORE의 BOOKMARK는 모든 그룹의 북마크 내용을 표시한다",
   const bookmarkMaxHeight = await items
     .first()
     .evaluate((element) => getComputedStyle(element).maxHeight);
-  expect(bookmarkMaxHeight).toBe("144px");
+  expect(bookmarkMaxHeight).toBe("187.2px");
   await page.locator("#bookmarks-panel .corner-popover-close").click();
   await page.locator(".dashboard-command").click();
   const dashboardCard = page.locator(".dashboard-card").first();
   await expect(dashboardCard).toBeVisible();
-  await expect(dashboardCard).toHaveCSS("max-height", bookmarkMaxHeight);
+  await expect(dashboardCard).toHaveCSS("max-height", "144px");
 });
