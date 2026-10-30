@@ -10,8 +10,10 @@ import {
   getPaneTabs,
   getStatusColor,
   getTabStatus,
+  isSharedGroupId,
   normalizeLayout,
   setPaneActiveTabId,
+  SHARED_TAB_DELETE_INTENT_EVENT,
 } from "../../util";
 import {
   allocateTab,
@@ -115,10 +117,30 @@ export const createTabLifecycleActions: StateCreator<
       );
     });
   },
-  closeTab: (tabId) => hideTabFromEditor(set, get, tabId),
-  archiveTab: (tabId) => archiveTabEntry(set, get, tabId),
-  deleteTab: (tabId) => deleteTabEntry(set, get, tabId),
+  closeTab: (tabId) => {
+    dispatchSharedTabDeleteIntent(get(), tabId);
+    hideTabFromEditor(set, get, tabId);
+  },
+  archiveTab: (tabId) => {
+    dispatchSharedTabDeleteIntent(get(), tabId);
+    archiveTabEntry(set, get, tabId);
+  },
+  deleteTab: (tabId) => {
+    dispatchSharedTabDeleteIntent(get(), tabId);
+    deleteTabEntry(set, get, tabId);
+  },
 });
+
+const dispatchSharedTabDeleteIntent = (state: NotepadState, tabId: string) => {
+  const group = getTabGroup(state, tabId);
+  if (!group || !isSharedGroupId(group.id) || typeof window === "undefined")
+    return;
+  window.dispatchEvent(
+    new CustomEvent(SHARED_TAB_DELETE_INTENT_EVENT, {
+      detail: { groupId: group.id, tabId },
+    }),
+  );
+};
 
 const deleteTabEntry = (
   set: (partial: Partial<NotepadState>) => void,

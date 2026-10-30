@@ -44,6 +44,7 @@ test("1. 삭제된 탭의 이전 수정 알림과 삭제 알림은 목록에서 
       id,
       baseRevision: record.revision,
       data: { ...record.data, tabs: [other] },
+      deletedTabIds: [old.id],
     },
   });
   expect(response.ok()).toBe(true);

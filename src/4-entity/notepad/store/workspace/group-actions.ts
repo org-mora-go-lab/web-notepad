@@ -9,6 +9,7 @@ import {
   normalizeDashboardStatusNames,
   normalizeDashboardVisibility,
   normalizeLayout,
+  SHARED_TAB_DELETE_INTENT_EVENT,
 } from "../../util";
 import { allocateTab, createGroupEntry } from "./workspace";
 
@@ -130,7 +131,23 @@ export const createGroupActions: StateCreator<
         ),
       };
     }),
-  moveTabToGroup: (tabId, groupId) =>
+  moveTabToGroup: (tabId, groupId) => {
+    const state = get();
+    const source = state.groups.find((group) =>
+      group.tabs.some((tab) => tab.id === tabId),
+    );
+    if (
+      source &&
+      source.id !== groupId &&
+      state.groups.some((group) => group.id === groupId) &&
+      isSharedGroupId(source.id) &&
+      typeof window !== "undefined"
+    )
+      window.dispatchEvent(
+        new CustomEvent(SHARED_TAB_DELETE_INTENT_EVENT, {
+          detail: { groupId: source.id, tabId },
+        }),
+      );
     set((state) => {
       const source = state.groups.find((group) =>
         group.tabs.some((tab) => tab.id === tabId),
@@ -186,7 +203,8 @@ export const createGroupActions: StateCreator<
           return group;
         }),
       };
-    }),
+    });
+  },
   createGroup: (name) => {
     const trimmedName = name.trim();
     if (!trimmedName) return;

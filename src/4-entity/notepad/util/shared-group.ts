@@ -3,6 +3,9 @@ import type { GroupEntry, SharedGroupData } from "../type";
 import { getTabStatus } from "./note";
 import { normalizeLayout } from "./pane";
 
+export const SHARED_TAB_DELETE_INTENT_EVENT =
+  "notepad-shared-tab-delete-intent";
+
 export const sharedGroupId = (shareId: string) => `shared-${shareId}`;
 export const isSharedGroupId = (id: string) =>
   /^shared-[0-9a-f-]{36}$/i.test(id);
