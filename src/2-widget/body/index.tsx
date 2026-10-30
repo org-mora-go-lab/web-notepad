@@ -13,6 +13,7 @@ export function Body({
   autoFocus,
   draggingTabId,
   dropZones,
+  tabSlide,
   onChange,
 }: BodyProps) {
   const dragActive = draggingTabId !== null;
@@ -52,7 +53,8 @@ export function Body({
 
   return (
     <div
-      className="body"
+      key={tabSlide?.sequence}
+      className={`body ${tabSlide ? `is-slide-${tabSlide.direction}` : ""}`}
       onDragEnter={dropArea.handleDragEnter}
       onDragLeave={dropArea.handleDragLeave}
       onDragOver={dropArea.handleDragOver}

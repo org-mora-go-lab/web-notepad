@@ -629,9 +629,7 @@
 
 .board {
   .board-skeleton {
-    border: 1px solid var(--color-line);
-    border-radius: 6px;
-    overflow: hidden;
+    position: relative;
   }
   .board-skeleton-label {
     position: absolute;
@@ -641,19 +639,11 @@
     clip-path: inset(50%);
   }
   .board-skeleton-row {
-    box-sizing: border-box;
-    height: 64.5px;
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
-    align-items: center;
-    gap: 16px;
-    padding: 14px;
-    border-bottom: 1px solid var(--color-line);
-  }
-  .board-skeleton-row:last-child {
-    border-bottom: 0;
+    height: 65px;
   }
   .board-skeleton-row span {
+    display: block;
+    width: 100%;
     height: 14px;
     border-radius: 4px;
     background: var(--color-line);

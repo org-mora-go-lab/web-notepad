@@ -17,6 +17,8 @@ import { createPortal } from "react-dom";
 import { Footer } from "@/src/2-widget";
 import {
   ALL_GROUP_ID,
+  ALL_MY_GROUP_ID,
+  ALL_SHARED_GROUP_ID,
   isSharedGroupId,
   UNGROUPED_GROUP_ID,
   useCloudSave,
@@ -61,10 +63,14 @@ export function MyPage() {
   const activeGroupName =
     activeGroupId === ALL_GROUP_ID
       ? t.allGroup
-      : activeGroupId === UNGROUPED_GROUP_ID
-        ? t.ungrouped
-        : (groups.find((group) => group.id === activeGroupId)?.name ??
-          t.ungrouped);
+      : activeGroupId === ALL_MY_GROUP_ID
+        ? t.allMyGroup
+        : activeGroupId === ALL_SHARED_GROUP_ID
+          ? t.allSharedGroup
+          : activeGroupId === UNGROUPED_GROUP_ID
+            ? t.ungrouped
+            : (groups.find((group) => group.id === activeGroupId)?.name ??
+              t.ungrouped);
   useEffect(markMyPageReturn, []);
   useEffect(() => {
     let active = true;
@@ -127,6 +133,12 @@ export function MyPage() {
     ((!cloud.serverLoaded && cloud.ready && cloud.status === "error") ||
       (!shared.groupsLoaded && shared.loadError));
   const pageLoading = loading && !user;
+  const cloudLoading =
+    !!user &&
+    (!hydrated ||
+      (!cloud.serverLoaded && !(cloud.ready && cloud.status === "error")));
+  const metricsLoading =
+    cloudLoading || (!!user && !shared.groupsLoaded && !shared.loadError);
   const myGroups = groups.filter(
     (group) =>
       group.id !== UNGROUPED_GROUP_ID &&
@@ -186,7 +198,10 @@ export function MyPage() {
             ? t.cloudSaved
             : t.myPageNeverSaved;
   return (
-    <main className="my-page" aria-busy={pageLoading}>
+    <main
+      className="my-page"
+      aria-busy={pageLoading || metricsLoading || cloudLoading}
+    >
       <div className="my-page-container">
         <FixedPageHeader
           className="my-page-header"
@@ -260,39 +275,65 @@ export function MyPage() {
               </aside>
             </div>
             <div className="my-page-content">
-              <dl className="my-page-metrics">
-                {displayMetrics.map(({ key, label, value, Icon }) => (
-                  <div key={key} data-metric={key}>
-                    <dt>
-                      <Icon size={18} />
-                      {label}
-                    </dt>
-                    <dd>{value}</dd>
-                  </div>
-                ))}
-              </dl>
+              {metricsLoading ? (
+                <div
+                  className="my-page-metrics-skeleton"
+                  role="status"
+                  aria-label={t.myPageSyncLoading}
+                >
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <span key={index} aria-hidden="true" />
+                  ))}
+                </div>
+              ) : (
+                <dl className="my-page-metrics">
+                  {displayMetrics.map(({ key, label, value, Icon }) => (
+                    <div key={key} data-metric={key}>
+                      <dt>
+                        <Icon size={18} />
+                        {label}
+                      </dt>
+                      <dd>{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
             </div>
-            <section className="my-page-sync" aria-label={t.myPageSync}>
-              <h2>{t.myPageSync}</h2>
-              <p role="status" data-cloud-save={cloud.status ?? "idle"}>
-                {syncText}
-              </p>
-              <dl>
-                <dt>{t.myPageLastSaved}</dt>
-                <dd>
-                  {cloud.lastSavedAt ? (
-                    <time dateTime={new Date(cloud.lastSavedAt).toISOString()}>
-                      {new Date(cloud.lastSavedAt).toLocaleString(
-                        settings.language === "ko" ? "ko-KR" : "en-US",
-                      )}
-                    </time>
-                  ) : (
-                    t.myPageNeverSaved
-                  )}
-                </dd>
-              </dl>
-              <p className="my-page-hint">{t.myPageLocalHint}</p>
-            </section>
+            {cloudLoading ? (
+              <div
+                className="my-page-sync-skeleton"
+                role="status"
+                aria-label={t.myPageSyncLoading}
+              >
+                <span aria-hidden="true" />
+                <span aria-hidden="true" />
+                <span aria-hidden="true" />
+              </div>
+            ) : (
+              <section className="my-page-sync" aria-label={t.myPageSync}>
+                <h2>{t.myPageSync}</h2>
+                <p role="status" data-cloud-save={cloud.status ?? "idle"}>
+                  {syncText}
+                </p>
+                <dl>
+                  <dt>{t.myPageLastSaved}</dt>
+                  <dd>
+                    {cloud.lastSavedAt ? (
+                      <time
+                        dateTime={new Date(cloud.lastSavedAt).toISOString()}
+                      >
+                        {new Date(cloud.lastSavedAt).toLocaleString(
+                          settings.language === "ko" ? "ko-KR" : "en-US",
+                        )}
+                      </time>
+                    ) : (
+                      t.myPageNeverSaved
+                    )}
+                  </dd>
+                </dl>
+                <p className="my-page-hint">{t.myPageLocalHint}</p>
+              </section>
+            )}
           </div>
         )}
       </div>

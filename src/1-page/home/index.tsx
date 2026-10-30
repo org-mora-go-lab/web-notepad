@@ -51,6 +51,7 @@ export function Home() {
     groups,
     activeGroupName,
     hasGroupUpdateToday,
+    swipeMobileTab,
     columns,
     removeBookmark,
     createGroupAndRecord,
@@ -294,6 +295,7 @@ export function Home() {
                   }
                   activeGroupName={activeGroupName}
                   groupsOpen={groupMenuOpen}
+                  onSwipeTabs={swipeMobileTab}
                   onToggleDashboard={toggleDashboardFromFooter}
                   onToggleGroups={toggleGroupsFromFooter}
                 />

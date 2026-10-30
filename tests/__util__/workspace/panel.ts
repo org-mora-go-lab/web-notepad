@@ -139,7 +139,12 @@ export async function createGroups(page: Page, ...names: string[]) {
 
 // Opens the group sidebar, selects the group with the exact name and closes it when needed.
 export async function switchGroup(page: Page, name: string) {
-  if (name === "All Group" || name === "Ungrouped") {
+  if (
+    name === "All Group" ||
+    name === "All My Group" ||
+    name === "All Shared Group" ||
+    name === "Ungrouped"
+  ) {
     const menu = await openSystemGroupMenu(page);
     await menu.getByRole("button", { name, exact: true }).click();
     if ((await groupsCommand(page).getAttribute("aria-expanded")) === "true")

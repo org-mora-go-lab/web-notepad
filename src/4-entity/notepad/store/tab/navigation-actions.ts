@@ -1,6 +1,10 @@
 import type { StateCreator } from "zustand";
 
-import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../../constant";
+import {
+  ALL_SHARED_GROUP_ID,
+  isAggregateGroupId,
+  UNGROUPED_GROUP_ID,
+} from "../../constant";
 import type { NotepadState } from "../../type";
 import { assignTabToPane, getPaneTabs, setPaneActiveTabId } from "../../util";
 import {
@@ -25,7 +29,8 @@ export const createTabNavigationActions: StateCreator<
   addTab: (pane = "left") => {
     const state = get();
     // The All adds new tabs to Ungrouped.
-    const inAllGroup = state.activeGroupId === ALL_GROUP_ID;
+    const inAllGroup = isAggregateGroupId(state.activeGroupId);
+    if (state.activeGroupId === ALL_SHARED_GROUP_ID) return;
     const blank = inAllGroup
       ? state.groups
           .find((group) => group.id === UNGROUPED_GROUP_ID)
@@ -63,13 +68,17 @@ export const createTabNavigationActions: StateCreator<
       ...changes,
       nextTabNumber,
       ...(allGroup
-        ? updateGroup({ ...state, ...changes }, ALL_GROUP_ID, (current) => {
-            const next = assignTabToPane(current, tab.id, viewPane);
-            return {
-              ...setPaneActiveTabId(next, viewPane, tab.id),
-              activePane: viewPane,
-            };
-          })
+        ? updateGroup(
+            { ...state, ...changes },
+            state.activeGroupId,
+            (current) => {
+              const next = assignTabToPane(current, tab.id, viewPane);
+              return {
+                ...setPaneActiveTabId(next, viewPane, tab.id),
+                activePane: viewPane,
+              };
+            },
+          )
         : {}),
     });
   },
@@ -80,7 +89,7 @@ export const createTabNavigationActions: StateCreator<
       );
       if (!owner) return state;
 
-      if (state.activeGroupId === ALL_GROUP_ID) {
+      if (isAggregateGroupId(state.activeGroupId)) {
         const reopened = updateGroup(state, owner.id, (current) => ({
           ...current,
           tabs: current.tabs.map((tab) =>
@@ -90,7 +99,7 @@ export const createTabNavigationActions: StateCreator<
         const nextState = { ...state, ...reopened, allGroupActiveTabId: tabId };
         return {
           ...reopened,
-          ...updateGroup(nextState, ALL_GROUP_ID, (current) =>
+          ...updateGroup(nextState, state.activeGroupId, (current) =>
             activateTab(current, tabId),
           ),
         };

@@ -10,5 +10,6 @@ export type BodyProps = {
   autoFocus?: boolean;
   draggingTabId: string | null;
   dropZones: PaneDropZone[];
+  tabSlide?: { direction: "left" | "right"; sequence: number };
   onChange: (content: string) => void;
 };

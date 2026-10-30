@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import {
   ALL_GROUP_ID,
+  ALL_MY_GROUP_ID,
+  ALL_SHARED_GROUP_ID,
   DEFAULT_DASHBOARD_VISIBILITY,
   getActiveGroup,
   getBottomPane,
@@ -31,6 +33,11 @@ const COLUMNS: PaneColumn[] = ["left", "right"];
 
 export function useHome() {
   const hydrated = useNotepadHydrated();
+  const [mobileTabSlide, setMobileTabSlide] = useState<{
+    pane: PaneId;
+    direction: "left" | "right";
+    sequence: number;
+  } | null>(null);
   const [suppressInitialEditorFocus] = useState(() => {
     if (typeof window === "undefined") return false;
     try {
@@ -101,9 +108,13 @@ export function useHome() {
   const activeGroupName =
     activeGroupId === ALL_GROUP_ID
       ? messages.allGroup
-      : activeGroupId === UNGROUPED_GROUP_ID
-        ? messages.ungrouped
-        : (activeGroup?.name ?? messages.ungrouped);
+      : activeGroupId === ALL_MY_GROUP_ID
+        ? messages.allMyGroup
+        : activeGroupId === ALL_SHARED_GROUP_ID
+          ? messages.allSharedGroup
+          : activeGroupId === UNGROUPED_GROUP_ID
+            ? messages.ungrouped
+            : (activeGroup?.name ?? messages.ungrouped);
   const hasBookmarkUpdateToday = bookmarks.some((bookmark) =>
     isToday(bookmark.updatedAt),
   );
@@ -143,6 +154,23 @@ export function useHome() {
     },
     [replaceCurrentView, requestCloseTabAction],
   );
+
+  const swipeMobileTab = (direction: "left" | "right") => {
+    const tabs = paneTabs[activePane];
+    if (tabs.length < 2) return;
+    const currentIndex = tabs.findIndex(
+      (tab) => tab.id === activeTabs[activePane]?.id,
+    );
+    if (currentIndex < 0) return;
+    const offset = direction === "left" ? 1 : -1;
+    const nextIndex = (currentIndex + offset + tabs.length) % tabs.length;
+    setMobileTabSlide((current) => ({
+      pane: activePane,
+      direction,
+      sequence: (current?.sequence ?? 0) + 1,
+    }));
+    selectTabWithHistory(tabs[nextIndex].id);
+  };
 
   const deleteDashboardTab = useCallback(
     (tabId: string) => {
@@ -202,6 +230,13 @@ export function useHome() {
       autoFocus: pane === "left" && !suppressInitialEditorFocus,
       isFocused: !split || activePane === pane,
       dropZones: dropZonesFor(pane),
+      tabSlide:
+        mobileTabSlide?.pane === pane
+          ? {
+              direction: mobileTabSlide.direction,
+              sequence: mobileTabSlide.sequence,
+            }
+          : undefined,
       onActivate: () => activatePaneWithHistory(pane),
       onSelect: (tabId: string, extendSelection: boolean) => {
         selectTabRange(paneTabs[pane], tabId, extendSelection);
@@ -264,6 +299,7 @@ export function useHome() {
     activeGroupName,
     hasBookmarkUpdateToday,
     hasGroupUpdateToday,
+    swipeMobileTab,
     columns,
     activeGroupTabs,
     tabColorCycle: settings.tabColorCycle,

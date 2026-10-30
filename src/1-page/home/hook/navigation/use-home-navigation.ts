@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
-  ALL_GROUP_ID,
   getActiveGroup,
   getPaneActiveTabId,
   getPaneTabs,
+  isAggregateGroupId,
   PANE_IDS,
   type PaneId,
   useNotepadStore,
@@ -80,7 +80,7 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
       }
       const state = useNotepadStore.getState();
       const exists =
-        snapshot.groupId === ALL_GROUP_ID ||
+        isAggregateGroupId(snapshot.groupId) ||
         state.groups.some((group) => group.id === snapshot.groupId);
       const fallbackGroupId = state.groups[0]?.id;
       if (!exists && !fallbackGroupId) return;

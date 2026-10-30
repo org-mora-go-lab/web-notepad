@@ -5,6 +5,14 @@
   min-height: 0;
   display: grid;
 
+  &.is-slide-left {
+    animation: body-slide-left 180ms ease-out;
+  }
+
+  &.is-slide-right {
+    animation: body-slide-right 180ms ease-out;
+  }
+
   .note-pane-drop {
     position: absolute;
     inset: 0;
@@ -49,5 +57,26 @@
         font-size: v.font(11px * v.$mobile-scale);
       }
     }
+  }
+}
+
+@keyframes body-slide-left {
+  from {
+    opacity: 0.65;
+    transform: translateX(18px);
+  }
+}
+
+@keyframes body-slide-right {
+  from {
+    opacity: 0.65;
+    transform: translateX(-18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .body.is-slide-left,
+  .body.is-slide-right {
+    animation: none;
   }
 }

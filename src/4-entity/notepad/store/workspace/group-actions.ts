@@ -1,6 +1,6 @@
 import type { StateCreator } from "zustand";
 
-import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../../constant";
+import { isAggregateGroupId, UNGROUPED_GROUP_ID } from "../../constant";
 import type { NotepadState } from "../../type";
 import {
   assignTabToPane,
@@ -92,7 +92,7 @@ export const createGroupActions: StateCreator<
     }),
   setGroupStatusNames: (groupId, names) =>
     set((state) => {
-      if (groupId === ALL_GROUP_ID)
+      if (isAggregateGroupId(groupId))
         return {
           allGroupDashboardStatusNames: normalizeDashboardStatusNames(names),
         };
@@ -112,7 +112,7 @@ export const createGroupActions: StateCreator<
   setGroupDashboardVisibility: (groupId, visibility) =>
     set((state) => {
       const normalized = normalizeDashboardVisibility(visibility);
-      if (groupId === ALL_GROUP_ID) {
+      if (isAggregateGroupId(groupId)) {
         return { allGroupDashboardVisibility: normalized };
       }
       if (!state.groups.some((group) => group.id === groupId)) return state;
@@ -281,7 +281,7 @@ export const createGroupActions: StateCreator<
     }),
   selectGroup: (groupId) =>
     set((state) =>
-      groupId === ALL_GROUP_ID ||
+      isAggregateGroupId(groupId) ||
       state.groups.some((group) => group.id === groupId)
         ? { activeGroupId: groupId }
         : state,

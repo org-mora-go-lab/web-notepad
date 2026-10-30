@@ -17,6 +17,15 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
     await route.continue();
   });
   await openBoard(page);
+  await expect(page.getByRole("table", { name: "Board" })).toBeVisible();
+  await expect(page.getByRole("columnheader")).toHaveText([
+    "Group",
+    "Shared by",
+    "Notes",
+    "Members",
+    "Updated",
+  ]);
+  await expect(page.locator(".board-skeleton-row")).toHaveCount(5);
   const skeletonRowHeight = (await page
     .locator(".board-skeleton-row")
     .first()

@@ -110,6 +110,8 @@ export const en = {
   sidebarTitle: "Menu",
   toggleSidebar: "Toggle groups",
   allGroup: "All Group",
+  allMyGroup: "All My Group",
+  allSharedGroup: "All Shared Group",
   ungrouped: "Ungrouped",
   selectGroup: "Select group",
   selectGroupNamed: (name: string) => `Select group: ${name}`,

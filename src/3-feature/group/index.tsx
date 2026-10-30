@@ -23,6 +23,8 @@ import { createPortal } from "react-dom";
 
 import {
   ALL_GROUP_ID,
+  ALL_MY_GROUP_ID,
+  ALL_SHARED_GROUP_ID,
   compareGroups,
   type GroupEntry,
   isSharedGroupId,
@@ -469,6 +471,28 @@ function GroupSidebar({
               >
                 <Layers size={18} aria-hidden="true" />
                 <span>{t.allGroup}</span>
+              </button>
+              <button
+                type="button"
+                aria-pressed={activeGroupId === ALL_MY_GROUP_ID}
+                onClick={() => {
+                  setFooterMenuOpen(null);
+                  selectGroup(ALL_MY_GROUP_ID);
+                }}
+              >
+                <Layers size={18} aria-hidden="true" />
+                <span>{t.allMyGroup}</span>
+              </button>
+              <button
+                type="button"
+                aria-pressed={activeGroupId === ALL_SHARED_GROUP_ID}
+                onClick={() => {
+                  setFooterMenuOpen(null);
+                  selectGroup(ALL_SHARED_GROUP_ID);
+                }}
+              >
+                <Layers size={18} aria-hidden="true" />
+                <span>{t.allSharedGroup}</span>
               </button>
               {ungrouped && (
                 <button

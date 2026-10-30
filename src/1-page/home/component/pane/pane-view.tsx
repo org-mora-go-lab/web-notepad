@@ -18,6 +18,7 @@ export function PaneView({
   draggingTabIds,
   selectedTabIds,
   dropZones,
+  tabSlide,
   heightRatio,
   onActivate,
   onSelect,
@@ -69,6 +70,7 @@ export function PaneView({
           autoFocus={autoFocus}
           draggingTabId={draggingTabId}
           dropZones={dropZones}
+          tabSlide={tabSlide}
           onChange={onChange}
         />
       </div>

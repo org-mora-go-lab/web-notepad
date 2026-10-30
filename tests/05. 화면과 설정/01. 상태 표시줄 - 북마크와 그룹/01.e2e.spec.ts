@@ -106,6 +106,8 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   await systemGroupCommand(page).click();
   await expect(page.locator("#group-system-menu > button")).toHaveText([
     "All Group",
+    "All My Group",
+    "All Shared Group",
     "Ungrouped",
   ]);
   await moreCommand(page).click();

@@ -11,7 +11,7 @@ import {
   Shortcut,
   UserGuide,
 } from "@/src/3-feature";
-import { ALL_GROUP_ID } from "@/src/4-entity/notepad";
+import { isAggregateGroupId } from "@/src/4-entity/notepad";
 
 import type { PanelProps } from "./type";
 
@@ -70,7 +70,7 @@ export function Panel({
         tabs={activeGroupTabs}
         activeTabId={activeTabId}
         groups={groups}
-        showGroupNames={activeGroupId === ALL_GROUP_ID}
+        showGroupNames={isAggregateGroupId(activeGroupId)}
         tabColorCycle={tabColorCycle}
         open={openPanel === "dashboard" || backgroundPanel === "dashboard"}
         onClose={onClose}
