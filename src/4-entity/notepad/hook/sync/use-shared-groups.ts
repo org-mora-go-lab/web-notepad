@@ -10,8 +10,10 @@ import type { SharedGroupData } from "../../type";
 import {
   applySharedGroupData,
   createJoinedGroup,
+  hasPersistableSharedContent,
   isSharedGroupId,
   mergeSharedGroupData,
+  SHARED_TAB_DELETE_INTENT_EVENT,
   toSharedGroupData,
 } from "../../util";
 
@@ -24,7 +26,11 @@ type SharedRecord = {
   sharingActive?: boolean;
 };
 export type ShareInviteStatus = "login" | "joining" | "joined" | "error" | null;
-type PendingGroup = { base: SharedRecord; data: SharedGroupData };
+type PendingGroup = {
+  base: SharedRecord;
+  data: SharedGroupData;
+  deletedTabIds?: string[];
+};
 const same = (left: unknown, right: unknown) =>
   JSON.stringify(left) === JSON.stringify(right);
 
@@ -59,6 +65,7 @@ export function useSharedGroups(hydrated: boolean) {
     const sending = new Set<string>();
     const editedContents = new Map<string, string>();
     const changedBeforeLoad = new Set<string>();
+    const explicitDeletes = new Map<string, Set<string>>();
     const pendingKey = (id: string, groupId: string) =>
       `web-notepad-shared-pending:${id}:${groupId}`;
     const share = inviteToken;
@@ -99,6 +106,17 @@ export function useSharedGroups(hydrated: boolean) {
         /* Local edits remain available. */
       }
     };
+    const approvedDeletedTabIds = (
+      id: string,
+      base: SharedRecord,
+      data: SharedGroupData,
+    ) => {
+      const nextIds = new Set(data.tabs.map((tab) => tab.id));
+      const approved = explicitDeletes.get(id);
+      return base.data.tabs
+        .filter((tab) => !nextIds.has(tab.id) && approved?.has(tab.id))
+        .map((tab) => tab.id);
+    };
 
     const flush = async (id: string) => {
       timers.delete(id);
@@ -107,10 +125,12 @@ export function useSharedGroups(hydrated: boolean) {
       if (!active || !userId || !base || !group || sending.has(id)) return;
       const data = toSharedGroupData(group);
       if (same(data, base.data)) {
+        explicitDeletes.delete(id);
         persistPending(id, null);
         return;
       }
       sending.add(id);
+      const deletedTabIds = approvedDeletedTabIds(id, base, data);
       const sentContents = new Map(
         data.tabs
           .filter((tab) => editedContents.get(tab.id) === tab.content)
@@ -123,13 +143,26 @@ export function useSharedGroups(hydrated: boolean) {
         const response = await fetch("/api/groups/update", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, baseRevision: base.revision, data }),
+          body: JSON.stringify({
+            id,
+            baseRevision: base.revision,
+            data,
+            deletedTabIds,
+          }),
         });
         if (response.status === 409) {
-          const { group: remote } = (await response.json()) as {
+          const { group: remote, reset } = (await response.json()) as {
             group: SharedRecord;
+            reset?: boolean;
           };
           if (!active) return;
+          if (reset) {
+            baselines.set(id, remote);
+            applyData(remote.data);
+            explicitDeletes.delete(id);
+            persistPending(id, null);
+            return;
+          }
           const latestLocal = currentGroup(id);
           const merged = mergeSharedGroupData(
             base.data,
@@ -147,6 +180,12 @@ export function useSharedGroups(hydrated: boolean) {
         };
         if (!active) return;
         baselines.set(id, saved);
+        const remainingDeletes = explicitDeletes.get(id);
+        for (const tabId of deletedTabIds) remainingDeletes?.delete(tabId);
+        const savedTabIds = new Set(saved.data.tabs.map((tab) => tab.id));
+        for (const tabId of remainingDeletes ?? [])
+          if (!savedTabIds.has(tabId)) remainingDeletes?.delete(tabId);
+        if (remainingDeletes?.size === 0) explicitDeletes.delete(id);
         for (const [tabId, content] of sentContents)
           if (editedContents.get(tabId) === content)
             editedContents.delete(tabId);
@@ -174,11 +213,16 @@ export function useSharedGroups(hydrated: boolean) {
       if (!base || !group || !userId) return;
       const data = toSharedGroupData(group);
       if (same(data, base.data)) {
+        explicitDeletes.delete(id);
         persistPending(id, null);
         clearTimer(id);
         return;
       }
-      persistPending(id, { base, data });
+      persistPending(id, {
+        base,
+        data,
+        deletedTabIds: approvedDeletedTabIds(id, base, data),
+      });
       clearTimer(id);
       timers.set(
         id,
@@ -218,6 +262,7 @@ export function useSharedGroups(hydrated: boolean) {
           persistPending(id, null);
           baselines.delete(id);
           changedBeforeLoad.delete(id);
+          explicitDeletes.delete(id);
         }
         applying = true;
         try {
@@ -245,6 +290,8 @@ export function useSharedGroups(hydrated: boolean) {
               /* Ignore damaged local queue data. */
             }
             baselines.set(remote.id, pending?.base ?? remote);
+            if (pending?.deletedTabIds?.length)
+              explicitDeletes.set(remote.id, new Set(pending.deletedTabIds));
             if (!currentGroup(remote.id))
               applyData(pending?.data ?? remote.data);
             else if (!pending && !changedBeforeLoad.has(remote.id))
@@ -256,6 +303,7 @@ export function useSharedGroups(hydrated: boolean) {
             if (!local || same(toSharedGroupData(local), base.data)) {
               baselines.set(remote.id, remote);
               applyData(remote.data);
+              explicitDeletes.delete(remote.id);
               persistPending(remote.id, null);
             }
           }
@@ -298,6 +346,14 @@ export function useSharedGroups(hydrated: boolean) {
           ) {
             editedContents.set(tab.id, tab.content);
             changedIds.push(tab.id);
+            if (
+              hasPersistableSharedContent(previousContents.get(tab.id) ?? "") &&
+              !hasPersistableSharedContent(tab.content)
+            ) {
+              const ids = explicitDeletes.get(group.id) ?? new Set<string>();
+              ids.add(tab.id);
+              explicitDeletes.set(group.id, ids);
+            }
           }
         }
       }
@@ -364,6 +420,7 @@ export function useSharedGroups(hydrated: boolean) {
         setLoadError(false);
         baselines.clear();
         editedContents.clear();
+        explicitDeletes.clear();
         setSavingTabIds([]);
         timers.forEach(clearTimeout);
         timers.clear();
@@ -403,7 +460,26 @@ export function useSharedGroups(hydrated: boolean) {
     const onRestore = () => {
       if (document.visibilityState !== "hidden") void refreshGroups();
     };
+    const onSharedTabDeleteIntent = (event: Event) => {
+      const detail = (
+        event as CustomEvent<{ groupId?: string; tabId?: string }>
+      ).detail;
+      if (
+        !detail ||
+        typeof detail.groupId !== "string" ||
+        typeof detail.tabId !== "string" ||
+        !isSharedGroupId(detail.groupId)
+      )
+        return;
+      const ids = explicitDeletes.get(detail.groupId) ?? new Set<string>();
+      ids.add(detail.tabId);
+      explicitDeletes.set(detail.groupId, ids);
+    };
     window.addEventListener("shared-groups-changed", onShared);
+    window.addEventListener(
+      SHARED_TAB_DELETE_INTENT_EVENT,
+      onSharedTabDeleteIntent,
+    );
     window.addEventListener("notepad-auth-changed", refreshSession);
     window.addEventListener("online", onRestore);
     window.addEventListener("focus", onRestore);
@@ -417,6 +493,10 @@ export function useSharedGroups(hydrated: boolean) {
       window.removeEventListener("focus", onRestore);
       document.removeEventListener("visibilitychange", onRestore);
       window.removeEventListener("shared-groups-changed", onShared);
+      window.removeEventListener(
+        SHARED_TAB_DELETE_INTENT_EVENT,
+        onSharedTabDeleteIntent,
+      );
       window.removeEventListener("notepad-auth-changed", refreshSession);
       window.removeEventListener("online", onRestore);
     };

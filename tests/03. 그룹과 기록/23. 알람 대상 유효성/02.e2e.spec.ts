@@ -24,6 +24,7 @@ test("2. X로 닫아 DB에서 제거한 탭의 알람도 목록에서 제거한�
           },
         ],
       },
+      deletedTabIds: [tab.id],
     },
   });
   expect(response.ok()).toBe(true);

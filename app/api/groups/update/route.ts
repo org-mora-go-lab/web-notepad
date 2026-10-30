@@ -21,6 +21,7 @@ export async function POST(request: Request) {
       ? (payload as Record<string, unknown>)
       : {};
   const data = input.data as SharedGroupData | undefined;
+  const deletedTabIds = input.deletedTabIds ?? [];
   if (
     typeof input.id !== "string" ||
     !/^shared-[0-9a-f-]{36}$/i.test(input.id) ||
@@ -32,6 +33,11 @@ export async function POST(request: Request) {
     data.name.length > 60 ||
     !Array.isArray(data.tabs) ||
     !Array.isArray(data.bookmarks) ||
+    !Array.isArray(deletedTabIds) ||
+    deletedTabIds.length > 1_000 ||
+    !deletedTabIds.every(
+      (tabId) => typeof tabId === "string" && tabId.length <= 200,
+    ) ||
     !data.tabs.every(
       (tab) =>
         tab && typeof tab.id === "string" && typeof tab.content === "string",
@@ -45,6 +51,7 @@ export async function POST(request: Request) {
       input.id,
       Number(input.baseRevision),
       data,
+      deletedTabIds,
     );
     if (result.kind === "forbidden")
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -52,6 +59,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Group unavailable" }, { status: 404 });
     if (result.kind === "conflict")
       return NextResponse.json({ group: result.record }, { status: 409 });
+    if (result.kind === "unsafe")
+      return NextResponse.json(
+        { group: result.record, reset: true },
+        { status: 409 },
+      );
     return NextResponse.json({ group: result.record });
   } catch {
     return NextResponse.json(

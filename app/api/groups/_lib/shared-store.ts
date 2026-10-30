@@ -161,6 +161,7 @@ export async function saveSharedGroup(
   id: string,
   baseRevision: number,
   data: SharedGroupData,
+  deletedTabIds: string[],
 ) {
   data = normalizeSharedGroupData(data);
   const database = await sharedDatabase();
@@ -180,6 +181,14 @@ export async function saveSharedGroup(
     const current = fromRow(row);
     if (current.revision !== baseRevision)
       return { kind: "conflict" as const, record: current };
+    const nextTabIds = new Set(data.tabs.map((tab) => tab.id));
+    const approvedDeletes = new Set(deletedTabIds);
+    if (
+      current.data.tabs.some(
+        (tab) => !nextTabIds.has(tab.id) && !approvedDeletes.has(tab.id),
+      )
+    )
+      return { kind: "unsafe" as const, record: current };
     if (JSON.stringify(current.data) === JSON.stringify(data))
       return { kind: "saved" as const, record: current };
     const revision = current.revision + 1;

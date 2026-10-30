@@ -43,6 +43,7 @@ test("9. 로그인 사용자의 첫 진입은 상단 진행 바를 표시하고 
       touchAction: lock.touchAction,
       progressPosition: progress.position,
       progressTop: progress.top,
+      progressOpacity: progress.opacity,
       progressColor: progress.backgroundImage,
     };
   });
@@ -52,6 +53,7 @@ test("9. 로그인 사용자의 첫 진입은 상단 진행 바를 표시하고 
     touchAction: "none",
     progressPosition: "fixed",
     progressTop: "0px",
+    progressOpacity: "0.8",
   });
   expect(loaderStyles.progressColor).not.toBe("none");
 

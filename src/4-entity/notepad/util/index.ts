@@ -38,6 +38,7 @@ export {
   namespaceGroup,
   normalizeSharedGroupData,
   pruneShortSharedTabs,
+  SHARED_TAB_DELETE_INTENT_EVENT,
   sharedGroupId,
   toSharedGroupData,
 } from "./shared-group";

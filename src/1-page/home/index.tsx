@@ -142,8 +142,9 @@ export function Home() {
 
   useEffect(() => {
     if (!hydrated || activeTab) return;
+    if (isSharedGroupId(activeGroupId) && !shared.groupsLoaded) return;
     useNotepadStore.getState().addTab();
-  }, [activeGroupId, activeTab, hydrated]);
+  }, [activeGroupId, activeTab, hydrated, shared.groupsLoaded]);
 
   useEffect(() => {
     if (
