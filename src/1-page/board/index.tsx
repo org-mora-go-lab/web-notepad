@@ -9,6 +9,8 @@ import { Footer } from "@/src/2-widget";
 import { Board } from "@/src/3-feature";
 import {
   ALL_GROUP_ID,
+  ALL_MY_GROUP_ID,
+  ALL_SHARED_GROUP_ID,
   getActiveGroup,
   UNGROUPED_GROUP_ID,
   useCloudSave,
@@ -38,9 +40,13 @@ export function BoardPage() {
   const activeGroupName =
     store.activeGroupId === ALL_GROUP_ID
       ? messages.allGroup
-      : store.activeGroupId === UNGROUPED_GROUP_ID
-        ? messages.ungrouped
-        : (activeGroup?.name ?? messages.ungrouped);
+      : store.activeGroupId === ALL_MY_GROUP_ID
+        ? messages.allMyGroup
+        : store.activeGroupId === ALL_SHARED_GROUP_ID
+          ? messages.allSharedGroup
+          : store.activeGroupId === UNGROUPED_GROUP_ID
+            ? messages.ungrouped
+            : (activeGroup?.name ?? messages.ungrouped);
   useCloudSave(hydrated);
   const shared = useSharedGroups(hydrated);
   useEffect(markBoardReturn, []);

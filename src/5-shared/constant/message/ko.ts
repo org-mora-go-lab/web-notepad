@@ -114,6 +114,8 @@ export const ko: Messages = {
   sidebarTitle: "메뉴",
   toggleSidebar: "그룹 열기 또는 닫기",
   allGroup: "모든 그룹",
+  allMyGroup: "내 모든 그룹",
+  allSharedGroup: "공유된 모든 그룹",
   ungrouped: "미지정 그룹",
   selectGroup: "그룹 선택",
   selectGroupNamed: (name: string) => `그룹 선택: ${name}`,

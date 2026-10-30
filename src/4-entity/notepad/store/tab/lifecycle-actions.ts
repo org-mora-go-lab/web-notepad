@@ -1,6 +1,6 @@
 import type { StateCreator } from "zustand";
 
-import { ALL_GROUP_ID } from "../../constant";
+import { isAggregateGroupId } from "../../constant";
 import type { NotepadState } from "../../type";
 import {
   assignTabToPane,
@@ -194,17 +194,20 @@ const hideTabFromEditor = (
       Math.min(viewIds.indexOf(tabId), remainingViewIds.length - 1)
     ];
   const commit = (changes: Partial<NotepadState>) => {
-    if (state.activeGroupId === ALL_GROUP_ID) {
+    if (isAggregateGroupId(state.activeGroupId)) {
       changes = {
         ...changes,
-        ...updateGroup({ ...state, ...changes }, ALL_GROUP_ID, (current) =>
-          getPaneActiveTabId(view, viewPane) === tabId &&
-          viewFallback &&
-          getPaneTabs(current, viewPane).some(
-            (item) => item.id === viewFallback,
-          )
-            ? setPaneActiveTabId(current, viewPane, viewFallback)
-            : current,
+        ...updateGroup(
+          { ...state, ...changes },
+          state.activeGroupId,
+          (current) =>
+            getPaneActiveTabId(view, viewPane) === tabId &&
+            viewFallback &&
+            getPaneTabs(current, viewPane).some(
+              (item) => item.id === viewFallback,
+            )
+              ? setPaneActiveTabId(current, viewPane, viewFallback)
+              : current,
         ),
       };
     }

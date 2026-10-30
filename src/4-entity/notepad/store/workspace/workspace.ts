@@ -1,4 +1,11 @@
-import { ALL_GROUP_ID, ALL_GROUP_NAME } from "../../constant";
+import {
+  ALL_GROUP_NAME,
+  ALL_MY_GROUP_ID,
+  ALL_MY_GROUP_NAME,
+  ALL_SHARED_GROUP_ID,
+  ALL_SHARED_GROUP_NAME,
+  isAggregateGroupId,
+} from "../../constant";
 import type {
   BookmarkEntry,
   GroupEntry,
@@ -21,8 +28,15 @@ import {
 } from "../../util";
 
 // All gathers the original tabs and applies only its own independent view layout.
-const buildAllGroup = (state: NotepadState): GroupEntry => {
-  const originals = state.groups.flatMap((group) => group.tabs);
+const buildAllGroup = (state: NotepadState, groupId: string): GroupEntry => {
+  const sourceGroups = state.groups.filter((group) =>
+    groupId === ALL_MY_GROUP_ID
+      ? !isSharedGroupId(group.id)
+      : groupId === ALL_SHARED_GROUP_ID
+        ? isSharedGroupId(group.id)
+        : true,
+  );
+  const originals = sourceGroups.flatMap((group) => group.tabs);
   const blanks = originals.filter((tab) => tab.open && !tab.content.trim());
   const blankId =
     blanks.find((tab) => tab.id === state.allGroupActiveTabId)?.id ??
@@ -36,8 +50,13 @@ const buildAllGroup = (state: NotepadState): GroupEntry => {
   const activeTab =
     openTabs.find((tab) => tab.id === state.allGroupActiveTabId) ?? openTabs[0];
   return normalizeLayout({
-    id: ALL_GROUP_ID,
-    name: ALL_GROUP_NAME,
+    id: groupId,
+    name:
+      groupId === ALL_MY_GROUP_ID
+        ? ALL_MY_GROUP_NAME
+        : groupId === ALL_SHARED_GROUP_ID
+          ? ALL_SHARED_GROUP_NAME
+          : ALL_GROUP_NAME,
     pinned: false,
     createdAt: 0,
     updatedAt: 0,
@@ -52,7 +71,8 @@ const buildAllGroup = (state: NotepadState): GroupEntry => {
 };
 
 export const getActiveGroup = (state: NotepadState) => {
-  if (state.activeGroupId === ALL_GROUP_ID) return buildAllGroup(state);
+  if (isAggregateGroupId(state.activeGroupId))
+    return buildAllGroup(state, state.activeGroupId);
   const group =
     state.groups.find((group) => group.id === state.activeGroupId) ??
     state.groups[0];
@@ -68,7 +88,7 @@ export const getActiveGroup = (state: NotepadState) => {
 
 // The group a tab edit applies to: the All lists tabs of every group, so a tab edit goes to its own group.
 export const getTabGroup = (state: NotepadState, tabId: string) =>
-  state.activeGroupId === ALL_GROUP_ID
+  isAggregateGroupId(state.activeGroupId)
     ? state.groups.find((group) => group.tabs.some((tab) => tab.id === tabId))
     : getActiveGroup(state);
 
@@ -79,8 +99,8 @@ export const updateGroup = (
   groupId: string,
   update: (group: GroupEntry) => GroupEntry,
 ) => {
-  if (groupId === ALL_GROUP_ID) {
-    const next = normalizeLayout(update(buildAllGroup(state)));
+  if (isAggregateGroupId(groupId)) {
+    const next = normalizeLayout(update(buildAllGroup(state, groupId)));
     return {
       allGroupLayout: getPaneLayout(next),
       allGroupActiveTabId: getPaneActiveTabId(next, next.activePane),

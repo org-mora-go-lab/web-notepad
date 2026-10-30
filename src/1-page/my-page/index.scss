@@ -262,7 +262,9 @@
       height: 20px;
     }
   }
-  .my-page-skeleton {
+  .my-page-skeleton,
+  .my-page-metrics-skeleton,
+  .my-page-sync-skeleton {
     animation: my-page-pulse 1.5s ease-in-out infinite;
   }
 }
@@ -276,7 +278,9 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .my-page .my-page-skeleton {
+  .my-page .my-page-skeleton,
+  .my-page .my-page-metrics-skeleton,
+  .my-page .my-page-sync-skeleton {
     animation: none;
   }
 }

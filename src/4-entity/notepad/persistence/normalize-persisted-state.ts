@@ -1,4 +1,4 @@
-import { ALL_GROUP_ID, UNGROUPED_GROUP_ID } from "../constant";
+import { isAggregateGroupId, UNGROUPED_GROUP_ID } from "../constant";
 import type { NotepadState, NoteTab } from "../type";
 import {
   createNoteTab,
@@ -117,7 +117,7 @@ export function normalizePersistedState(
   const requestedActiveGroupId = persisted.activeGroupId;
   const activeGroupId =
     typeof requestedActiveGroupId === "string" &&
-    (requestedActiveGroupId === ALL_GROUP_ID ||
+    (isAggregateGroupId(requestedActiveGroupId) ||
       groups.some((group) => group.id === requestedActiveGroupId))
       ? requestedActiveGroupId
       : UNGROUPED_GROUP_ID;

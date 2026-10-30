@@ -163,6 +163,8 @@
   }
 
   @media (max-width: 512px) {
+    touch-action: pan-y;
+
     min-height: calc(76.8px + env(safe-area-inset-bottom));
     padding: 0;
     font-size: v.font(12px);

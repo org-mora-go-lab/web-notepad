@@ -460,22 +460,33 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
             />
             {loading ? (
               <div
-                className="board-skeleton"
+                className="board-list board-table-container board-skeleton"
                 role="status"
                 aria-label={t.boardLoading}
               >
                 <span className="board-skeleton-label">{t.boardLoading}</span>
-                <div aria-hidden="true">
-                  {Array.from({ length: 5 }, (_, index) => (
-                    <div className="board-skeleton-row" key={index}>
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                  ))}
-                </div>
+                <table className="board-table" aria-label={t.boardTitle}>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t.groupCategory}</th>
+                      <th scope="col">{t.boardOwnerColumn}</th>
+                      <th scope="col">{t.boardNotesColumn}</th>
+                      <th scope="col">{t.boardMembersColumn}</th>
+                      <th scope="col">{t.boardUpdatedColumn}</th>
+                    </tr>
+                  </thead>
+                  <tbody aria-hidden="true">
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <tr className="board-skeleton-row" key={index}>
+                        {Array.from({ length: 5 }, (_, cellIndex) => (
+                          <td key={cellIndex}>
+                            <span />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             ) : error ? (
               <div className="board-empty" role="alert">

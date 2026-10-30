@@ -16,6 +16,8 @@ test("4. 사이드바 아래 GROUP과 MORE 메뉴에서 기본 그룹과 가이�
   const systemGroups = await openSystemGroupMenu(page);
   await expect(systemGroups.locator(":scope > button")).toHaveText([
     "All Group",
+    "All My Group",
+    "All Shared Group",
     "Ungrouped",
   ]);
   await expect(systemGroups.locator(".group-create-form")).toBeVisible();
