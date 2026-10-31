@@ -66,10 +66,6 @@ export function Footer({
     pointerId: number;
     target: Element;
   } | null>(null);
-  const swipeClickGuard = useRef<{
-    target: Element;
-    expiresAt: number;
-  } | null>(null);
 
   useEffect(() => {
     const requestPin = (event: Event) => {
@@ -264,27 +260,10 @@ export function Footer({
   return (
     <footer
       className={`footer ${iconsOnly ? "is-icons-only" : ""}`}
-      onClickCapture={(event) => {
-        const guard = swipeClickGuard.current;
-        if (!guard) return;
-        if (performance.now() > guard.expiresAt) {
-          swipeClickGuard.current = null;
-          return;
-        }
-        if (!(event.target instanceof Node)) return;
-        const sameSwipeTarget = guard.target.matches("button, a")
-          ? guard.target.contains(event.target)
-          : event.target === guard.target;
-        if (!sameSwipeTarget) return;
-        event.preventDefault();
-        event.stopPropagation();
-        swipeClickGuard.current = null;
-      }}
       onPointerDown={(event) => {
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
         if (!(event.target instanceof Element)) return;
-        swipeClickGuard.current = null;
         swipeStart.current = {
           x: event.clientX,
           y: event.clientY,
@@ -307,15 +286,7 @@ export function Footer({
           Math.abs(horizontal) <= Math.abs(vertical)
         )
           return;
-        const clickGuard = {
-          target: start.target.closest("button, a") ?? start.target,
-          expiresAt: performance.now() + 100,
-        };
-        swipeClickGuard.current = clickGuard;
-        requestAnimationFrame(() => {
-          if (swipeClickGuard.current === clickGuard)
-            swipeClickGuard.current = null;
-        });
+        event.preventDefault();
         onSwipeTabs(horizontal < 0 ? "left" : "right");
       }}
       onPointerCancel={(event) => {
