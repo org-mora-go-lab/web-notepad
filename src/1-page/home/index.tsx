@@ -297,7 +297,10 @@ export function Home() {
                   groupsOpen={groupMenuOpen}
                   groups={groups}
                   onSwipeTabs={
-                    !groupMenuOpen && !openPanel && !backgroundPanel
+                    activeTab &&
+                    !groupMenuOpen &&
+                    !openPanel &&
+                    !backgroundPanel
                       ? swipeMobileTab
                       : undefined
                   }

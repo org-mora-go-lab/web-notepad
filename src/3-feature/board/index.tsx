@@ -16,6 +16,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -24,7 +25,7 @@ import {
 import {
   ALL_GROUP_ID,
   ALL_MY_GROUP_ID,
-  type BoardPost,
+  ALL_SHARED_GROUP_ID,
   UNGROUPED_GROUP_ID,
 } from "@/src/4-entity/notepad";
 import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
@@ -32,78 +33,28 @@ import { ConfirmPopup, FixedPageHeader, SearchField } from "@/src/5-shared/ui";
 
 import { useBoard, useBoardSelection } from "./hook";
 
-type BoardSwipeHandler = (direction: "left" | "right") => void;
-
 const MOBILE_NOTE_PREVIEW_MIN_HEIGHT = 316.8;
 const DESKTOP_NOTE_PREVIEW_HEIGHT = MOBILE_NOTE_PREVIEW_MIN_HEIGHT * 1.5;
 const ALL_MY_UNGROUPED_BOARD_ID = "all-my-ungrouped";
+const SYSTEM_BOARD_POST_IDS = new Set([
+  ALL_GROUP_ID,
+  ALL_MY_GROUP_ID,
+  ALL_SHARED_GROUP_ID,
+  ALL_MY_UNGROUPED_BOARD_ID,
+  UNGROUPED_GROUP_ID,
+  `local-${UNGROUPED_GROUP_ID}`,
+]);
 
-export function Board({
-  onReturnHome,
-  swipeTabsRef,
-}: {
-  onReturnHome?: () => void;
-  swipeTabsRef?: { current: BoardSwipeHandler | null };
-}) {
+export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const { t, language } = useI18n();
   const { posts, loading, error, reload } = useBoard();
-  const systemPosts = useMemo<BoardPost[]>(() => {
-    const localPosts = posts.filter((post) => post.local);
-    const namedLocalPosts = localPosts.filter(
-      (post) => post.id !== `local-${UNGROUPED_GROUP_ID}`,
-    );
-    const ungroupedPosts = localPosts.filter(
-      (post) => post.id === `local-${UNGROUPED_GROUP_ID}`,
-    );
-    const aggregate = (
-      id: string,
-      name: string,
-      sourcePosts: BoardPost[],
-    ): BoardPost => {
-      const notes = sourcePosts.flatMap((post) =>
-        post.notes.map((note) => ({
-          ...note,
-          id: `${post.id}:${note.id}`,
-          title: note.title || note.content?.split("\n")[0]?.trim() || "-",
-          content: note.content ?? "",
-          bookmarked: Boolean(note.bookmarked),
-          updatedAt: note.updatedAt || post.updatedAt,
-        })),
-      );
-      return {
-        id,
-        local: true,
-        system: true,
-        viewerRole: "owner",
-        groupName: name,
-        ownerName: "Me",
-        title: name,
-        description: "",
-        noteCount: notes.length,
-        bookmarkCount: notes.filter((note) => note.bookmarked).length,
-        notes,
-        memberCount: sourcePosts.reduce(
-          (total, post) => total + post.memberCount,
-          0,
-        ),
-        updatedAt: Math.max(0, ...sourcePosts.map((post) => post.updatedAt)),
-        inviteUrl: "",
-      };
-    };
-    return [
-      aggregate(ALL_GROUP_ID, t.allGroup, posts),
-      aggregate(ALL_MY_GROUP_ID, t.allMyGroup, namedLocalPosts),
-      aggregate(ALL_MY_UNGROUPED_BOARD_ID, t.allMyUngrouped, localPosts),
-      aggregate(UNGROUPED_GROUP_ID, t.ungrouped, ungroupedPosts),
-    ];
-  }, [posts, t]);
   const boardPosts = useMemo(
-    () => [
-      ...posts.filter((post) => post.id !== `local-${UNGROUPED_GROUP_ID}`),
-      ...systemPosts,
-    ],
-    [posts, systemPosts],
+    () =>
+      posts.filter(
+        (post) => !post.system && !SYSTEM_BOARD_POST_IDS.has(post.id),
+      ),
+    [posts],
   );
   const {
     selected,
@@ -157,27 +108,12 @@ export function Board({
     },
     [],
   );
-  const swipeNoteFromFooter = useCallback<BoardSwipeHandler>(
-    (direction) => {
-      if (!activeNote || orderedNotes.length < 2) return;
-      const current = orderedNotes.findIndex(
-        (note) => note.id === activeNote.id,
-      );
-      const offset = direction === "left" ? 1 : -1;
-      const next =
-        (current + offset + orderedNotes.length) % orderedNotes.length;
-      activateNote(orderedNotes[next].id, direction);
-    },
-    [activeNote, activateNote, orderedNotes],
-  );
-  useEffect(() => {
-    if (!swipeTabsRef) return;
-    swipeTabsRef.current = selected ? swipeNoteFromFooter : null;
-    return () => {
-      if (swipeTabsRef.current === swipeNoteFromFooter)
-        swipeTabsRef.current = null;
-    };
-  }, [selected, swipeNoteFromFooter, swipeTabsRef]);
+  useLayoutEffect(() => {
+    if (!selected) return;
+    contentRef.current
+      ?.closest<HTMLElement>(".board-page")
+      ?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [selected]);
   const updateNoteTabFog = useCallback(() => {
     const tabs = noteTabsRef.current;
     if (!tabs) return;

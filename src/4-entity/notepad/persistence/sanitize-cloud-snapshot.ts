@@ -15,8 +15,7 @@ type SnapshotState = {
   [key: string]: unknown;
 };
 
-const persistable = (tab: SnapshotTab) =>
-  tab.open !== false && tab.content.trim().length >= 3;
+const persistable = (tab: SnapshotTab) => tab.open !== false;
 
 /** Removes transient/closed notes before a personal snapshot reaches Turso. */
 export function sanitizeCloudSnapshot(snapshot: string) {
@@ -32,8 +31,5 @@ export function sanitizeCloudSnapshot(snapshot: string) {
       ),
     };
   });
-  state.closedTabs = state.closedTabs.filter(
-    (entry) => entry.tab.content.trim().length >= 3,
-  );
   return JSON.stringify(state);
 }

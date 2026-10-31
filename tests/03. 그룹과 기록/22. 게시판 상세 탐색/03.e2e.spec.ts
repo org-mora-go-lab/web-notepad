@@ -9,7 +9,7 @@ test.use({
   viewport: { width: 390, height: 844 },
 });
 
-test("3. 모바일 보드 상세 푸터 스와이프 직후 첫 푸터 탭이 즉시 동작한다", async ({
+test("3. 모바일 보드 상세 푸터 제스처는 탭을 바꾸지 않고 첫 탭이 즉시 동작한다", async ({
   page,
   boardPost,
 }) => {
@@ -17,7 +17,9 @@ test("3. 모바일 보드 상세 푸터 스와이프 직후 첫 푸터 탭이 �
   await selectBoardPost(page, boardPost.title, boardPost.id);
   const footer = page.locator(".board-mobile-footer .footer");
   const dashboard = page.locator(".board-mobile-footer .dashboard-command");
+  const activeTab = page.getByRole("tab", { selected: true });
   await expect(page.locator(".board-note-preview")).toBeVisible();
+  const activeTabName = await activeTab.textContent();
   await expect(footer).toBeVisible();
   await expect(dashboard).toBeVisible();
   const footerBounds = (await footer.boundingBox())!;
@@ -36,9 +38,12 @@ test("3. 모바일 보드 상세 푸터 스와이프 직후 첫 푸터 탭이 �
     type: "touchEnd",
     touchPoints: [],
   });
-  // This is the first real tap after the swipe. Playwright's tap action keeps
-  // the touch sequence realistic without inserting an artificial wait.
-  await dashboard.tap();
+  await expect(page.getByRole("tab", { selected: true })).toHaveText(
+    activeTabName ?? "",
+  );
+  // The next click is an independent user event and must not be consumed by
+  // the preceding touch gesture.
+  await dashboard.click();
 
   await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(

@@ -63,14 +63,8 @@ export function Footer({
   const swipeStart = useRef<{
     x: number;
     y: number;
-    pointerId: number;
-    target: Element;
+    identifier: number;
   } | null>(null);
-  const swipeClickGuard = useRef<{
-    target: Element;
-    expiresAt: number;
-  } | null>(null);
-  const touchActivatedButton = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const requestPin = (event: Event) => {
@@ -265,91 +259,42 @@ export function Footer({
   return (
     <footer
       className={`footer ${iconsOnly ? "is-icons-only" : ""}`}
-      onClickCapture={(event) => {
-        const touchButton = touchActivatedButton.current;
-        if (
-          touchButton &&
-          event.target instanceof Node &&
-          touchButton.contains(event.target)
-        ) {
-          event.preventDefault();
-          event.stopPropagation();
-          touchActivatedButton.current = null;
-          return;
-        }
-        const guard = swipeClickGuard.current;
-        if (!guard) return;
-        if (performance.now() > guard.expiresAt) {
-          swipeClickGuard.current = null;
-          return;
-        }
-        if (!(event.target instanceof Node)) return;
-        const sameSwipeTarget = guard.target.matches("button, a")
-          ? guard.target.contains(event.target)
-          : event.target === guard.target;
-        if (!sameSwipeTarget) return;
-        event.preventDefault();
-        event.stopPropagation();
-        swipeClickGuard.current = null;
-      }}
-      onPointerDown={(event) => {
+      onTouchStart={(event) => {
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
-        if (!(event.target instanceof Element)) return;
-        touchActivatedButton.current = null;
+        if (event.touches.length !== 1) return;
+        const touch = event.touches[0];
         swipeStart.current = {
-          x: event.clientX,
-          y: event.clientY,
-          pointerId: event.pointerId,
-          target: event.target,
+          x: touch.clientX,
+          y: touch.clientY,
+          identifier: touch.identifier,
         };
-        event.target.setPointerCapture(event.pointerId);
       }}
-      onPointerUp={(event) => {
+      onTouchEnd={(event) => {
         const start = swipeStart.current;
         swipeStart.current = null;
-        if (start?.target.hasPointerCapture(event.pointerId))
-          start.target.releasePointerCapture(event.pointerId);
-        if (!start || start.pointerId !== event.pointerId || !onSwipeTabs)
-          return;
-        const horizontal = event.clientX - start.x;
-        const vertical = event.clientY - start.y;
-        if (
-          event.pointerType === "touch" &&
-          Math.abs(horizontal) < 10 &&
-          Math.abs(vertical) < 10 &&
-          event.target instanceof Element
-        ) {
-          const button = event.target.closest<HTMLButtonElement>(
-            ".group-select-command, .dashboard-command",
-          );
-          if (button) {
-            touchActivatedButton.current = button;
-            if (button.classList.contains("dashboard-command"))
-              onToggleDashboard();
-            else onToggleGroups();
-          }
-          return;
-        }
+        if (!start || !onSwipeTabs) return;
+        const touch = Array.from(event.changedTouches).find(
+          (changedTouch) => changedTouch.identifier === start.identifier,
+        );
+        if (!touch) return;
+        const horizontal = touch.clientX - start.x;
+        const vertical = touch.clientY - start.y;
         if (
           Math.abs(horizontal) < 50 ||
           Math.abs(horizontal) <= Math.abs(vertical)
         )
           return;
-        if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
-        swipeClickGuard.current = {
-          target: start.target.closest("button, a") ?? start.target,
-          expiresAt: performance.now() + 700,
-        };
+        event.preventDefault();
+        onSwipeTabs(horizontal < 0 ? "left" : "right");
       }}
-      onPointerCancel={(event) => {
-        const start = swipeStart.current;
+      onTouchCancel={() => {
         swipeStart.current = null;
-        touchActivatedButton.current = null;
-        if (start?.target.hasPointerCapture(event.pointerId))
-          start.target.releasePointerCapture(event.pointerId);
       }}
     >
+      <span className="footer-current-group" title={activeGroupName}>
+        {activeGroupName}
+      </span>
       <div className="status-meta">
         <div className="footer-dock">{footerItems.map(renderItem)}</div>
       </div>

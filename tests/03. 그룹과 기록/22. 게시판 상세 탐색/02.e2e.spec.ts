@@ -264,22 +264,9 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   const swipeFooter = (direction: "left" | "right") =>
     swipeTouch(mobileFooter, direction);
   await swipeFooter("left");
-  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
-  await expect(page.locator(".board-note-preview")).toHaveClass(
-    /is-slide-left/,
-  );
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await swipeFooter("right");
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
-  await swipeFooter("left");
-  await swipeFooter("left");
-  await swipeFooter("left");
-  await expect(tabs.nth(3)).toHaveAttribute("aria-selected", "true");
-  const focusedTabBounds = (await tabs.nth(3).boundingBox())!;
-  const noteTabsBounds = (await noteTabs.boundingBox())!;
-  expect(focusedTabBounds.x).toBeGreaterThanOrEqual(noteTabsBounds.x);
-  expect(focusedTabBounds.x + focusedTabBounds.width).toBeLessThanOrEqual(
-    noteTabsBounds.x + noteTabsBounds.width + 1,
-  );
   const mobileFooterBounds = (await mobileFooter.boundingBox())!;
   expect(mobileFooterBounds.y + mobileFooterBounds.height).toBeCloseTo(800, 1);
   await mobileFooter.locator(".dashboard-command").click();

@@ -4,7 +4,7 @@ import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 import { readCloudHistory } from "./__util__";
 
-test("7. 탭 본문은 3자부터 저장하고 다시 2자 이하가 되면 DB에서 제거한다", async ({
+test("7. 빈 내용과 1~2자 본문도 길이를 이유로 DB에서 자동 삭제하지 않는다", async ({
   page,
   context,
 }) => {
@@ -18,20 +18,18 @@ test("7. 탭 본문은 3자부터 저장하고 다시 2자 이하가 되면 DB�
   );
   await page.goto("/");
   const editor = page.locator("textarea").first();
+  const savedContent = async () => {
+    const history = await readCloudHistory(page);
+    if (!history.latest) return null;
+    const state = JSON.parse(history.latest.snapshot);
+    return state.groups[0]?.tabs[0]?.content ?? null;
+  };
+
+  await editor.fill("a");
+  await expect.poll(savedContent).toBe("a");
   await editor.fill("ab");
-  await page.waitForTimeout(400);
-  expect((await readCloudHistory(page)).latest).toBeNull();
-  await editor.fill("abc");
-  await expect(page.locator(".home")).toHaveAttribute(
-    "data-cloud-save",
-    "saved",
-  );
-  expect((await readCloudHistory(page)).latest?.snapshot).toContain("abc");
-  await editor.fill("ab");
-  await expect(page.locator(".home")).toHaveAttribute(
-    "data-cloud-save",
-    "saved",
-  );
-  const snapshot = (await readCloudHistory(page)).latest?.snapshot ?? "";
-  expect(snapshot).not.toContain('"content":"ab"');
+  await expect.poll(savedContent).toBe("ab");
+  await editor.fill("");
+  await expect.poll(savedContent).toBe("");
+  await expect(editor).toBeVisible();
 });

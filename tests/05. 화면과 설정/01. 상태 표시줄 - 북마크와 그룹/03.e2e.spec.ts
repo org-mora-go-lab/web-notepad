@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { groupsCommand } from "../../__util__";
 
-test("3. 메뉴 버튼은 PC에서 MENU, 모바일에서 현재 그룹명을 표시한다", async ({
+test("3. 현재 그룹은 PC 푸터 왼쪽, 모바일 메뉴 버튼에 표시한다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -21,6 +21,7 @@ test("3. 메뉴 버튼은 PC에서 MENU, 모바일에서 현재 그룹명을 표
     expect(groupBox.x).toBeLessThan(dashboardBox.x);
 
     if (viewport.width <= 512) {
+      await expect(page.locator(".footer-current-group")).toBeHidden();
       await expect(command).toHaveCSS("gap", "4px");
       await expect(command.locator(".group-command-label")).toBeHidden();
       await expect(command.locator(".group-current-value")).toHaveText(
@@ -29,6 +30,16 @@ test("3. 메뉴 버튼은 PC에서 MENU, 모바일에서 현재 그룹명을 표
       await expect(command.locator(".group-current-value")).toBeVisible();
       await expect(page.locator(".current-group-panel")).toHaveCount(0);
     } else {
+      const currentGroup = page.locator(".footer-current-group");
+      await expect(currentGroup).toHaveText("Ungrouped");
+      await expect(currentGroup).toBeVisible();
+      await expect(currentGroup).toHaveCSS(
+        "font-size",
+        await command
+          .locator(".group-command-label")
+          .evaluate((element) => getComputedStyle(element).fontSize),
+      );
+      expect((await currentGroup.boundingBox())!.x).toBeCloseTo(16, 0);
       await expect(command).toHaveCSS("gap", "7px");
       await expect(command.locator(".group-current-value")).toBeHidden();
       await expect(command.locator(".group-command-label")).toHaveText("MENU");

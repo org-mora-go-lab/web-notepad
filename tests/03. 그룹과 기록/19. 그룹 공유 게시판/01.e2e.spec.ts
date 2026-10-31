@@ -57,6 +57,11 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill(boardPost.title);
+  const entry = page.locator(".board-entry").filter({
+    hasText: boardPost.groupName,
+  });
+  await expect(page.locator(".board-skeleton-row")).toHaveCount(0);
+  await expect(entry).toHaveCount(1);
   await expect(page.getByRole("table", { name: "Board" })).toBeVisible();
   await expect(page.getByRole("columnheader")).toHaveText([
     "Group",
@@ -80,10 +85,6 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   for (const gap of boardHeaderGaps) {
     expect(Math.abs(gap - boardHeaderGaps[0])).toBeLessThanOrEqual(1);
   }
-  const entry = page.locator(".board-entry").filter({
-    hasText: boardPost.groupName,
-  });
-  await expect(entry).toHaveCount(1);
   expect(boardPost.notes.every((note) => note.content.trim().length > 2)).toBe(
     true,
   );

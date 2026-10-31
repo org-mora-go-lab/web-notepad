@@ -15,14 +15,8 @@ test("2. X로 닫아 DB에서 제거한 탭의 알람도 목록에서 제거한�
       baseRevision: record.revision,
       data: {
         ...record.data,
-        tabs: [
-          {
-            ...tab,
-            open: false,
-            title: "Hidden editor tab",
-            content: "Hidden editor tab",
-          },
-        ],
+        tabs: [],
+        bookmarks: [],
       },
       deletedTabIds: [tab.id],
     },

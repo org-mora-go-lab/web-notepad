@@ -12,7 +12,7 @@
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 32px 20px 48px;
+  padding: 32px 20px calc(var(--footer-height) + 24px);
   background: v.$pit;
   color: v.$ink;
   font-family: v.$sans;
@@ -39,7 +39,7 @@
 }
 
 .board-mobile-footer {
-  display: none;
+  display: block;
 }
 
 @media (max-width: 512px) {
@@ -50,6 +50,5 @@
     position: fixed;
     z-index: 30;
     inset: auto 0 0;
-    display: block;
   }
 }
