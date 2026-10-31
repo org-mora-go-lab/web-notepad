@@ -80,6 +80,7 @@ export function BoardPage() {
             dashboardOpen={false}
             activeGroupName={activeGroupName}
             groupsOpen={false}
+            onSwipeTabs={() => false}
             onToggleDashboard={() => {
               markBoardReturn();
               router.push("/?panel=dashboard");

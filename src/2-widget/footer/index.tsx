@@ -307,11 +307,11 @@ export function Footer({
           Math.abs(horizontal) <= Math.abs(vertical)
         )
           return;
-        if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
         swipeClickGuard.current = {
           target: start.target.closest("button, a") ?? start.target,
           expiresAt: performance.now() + 700,
         };
+        onSwipeTabs(horizontal < 0 ? "left" : "right");
       }}
       onPointerCancel={(event) => {
         const start = swipeStart.current;
