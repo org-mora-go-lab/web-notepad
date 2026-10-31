@@ -284,7 +284,7 @@ export function Footer({
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
         if (!(event.target instanceof Element)) return;
-        if (event.pointerType === "touch") swipeClickGuard.current = null;
+        swipeClickGuard.current = null;
         swipeStart.current = {
           x: event.clientX,
           y: event.clientY,
@@ -307,10 +307,15 @@ export function Footer({
           Math.abs(horizontal) <= Math.abs(vertical)
         )
           return;
-        swipeClickGuard.current = {
+        const clickGuard = {
           target: start.target.closest("button, a") ?? start.target,
-          expiresAt: performance.now() + 700,
+          expiresAt: performance.now() + 100,
         };
+        swipeClickGuard.current = clickGuard;
+        requestAnimationFrame(() => {
+          if (swipeClickGuard.current === clickGuard)
+            swipeClickGuard.current = null;
+        });
         onSwipeTabs(horizontal < 0 ? "left" : "right");
       }}
       onPointerCancel={(event) => {
