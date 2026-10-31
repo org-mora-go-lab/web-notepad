@@ -296,7 +296,7 @@ export function Footer({
         type="button"
         className="footer-current-group"
         title={activeGroupName}
-        aria-label={`${activeGroupName} · ${t.toggleSidebar}`}
+        aria-label={`${t.groupCategory}: ${activeGroupName}`}
         aria-expanded={groupsOpen}
         aria-controls="groups-menu"
         onClick={onToggleGroups}
