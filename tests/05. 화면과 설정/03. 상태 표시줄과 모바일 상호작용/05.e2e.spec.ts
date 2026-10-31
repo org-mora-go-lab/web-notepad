@@ -6,7 +6,7 @@ import {
   workspaceBounds,
 } from "../../04. 패널과 검색/__util__";
 
-test("5. 넓은 고정 패널로 작업 영역이 좁아지면 대시보드 라벨만 숨긴다", async ({
+test("5. PC 메뉴나 대시보드가 작업 영역을 좁혀도 푸터 라벨을 유지한다", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 844 });
@@ -32,7 +32,7 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 대시보드 라�
   await expect(footer.locator(".group-command-label")).toBeVisible();
   await expect(
     footer.locator(".dashboard-command > .status-label"),
-  ).toBeHidden();
+  ).toBeVisible();
   for (const command of await commands.all())
     expect((await command.boundingBox())!.height).toBeCloseTo(35, 1);
 
