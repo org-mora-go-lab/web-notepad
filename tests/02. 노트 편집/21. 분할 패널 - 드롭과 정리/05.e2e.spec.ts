@@ -1,9 +1,51 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { expectLowerTabSplitRight } from "./__util__";
+import { paneSlot, writePaneLayoutState } from "../__util__";
+
+/**
+ * E2E 품질 계약
+ * - PRD 요구사항: 5. 일반 그룹의 하단 탭은 기존 우상단을 유지하고 우하단으로 이동한다
+ * - 이 파일은 하나의 사용자 또는 서버 시나리오만 검증한다.
+ * - 준비 조건은 테스트 본문이나 이름이 드러나는 준비 함수로 구성한다.
+ * - 실행 동작은 공개 UI 또는 API 경계를 통해 수행한다.
+ * - 핵심 결과 assertion은 이 파일 안에서 직접 확인할 수 있어야 한다.
+ * - 번호만 전달해 검증 전체를 외부 함수에 위임하지 않는다.
+ * - 실패 메시지는 위반된 사용자 계약을 바로 식별할 수 있어야 한다.
+ * - PRD 번호와 이 테스트 파일 번호는 항상 일치시킨다.
+ * - 공통 유틸은 데이터 준비와 반복 입력 동작에만 사용한다.
+ * - 테스트 수정 시 대응하는 tests-prd 문서도 함께 현행화한다.
+ */
 
 test("5. 일반 그룹의 하단 탭은 기존 우상단을 유지하고 우하단으로 이동한다", async ({
   page,
 }) => {
-  await expectLowerTabSplitRight(page, { allGroup: false, hasRightTop: true });
+  await writePaneLayoutState(
+    page,
+    ["top", "bottom-1", "bottom-2", "right-top"],
+    {
+      leftBottomTabIds: ["bottom-1", "bottom-2"],
+      activeLeftBottomTabId: "bottom-2",
+      rightTabIds: ["right-top"],
+      activeRightTabId: "right-top",
+    },
+    false,
+  );
+  const bottom = paneSlot(page, "left-bottom");
+  const body = bottom.locator(".body");
+  const bodyBox = (await body.boundingBox())!;
+
+  await bottom
+    .getByRole("tab", { name: "bottom-2", exact: true })
+    .locator(".tab-title")
+    .dragTo(body, {
+      targetPosition: { x: bodyBox.width * 0.75, y: bodyBox.height * 0.25 },
+    });
+
+  await expect(paneSlot(page, "right-bottom").locator("textarea")).toHaveValue(
+    "bottom-2",
+  );
+  await expect(bottom.locator(".tab-title")).toHaveText(["bottom-1"]);
+  await expect(paneSlot(page, "right").locator("textarea")).toHaveValue(
+    "right-top",
+  );
 });

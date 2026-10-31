@@ -47,9 +47,22 @@ for (const file of files.filter((file) => file.endsWith(".e2e.spec.ts"))) {
   const relative = path.relative(path.join(root, "tests"), file);
   if (!requirements.delete(relative))
     errors.push(`${relative}: no matching PRD requirement`);
+  const sourceText = readFileSync(file, "utf8");
+  const lineCount =
+    sourceText.split(/\r?\n/).length - (sourceText.endsWith("\n") ? 1 : 0);
+  if (lineCount < 20)
+    errors.push(
+      `${relative}: expected at least 20 lines, received ${lineCount}`,
+    );
+  if (
+    /\b(?:expectEssentialResponsiveContract|run[A-Z][A-Za-z]+Case)\s*\(/.test(
+      sourceText,
+    )
+  )
+    errors.push(`${relative}: delegated case runners are not allowed`);
   const source = ts.createSourceFile(
     file,
-    readFileSync(file, "utf8"),
+    sourceText,
     ts.ScriptTarget.Latest,
     true,
   );
@@ -60,6 +73,24 @@ for (const file of files.filter((file) => file.endsWith(".e2e.spec.ts"))) {
   const topLevel = source.statements.filter(
     (node) => ts.isExpressionStatement(node) && isTest(node.expression),
   );
+  const testCall = topLevel[0]?.expression;
+  const callback = testCall?.arguments.at(-1);
+  const onlyStatement =
+    callback &&
+    (ts.isArrowFunction(callback) || ts.isFunctionExpression(callback)) &&
+    ts.isBlock(callback.body) &&
+    callback.body.statements.length === 1
+      ? callback.body.statements[0]
+      : null;
+  if (
+    onlyStatement &&
+    ts.isExpressionStatement(onlyStatement) &&
+    ts.isAwaitExpression(onlyStatement.expression) &&
+    ts.isCallExpression(onlyStatement.expression.expression)
+  )
+    errors.push(
+      `${relative}: test body must expose setup, action, and assertions directly`,
+    );
   let declarations = 0;
   const visit = (node) => {
     if (isTest(node)) declarations += 1;
