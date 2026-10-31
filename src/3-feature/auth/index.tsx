@@ -15,10 +15,16 @@ import { useI18n } from "@/src/5-shared/hook";
 import type { AccountProfile as AuthUser } from "@/src/5-shared/type";
 import { requestFooterPin } from "@/src/5-shared/util";
 
+// Client-side route changes remount page footers. Keep the last verified
+// session in this module so those remounts do not flash the initial skeleton.
+let cachedSessionUser: AuthUser | null | undefined;
+
 export function Auth() {
   const { t } = useI18n();
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<AuthUser | null>(
+    () => cachedSessionUser ?? null,
+  );
+  const [loading, setLoading] = useState(() => cachedSessionUser === undefined);
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({
     left: 0,
@@ -55,6 +61,7 @@ export function Auth() {
         )
         .then(({ user: nextUser }) => {
           if (active && current === requestId) {
+            cachedSessionUser = nextUser;
             setUser(nextUser);
             // Publish the loaded profile and enabled trigger in one render so
             // keyboard users never land on a transient disabled account button.
@@ -72,7 +79,10 @@ export function Auth() {
           }
         })
         .catch(() => {
-          if (active && current === requestId) setLoading(false);
+          if (active && current === requestId) {
+            if (cachedSessionUser === undefined) cachedSessionUser = null;
+            setLoading(false);
+          }
         });
     };
     loadSession();
@@ -110,6 +120,7 @@ export function Auth() {
       const response = await fetch("/api/auth/logout", { method: "POST" });
       if (response.ok) {
         setMenuOpen(false);
+        cachedSessionUser = null;
         setUser(null);
         window.dispatchEvent(new Event("notepad-auth-changed"));
       }

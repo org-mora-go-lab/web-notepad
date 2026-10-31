@@ -1,7 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-import { createGroupFixture, createTabFixture } from "../../__fixture__";
-import { seedStoredStateOnLoad } from "../../__util__";
+import {
+  createGroupFixture,
+  createTabFixture,
+  signedSession,
+} from "../../__fixture__";
+import {
+  authenticateBrowser,
+  seedStoredStateOnLoad,
+  swipeTouch,
+} from "../../__util__";
 
 test.use({
   isMobile: true,
@@ -9,9 +17,18 @@ test.use({
   viewport: { width: 390, height: 844 },
 });
 
-test("8. 푸터 스와이프 직후 같은 아이콘도 첫 탭으로 열고 다음 탭으로 닫는다", async ({
+test("8. 푸터 스와이프 직후 메뉴·대시보드·사용자 아이콘이 첫 탭으로 동작한다", async ({
   page,
+  context,
 }) => {
+  await authenticateBrowser(
+    context,
+    signedSession({
+      id: "footer-swipe-user",
+      nickname: "Footer User",
+      expiresAt: Date.now() + 300_000,
+    }),
+  );
   await seedStoredStateOnLoad(page, {
     groups: [
       createGroupFixture("ungrouped", "Ungrouped", [
@@ -21,44 +38,46 @@ test("8. 푸터 스와이프 직후 같은 아이콘도 첫 탭으로 열고 다
     ],
   });
   const footer = page.locator(".footer");
+  const menu = footer.locator(".group-select-command");
   const dashboard = footer.locator(".dashboard-command");
+  const account = footer.locator("button.auth-command");
   await expect(footer.locator(".auth-command:not(.is-loading)")).toBeVisible();
-  const dashboardBounds = (await dashboard.boundingBox())!;
-  const footerBounds = (await footer.boundingBox())!;
-  const footerY = dashboardBounds.y + dashboardBounds.height / 2;
-  const session = await page.context().newCDPSession(page);
-
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchStart",
-    touchPoints: [
-      { x: dashboardBounds.x + dashboardBounds.width / 2, y: footerY },
-    ],
-  });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchMove",
-    touchPoints: [{ x: footerBounds.x + footerBounds.width * 0.2, y: footerY }],
-  });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
-    touchPoints: [],
-  });
+  await expect(page.locator("textarea")).toHaveValue("First note");
+  await expect(footer).toHaveAttribute("data-swipe-tabs", "true");
+  await swipeTouch(footer, "left");
   await expect(page.locator("textarea")).toHaveValue("Second note");
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "true",
   );
 
-  await dashboard.click();
+  await menu.tap();
+
+  await expect(page.locator("#groups-menu")).toBeVisible();
+  await menu.tap();
+  await expect(page.locator("#groups-menu")).toHaveCount(0);
+
+  await swipeTouch(footer, "right");
+  await expect(page.locator("textarea")).toHaveValue("First note");
+
+  await dashboard.tap();
 
   await expect(page.locator("#groups-menu")).toHaveCount(0);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",
   );
-  await dashboard.click();
+  await dashboard.tap();
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "true",
   );
-  await session.detach();
+
+  await swipeTouch(footer, "left");
+  await expect(page.locator("textarea")).toHaveValue("Second note");
+
+  await account.tap();
+  await expect(page.locator("#account-menu")).toBeVisible();
+  await account.tap();
+  await expect(page.locator("#account-menu")).toHaveCount(0);
 });

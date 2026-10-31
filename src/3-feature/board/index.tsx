@@ -45,6 +45,8 @@ const SYSTEM_BOARD_POST_IDS = new Set([
   `local-${UNGROUPED_GROUP_ID}`,
 ]);
 
+export const BOARD_NOTE_SWIPE_EVENT = "notepad-board-note-swipe";
+
 export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const { t, language } = useI18n();
@@ -108,6 +110,29 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     },
     [],
   );
+  const swipeNote = useCallback(
+    (direction: "left" | "right") => {
+      if (!selected || orderedNotes.length < 2) return false;
+      const currentIndex = Math.max(
+        0,
+        orderedNotes.findIndex((note) => note.id === activeNote?.id),
+      );
+      const offset = direction === "left" ? 1 : -1;
+      const nextIndex =
+        (currentIndex + offset + orderedNotes.length) % orderedNotes.length;
+      activateNote(orderedNotes[nextIndex].id, direction);
+      return true;
+    },
+    [activateNote, activeNote?.id, orderedNotes, selected],
+  );
+  useEffect(() => {
+    const handleFooterSwipe = (event: Event) => {
+      swipeNote((event as CustomEvent<"left" | "right">).detail);
+    };
+    window.addEventListener(BOARD_NOTE_SWIPE_EVENT, handleFooterSwipe);
+    return () =>
+      window.removeEventListener(BOARD_NOTE_SWIPE_EVENT, handleFooterSwipe);
+  }, [swipeNote]);
   useLayoutEffect(() => {
     if (!selected) return;
     contentRef.current
@@ -520,7 +545,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                             className="board-entry"
                             data-group-id={post.id}
                           >
-                            <strong>{post.title}</strong>
+                            <strong title={post.title}>{post.title}</strong>
                           </button>
                         </th>
                         <td>

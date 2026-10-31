@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { boardTest as test } from "../../__fixture__";
-import { openBoard, selectBoardPost } from "../../__util__";
+import { openBoard, selectBoardPost, swipeTouch } from "../../__util__";
 
 test.use({
   isMobile: true,
@@ -9,7 +9,7 @@ test.use({
   viewport: { width: 390, height: 844 },
 });
 
-test("3. 모바일 보드 상세 푸터 제스처는 탭을 바꾸지 않고 첫 탭이 즉시 동작한다", async ({
+test("3. 모바일 보드 상세 푸터 제스처는 노트 탭을 순환하고 첫 탭이 즉시 동작한다", async ({
   page,
   boardPost,
 }) => {
@@ -17,38 +17,34 @@ test("3. 모바일 보드 상세 푸터 제스처는 탭을 바꾸지 않고 첫
   await selectBoardPost(page, boardPost.title, boardPost.id);
   const footer = page.locator(".board-mobile-footer .footer");
   const dashboard = page.locator(".board-mobile-footer .dashboard-command");
-  const activeTab = page.getByRole("tab", { selected: true });
+  const tabs = page.getByRole("tab");
   await expect(page.locator(".board-note-preview")).toBeVisible();
-  const activeTabName = await activeTab.textContent();
+  const firstTabName = await tabs.first().textContent();
+  const secondTabName = await tabs.nth(1).textContent();
   await expect(footer).toBeVisible();
   await expect(dashboard).toBeVisible();
-  const footerBounds = (await footer.boundingBox())!;
-  const footerY = footerBounds.y + footerBounds.height / 2;
-  const session = await page.context().newCDPSession(page);
-
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchStart",
-    touchPoints: [{ x: footerBounds.x + footerBounds.width * 0.8, y: footerY }],
-  });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchMove",
-    touchPoints: [{ x: footerBounds.x + footerBounds.width * 0.2, y: footerY }],
-  });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
-    touchPoints: [],
-  });
+  await swipeTouch(footer, "left");
   await expect(page.getByRole("tab", { selected: true })).toHaveText(
-    activeTabName ?? "",
+    secondTabName ?? "",
   );
-  // The next click is an independent user event and must not be consumed by
-  // the preceding touch gesture.
-  await dashboard.click();
+  await expect(tabs.nth(1)).toBeInViewport();
+
+  await swipeTouch(footer, "right");
+  await expect(page.getByRole("tab", { selected: true })).toHaveText(
+    firstTabName ?? "",
+  );
+
+  await swipeTouch(footer, "left");
+  await expect(page.getByRole("tab", { selected: true })).toHaveText(
+    secondTabName ?? "",
+  );
+  // The next real touch is an independent user event and must not be consumed
+  // by the preceding footer swipe.
+  await dashboard.tap();
 
   await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",
   );
-  await session.detach();
 });

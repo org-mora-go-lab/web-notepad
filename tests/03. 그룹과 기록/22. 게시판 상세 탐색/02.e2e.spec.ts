@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { boardTest as test } from "../../__fixture__";
-import { openBoard, selectBoardPost } from "../../__util__";
+import { openBoard, selectBoardPost, swipeTouch } from "../../__util__";
 
 test.use({ hasTouch: true });
 
@@ -229,34 +229,6 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   await tabs.first().click();
   const mobileFooter = page.locator(".board-mobile-footer .footer");
   await expect(mobileFooter).toBeVisible();
-  const session = await page.context().newCDPSession(page);
-  const swipeTouch = async (
-    target: typeof mobileFooter,
-    direction: "left" | "right",
-  ) => {
-    const bounds = (await target.boundingBox())!;
-    const from =
-      direction === "left"
-        ? bounds.x + bounds.width * 0.8
-        : bounds.x + bounds.width * 0.2;
-    const to =
-      direction === "left"
-        ? bounds.x + bounds.width * 0.2
-        : bounds.x + bounds.width * 0.8;
-    const y = bounds.y + bounds.height / 2;
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchStart",
-      touchPoints: [{ x: from, y }],
-    });
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchMove",
-      touchPoints: [{ x: to, y }],
-    });
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchEnd",
-      touchPoints: [],
-    });
-  };
   await swipeTouch(page.locator(".board-note-preview"), "left");
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await swipeTouch(page.locator(".board-note-preview"), "right");
@@ -264,16 +236,15 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   const swipeFooter = (direction: "left" | "right") =>
     swipeTouch(mobileFooter, direction);
   await swipeFooter("left");
-  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
   await swipeFooter("right");
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   const mobileFooterBounds = (await mobileFooter.boundingBox())!;
   expect(mobileFooterBounds.y + mobileFooterBounds.height).toBeCloseTo(800, 1);
-  await mobileFooter.locator(".dashboard-command").click();
+  await mobileFooter.locator(".dashboard-command").tap();
   await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",
   );
-  await session.detach();
 });

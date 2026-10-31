@@ -8,6 +8,7 @@ export {
 } from "./divider";
 export { chooseGroupAction, groupActionsButton, groupMenu } from "./group-menu";
 export { openGuide } from "./guide";
+export { swipeTouch } from "./mobile-swipe";
 export {
   createGroup,
   createGroups,

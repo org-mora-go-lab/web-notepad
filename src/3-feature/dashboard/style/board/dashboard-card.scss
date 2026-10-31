@@ -122,6 +122,12 @@
   bottom: -6px;
 }
 
+@media (min-width: 513px) {
+  .dashboard .dashboard-card-preview {
+    -webkit-line-clamp: 5;
+  }
+}
+
 @media (max-width: 512px) {
   .dashboard .dashboard-card {
     max-height: var(--mobile-dashboard-tab-max-height);

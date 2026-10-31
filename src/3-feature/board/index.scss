@@ -157,16 +157,23 @@
   }
   button.board-entry {
     width: 100%;
-    min-width: 150px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
     padding: 0;
     justify-content: flex-start;
     text-align: left;
     border: 0;
     background: transparent;
     strong {
+      display: block;
+      flex: 1 1 auto;
       min-width: 0;
+      max-width: 100%;
       font-weight: 500;
-      overflow-wrap: anywhere;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     svg {
       flex: 0 0 auto;

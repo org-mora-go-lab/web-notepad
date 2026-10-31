@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { Footer } from "@/src/2-widget";
-import { Board } from "@/src/3-feature";
+import { Board, BOARD_NOTE_SWIPE_EVENT } from "@/src/3-feature/board";
 import {
   ALL_GROUP_ID,
   ALL_MY_GROUP_ID,
@@ -80,7 +80,12 @@ export function BoardPage() {
             dashboardOpen={false}
             activeGroupName={activeGroupName}
             groupsOpen={false}
-            onSwipeTabs={() => false}
+            onSwipeTabs={(direction) => {
+              window.dispatchEvent(
+                new CustomEvent(BOARD_NOTE_SWIPE_EVENT, { detail: direction }),
+              );
+              return true;
+            }}
             onToggleDashboard={() => {
               markBoardReturn();
               router.push("/?panel=dashboard");

@@ -99,7 +99,23 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
     .boundingBox())!.height;
   expect(Math.abs(skeletonRowHeight - boardRowHeight)).toBeLessThanOrEqual(1);
   await expect(entry.locator("svg")).toHaveCount(0);
-  await expect(entry).toHaveCSS("min-width", "150px");
+  const groupName = entry.locator("strong");
+  await expect(groupName).toHaveAttribute("title", boardPost.title);
+  await expect(groupName).toHaveCSS("overflow", "hidden");
+  await expect(groupName).toHaveCSS("white-space", "nowrap");
+  await expect(groupName).toHaveCSS("text-overflow", "ellipsis");
+  expect(
+    await groupName.evaluate(
+      (element) => element.scrollWidth > element.clientWidth,
+    ),
+  ).toBe(true);
+  expect(
+    await entry.evaluate(
+      (button) =>
+        button.getBoundingClientRect().right <=
+        button.parentElement!.getBoundingClientRect().right,
+    ),
+  ).toBe(true);
   const owner = entry.locator("xpath=ancestor::tr").locator(".board-owner");
   await expect(owner).toHaveText("Board owner");
   await expect(owner.locator("svg")).toHaveCount(1);
