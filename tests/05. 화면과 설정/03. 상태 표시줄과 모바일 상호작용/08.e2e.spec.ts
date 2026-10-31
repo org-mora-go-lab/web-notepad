@@ -48,14 +48,38 @@ test("8. 푸터 스와이프 직후 같은 아이콘도 첫 탭으로 열고 다
     "true",
   );
 
-  await dashboard.tap();
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [
+      {
+        x: dashboardBounds.x + dashboardBounds.width / 2,
+        y: footerY,
+      },
+    ],
+  });
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
 
   await expect(page.locator("#groups-menu")).toHaveCount(0);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "false",
   );
-  await dashboard.tap();
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [
+      {
+        x: dashboardBounds.x + dashboardBounds.width / 2,
+        y: footerY,
+      },
+    ],
+  });
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "true",

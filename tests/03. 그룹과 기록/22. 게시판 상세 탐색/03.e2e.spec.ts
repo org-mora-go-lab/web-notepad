@@ -22,6 +22,7 @@ test("3. 모바일 보드 상세 푸터 제스처는 탭을 바꾸지 않고 첫
   const activeTabName = await activeTab.textContent();
   await expect(footer).toBeVisible();
   await expect(dashboard).toBeVisible();
+  const dashboardBounds = (await dashboard.boundingBox())!;
   const footerBounds = (await footer.boundingBox())!;
   const footerY = footerBounds.y + footerBounds.height / 2;
   const session = await page.context().newCDPSession(page);
@@ -41,9 +42,21 @@ test("3. 모바일 보드 상세 푸터 제스처는 탭을 바꾸지 않고 첫
   await expect(page.getByRole("tab", { selected: true })).toHaveText(
     activeTabName ?? "",
   );
-  // This is the first real tap after the swipe. Playwright's tap action keeps
-  // the touch sequence realistic without inserting an artificial wait.
-  await dashboard.tap();
+  // Use the same native touch input path as the swipe so the follow-up tap is
+  // verified as a separate physical gesture rather than a synthetic click.
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [
+      {
+        x: dashboardBounds.x + dashboardBounds.width / 2,
+        y: footerY,
+      },
+    ],
+  });
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
 
   await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
