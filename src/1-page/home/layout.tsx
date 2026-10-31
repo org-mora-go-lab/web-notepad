@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { ThemeInitialization } from "@/src/3-feature/theme/component";
+import { MobileTapFeedback } from "@/src/5-shared/ui";
 
 import type { HomeLayoutProps } from "./type";
 
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: HomeLayoutProps) {
     >
       <body>
         <ThemeInitialization />
+        <MobileTapFeedback />
         {children}
       </body>
     </html>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+
 import { NoteEditor } from "@/src/3-feature";
 import type { PaneDropZone } from "@/src/5-shared";
 
@@ -14,8 +16,15 @@ export function Body({
   draggingTabId,
   dropZones,
   tabSlide,
+  onSwipeTabs,
   onChange,
 }: BodyProps) {
+  const swipeStart = useRef<{
+    x: number;
+    y: number;
+    pointerId: number;
+    target: Element;
+  } | null>(null);
   const dragActive = draggingTabId !== null;
   const dropArea = usePaneDropArea(dragActive, (event) => {
     // A fast drop can arrive on the editor before React has painted the drop overlays.
@@ -59,6 +68,43 @@ export function Body({
       onDragLeave={dropArea.handleDragLeave}
       onDragOver={dropArea.handleDragOver}
       onDrop={dropArea.handleDrop}
+      onPointerDown={(event) => {
+        if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
+          return;
+        if (
+          event.target instanceof HTMLTextAreaElement &&
+          document.activeElement === event.target
+        )
+          return;
+        if (!(event.target instanceof Element)) return;
+        swipeStart.current = {
+          x: event.clientX,
+          y: event.clientY,
+          pointerId: event.pointerId,
+          target: event.target,
+        };
+        event.target.setPointerCapture(event.pointerId);
+      }}
+      onPointerUp={(event) => {
+        const start = swipeStart.current;
+        swipeStart.current = null;
+        if (start?.target.hasPointerCapture(event.pointerId))
+          start.target.releasePointerCapture(event.pointerId);
+        if (!start || start.pointerId !== event.pointerId || !onSwipeTabs)
+          return;
+        const horizontal = event.clientX - start.x;
+        const vertical = event.clientY - start.y;
+        if (
+          Math.abs(horizontal) < 50 ||
+          Math.abs(horizontal) <= Math.abs(vertical)
+        )
+          return;
+        if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
+        requestAnimationFrame(() => editorRef.current?.blur());
+      }}
+      onPointerCancel={() => {
+        swipeStart.current = null;
+      }}
     >
       <NoteEditor
         tab={activeTab}

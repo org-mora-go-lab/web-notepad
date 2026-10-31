@@ -4,7 +4,7 @@ export type FooterProps = {
   dashboardOpen: boolean;
   activeGroupName: string;
   groupsOpen: boolean;
-  onSwipeTabs?: (direction: "left" | "right") => void;
+  onSwipeTabs?: (direction: "left" | "right") => boolean | void;
   onToggleDashboard: () => void;
   onToggleGroups: () => void;
 };

@@ -3,7 +3,7 @@
 import "./index.scss";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { Footer } from "@/src/2-widget";
 import { Board } from "@/src/3-feature";
@@ -32,6 +32,9 @@ function markBoardReturn() {
 
 export function BoardPage() {
   const router = useRouter();
+  const boardSwipeTabs = useRef<((direction: "left" | "right") => void) | null>(
+    null,
+  );
   const hydrated = useNotepadHydrated();
   const store = useNotepadStore();
   const { settings } = store;
@@ -69,7 +72,10 @@ export function BoardPage() {
       >
         <main className="board-page" id="board-page">
           <div className="board-page-container">
-            <Board onReturnHome={markBoardReturn} />
+            <Board
+              onReturnHome={markBoardReturn}
+              swipeTabsRef={boardSwipeTabs}
+            />
           </div>
         </main>
         <div className="board-mobile-footer">
@@ -80,6 +86,12 @@ export function BoardPage() {
             dashboardOpen={false}
             activeGroupName={activeGroupName}
             groupsOpen={false}
+            onSwipeTabs={(direction) => {
+              const swipe = boardSwipeTabs.current;
+              if (!swipe) return false;
+              swipe(direction);
+              return true;
+            }}
             onToggleDashboard={() => {
               markBoardReturn();
               router.push("/?panel=dashboard");

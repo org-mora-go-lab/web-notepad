@@ -11,5 +11,6 @@ export type BodyProps = {
   draggingTabId: string | null;
   dropZones: PaneDropZone[];
   tabSlide?: { direction: "left" | "right"; sequence: number };
+  onSwipeTabs?: (direction: "left" | "right") => boolean | void;
   onChange: (content: string) => void;
 };

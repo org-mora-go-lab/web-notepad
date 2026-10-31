@@ -214,15 +214,14 @@ export function MyPage() {
             role="status"
             aria-label={t.myPageLoading}
           >
-            <div className="my-page-profile-column" aria-hidden="true">
+            <aside className="my-page-portrait is-loading" aria-hidden="true">
+              <span className="my-page-avatar-skeleton" />
+            </aside>
+            <div className="my-page-content" aria-hidden="true">
               <section className="my-page-profile is-loading">
                 <span className="my-page-name-skeleton" />
+                <span className="my-page-connection-skeleton" />
               </section>
-              <aside className="my-page-portrait is-loading">
-                <span className="my-page-avatar-skeleton" />
-              </aside>
-            </div>
-            <div className="my-page-content" aria-hidden="true">
               <div className="my-page-metrics-skeleton">
                 {Array.from({ length: 5 }, (_, index) => (
                   <span key={index} />
@@ -255,26 +254,24 @@ export function MyPage() {
           </section>
         ) : (
           <div className="my-page-layout">
-            <div className="my-page-profile-column">
+            <aside className="my-page-portrait" aria-label={user.nickname}>
+              {user.profileImageUrl ? (
+                // Kakao image hosts vary by account.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={user.profileImageUrl}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <CircleUserRound aria-hidden="true" />
+              )}
+            </aside>
+            <div className="my-page-content">
               <section className="my-page-profile">
                 <h2>{user.nickname}</h2>
                 <p>{t.myPageKakao}</p>
               </section>
-              <aside className="my-page-portrait" aria-label={user.nickname}>
-                {user.profileImageUrl ? (
-                  // Kakao image hosts vary by account.
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={user.profileImageUrl}
-                    alt=""
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <CircleUserRound aria-hidden="true" />
-                )}
-              </aside>
-            </div>
-            <div className="my-page-content">
               {metricsLoading ? (
                 <div
                   className="my-page-metrics-skeleton"

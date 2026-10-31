@@ -25,7 +25,30 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
     "Members",
     "Updated",
   ]);
+  const signalColor = await page.evaluate(() => {
+    const probe = document.createElement("span");
+    probe.style.color = "var(--color-signal)";
+    document.body.append(probe);
+    const color = getComputedStyle(probe).color;
+    probe.remove();
+    return color;
+  });
+  await expect(page.getByRole("columnheader").first()).toHaveCSS(
+    "color",
+    signalColor,
+  );
   await expect(page.locator(".board-skeleton-row")).toHaveCount(5);
+  const skeletonHeaderLefts = await page
+    .getByRole("columnheader")
+    .evaluateAll((headers) =>
+      headers.map((header) => header.getBoundingClientRect().left),
+    );
+  const skeletonHeaderGaps = skeletonHeaderLefts
+    .slice(1)
+    .map((left, index) => left - skeletonHeaderLefts[index]);
+  for (const gap of skeletonHeaderGaps) {
+    expect(Math.abs(gap - skeletonHeaderGaps[0])).toBeLessThanOrEqual(1);
+  }
   const skeletonRowHeight = (await page
     .locator(".board-skeleton-row")
     .first()
@@ -42,18 +65,21 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
     "Members",
     "Updated",
   ]);
-  const [groupHeader, ownerHeader] = await page
+  const boardHeaderLefts = await page
     .getByRole("columnheader")
     .evaluateAll((headers) =>
-      headers.slice(0, 2).map((header) => ({
-        paddingLeft: getComputedStyle(header).paddingLeft,
-        paddingRight: getComputedStyle(header).paddingRight,
-        transform: getComputedStyle(header).transform,
-      })),
+      headers.map((header) => header.getBoundingClientRect().left),
     );
-  expect(Number.parseFloat(groupHeader.paddingRight)).toBe(11);
-  expect(Number.parseFloat(ownerHeader.paddingLeft)).toBe(11);
-  expect(ownerHeader.transform).toBe("matrix(1, 0, 0, 1, -60, 0)");
+  expect(boardHeaderLefts).toHaveLength(5);
+  boardHeaderLefts.forEach((left, index) => {
+    expect(Math.abs(left - skeletonHeaderLefts[index])).toBeLessThanOrEqual(1);
+  });
+  const boardHeaderGaps = boardHeaderLefts
+    .slice(1)
+    .map((left, index) => left - boardHeaderLefts[index]);
+  for (const gap of boardHeaderGaps) {
+    expect(Math.abs(gap - boardHeaderGaps[0])).toBeLessThanOrEqual(1);
+  }
   const entry = page.locator(".board-entry").filter({
     hasText: boardPost.groupName,
   });
@@ -74,13 +100,23 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   await expect(entry.locator("svg")).toHaveCount(0);
   await expect(entry).toHaveCSS("min-width", "150px");
   const owner = entry.locator("xpath=ancestor::tr").locator(".board-owner");
-  await expect(owner.locator("xpath=ancestor::td")).toHaveCSS(
-    "transform",
-    "matrix(1, 0, 0, 1, -60, 0)",
-  );
   await expect(owner).toHaveText("Board owner");
   await expect(owner.locator("svg")).toHaveCount(1);
   await expect(
     page.getByRole("button", { name: "Publish a group" }),
   ).toHaveCount(0);
+  const systemGroups = page.getByRole("navigation", { name: "GROUP" });
+  await expect(systemGroups.getByRole("link")).toHaveText([
+    "All Group",
+    "All My Group",
+    "All Shared Group",
+    "Ungrouped",
+  ]);
+  const tableBounds = (await page
+    .locator(".board-table-container")
+    .boundingBox())!;
+  const systemGroupBounds = (await systemGroups.boundingBox())!;
+  expect(systemGroupBounds.y).toBeGreaterThanOrEqual(
+    tableBounds.y + tableBounds.height,
+  );
 });

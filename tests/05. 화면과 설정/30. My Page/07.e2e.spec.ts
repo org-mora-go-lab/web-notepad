@@ -16,8 +16,16 @@ test("7. 서버 데이터가 준비될 때까지 My Page의 수신 영역만 스
     }),
   );
   let releaseWorkspace!: () => void;
+  let releaseSession!: () => void;
   const workspaceResponse = new Promise<void>((resolve) => {
     releaseWorkspace = resolve;
+  });
+  const sessionResponse = new Promise<void>((resolve) => {
+    releaseSession = resolve;
+  });
+  await page.route("**/api/auth/session", async (route) => {
+    await sessionResponse;
+    await route.continue();
   });
   for (const path of ["**/api/notepad/history", "**/api/groups"]) {
     await page.route(path, async (route) => {
@@ -27,6 +35,18 @@ test("7. 서버 데이터가 준비될 때까지 My Page의 수신 영역만 스
   }
 
   await page.goto("/my-page");
+  await expect(page.locator(".my-page-avatar-skeleton")).toBeVisible();
+  const portrait = (await page
+    .locator(".my-page-portrait.is-loading")
+    .boundingBox())!;
+  const avatar = (await page
+    .locator(".my-page-avatar-skeleton")
+    .boundingBox())!;
+  expect(Math.abs(avatar.y - portrait.y)).toBeLessThanOrEqual(1);
+  expect(
+    Math.abs(avatar.y + avatar.height - (portrait.y + portrait.height)),
+  ).toBeLessThanOrEqual(1);
+  releaseSession();
   await expect(
     page.getByRole("heading", { name: "Skeleton user", exact: true }),
   ).toBeVisible();

@@ -12,11 +12,11 @@ test("4. 계정 메뉴는 방향키로 탐색하고 Escape와 바깥 클릭으�
   await account.focus();
   await page.keyboard.press("ArrowUp");
   await expect(
-    page.getByRole("menuitem", { name: "Logout", exact: true }),
+    page.getByRole("menuitem", { name: "Board", exact: true }),
   ).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await expect(
-    page.getByRole("menuitem", { name: "My Page", exact: true }),
+    page.getByRole("menuitem", { name: "Logout", exact: true }),
   ).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(account).toBeFocused();

@@ -69,7 +69,7 @@
   .my-page-skeleton {
     min-width: 0;
     display: grid;
-    grid-template-columns: minmax(237px, 0.72fr) minmax(0, 1.48fr);
+    grid-template-columns: minmax(280px, 1fr) minmax(0, 1fr);
     gap: 24px;
     align-items: stretch;
   }
@@ -82,7 +82,7 @@
     place-items: center;
     padding-bottom: 30px;
     border: 1px solid v.$line;
-    border-radius: 6px;
+    border-radius: 10px;
     background: v.$panel;
     > img {
       position: absolute;
@@ -98,25 +98,6 @@
       height: auto;
       color: v.$muted;
       stroke-width: 1;
-    }
-  }
-  .my-page-profile-column {
-    min-width: 0;
-    overflow: hidden;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    border: 1px solid v.$line;
-    border-radius: 6px;
-    background: v.$panel;
-    > .my-page-profile {
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-    > .my-page-portrait {
-      border: 0;
-      border-radius: 10px;
-      background: transparent;
     }
   }
   .my-page-content {
@@ -147,14 +128,24 @@
   }
   .my-page-avatar-skeleton {
     position: absolute;
-    inset: 0 0 auto;
+    inset: 0;
     width: 100%;
-    height: calc(100% - 30px);
+    height: 100%;
+    border-radius: 10px;
     background: v.$line;
+  }
+  .my-page-portrait.is-loading {
+    padding-bottom: 0;
   }
   .my-page-name-skeleton {
     width: min(240px, 50%);
     height: 21.6px;
+    border-radius: 4px;
+    background: v.$line;
+  }
+  .my-page-connection-skeleton {
+    width: 64px;
+    height: 14px;
     border-radius: 4px;
     background: v.$line;
   }
@@ -217,9 +208,6 @@
     .my-page-portrait {
       min-height: 0;
       height: min(62vw, 240px);
-    }
-    .my-page-profile-column {
-      grid-template-rows: auto auto;
     }
     a,
     button {

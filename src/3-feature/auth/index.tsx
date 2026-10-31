@@ -204,14 +204,6 @@ export function Auth() {
                 }
               }}
             >
-              <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}>
-                <UserRound size={18} />
-                <span>{t.myPage}</span>
-              </Link>
-              <Link href="/board" role="menuitem" onClick={() => closeMenu()}>
-                <MessageSquare size={18} />
-                <span>{t.board}</span>
-              </Link>
               <button
                 type="button"
                 role="menuitem"
@@ -221,6 +213,24 @@ export function Auth() {
                 <LogOut size={18} />
                 <span>{t.logout}</span>
               </button>
+              <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}>
+                <UserRound size={18} />
+                <span>{t.myPage}</span>
+              </Link>
+              <Link
+                href="/board"
+                role="menuitem"
+                onClick={(event) => {
+                  closeMenu();
+                  if (window.location.pathname !== "/board") return;
+                  event.preventDefault();
+                  window.history.pushState(window.history.state, "", "/board");
+                  window.dispatchEvent(new PopStateEvent("popstate"));
+                }}
+              >
+                <MessageSquare size={18} />
+                <span>{t.board}</span>
+              </Link>
             </div>,
             document.body,
           )}

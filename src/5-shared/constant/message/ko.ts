@@ -22,7 +22,7 @@ export const ko: Messages = {
   myPageLoadError: "계정을 불러오지 못했습니다. 다시 시도해주세요.",
   myPageLocalHint:
     "동기화 대기 중인 변경을 포함한 메모는 이 기기에 보존됩니다.",
-  myPageKakao: "카카오 계정 연결됨",
+  myPageKakao: "Kakao",
   myPageSyncLoading: "작업공간 확인 중…",
   myPage: "내 페이지",
   statusReady: "준비",

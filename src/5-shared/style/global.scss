@@ -1,16 +1,17 @@
 @use "./variable" as v;
+@use "../ui/mobile-tap-feedback";
 
 :root {
   --font-scale: 0.9;
   --footer-height: 48px;
   --list-popup-width: min(655.2px, calc(100vw - 32px));
   --list-popup-height: min(540.8px, calc(100dvh - 32px));
-  --mobile-dashboard-tab-max-height: 144px;
+  --mobile-dashboard-tab-max-height: 216px;
 }
 
 @media (max-width: 512px) {
   :root {
-    --footer-height: calc(76.8px + env(safe-area-inset-bottom));
+    --footer-height: calc(81.8px + env(safe-area-inset-bottom));
   }
 }
 

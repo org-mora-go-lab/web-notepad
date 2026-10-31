@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Locator, test } from "@playwright/test";
 
 import { createGroupFixture, createTabFixture } from "../../__fixture__";
 import { seedStoredStateOnLoad } from "../../__util__";
@@ -24,8 +24,13 @@ test("7. 모바일 푸터를 좌우로 스와이프하면 에디터 탭을 순�
   const footer = page.locator(".footer");
   await expect(footer.locator(".auth-command:not(.is-loading)")).toBeVisible();
   const session = await page.context().newCDPSession(page);
-  const swipe = async (fromX: number, toX: number, verticalOffset = 0) => {
-    const bounds = (await footer.boundingBox())!;
+  const swipeTarget = async (
+    target: Locator,
+    fromX: number,
+    toX: number,
+    verticalOffset = 0,
+  ) => {
+    const bounds = (await target.boundingBox())!;
     const startY = bounds.y + bounds.height / 2;
     await session.send("Input.dispatchTouchEvent", {
       type: "touchStart",
@@ -47,11 +52,43 @@ test("7. 모바일 푸터를 좌우로 스와이프하면 에디터 탭을 순�
       touchPoints: [],
     });
   };
+  const swipe = (fromX: number, toX: number, verticalOffset = 0) =>
+    swipeTarget(footer, fromX, toX, verticalOffset);
 
   await expect(page.locator("textarea")).toHaveValue("First note");
   await swipe(0.8, 0.2);
   await expect(page.locator("textarea")).toHaveValue("Second note");
   await expect(page.locator(".body")).toHaveClass(/is-slide-left/);
+  await page.locator(".dashboard-command").click();
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute(
+    "aria-hidden",
+    "false",
+  );
+  await swipe(0.8, 0.2);
+  await expect(page.locator("textarea")).toHaveValue("Second note");
+  await page.locator(".dashboard-command").click();
+  await expect(page.locator("#dashboard-panel")).toHaveAttribute(
+    "aria-hidden",
+    "true",
+  );
+  const editorBody = page.locator(".body");
+  const swipeEditor = async (fromX: number, toX: number) => {
+    const bounds = (await editorBody.boundingBox())!;
+    const y = bounds.y + bounds.height / 2;
+    await page.mouse.move(bounds.x + bounds.width * fromX, y);
+    await page.mouse.down();
+    await page.mouse.move(bounds.x + bounds.width * toX, y, { steps: 5 });
+    await page.mouse.up();
+  };
+  await page.locator(".dashboard-command").focus();
+  await swipeEditor(0.8, 0.2);
+  await expect(page.locator("textarea")).toHaveValue("Third note");
+  await page.locator("textarea").focus();
+  await swipeEditor(0.8, 0.2);
+  await expect(page.locator("textarea")).toHaveValue("Third note");
+  await page.locator(".dashboard-command").focus();
+  await swipeEditor(0.2, 0.8);
+  await expect(page.locator("textarea")).toHaveValue("Second note");
   await swipe(0.2, 0.8);
   await expect(page.locator("textarea")).toHaveValue("First note");
   await expect(page.locator(".body")).toHaveClass(/is-slide-right/);

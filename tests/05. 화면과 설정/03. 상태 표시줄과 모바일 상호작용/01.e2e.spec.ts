@@ -21,7 +21,7 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
     const dashboardFontSize = await page
       .locator(".dashboard-command > .status-label")
       .evaluate((element) => getComputedStyle(element).fontSize);
-    if (width <= 512) expect(dashboardFontSize).toBe("11px");
+    if (width <= 512) expect(dashboardFontSize).toBe("12px");
     for (const label of [
       page.locator(".group-current-value"),
       page.locator(".footer .auth-command > span"),
@@ -46,6 +46,17 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
       expect(bounds.height).toBeCloseTo(width <= 512 ? 61.2 : 35, 1);
     }
     if (width <= 512) {
+      const footerHeight = (await page.locator(".footer").boundingBox())!
+        .height;
+      expect(footerHeight).toBeCloseTo(81.8, 1);
+      const userImage = page.locator(
+        '.footer .auth-command[aria-haspopup="menu"] > img',
+      );
+      if (await userImage.count()) {
+        const imageBounds = (await userImage.boundingBox())!;
+        expect(imageBounds.width).toBeCloseTo(30.8, 1);
+        expect(imageBounds.height).toBeCloseTo(30.8, 1);
+      }
       const centers = (
         await Promise.all(
           (await commands.all()).map(async (command) => {
@@ -69,7 +80,32 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
   await page.locator(".group-select-command").click();
   await expect(page.locator("#groups-menu")).toBeVisible();
   await expect(page.locator(".footer")).toBeVisible();
+  await expect(page.locator(".mobile-tap-feedback")).toHaveCount(0);
+  await page.evaluate(() => {
+    const state = window as typeof window & { __tapFeedbackSeen?: number };
+    state.__tapFeedbackSeen = 0;
+    const observer = new MutationObserver((records) => {
+      for (const record of records)
+        for (const node of record.addedNodes)
+          if (
+            node instanceof Element &&
+            node.classList.contains("mobile-tap-feedback")
+          )
+            state.__tapFeedbackSeen = (state.__tapFeedbackSeen ?? 0) + 1;
+    });
+    observer.observe(document.body, { childList: true });
+    window.setTimeout(() => observer.disconnect(), 1000);
+  });
   await page.locator(".dashboard-command").click();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as typeof window & { __tapFeedbackSeen?: number })
+            .__tapFeedbackSeen ?? 0,
+      ),
+    )
+    .toBeGreaterThan(0);
   await expect(page.locator("#groups-menu")).toHaveCount(0);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",

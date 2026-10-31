@@ -40,9 +40,9 @@ test("5. 좁은 모바일에서 긴 프로필 이름과 통계를 화면 안에 
     "border-radius",
     "10px",
   );
-  expect(image.width).toBeCloseTo(portrait.width, 0);
+  expect(image.width).toBeCloseTo(portrait.width - 2, 0);
   expect(portrait.y + portrait.height - (image.y + image.height)).toBeCloseTo(
-    30,
+    31,
     0,
   );
   expect(

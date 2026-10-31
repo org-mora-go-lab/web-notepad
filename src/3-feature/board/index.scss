@@ -110,6 +110,7 @@
   .board-table {
     width: 100%;
     min-width: 620px;
+    table-layout: fixed;
     border-collapse: collapse;
     text-align: left;
     font-size: v.font(15px);
@@ -118,22 +119,19 @@
       padding: 14px 16px;
       border-bottom: 1px solid v.$line;
     }
-    tr > :first-child {
-      padding-right: 11px;
-    }
-    tr > :nth-child(2) {
-      padding-left: 11px;
-      transform: translateX(-60px);
+    col {
+      width: 20%;
     }
     thead {
       background: v.$raised;
-      color: v.$muted;
+      color: v.$signal;
     }
     thead th {
       font-weight: 500;
       white-space: nowrap;
     }
     tbody tr {
+      height: 65px;
       background: v.$panel;
       &:hover {
         background: v.$raised;
@@ -146,6 +144,45 @@
     td {
       white-space: nowrap;
       color: v.$muted;
+    }
+    .board-entry strong {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .board-system-groups {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+
+    a {
+      min-width: 0;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 10px;
+      border: 1px solid v.$line;
+      border-radius: 5px;
+      background: v.$panel;
+      color: v.$muted;
+      font-size: v.font(14px);
+      text-align: center;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+
+      &:hover,
+      &:focus-visible {
+        background: v.$raised;
+        color: v.$ink;
+      }
+
+      &:focus-visible {
+        outline: 2px solid v.$signal;
+        outline-offset: 2px;
+      }
     }
   }
   button.board-entry {
@@ -513,31 +550,6 @@
   .board-note-preview-shell {
     position: relative;
   }
-  .board-note-resizer {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 2;
-    height: 14px;
-    cursor: ns-resize;
-    touch-action: none;
-    &::after {
-      position: absolute;
-      right: 40%;
-      bottom: 4px;
-      left: 40%;
-      height: 2px;
-      border-radius: 999px;
-      background: transparent;
-      content: "";
-      transition: background-color 120ms ease;
-    }
-    &:hover::after,
-    &:active::after {
-      background: v.$muted;
-    }
-  }
   .board-error {
     color: v.$tab-red;
     font-size: v.font(15px);
@@ -591,6 +603,9 @@
           border-bottom: 0;
         }
       }
+    }
+    .board-system-groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 

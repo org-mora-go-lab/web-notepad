@@ -1,7 +1,7 @@
 "use client";
 
 import { Layers, LayoutDashboard } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { Auth } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
@@ -25,6 +25,14 @@ export function Footer({
     target: Element;
   } | null>(null);
   const suppressClick = useRef(false);
+  const suppressClickTimer = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (suppressClickTimer.current !== null)
+        window.clearTimeout(suppressClickTimer.current);
+    },
+    [],
+  );
   return (
     <footer
       className="footer"
@@ -33,6 +41,10 @@ export function Footer({
         event.preventDefault();
         event.stopPropagation();
         suppressClick.current = false;
+        if (suppressClickTimer.current !== null) {
+          window.clearTimeout(suppressClickTimer.current);
+          suppressClickTimer.current = null;
+        }
       }}
       onPointerDown={(event) => {
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
@@ -60,8 +72,14 @@ export function Footer({
           Math.abs(horizontal) <= Math.abs(vertical)
         )
           return;
+        if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
         suppressClick.current = true;
-        onSwipeTabs(horizontal < 0 ? "left" : "right");
+        if (suppressClickTimer.current !== null)
+          window.clearTimeout(suppressClickTimer.current);
+        suppressClickTimer.current = window.setTimeout(() => {
+          suppressClick.current = false;
+          suppressClickTimer.current = null;
+        }, 0);
       }}
       onPointerCancel={() => {
         swipeStart.current = null;

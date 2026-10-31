@@ -155,21 +155,25 @@ export function useHome() {
     [replaceCurrentView, requestCloseTabAction],
   );
 
-  const swipeMobileTab = (direction: "left" | "right") => {
-    const tabs = paneTabs[activePane];
-    if (tabs.length < 2) return;
+  const swipeMobileTab = (
+    direction: "left" | "right",
+    pane: PaneId = activePane,
+  ) => {
+    const tabs = paneTabs[pane];
+    if (tabs.length < 2) return false;
     const currentIndex = tabs.findIndex(
-      (tab) => tab.id === activeTabs[activePane]?.id,
+      (tab) => tab.id === activeTabs[pane]?.id,
     );
-    if (currentIndex < 0) return;
+    if (currentIndex < 0) return false;
     const offset = direction === "left" ? 1 : -1;
     const nextIndex = (currentIndex + offset + tabs.length) % tabs.length;
     setMobileTabSlide((current) => ({
-      pane: activePane,
+      pane,
       direction,
       sequence: (current?.sequence ?? 0) + 1,
     }));
     selectTabWithHistory(tabs[nextIndex].id);
+    return true;
   };
 
   const deleteDashboardTab = useCallback(
@@ -237,6 +241,7 @@ export function useHome() {
               sequence: mobileTabSlide.sequence,
             }
           : undefined,
+      onSwipeTabs: (direction) => swipeMobileTab(direction, pane),
       onActivate: () => activatePaneWithHistory(pane),
       onSelect: (tabId: string, extendSelection: boolean) => {
         selectTabRange(paneTabs[pane], tabId, extendSelection);

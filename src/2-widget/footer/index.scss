@@ -163,11 +163,26 @@
   }
 
   @media (max-width: 512px) {
+    position: relative;
     touch-action: pan-y;
 
-    min-height: calc(76.8px + env(safe-area-inset-bottom));
+    min-height: calc(81.8px + env(safe-area-inset-bottom));
     padding: 0;
     font-size: v.font(12px);
+
+    &::before {
+      position: absolute;
+      right: 0;
+      bottom: 100%;
+      left: 0;
+      height: 20px;
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+      mask-image: linear-gradient(to bottom, transparent, #000);
+      content: "";
+      pointer-events: none;
+    }
 
     .status-meta {
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
@@ -202,7 +217,7 @@
       gap: 4px;
 
       &.status-command > span.status-label {
-        font-size: calc(#{v.font(10px)} + 2px);
+        font-size: calc(#{v.font(10px)} + 3px);
         line-height: 12px;
         letter-spacing: 0.04em;
         text-transform: uppercase;
@@ -220,7 +235,7 @@
       }
 
       &.status-command > span.group-current-value {
-        font-size: calc(#{v.font(10px)} + 2px);
+        font-size: calc(#{v.font(10px)} + 3px);
         line-height: 12px;
       }
     }
@@ -248,7 +263,7 @@
       height: 61.2px;
       flex-direction: column;
       gap: 4px;
-      font-size: calc(#{v.font(10px)} + 2px);
+      font-size: calc(#{v.font(10px)} + 3px);
       > span {
         max-width: 100%;
         line-height: 12px;
@@ -267,6 +282,11 @@
         width: 28.8px;
         height: 28.8px;
         flex-basis: 28.8px;
+      }
+      &[aria-haspopup="menu"] > img {
+        width: 30.8px;
+        height: 30.8px;
+        flex: 0 0 30.8px;
       }
       &.is-loading {
         .auth-skeleton-name {

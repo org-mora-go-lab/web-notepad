@@ -295,7 +295,11 @@ export function Home() {
                   }
                   activeGroupName={activeGroupName}
                   groupsOpen={groupMenuOpen}
-                  onSwipeTabs={swipeMobileTab}
+                  onSwipeTabs={
+                    !groupMenuOpen && !openPanel && !backgroundPanel
+                      ? swipeMobileTab
+                      : undefined
+                  }
                   onToggleDashboard={toggleDashboardFromFooter}
                   onToggleGroups={toggleGroupsFromFooter}
                 />
