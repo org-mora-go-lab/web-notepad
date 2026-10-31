@@ -350,6 +350,9 @@ export function Footer({
           start.target.releasePointerCapture(event.pointerId);
       }}
     >
+      <span className="footer-current-group" title={activeGroupName}>
+        {activeGroupName}
+      </span>
       <div className="status-meta">
         <div className="footer-dock">{footerItems.map(renderItem)}</div>
       </div>

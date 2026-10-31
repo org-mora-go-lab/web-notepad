@@ -12,6 +12,10 @@
   color: v.$muted;
   font-size: v.font(14px);
 
+  .footer-current-group {
+    display: none;
+  }
+
   .group-command-label {
     display: inline;
   }
@@ -365,6 +369,21 @@
     left: 0;
     z-index: 55;
     height: var(--footer-height);
+
+    .footer-current-group {
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      display: block;
+      max-width: calc(50% - 220px);
+      overflow: hidden;
+      color: var(--color-command);
+      font-size: inherit;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transform: translateY(-50%);
+    }
   }
 
   .footer.is-icons-only {
