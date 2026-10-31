@@ -1,11 +1,14 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 export const divider = (page: Page) =>
   page.getByRole("separator", { name: "Resize pane widths" });
 
 // Drags the split divider horizontally to the absolute x coordinate.
 export async function dragDividerTo(page: Page, x: number) {
-  const box = (await divider(page).boundingBox())!;
+  await expect(page.locator(".home:not(.is-loading)")).toBeVisible();
+  const handle = divider(page);
+  await handle.hover();
+  const box = (await handle.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.down();
   await page.mouse.move(x, box.y + box.height / 2, { steps: 5 });

@@ -55,6 +55,9 @@ export function Auth() {
         .then(({ user: nextUser }) => {
           if (active && current === requestId) {
             setUser(nextUser);
+            // Publish the loaded profile and enabled trigger in one render so
+            // keyboard users never land on a transient disabled account button.
+            setLoading(false);
             try {
               if (nextUser)
                 localStorage.setItem(
@@ -67,8 +70,7 @@ export function Auth() {
             }
           }
         })
-        .catch(() => undefined)
-        .finally(() => {
+        .catch(() => {
           if (active && current === requestId) setLoading(false);
         });
     };

@@ -22,12 +22,7 @@ test("8. 푸터 스와이프 직후 첫 아이콘 탭이 즉시 동작한다", a
   const dashboard = footer.locator(".dashboard-command");
   await expect(footer.locator(".auth-command:not(.is-loading)")).toBeVisible();
   const footerBounds = (await footer.boundingBox())!;
-  const dashboardBounds = (await dashboard.boundingBox())!;
   const footerY = footerBounds.y + footerBounds.height / 2;
-  const dashboardPoint = {
-    x: dashboardBounds.x + dashboardBounds.width / 2,
-    y: dashboardBounds.y + dashboardBounds.height / 2,
-  };
   const session = await page.context().newCDPSession(page);
 
   await session.send("Input.dispatchTouchEvent", {
@@ -42,14 +37,9 @@ test("8. 푸터 스와이프 직후 첫 아이콘 탭이 즉시 동작한다", a
     type: "touchEnd",
     touchPoints: [],
   });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchStart",
-    touchPoints: [dashboardPoint],
-  });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
-    touchPoints: [],
-  });
+  // Assert the first actual tap after the swipe; do not mask a swallowed tap
+  // with a retry or an arbitrary delay.
+  await dashboard.tap();
 
   await expect(page.locator("textarea")).toHaveValue("Second note");
   await expect(page.locator("#groups-menu")).toHaveCount(0);

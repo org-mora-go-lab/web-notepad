@@ -71,8 +71,17 @@ export function useHome() {
         if (document.activeElement === editor.current) editor.current?.blur();
       }
     };
+    const clearFocusBeforePageCache = () => {
+      for (const editor of Object.values(editorRefs)) {
+        if (document.activeElement === editor.current) editor.current?.blur();
+      }
+    };
     window.addEventListener("pageshow", clearRestoredPageFocus);
-    return () => window.removeEventListener("pageshow", clearRestoredPageFocus);
+    window.addEventListener("pagehide", clearFocusBeforePageCache);
+    return () => {
+      window.removeEventListener("pageshow", clearRestoredPageFocus);
+      window.removeEventListener("pagehide", clearFocusBeforePageCache);
+    };
   }, [editorRefs]);
   const composingRefs = usePaneRefs(false);
   const store = useNotepadStore();

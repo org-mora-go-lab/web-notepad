@@ -20,12 +20,7 @@ test("3. 모바일 보드 상세 스와이프 직후 첫 푸터 탭이 즉시 �
   await expect(preview).toBeVisible();
   await expect(dashboard).toBeVisible();
   const previewBounds = (await preview.boundingBox())!;
-  const dashboardBounds = (await dashboard.boundingBox())!;
   const previewY = previewBounds.y + Math.min(120, previewBounds.height / 2);
-  const dashboardPoint = {
-    x: dashboardBounds.x + dashboardBounds.width / 2,
-    y: dashboardBounds.y + dashboardBounds.height / 2,
-  };
   const session = await page.context().newCDPSession(page);
 
   await session.send("Input.dispatchTouchEvent", {
@@ -44,14 +39,9 @@ test("3. 모바일 보드 상세 스와이프 직후 첫 푸터 탭이 즉시 �
     type: "touchEnd",
     touchPoints: [],
   });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchStart",
-    touchPoints: [dashboardPoint],
-  });
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
-    touchPoints: [],
-  });
+  // This is the first real tap after the swipe. Playwright's tap action keeps
+  // the touch sequence realistic without inserting an artificial wait.
+  await dashboard.tap();
 
   await expect(page).toHaveURL(/[?&]panel=dashboard(?:&|$)/);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(

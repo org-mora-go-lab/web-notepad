@@ -47,6 +47,18 @@ export function useEditorFocus(
         document.querySelector('[aria-modal="true"]')
       )
         return;
+      // Workspace updates must not steal focus from a menu or another control.
+      // A tab, line, or history interaction inside the workspace may still
+      // hand focus between editors, preserving edit-continuity behavior.
+      const activeElement = document.activeElement;
+      const focusIsInWorkspace = activeElement?.closest?.(".note-pane") != null;
+      if (
+        activeElement !== document.body &&
+        activeElement !== document.documentElement &&
+        activeElement !== editor &&
+        !focusIsInWorkspace
+      )
+        return;
       if (window.matchMedia("(pointer: coarse)").matches) {
         return;
       }

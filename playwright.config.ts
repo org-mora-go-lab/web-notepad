@@ -4,7 +4,10 @@ export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   // Local full-core parallelism was benchmarked; CLI --workers can override it.
-  workers: process.env.CI ? "50%" : "100%",
+  // The hosted runner has four cores and a ten-minute job budget. Using all
+  // four keeps the complete E2E contract inside that budget without sharding
+  // related scenarios across separate application servers.
+  workers: process.env.CI ? 4 : "100%",
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: "line",
