@@ -520,7 +520,7 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                             className="board-entry"
                             data-group-id={post.id}
                           >
-                            <strong>{post.title}</strong>
+                            <strong title={post.title}>{post.title}</strong>
                           </button>
                         </th>
                         <td>
