@@ -259,6 +259,7 @@ export function Footer({
   return (
     <footer
       className={`footer ${iconsOnly ? "is-icons-only" : ""}`}
+      data-swipe-tabs={onSwipeTabs ? "true" : "false"}
       onTouchStart={(event) => {
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
@@ -285,16 +286,23 @@ export function Footer({
           Math.abs(horizontal) <= Math.abs(vertical)
         )
           return;
-        event.preventDefault();
         onSwipeTabs(horizontal < 0 ? "left" : "right");
       }}
       onTouchCancel={() => {
         swipeStart.current = null;
       }}
     >
-      <span className="footer-current-group" title={activeGroupName}>
+      <button
+        type="button"
+        className="footer-current-group"
+        title={activeGroupName}
+        aria-label={`${activeGroupName} · ${t.toggleSidebar}`}
+        aria-expanded={groupsOpen}
+        aria-controls="groups-menu"
+        onClick={onToggleGroups}
+      >
         {activeGroupName}
-      </span>
+      </button>
       <div className="status-meta">
         <div className="footer-dock">{footerItems.map(renderItem)}</div>
       </div>

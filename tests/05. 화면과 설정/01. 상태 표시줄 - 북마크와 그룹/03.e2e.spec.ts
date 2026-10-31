@@ -33,13 +33,25 @@ test("3. 현재 그룹은 PC 푸터 왼쪽, 모바일 메뉴 버튼에 표시한
       const currentGroup = page.locator(".footer-current-group");
       await expect(currentGroup).toHaveText("Ungrouped");
       await expect(currentGroup).toBeVisible();
-      await expect(currentGroup).toHaveCSS(
-        "font-size",
+      const commandFontSize = Number.parseFloat(
         await command
           .locator(".group-command-label")
           .evaluate((element) => getComputedStyle(element).fontSize),
       );
+      const currentGroupFontSize = Number.parseFloat(
+        await currentGroup.evaluate(
+          (element) => getComputedStyle(element).fontSize,
+        ),
+      );
+      expect(currentGroupFontSize).toBeCloseTo(commandFontSize + 2, 1);
       expect((await currentGroup.boundingBox())!.x).toBeCloseTo(16, 0);
+      await expect(currentGroup).toHaveAttribute("aria-expanded", "false");
+      await currentGroup.click();
+      await expect(page.locator("#groups-menu")).toBeVisible();
+      await expect(currentGroup).toHaveAttribute("aria-expanded", "true");
+      await currentGroup.click();
+      await expect(page.locator("#groups-menu")).toHaveCount(0);
+      await expect(currentGroup).toHaveAttribute("aria-expanded", "false");
       await expect(command).toHaveCSS("gap", "7px");
       await expect(command.locator(".group-current-value")).toBeHidden();
       await expect(command.locator(".group-command-label")).toHaveText("MENU");
