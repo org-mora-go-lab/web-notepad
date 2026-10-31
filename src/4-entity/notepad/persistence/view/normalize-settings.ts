@@ -1,7 +1,12 @@
 import { LANGUAGES } from "@/src/5-shared/constant";
 import type { Language } from "@/src/5-shared/type";
 
-import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS } from "../../constant";
+import {
+  CORE_FOOTER_ITEM_IDS,
+  DEFAULT_SETTINGS,
+  FONT_SCALES,
+  TAB_COLORS,
+} from "../../constant";
 import type { NotepadSettings, TabColor } from "../../type";
 import { normalizeDashboardStatusNames } from "../../util";
 import { isTabColor } from "../read-value";
@@ -28,6 +33,19 @@ export const normalizeSettings = (value: unknown): NotepadSettings => {
       : validCycle
         ? [...cycle]
         : [...DEFAULT_SETTINGS.tabColorCycle];
+  const footerItems = Array.isArray(settings.footerItems)
+    ? [
+        ...new Set(
+          settings.footerItems
+            .filter((item): item is string =>
+              Boolean(typeof item === "string" && item.trim()),
+            )
+            .slice(0, 50),
+        ),
+      ]
+    : [...DEFAULT_SETTINGS.footerItems];
+  for (const id of CORE_FOOTER_ITEM_IDS)
+    if (!footerItems.includes(id)) footerItems.push(id);
   return {
     tabColorCycleVersion: 2,
     dashboardStatusDefaults: normalizeDashboardStatusNames(
@@ -48,5 +66,10 @@ export const normalizeSettings = (value: unknown): NotepadSettings => {
       typeof settings.panelSlide === "boolean"
         ? settings.panelSlide
         : DEFAULT_SETTINGS.panelSlide,
+    footerItems,
+    footerIconsOnly:
+      typeof settings.footerIconsOnly === "boolean"
+        ? settings.footerIconsOnly
+        : DEFAULT_SETTINGS.footerIconsOnly,
   };
 };

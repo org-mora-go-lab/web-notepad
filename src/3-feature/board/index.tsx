@@ -12,7 +12,6 @@ import {
   Unlink,
   Users,
 } from "lucide-react";
-import Link from "next/link";
 import {
   useCallback,
   useContext,
@@ -25,7 +24,7 @@ import {
 import {
   ALL_GROUP_ID,
   ALL_MY_GROUP_ID,
-  ALL_SHARED_GROUP_ID,
+  type BoardPost,
   UNGROUPED_GROUP_ID,
 } from "@/src/4-entity/notepad";
 import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
@@ -37,6 +36,7 @@ type BoardSwipeHandler = (direction: "left" | "right") => void;
 
 const MOBILE_NOTE_PREVIEW_MIN_HEIGHT = 316.8;
 const DESKTOP_NOTE_PREVIEW_HEIGHT = MOBILE_NOTE_PREVIEW_MIN_HEIGHT * 1.5;
+const ALL_MY_UNGROUPED_BOARD_ID = "all-my-ungrouped";
 
 export function Board({
   onReturnHome,
@@ -48,7 +48,68 @@ export function Board({
   const contentRef = useRef<HTMLDivElement>(null);
   const { t, language } = useI18n();
   const { posts, loading, error, reload } = useBoard();
-  const { selected, select, back: backSelection } = useBoardSelection(posts);
+  const systemPosts = useMemo<BoardPost[]>(() => {
+    const localPosts = posts.filter((post) => post.local);
+    const namedLocalPosts = localPosts.filter(
+      (post) => post.id !== `local-${UNGROUPED_GROUP_ID}`,
+    );
+    const ungroupedPosts = localPosts.filter(
+      (post) => post.id === `local-${UNGROUPED_GROUP_ID}`,
+    );
+    const aggregate = (
+      id: string,
+      name: string,
+      sourcePosts: BoardPost[],
+    ): BoardPost => {
+      const notes = sourcePosts.flatMap((post) =>
+        post.notes.map((note) => ({
+          ...note,
+          id: `${post.id}:${note.id}`,
+          title: note.title || note.content?.split("\n")[0]?.trim() || "-",
+          content: note.content ?? "",
+          bookmarked: Boolean(note.bookmarked),
+          updatedAt: note.updatedAt || post.updatedAt,
+        })),
+      );
+      return {
+        id,
+        local: true,
+        system: true,
+        viewerRole: "owner",
+        groupName: name,
+        ownerName: "Me",
+        title: name,
+        description: "",
+        noteCount: notes.length,
+        bookmarkCount: notes.filter((note) => note.bookmarked).length,
+        notes,
+        memberCount: sourcePosts.reduce(
+          (total, post) => total + post.memberCount,
+          0,
+        ),
+        updatedAt: Math.max(0, ...sourcePosts.map((post) => post.updatedAt)),
+        inviteUrl: "",
+      };
+    };
+    return [
+      aggregate(ALL_GROUP_ID, t.allGroup, posts),
+      aggregate(ALL_MY_GROUP_ID, t.allMyGroup, namedLocalPosts),
+      aggregate(ALL_MY_UNGROUPED_BOARD_ID, t.allMyUngrouped, localPosts),
+      aggregate(UNGROUPED_GROUP_ID, t.ungrouped, ungroupedPosts),
+    ];
+  }, [posts, t]);
+  const boardPosts = useMemo(
+    () => [
+      ...posts.filter((post) => post.id !== `local-${UNGROUPED_GROUP_ID}`),
+      ...systemPosts,
+    ],
+    [posts, systemPosts],
+  );
+  const {
+    selected,
+    select,
+    back: backSelection,
+  } = useBoardSelection(boardPosts);
   const sharing = useContext(GroupSharingContext);
   const [accessConfirm, setAccessConfirm] = useState(false);
   const [accessError, setAccessError] = useState(false);
@@ -209,20 +270,13 @@ export function Board({
     window.addEventListener("popstate", clearFeedback);
     return () => window.removeEventListener("popstate", clearFeedback);
   }, []);
-  const filtered = posts.filter((post) =>
+  const filtered = boardPosts.filter((post) =>
     `${post.title} ${post.description} ${post.groupName}`
       .toLocaleLowerCase()
       .includes(query.trim().toLocaleLowerCase()),
   );
-  const systemGroups = [
-    { id: ALL_GROUP_ID, name: t.allGroup },
-    { id: ALL_MY_GROUP_ID, name: t.allMyGroup },
-    { id: ALL_SHARED_GROUP_ID, name: t.allSharedGroup },
-    { id: UNGROUPED_GROUP_ID, name: t.ungrouped },
-  ];
-
   const selectedRole =
-    selected && posts.find((post) => post.id === selected.id)?.viewerRole;
+    selected && boardPosts.find((post) => post.id === selected.id)?.viewerRole;
   const accessLabel =
     selectedRole === "owner" ? t.revokeGroupShare : t.leaveGroup;
   const back = () => {
@@ -298,11 +352,17 @@ export function Board({
                   <CalendarClock size={18} aria-hidden="true" />
                   <small>{t.boardUpdatedColumn}</small>
                   <strong>
-                    <time dateTime={new Date(selected.updatedAt).toISOString()}>
-                      {new Date(selected.updatedAt).toLocaleDateString(
-                        language === "ko" ? "ko-KR" : "en-US",
-                      )}
-                    </time>
+                    {selected.updatedAt > 0 ? (
+                      <time
+                        dateTime={new Date(selected.updatedAt).toISOString()}
+                      >
+                        {new Date(selected.updatedAt).toLocaleDateString(
+                          language === "ko" ? "ko-KR" : "en-US",
+                        )}
+                      </time>
+                    ) : (
+                      "-"
+                    )}
                   </strong>
                 </span>
               </div>
@@ -510,6 +570,7 @@ export function Board({
                     {filtered.map((post) => (
                       <tr
                         key={post.id}
+                        className={post.system ? "is-system-group" : undefined}
                         data-group-id={post.id}
                         onClick={() => {
                           select(post.id);
@@ -538,13 +599,17 @@ export function Board({
                         <td>{post.noteCount}</td>
                         <td>{post.memberCount}</td>
                         <td>
-                          <time
-                            dateTime={new Date(post.updatedAt).toISOString()}
-                          >
-                            {new Date(post.updatedAt).toLocaleDateString(
-                              language === "ko" ? "ko-KR" : "en-US",
-                            )}
-                          </time>
+                          {post.updatedAt > 0 ? (
+                            <time
+                              dateTime={new Date(post.updatedAt).toISOString()}
+                            >
+                              {new Date(post.updatedAt).toLocaleDateString(
+                                language === "ko" ? "ko-KR" : "en-US",
+                              )}
+                            </time>
+                          ) : (
+                            "-"
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -552,18 +617,6 @@ export function Board({
                 </table>
               </div>
             )}
-            <nav className="board-system-groups" aria-label={t.group}>
-              {systemGroups.map((group) => (
-                <Link
-                  key={group.id}
-                  href={`/?group=${group.id}`}
-                  data-group-id={group.id}
-                  onClick={onReturnHome}
-                >
-                  {group.name}
-                </Link>
-              ))}
-            </nav>
           </>
         )}
         {failure && (

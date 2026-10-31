@@ -8,7 +8,6 @@ export type EditorProps = {
   scrollRef: RefObject<HTMLDivElement | null>;
   lineRailRef: RefObject<HTMLDivElement | null>;
   selectedLines: number[];
-  autoFocus: boolean;
   onToggleLineSelection: (lineIndex: number, extendSelection?: boolean) => void;
   onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 import { type PaneId, useNotepadStore } from "@/src/4-entity/notepad";
+import { HOME_RETURN_FOCUS_KEY } from "@/src/5-shared/constant";
 
 import type { PaneRefs } from "./use-pane-refs";
 
@@ -16,22 +17,101 @@ export function useEditorFocus(
   suppressInitialFocus: boolean,
 ) {
   const allowFocusRef = useRef(!suppressInitialFocus);
-  useEffect(() => {
-    if (!suppressInitialFocus) return;
+  const userInteractionRef = useRef(false);
+  useLayoutEffect(() => {
+    let restoreFrame = 0;
+    let historyGuardFrame = 0;
+    let historyGuardAttempts = 0;
+    const blurEditors = () => {
+      for (const editor of Object.values(editorRefs)) {
+        if (document.activeElement === editor.current) editor.current?.blur();
+      }
+    };
+    const blockCachedFocus = () => {
+      allowFocusRef.current = false;
+      userInteractionRef.current = false;
+      blurEditors();
+    };
+    const finishCachedRestore = (event: PageTransitionEvent) => {
+      const navigation = performance.getEntriesByType("navigation")[0] as
+        PerformanceNavigationTiming | undefined;
+      let markedReturn = false;
+      try {
+        markedReturn = sessionStorage.getItem(HOME_RETURN_FOCUS_KEY) === "1";
+      } catch {
+        /* The navigation type still protects history restoration. */
+      }
+      if (
+        !markedReturn &&
+        !event.persisted &&
+        navigation?.type !== "back_forward"
+      )
+        return;
+      blockCachedFocus();
+      restoreFrame = window.requestAnimationFrame(() => {
+        blockCachedFocus();
+        restoreFrame = window.requestAnimationFrame(blockCachedFocus);
+      });
+    };
     const allowFromHomeInteraction = (event: Event) => {
       const home = document.querySelector(".home");
-      if (event.target instanceof Node && home?.contains(event.target))
+      const targetIsInHome =
+        event.target instanceof Node && home?.contains(event.target);
+      const keyboardStartedFromDocument =
+        event.type === "keydown" &&
+        (event.target === document.body ||
+          event.target === document.documentElement);
+      if (targetIsInHome || keyboardStartedFromDocument) {
         allowFocusRef.current = true;
+        userInteractionRef.current = true;
+      }
     };
+    const preventBlockedEditorFocus = (event: FocusEvent) => {
+      const navigation = performance.getEntriesByType("navigation")[0] as
+        PerformanceNavigationTiming | undefined;
+      const waitingForHistoryInteraction =
+        navigation?.type === "back_forward" && !userInteractionRef.current;
+      if (allowFocusRef.current && !waitingForHistoryInteraction) return;
+      const editor = Object.values(editorRefs).find(
+        (candidate) => candidate.current === event.target,
+      )?.current;
+      editor?.blur();
+    };
+    const navigation = performance.getEntriesByType("navigation")[0] as
+      PerformanceNavigationTiming | undefined;
+    if (suppressInitialFocus || navigation?.type === "back_forward")
+      blockCachedFocus();
+    const guardDelayedHistoryFocus = () => {
+      const delayedNavigation = performance.getEntriesByType(
+        "navigation",
+      )[0] as PerformanceNavigationTiming | undefined;
+      if (
+        delayedNavigation?.type === "back_forward" &&
+        !userInteractionRef.current
+      )
+        blockCachedFocus();
+      historyGuardAttempts += 1;
+      if (historyGuardAttempts < 60 && !userInteractionRef.current)
+        historyGuardFrame = window.requestAnimationFrame(
+          guardDelayedHistoryFocus,
+        );
+    };
+    historyGuardFrame = window.requestAnimationFrame(guardDelayedHistoryFocus);
     document.addEventListener("pointerdown", allowFromHomeInteraction);
     document.addEventListener("keydown", allowFromHomeInteraction);
-    document.addEventListener("focusin", allowFromHomeInteraction);
+    document.addEventListener("focusin", preventBlockedEditorFocus, true);
+    window.addEventListener("pagehide", blockCachedFocus);
+    window.addEventListener("pageshow", finishCachedRestore);
     return () => {
+      window.cancelAnimationFrame(restoreFrame);
+      window.cancelAnimationFrame(historyGuardFrame);
       document.removeEventListener("pointerdown", allowFromHomeInteraction);
       document.removeEventListener("keydown", allowFromHomeInteraction);
-      document.removeEventListener("focusin", allowFromHomeInteraction);
+      document.removeEventListener("focusin", preventBlockedEditorFocus, true);
+      window.removeEventListener("pagehide", blockCachedFocus);
+      window.removeEventListener("pageshow", finishCachedRestore);
     };
-  }, [suppressInitialFocus]);
+  }, [editorRefs, suppressInitialFocus]);
   useEffect(() => {
     if (!hydrated || !allowFocusRef.current) return;
 

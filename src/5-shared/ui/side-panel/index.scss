@@ -193,6 +193,18 @@
     }
   }
 
+  @media (min-width: 513px) {
+    .side-panel-backdrop {
+      bottom: var(--footer-height);
+    }
+
+    .side-panel-drawer,
+    .side-panel-drawer.is-open {
+      bottom: var(--footer-height);
+      height: auto;
+    }
+  }
+
   // Page-level expansion fills the viewport but does not request browser fullscreen.
   &.is-expanded {
     position: relative;

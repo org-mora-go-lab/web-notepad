@@ -36,7 +36,7 @@ test("1. 그룹 이동 시 탭 ID, 내용, 색상, 고정, 줄 선택과 연결 
     await expectSelectedLines(page, [false, true]);
     await openBookmarksPanel(page);
     await expect(page.locator("#bookmarks-panel strong")).toHaveText("Move me");
-    await page.getByRole("button", { name: "Open", exact: true }).click();
+    await page.locator(".bookmark-item-open").click();
     await expect(page.getByRole("tab")).toHaveCount(2);
     await expect(editor).toHaveValue("Move me\nselected line");
     if (

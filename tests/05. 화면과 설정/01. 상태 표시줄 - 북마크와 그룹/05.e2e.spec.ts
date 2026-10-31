@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { createGroup, groupsCommand } from "../../__util__";
 
-test("5. PC에서 그룹명을 우클릭한 메뉴에는 Bookmark가 없다", async ({
+test("5. PC에서 그룹 동작 아이콘 메뉴에는 Bookmark가 없다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -14,9 +14,7 @@ test("5. PC에서 그룹명을 우클릭한 메뉴에는 Bookmark가 없다", as
   const row = page.locator(".group-item", {
     has: page.getByRole("button", { name: "Work", exact: true }),
   });
-  await row
-    .getByRole("button", { name: "Work", exact: true })
-    .click({ button: "right" });
+  await row.locator(".group-actions > button").click();
   await expect(row.locator(".group-action-dropdown")).toBeVisible();
   await expect(
     row.locator(".group-action-dropdown").getByRole("button"),

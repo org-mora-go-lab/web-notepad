@@ -22,6 +22,9 @@ export type NotepadSettings = {
   // Right panels slide in and out; off shows and hides them in place.
   panelSlide: boolean;
   panelPosition: "left" | "right";
+  // Ordered PC footer entries. The three core commands are always retained.
+  footerItems: string[];
+  footerIconsOnly: boolean;
 };
 
 // Explicit dashboard status; legacy records can still derive it from their saved colors.
@@ -160,6 +163,8 @@ export type NotepadState = {
   setLanguage: (language: Language) => void;
   setPanelSlide: (panelSlide: boolean) => void;
   setPanelPosition: (panelPosition: "left" | "right") => void;
+  setFooterItems: (footerItems: string[]) => void;
+  setFooterIconsOnly: (footerIconsOnly: boolean) => void;
   resetSettings: () => void;
   resetTabColorCycle: () => void;
   shuffleTabColorCycle: () => void;

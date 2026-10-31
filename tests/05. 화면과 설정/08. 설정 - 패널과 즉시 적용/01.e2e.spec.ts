@@ -12,8 +12,9 @@ test("1. Language 아래 Panel Slide에서 On·Off를 선택할 수 있으며 �
   const headings = panel.locator(".setting-section h3");
   await expect(headings.nth(3)).toHaveText("Language");
   await expect(headings.nth(4)).toHaveText("Panel Slide");
-  const on = panel.getByRole("radio", { name: "On", exact: true });
-  const off = panel.getByRole("radio", { name: "Off", exact: true });
+  const slide = panel.getByRole("radiogroup", { name: "Panel Slide" });
+  const on = slide.getByRole("radio", { name: "On", exact: true });
+  const off = slide.getByRole("radio", { name: "Off", exact: true });
   await expect(off).toBeChecked();
   await on.check();
   await expect(on).toBeChecked();

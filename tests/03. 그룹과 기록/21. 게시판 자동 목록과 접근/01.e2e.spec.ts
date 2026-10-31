@@ -12,7 +12,7 @@ test("1. role admin은 관리자 화면을 열거나 관리 동작을 활성화�
     route.fulfill({ status: 503, json: { error: "Unavailable" } }),
   );
   await openBoard(page);
-  await expect(page.locator(".board-entry")).toHaveCount(4);
+  await expect(page.locator(".board-entry")).toHaveCount(7);
   await page
     .getByRole("searchbox", { name: "Search shared groups" })
     .fill("Product Notes");

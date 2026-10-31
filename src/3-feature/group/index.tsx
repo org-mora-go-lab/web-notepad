@@ -33,6 +33,7 @@ import {
 } from "@/src/4-entity/notepad";
 import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup } from "@/src/5-shared/ui";
+import { requestFooterPin } from "@/src/5-shared/util";
 
 import { GroupCreateForm, GroupItem, GroupShareDialog } from "./component";
 import { useGroupMenuResize, useGroupReorder } from "./hook";
@@ -464,6 +465,9 @@ function GroupSidebar({
               <button
                 type="button"
                 aria-pressed={activeGroupId === ALL_GROUP_ID}
+                onContextMenu={(event) =>
+                  requestFooterPin(event, `group:${ALL_GROUP_ID}`)
+                }
                 onClick={() => {
                   setFooterMenuOpen(null);
                   selectGroup(ALL_GROUP_ID);
@@ -475,6 +479,9 @@ function GroupSidebar({
               <button
                 type="button"
                 aria-pressed={activeGroupId === ALL_MY_GROUP_ID}
+                onContextMenu={(event) =>
+                  requestFooterPin(event, `group:${ALL_MY_GROUP_ID}`)
+                }
                 onClick={() => {
                   setFooterMenuOpen(null);
                   selectGroup(ALL_MY_GROUP_ID);
@@ -486,6 +493,9 @@ function GroupSidebar({
               <button
                 type="button"
                 aria-pressed={activeGroupId === ALL_SHARED_GROUP_ID}
+                onContextMenu={(event) =>
+                  requestFooterPin(event, `group:${ALL_SHARED_GROUP_ID}`)
+                }
                 onClick={() => {
                   setFooterMenuOpen(null);
                   selectGroup(ALL_SHARED_GROUP_ID);
@@ -498,6 +508,9 @@ function GroupSidebar({
                 <button
                   type="button"
                   aria-pressed={activeGroupId === UNGROUPED_GROUP_ID}
+                  onContextMenu={(event) =>
+                    requestFooterPin(event, `group:${UNGROUPED_GROUP_ID}`)
+                  }
                   onClick={() => {
                     setFooterMenuOpen(null);
                     selectGroup(UNGROUPED_GROUP_ID);
@@ -536,6 +549,9 @@ function GroupSidebar({
               <div className="group-more-menu" id="group-more-menu" role="menu">
                 <button
                   type="button"
+                  onContextMenu={(event) =>
+                    requestFooterPin(event, "action:guide")
+                  }
                   onClick={() => {
                     setFooterMenuOpen(null);
                     onClose();
@@ -548,6 +564,9 @@ function GroupSidebar({
                 <button
                   className="global-search-command"
                   type="button"
+                  onContextMenu={(event) =>
+                    requestFooterPin(event, "action:search")
+                  }
                   aria-expanded={searchOpen}
                   aria-controls="global-search-popup"
                   aria-haspopup="dialog"
@@ -561,6 +580,9 @@ function GroupSidebar({
                 </button>
                 <button
                   type="button"
+                  onContextMenu={(event) =>
+                    requestFooterPin(event, "action:bookmarks")
+                  }
                   onClick={() => {
                     setFooterMenuOpen(null);
                     onToggleBookmarks();
@@ -571,6 +593,9 @@ function GroupSidebar({
                 </button>
                 <button
                   type="button"
+                  onContextMenu={(event) =>
+                    requestFooterPin(event, "action:settings")
+                  }
                   onClick={() => {
                     setFooterMenuOpen(null);
                     onClose();

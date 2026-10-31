@@ -13,6 +13,7 @@ type Options = {
   getCurrentView: (panel?: ViewPanel | null) => ViewSnapshot;
   pushView: (snapshot: ViewSnapshot) => void;
   finishPanelAction: () => void;
+  finishBookmarkAction: () => void;
   addTabToPane: (pane: PaneId) => void;
 };
 
@@ -20,6 +21,7 @@ export function useViewActions({
   getCurrentView,
   pushView,
   finishPanelAction,
+  finishBookmarkAction,
   addTabToPane,
 }: Options) {
   const selectTabWithHistory = useCallback(
@@ -71,9 +73,9 @@ export function useViewActions({
       const state = useNotepadStore.getState();
       state.selectGroup(groupId);
       state.openBookmark(bookmarkId);
-      finishPanelAction();
+      finishBookmarkAction();
     },
-    [finishPanelAction],
+    [finishBookmarkAction],
   );
 
   const openSearchTabAndClosePanel = useCallback(

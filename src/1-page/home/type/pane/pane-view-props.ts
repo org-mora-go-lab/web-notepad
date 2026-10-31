@@ -12,7 +12,6 @@ export type PaneViewProps = {
   activeTab: NoteTab;
   editorRef: RefObject<HTMLTextAreaElement | null>;
   composingRef: RefObject<boolean>;
-  autoFocus?: boolean;
   isFocused: boolean;
   draggingTabId: string | null;
   draggingTabIds: string[];

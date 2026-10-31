@@ -42,6 +42,9 @@ export function useHome() {
     if (typeof window === "undefined") return false;
     try {
       if (sessionStorage.getItem(HOME_RETURN_FOCUS_KEY) === "1") return true;
+      const navigation = performance.getEntriesByType("navigation")[0] as
+        PerformanceNavigationTiming | undefined;
+      if (navigation?.type === "back_forward") return true;
       const referrer = new URL(document.referrer);
       return (
         referrer.origin === window.location.origin &&
@@ -52,12 +55,16 @@ export function useHome() {
     }
   });
   useEffect(() => {
+    // Only the Home instance that consumed the return marker may clear it.
+    // An outgoing Home can finish this effect after My Page has already set
+    // the marker, which otherwise makes history focus suppression race-prone.
+    if (!suppressInitialEditorFocus) return;
     try {
       sessionStorage.removeItem(HOME_RETURN_FOCUS_KEY);
     } catch {
       /* Keep the editor usable if session storage is unavailable. */
     }
-  }, []);
+  }, [suppressInitialEditorFocus]);
   const editorRefs = usePaneRefs<HTMLTextAreaElement | null>(null);
   useEffect(() => {
     const clearRestoredPageFocus = () => {
@@ -246,7 +253,6 @@ export function useHome() {
       activeTab: paneTab,
       editorRef: editorRefs[pane],
       composingRef: composingRefs[pane],
-      autoFocus: pane === "left" && !suppressInitialEditorFocus,
       isFocused: !split || activePane === pane,
       dropZones: dropZonesFor(pane),
       tabSlide:

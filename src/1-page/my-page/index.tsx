@@ -11,7 +11,12 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { createPortal } from "react-dom";
 
 import { Footer } from "@/src/2-widget";
@@ -71,7 +76,7 @@ export function MyPage() {
             ? t.ungrouped
             : (groups.find((group) => group.id === activeGroupId)?.name ??
               t.ungrouped);
-  useEffect(markMyPageReturn, []);
+  useLayoutEffect(markMyPageReturn, []);
   useEffect(() => {
     let active = true;
     try {

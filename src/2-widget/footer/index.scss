@@ -6,18 +6,19 @@
   align-items: center;
   min-width: 0;
   min-height: 48px;
-  padding: 6px 26px 6px 16px;
+  padding: 6px 16px;
   border-top: 1px solid v.$line;
   background: v.$strip;
   color: v.$muted;
   font-size: v.font(14px);
 
   .group-command-label {
-    display: none;
+    display: inline;
   }
 
   .group-current-value {
-    margin-left: 3px;
+    display: none;
+    margin-left: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -28,7 +29,36 @@
     min-width: 0;
     display: flex;
     align-items: center;
-    gap: 20px;
+  }
+
+  .footer-dock {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .footer-dock-item {
+    min-width: 0;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+
+    &[draggable="true"] {
+      cursor: grab;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
   }
 
   .status-controls,
@@ -121,7 +151,7 @@
 
   .dashboard-command {
     --status-icon-growth: 1px;
-    margin-left: auto;
+    margin-left: 0;
   }
 
   .footer-auth {
@@ -185,10 +215,41 @@
     }
 
     .status-meta {
+      padding: 0;
+      display: block;
+    }
+
+    .footer-dock {
+      height: 100%;
       padding: 6px 21px calc(6px + env(safe-area-inset-bottom));
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
+      overflow: hidden;
+    }
+
+    .footer-dock-item {
+      width: 100%;
+      min-width: 0;
+
+      &.is-custom {
+        display: none;
+      }
+
+      &.core-groups {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      &.core-dashboard {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      &.core-account {
+        grid-column: 3;
+        grid-row: 1;
+      }
     }
 
     .status-command {
@@ -225,8 +286,9 @@
     }
 
     .group-select-command {
-      grid-column: 1;
-      grid-row: 1;
+      .group-command-label {
+        display: none;
+      }
 
       .group-current-value {
         display: block;
@@ -241,14 +303,11 @@
     }
 
     .dashboard-command {
-      grid-column: 2;
-      grid-row: 1;
       margin-left: 0;
     }
 
     .footer-auth {
-      grid-column: 3;
-      grid-row: 1;
+      width: 100%;
       min-width: 0;
     }
 
@@ -294,6 +353,59 @@
           width: 50px;
         }
       }
+    }
+  }
+}
+
+@media (min-width: 513px) {
+  .footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 55;
+    height: var(--footer-height);
+  }
+
+  .footer.is-icons-only {
+    :is(
+      .status-label,
+      .group-current-value,
+      .footer-pinned-label,
+      .auth-command > span,
+      .auth-skeleton-name
+    ) {
+      display: none;
+    }
+  }
+}
+
+.footer-pin-menu {
+  position: fixed;
+  z-index: 140;
+  width: 180px;
+  padding: 5px;
+  border: 1px solid v.$line;
+  border-radius: 5px;
+  background: v.$raised;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+
+  button {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: v.$ink;
+    font: inherit;
+    font-size: v.font(14px);
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: v.$line;
     }
   }
 }

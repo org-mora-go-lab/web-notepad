@@ -7,7 +7,6 @@ export type BodyProps = {
   activeTab: NoteTab;
   editorRef: RefObject<HTMLTextAreaElement | null>;
   composingRef: RefObject<boolean>;
-  autoFocus?: boolean;
   draggingTabId: string | null;
   dropZones: PaneDropZone[];
   tabSlide?: { direction: "left" | "right"; sequence: number };

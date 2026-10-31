@@ -10,7 +10,6 @@ export function Body({
   activeTab,
   editorRef,
   composingRef,
-  autoFocus,
   draggingTabId,
   dropZones,
   tabSlide,
@@ -64,7 +63,6 @@ export function Body({
         tab={activeTab}
         editorRef={editorRef}
         composingRef={composingRef}
-        autoFocus={autoFocus && !tabSlide}
         onChange={onChange}
       />
       {dragActive &&

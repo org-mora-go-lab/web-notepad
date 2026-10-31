@@ -295,6 +295,7 @@ export function Home() {
                   }
                   activeGroupName={activeGroupName}
                   groupsOpen={groupMenuOpen}
+                  groups={groups}
                   onSwipeTabs={
                     !groupMenuOpen && !openPanel && !backgroundPanel
                       ? swipeMobileTab
@@ -302,6 +303,16 @@ export function Home() {
                   }
                   onToggleDashboard={toggleDashboardFromFooter}
                   onToggleGroups={toggleGroupsFromFooter}
+                  onSelectGroup={selectGroupAndClosePanel}
+                  onOpenGuide={() =>
+                    window.dispatchEvent(new Event("notepad-open-guide"))
+                  }
+                  onOpenSettings={() => {
+                    closeGroupMenu();
+                    if (openPanel !== "settings") toggleSidePanel("settings");
+                  }}
+                  onToggleBookmarks={() => toggleSidePanel("bookmarks")}
+                  onToggleSearch={() => toggleSidePanel("global-search")}
                 />
               </section>
 

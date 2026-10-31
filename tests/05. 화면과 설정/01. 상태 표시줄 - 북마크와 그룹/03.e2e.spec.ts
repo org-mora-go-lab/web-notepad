@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BOTH_VIEWPORTS } from "../../__constant__";
 import { groupsCommand } from "../../__util__";
 
-test("3. 그룹 버튼은 PC와 모바일에서 아이콘과 현재 그룹명을 표시한다", async ({
+test("3. 메뉴 버튼은 PC에서 MENU, 모바일에서 현재 그룹명을 표시한다", async ({
   page,
 }) => {
   await page.goto("/");
@@ -30,10 +30,9 @@ test("3. 그룹 버튼은 PC와 모바일에서 아이콘과 현재 그룹명을
       await expect(page.locator(".current-group-panel")).toHaveCount(0);
     } else {
       await expect(command).toHaveCSS("gap", "7px");
-      await expect(command.locator(".group-current-value")).toHaveText(
-        "Ungrouped",
-      );
-      await expect(command.locator(".group-command-label")).toBeHidden();
+      await expect(command.locator(".group-current-value")).toBeHidden();
+      await expect(command.locator(".group-command-label")).toHaveText("MENU");
+      await expect(command.locator(".group-command-label")).toBeVisible();
       await expect(page.locator(".current-group-panel")).toHaveCount(0);
     }
   }

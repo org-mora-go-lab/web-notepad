@@ -8,7 +8,7 @@
 
   .group-menu {
     position: fixed;
-    inset: 0 auto 0 0;
+    inset: 0 auto var(--footer-height) 0;
     z-index: 50;
     width: min(var(--group-sidebar-width, 280px), 51vw);
     min-width: 192px;

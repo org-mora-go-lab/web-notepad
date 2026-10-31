@@ -13,6 +13,7 @@ import { createPortal } from "react-dom";
 
 import { useI18n } from "@/src/5-shared/hook";
 import type { AccountProfile as AuthUser } from "@/src/5-shared/type";
+import { requestFooterPin } from "@/src/5-shared/util";
 
 export function Auth() {
   const { t } = useI18n();
@@ -210,18 +211,31 @@ export function Auth() {
                 type="button"
                 role="menuitem"
                 disabled={loading}
+                onContextMenu={(event) =>
+                  requestFooterPin(event, "account:logout")
+                }
                 onClick={() => void logout()}
               >
                 <LogOut size={18} />
                 <span>{t.logout}</span>
               </button>
-              <Link href="/my-page" role="menuitem" onClick={() => closeMenu()}>
+              <Link
+                href="/my-page"
+                role="menuitem"
+                onContextMenu={(event) =>
+                  requestFooterPin(event, "account:my-page")
+                }
+                onClick={() => closeMenu()}
+              >
                 <UserRound size={18} />
                 <span>{t.myPage}</span>
               </Link>
               <Link
                 href="/board"
                 role="menuitem"
+                onContextMenu={(event) =>
+                  requestFooterPin(event, "account:board")
+                }
                 onClick={(event) => {
                   closeMenu();
                   if (window.location.pathname !== "/board") return;

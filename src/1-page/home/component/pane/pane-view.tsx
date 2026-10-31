@@ -12,7 +12,6 @@ export function PaneView({
   activeTab,
   editorRef,
   composingRef,
-  autoFocus,
   isFocused,
   draggingTabId,
   draggingTabIds,
@@ -67,7 +66,6 @@ export function PaneView({
           activeTab={activeTab}
           editorRef={editorRef}
           composingRef={composingRef}
-          autoFocus={autoFocus}
           draggingTabId={draggingTabId}
           dropZones={dropZones}
           tabSlide={tabSlide}
