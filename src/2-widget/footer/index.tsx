@@ -63,8 +63,7 @@ export function Footer({
   const swipeStart = useRef<{
     x: number;
     y: number;
-    pointerId: number;
-    target: Element;
+    identifier: number;
   } | null>(null);
 
   useEffect(() => {
@@ -260,27 +259,27 @@ export function Footer({
   return (
     <footer
       className={`footer ${iconsOnly ? "is-icons-only" : ""}`}
-      onPointerDown={(event) => {
+      onTouchStart={(event) => {
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
-        if (!(event.target instanceof Element)) return;
+        if (event.touches.length !== 1) return;
+        const touch = event.touches[0];
         swipeStart.current = {
-          x: event.clientX,
-          y: event.clientY,
-          pointerId: event.pointerId,
-          target: event.target,
+          x: touch.clientX,
+          y: touch.clientY,
+          identifier: touch.identifier,
         };
-        event.target.setPointerCapture(event.pointerId);
       }}
-      onPointerUp={(event) => {
+      onTouchEnd={(event) => {
         const start = swipeStart.current;
         swipeStart.current = null;
-        if (start?.target.hasPointerCapture(event.pointerId))
-          start.target.releasePointerCapture(event.pointerId);
-        if (!start || start.pointerId !== event.pointerId || !onSwipeTabs)
-          return;
-        const horizontal = event.clientX - start.x;
-        const vertical = event.clientY - start.y;
+        if (!start || !onSwipeTabs) return;
+        const touch = Array.from(event.changedTouches).find(
+          (changedTouch) => changedTouch.identifier === start.identifier,
+        );
+        if (!touch) return;
+        const horizontal = touch.clientX - start.x;
+        const vertical = touch.clientY - start.y;
         if (
           Math.abs(horizontal) < 50 ||
           Math.abs(horizontal) <= Math.abs(vertical)
@@ -289,11 +288,8 @@ export function Footer({
         event.preventDefault();
         onSwipeTabs(horizontal < 0 ? "left" : "right");
       }}
-      onPointerCancel={(event) => {
-        const start = swipeStart.current;
+      onTouchCancel={() => {
         swipeStart.current = null;
-        if (start?.target.hasPointerCapture(event.pointerId))
-          start.target.releasePointerCapture(event.pointerId);
       }}
     >
       <span className="footer-current-group" title={activeGroupName}>
