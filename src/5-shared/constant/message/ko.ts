@@ -164,6 +164,7 @@ export const ko: Messages = {
   createGroup: "그룹 생성",
   closeGroupTabs: "모두 닫기",
   save: "저장",
+  saved: "저장됨",
   edit: "수정",
   groupActions: "그룹 메뉴",
   groupActionsFor: (name: string) => `${name} 그룹 메뉴`,

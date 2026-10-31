@@ -63,7 +63,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
         resize: style.resize,
       };
     });
-  expect(noteLayout.height).toBeCloseTo(220 * 1.2 * 1.2, 0);
+  expect(noteLayout.height).toBeCloseTo(316.8 * 1.5, 0);
   expect(noteLayout.minHeight).toBeCloseTo(noteLayout.height, 0);
   expect(noteLayout.maxHeight).toBe("none");
   expect(noteLayout.overflowY).toBe("auto");

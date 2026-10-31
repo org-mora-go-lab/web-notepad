@@ -18,6 +18,7 @@ export function DashboardStatusDefaultSetting() {
     (state) => state.setDashboardStatusDefaults,
   );
   const [draft, setDraft] = useState<DashboardStatusNames | null>(null);
+  const [saved, setSaved] = useState(false);
   const labels = {
     icebox: t.icebox,
     todo: t.statusTodo,
@@ -41,6 +42,7 @@ export function DashboardStatusDefaultSetting() {
           onClick={() => {
             saveDefaults({});
             setDraft(null);
+            setSaved(false);
           }}
         >
           <RotateCcw size={13} />
@@ -53,6 +55,7 @@ export function DashboardStatusDefaultSetting() {
           event.preventDefault();
           saveDefaults(draft ?? defaults);
           setDraft(null);
+          setSaved(true);
         }}
       >
         {DASHBOARD_STATUSES.map((status) => (
@@ -62,16 +65,22 @@ export function DashboardStatusDefaultSetting() {
               maxLength={30}
               placeholder={labels[status]}
               value={(draft ?? defaults)[status] ?? ""}
-              onChange={(event) =>
+              onChange={(event) => {
+                setSaved(false);
                 setDraft({
                   ...(draft ?? defaults),
                   [status]: event.target.value,
-                })
-              }
+                });
+              }}
             />
           </label>
         ))}
-        <button type="submit">{t.save}</button>
+        <div className="setting-status-default-actions">
+          <output aria-live="polite">{saved ? t.saved : ""}</output>
+          <button type="submit" disabled={draft === null}>
+            {t.save}
+          </button>
+        </div>
       </form>
     </section>
   );

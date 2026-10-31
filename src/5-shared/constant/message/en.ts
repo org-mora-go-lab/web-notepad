@@ -160,6 +160,7 @@ export const en = {
   createGroup: "Create group",
   closeGroupTabs: "Close All",
   save: "Save",
+  saved: "Saved",
   edit: "Edit",
   groupActions: "Group actions",
   groupActionsFor: (name: string) => `${name} group actions`,

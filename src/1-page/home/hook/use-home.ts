@@ -155,20 +155,23 @@ export function useHome() {
     [replaceCurrentView, requestCloseTabAction],
   );
 
-  const swipeMobileTab = (
-    direction: "left" | "right",
-    pane: PaneId = activePane,
-  ) => {
-    const tabs = paneTabs[pane];
+  const swipeMobileTab = (direction: "left" | "right", pane?: PaneId) => {
+    // Read the workspace at gesture time. Consecutive swipes can arrive before
+    // React replaces the footer callback, so render-time tabs may be stale.
+    const latestGroup = getActiveGroup(useNotepadStore.getState());
+    if (!latestGroup) return false;
+    const latestWorkspace = getPaneWorkspace(latestGroup);
+    const targetPane = pane ?? latestWorkspace.activePane;
+    const tabs = latestWorkspace.tabs[targetPane];
     if (tabs.length < 2) return false;
     const currentIndex = tabs.findIndex(
-      (tab) => tab.id === activeTabs[pane]?.id,
+      (tab) => tab.id === latestWorkspace.activeTabs[targetPane]?.id,
     );
     if (currentIndex < 0) return false;
     const offset = direction === "left" ? 1 : -1;
     const nextIndex = (currentIndex + offset + tabs.length) % tabs.length;
     setMobileTabSlide((current) => ({
-      pane,
+      pane: targetPane,
       direction,
       sequence: (current?.sequence ?? 0) + 1,
     }));

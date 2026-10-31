@@ -51,7 +51,10 @@ export function handleEditorKeyDown(
       textarea.selectionEnd,
     );
     commitContent(result.content);
-    window.requestAnimationFrame(() => {
+    // React can commit the controlled value before the next animation frame.
+    // Restore the selection in the same task boundary so a rapid second
+    // shortcut toggles the existing markers instead of appending new ones.
+    queueMicrotask(() => {
       textarea.setSelectionRange(result.selectionStart, result.selectionEnd);
     });
     return;

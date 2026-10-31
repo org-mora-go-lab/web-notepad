@@ -35,6 +35,9 @@ import { useBoard, useBoardSelection } from "./hook";
 
 type BoardSwipeHandler = (direction: "left" | "right") => void;
 
+const MOBILE_NOTE_PREVIEW_MIN_HEIGHT = 316.8;
+const DESKTOP_NOTE_PREVIEW_HEIGHT = MOBILE_NOTE_PREVIEW_MIN_HEIGHT * 1.5;
+
 export function Board({
   onReturnHome,
   swipeTabsRef,
@@ -55,7 +58,9 @@ export function Board({
   const [failure, setFailure] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
-  const [notePreviewHeight, setNotePreviewHeight] = useState(316.8);
+  const [notePreviewHeight, setNotePreviewHeight] = useState(
+    DESKTOP_NOTE_PREVIEW_HEIGHT,
+  );
   const notePreviewRef = useRef<HTMLElement>(null);
   const noteTabRevealRequested = useRef(false);
   const noteSwipeStart = useRef<{
@@ -165,7 +170,10 @@ export function Board({
   useEffect(() => {
     if (!selected?.id || !activeNote?.id) return;
     const updateMobilePreviewHeight = () => {
-      if (!window.matchMedia("(max-width: 512px)").matches) return;
+      if (!window.matchMedia("(max-width: 512px)").matches) {
+        setNotePreviewHeight(DESKTOP_NOTE_PREVIEW_HEIGHT);
+        return;
+      }
       const preview = notePreviewRef.current;
       if (!preview) return;
       const page = preview.closest<HTMLElement>(".board-page");
@@ -178,7 +186,10 @@ export function Board({
         preview.getBoundingClientRect().top + (page?.scrollTop ?? 0);
       const footerHeight = footer?.getBoundingClientRect().height ?? 0;
       setNotePreviewHeight(
-        Math.max(316.8, viewportHeight - previewTop - footerHeight - 20),
+        Math.max(
+          MOBILE_NOTE_PREVIEW_MIN_HEIGHT,
+          viewportHeight - previewTop - footerHeight - 20,
+        ),
       );
     };
     const frame = requestAnimationFrame(updateMobilePreviewHeight);

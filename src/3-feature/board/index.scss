@@ -467,8 +467,8 @@
   }
   .board-note-preview {
     min-width: 0;
-    height: 316.8px;
-    min-height: 316.8px;
+    height: 475.2px;
+    min-height: 475.2px;
     max-height: none;
     overflow-x: hidden;
     overflow-y: auto;
@@ -481,12 +481,7 @@
     background: v.$panel;
     scrollbar-color: v.$muted transparent;
     scrollbar-width: thin;
-    &.is-slide-left {
-      animation: board-note-slide-left 180ms ease-out;
-    }
-    &.is-slide-right {
-      animation: board-note-slide-right 180ms ease-out;
-    }
+    resize: none;
     pre {
       position: relative;
       width: 100%;
@@ -590,6 +585,16 @@
     }
     .board-note-preview pre {
       padding: 18px 0 24px;
+    }
+    .board-note-preview {
+      min-height: 316.8px;
+
+      &.is-slide-left {
+        animation: board-note-slide-left 180ms ease-out;
+      }
+      &.is-slide-right {
+        animation: board-note-slide-right 180ms ease-out;
+      }
     }
     .board-note-preview .board-note-line {
       padding-right: 24px;
