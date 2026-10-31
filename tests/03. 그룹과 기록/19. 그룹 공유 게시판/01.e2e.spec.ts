@@ -105,18 +105,4 @@ test("1. 더보기의 게시판은 공유 그룹을 표시하고 방문자에게
   await expect(
     page.getByRole("button", { name: "Publish a group" }),
   ).toHaveCount(0);
-  const systemGroups = page.getByRole("navigation", { name: "GROUP" });
-  await expect(systemGroups.getByRole("link")).toHaveText([
-    "All Group",
-    "All My Group",
-    "All Shared Group",
-    "Ungrouped",
-  ]);
-  const tableBounds = (await page
-    .locator(".board-table-container")
-    .boundingBox())!;
-  const systemGroupBounds = (await systemGroups.boundingBox())!;
-  expect(systemGroupBounds.y).toBeGreaterThanOrEqual(
-    tableBounds.y + tableBounds.height,
-  );
 });

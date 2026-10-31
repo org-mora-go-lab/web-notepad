@@ -6,7 +6,7 @@ export async function openSharingMenu(page: Page, id: string) {
   if (!(await page.locator("#groups-menu").isVisible()))
     await groupsCommand(page).click();
   const row = page.locator('[data-group-id="' + id + '"]');
-  await row.locator(".group-select").click({ button: "right" });
+  await row.locator(".group-actions > button").click();
   const menu = row.locator(".group-action-dropdown");
   await expect(menu).toBeVisible();
   return menu;

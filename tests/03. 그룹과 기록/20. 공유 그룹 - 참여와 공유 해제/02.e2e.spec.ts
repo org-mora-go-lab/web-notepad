@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { sharingTest as test } from "./__fixture__";
 import { openSharingMenu } from "./__util__";
 
-test("2. 참여자의 우클릭·모바일 액션 버튼 메뉴는 나가기를 제공한다", async ({
+test("2. 참여자의 PC·모바일 액션 버튼 메뉴는 나가기를 제공한다", async ({
   sharing: { guest, id },
 }) => {
   const desktopMenu = await openSharingMenu(guest, id);

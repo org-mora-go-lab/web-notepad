@@ -56,7 +56,7 @@
 
   @media (max-width: 512px) {
     button {
-      font-size: v.font(15px * v.$mobile-scale);
+      font-size: v.font(15px);
       > svg {
         width: 14px * v.$mobile-scale;
         height: 14px * v.$mobile-scale;

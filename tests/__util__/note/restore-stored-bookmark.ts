@@ -34,5 +34,5 @@ export async function restoreStoredBookmark(
     ],
   });
   await openBookmarksPanel(page);
-  await page.getByRole("button", { name: "Open", exact: true }).click();
+  await page.locator(".bookmark-item-open").click();
 }

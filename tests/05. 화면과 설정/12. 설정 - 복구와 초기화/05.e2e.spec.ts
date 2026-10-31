@@ -17,7 +17,14 @@ test("5. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
   const panel = settingsPanel(page);
   await fontScaleRadio(page, "120%").check();
   await tabColorRadio(page, 1, "Pink").check();
-  await panel.getByRole("radio", { name: "On", exact: true }).check();
+  await panel
+    .getByRole("radiogroup", { name: "Panel Slide" })
+    .getByRole("radio", { name: "On", exact: true })
+    .check();
+  await panel
+    .getByRole("radiogroup", { name: "Footer Icons Only" })
+    .getByRole("radio", { name: "On", exact: true })
+    .check();
   await panel.getByRole("radio", { name: "Left", exact: true }).check();
   await languageRadio(page, "한국어").check();
   await panel.getByRole("button", { name: "설정 초기화", exact: true }).click();
@@ -33,7 +40,14 @@ test("5. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
   await expect(tabColorRadio(page, 3, "Indigo")).toBeChecked();
   await expect(languageRadio(page, "English")).toBeChecked();
   await expect(
-    panel.getByRole("radio", { name: "Off", exact: true }),
+    panel
+      .getByRole("radiogroup", { name: "Panel Slide" })
+      .getByRole("radio", { name: "Off", exact: true }),
+  ).toBeChecked();
+  await expect(
+    panel
+      .getByRole("radiogroup", { name: "Footer Icons Only" })
+      .getByRole("radio", { name: "Off", exact: true }),
   ).toBeChecked();
   await expect(
     panel.getByRole("radio", { name: "Right", exact: true }),
@@ -54,5 +68,7 @@ test("5. 설정 초기화로 되돌린 모든 기본값을 브라우저에 저�
       language: "en",
       panelSlide: false,
       panelPosition: "right",
+      footerItems: ["core:groups", "core:dashboard", "core:account"],
+      footerIconsOnly: false,
     });
 });

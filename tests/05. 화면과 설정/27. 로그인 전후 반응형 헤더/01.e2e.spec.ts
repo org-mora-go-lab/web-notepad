@@ -4,7 +4,7 @@ import { DESKTOP_VIEWPORT } from "../../__constant__";
 import { signedSession } from "../../__fixture__";
 import { authenticateBrowser } from "../../__util__";
 
-test("1. PC 로그인 전후 계정 영역과 탭 추가 위치를 유지한다", async ({
+test("1. PC 로그인 전후 핵심 푸터와 탭 추가 위치를 유지한다", async ({
   page,
   context,
 }) => {
@@ -13,6 +13,16 @@ test("1. PC 로그인 전후 계정 영역과 탭 추가 위치를 유지한다"
   await expect(page.locator("a.auth-command")).toBeVisible();
   await expect(page.locator(".header .auth-command")).toHaveCount(0);
   await expect(page.locator(".footer .auth-command")).toBeVisible();
+  const coreCenter = () =>
+    page.locator(".footer-dock-item.is-core").evaluateAll((items) => {
+      const boxes = items.map((item) => item.getBoundingClientRect());
+      return (
+        (Math.min(...boxes.map((box) => box.left)) +
+          Math.max(...boxes.map((box) => box.right))) /
+        2
+      );
+    });
+  const beforeCenter = await coreCenter();
   const beforeAuth = (await page.locator(".footer-auth").boundingBox())!;
   const beforeAdd = (await page.locator(".header .add-tab").boundingBox())!;
 
@@ -27,12 +37,12 @@ test("1. PC 로그인 전후 계정 영역과 탭 추가 위치를 유지한다"
   );
   await page.reload();
   await expect(page.locator("button.auth-command")).toBeVisible();
+  const afterCenter = await coreCenter();
   const afterAuth = (await page.locator(".footer-auth").boundingBox())!;
   const afterAdd = (await page.locator(".header .add-tab").boundingBox())!;
-  expect(afterAuth.x + afterAuth.width).toBeCloseTo(
-    beforeAuth.x + beforeAuth.width,
-    0,
-  );
+  expect(beforeCenter).toBeCloseTo(DESKTOP_VIEWPORT.width / 2, 0);
+  expect(afterCenter).toBeCloseTo(DESKTOP_VIEWPORT.width / 2, 0);
+  await expect(page.locator(".footer-dock")).toHaveCSS("gap", "25px");
   expect(afterAuth.y).toBe(beforeAuth.y);
   expect(afterAuth.height).toBe(beforeAuth.height);
   expect(afterAdd).toEqual(beforeAdd);

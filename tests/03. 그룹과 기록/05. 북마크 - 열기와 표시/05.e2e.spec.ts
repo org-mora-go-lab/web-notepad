@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { seedBookmarkContentItems } from "./__fixture__";
 
-test("5. 북마크의 나머지 내용은 접지 않은 전체 내용으로 표시한다", async ({
+test("5. 북마크 카드 본문은 전체 내용을 유지하고 세 줄로 미리보기한다", async ({
   page,
 }) => {
   const { detailLines } = await seedBookmarkContentItems(page);
@@ -16,7 +16,8 @@ test("5. 북마크의 나머지 내용은 접지 않은 전체 내용으로 표�
   });
   expect(
     await content.evaluate(
-      (element) => element.scrollHeight <= element.clientHeight,
+      (element) => element.scrollHeight > element.clientHeight,
     ),
   ).toBe(true);
+  await expect(content).toHaveCSS("-webkit-line-clamp", "3");
 });

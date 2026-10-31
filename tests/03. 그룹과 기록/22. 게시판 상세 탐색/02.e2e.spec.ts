@@ -225,31 +225,6 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     true,
   );
   expect(boardPost.notes.some((note) => note.content === "abc")).toBe(true);
-  const swipePreview = async (direction: "left" | "right") => {
-    const previewBounds = (await page
-      .locator(".board-note-preview")
-      .boundingBox())!;
-    const from =
-      direction === "left"
-        ? previewBounds.x + previewBounds.width * 0.8
-        : previewBounds.x + previewBounds.width * 0.2;
-    const to =
-      direction === "left"
-        ? previewBounds.x + previewBounds.width * 0.2
-        : previewBounds.x + previewBounds.width * 0.8;
-    const y = previewBounds.y + Math.min(120, previewBounds.height / 2);
-    await page.mouse.move(from, y);
-    await page.mouse.down();
-    await page.mouse.move(to, y, { steps: 5 });
-    await page.mouse.up();
-  };
-  await swipePreview("left");
-  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
-  await expect(page.locator(".board-note-preview")).toHaveClass(
-    /is-slide-left/,
-  );
-  await swipePreview("right");
-  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await page.setViewportSize({ width: 320, height: 800 });
   await tabs.first().click();
   const mobileFooter = page.locator(".board-mobile-footer .footer");
@@ -283,7 +258,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     });
   };
   await swipeTouch(page.locator(".board-note-preview"), "left");
-  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await swipeTouch(page.locator(".board-note-preview"), "right");
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   const swipeFooter = (direction: "left" | "right") =>

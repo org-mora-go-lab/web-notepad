@@ -15,7 +15,7 @@ test("2. 원본 탭이 남아 있는 북마크를 열면 해당 탭을 활성화
   await page.locator("textarea").fill("other note");
 
   await openBookmarksPanel(page);
-  await page.getByRole("button", { name: "Open", exact: true }).click();
+  await page.locator(".bookmark-item-open").click();
 
   await expect(page.locator("textarea")).toHaveValue("bookmark source");
 });

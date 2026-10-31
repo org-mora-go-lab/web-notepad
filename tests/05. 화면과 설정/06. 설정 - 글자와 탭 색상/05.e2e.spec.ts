@@ -26,6 +26,8 @@ test("5. 설정한 폰트 크기와 탭 색상 순서는 새로고침 후에도 
       language: "en",
       panelSlide: false,
       panelPosition: "right",
+      footerItems: ["core:groups", "core:dashboard", "core:account"],
+      footerIconsOnly: false,
     });
   await closeSettingsPanel(page);
 

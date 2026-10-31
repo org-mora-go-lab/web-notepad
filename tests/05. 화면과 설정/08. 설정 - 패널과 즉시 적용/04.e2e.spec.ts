@@ -10,7 +10,9 @@ test("4. Panel Slide 선택을 저장하고 새로고침 후 복원한다", asyn
   await page.goto("/");
   await openSettingsPanel(page);
   const panel = settingsPanel(page);
-  const on = panel.getByRole("radio", { name: "On", exact: true });
+  const on = panel
+    .getByRole("radiogroup", { name: "Panel Slide" })
+    .getByRole("radio", { name: "On", exact: true });
   await on.check();
   await expect
     .poll(() =>

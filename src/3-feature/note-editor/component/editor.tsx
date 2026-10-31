@@ -11,7 +11,6 @@ export function Editor({
   scrollRef,
   lineRailRef,
   selectedLines,
-  autoFocus,
   onToggleLineSelection,
   onChange,
   onKeyDown,
@@ -78,7 +77,6 @@ export function Editor({
         onCompositionStart={onCompositionStart}
         onCompositionEnd={onCompositionEnd}
         placeholder={t.notePlaceholder}
-        autoFocus={autoFocus}
         spellCheck={false}
         aria-label={t.noteContent(tab.title)}
         style={

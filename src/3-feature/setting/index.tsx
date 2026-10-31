@@ -23,6 +23,9 @@ export function Setting({ open, onClose }: SettingProps) {
   const setLanguage = useNotepadStore((state) => state.setLanguage);
   const setPanelPosition = useNotepadStore((state) => state.setPanelPosition);
   const setPanelSlide = useNotepadStore((state) => state.setPanelSlide);
+  const setFooterIconsOnly = useNotepadStore(
+    (state) => state.setFooterIconsOnly,
+  );
   const resetSettings = useNotepadStore((state) => state.resetSettings);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [confirmingDeleteAll, setConfirmingDeleteAll] = useState(false);
@@ -101,6 +104,16 @@ export function Setting({ open, onClose }: SettingProps) {
           options={[
             { value: "left", label: t.panelLeft },
             { value: "right", label: t.panelRight },
+          ]}
+        />
+        <RadioSetting
+          title={t.footerIconsOnly}
+          name="footer-icons-only"
+          value={settings.footerIconsOnly}
+          onChange={setFooterIconsOnly}
+          options={[
+            { value: true, label: t.on },
+            { value: false, label: t.off },
           ]}
         />
         <DashboardStatusDefaultSetting />

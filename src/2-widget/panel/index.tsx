@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Bookmark,
@@ -52,6 +52,11 @@ export function Panel({
   onToggleSearch,
 }: PanelProps) {
   const [guideOpen, setGuideOpen] = useState(false);
+  useEffect(() => {
+    const openGuide = () => setGuideOpen(true);
+    window.addEventListener("notepad-open-guide", openGuide);
+    return () => window.removeEventListener("notepad-open-guide", openGuide);
+  }, []);
   return (
     <div className="panel">
       <Bookmark

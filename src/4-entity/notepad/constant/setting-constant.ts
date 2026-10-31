@@ -14,6 +14,12 @@ export const TAB_COLORS: readonly TabColor[] = [
 
 export const FONT_SCALES: readonly number[] = [0.8, 0.9, 1, 1.1, 1.2, 1.3];
 
+export const CORE_FOOTER_ITEM_IDS = [
+  "core:groups",
+  "core:dashboard",
+  "core:account",
+] as const;
+
 export const DEFAULT_SETTINGS: NotepadSettings = {
   fontScale: 0.9,
   tabColorCycle: ["gray", "orange", "indigo"],
@@ -22,6 +28,8 @@ export const DEFAULT_SETTINGS: NotepadSettings = {
   language: "en",
   panelSlide: false,
   panelPosition: "right",
+  footerItems: [...CORE_FOOTER_ITEM_IDS],
+  footerIconsOnly: false,
 };
 
 // Dashboard columns, in display order.

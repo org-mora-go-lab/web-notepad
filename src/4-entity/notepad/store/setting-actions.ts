@@ -2,7 +2,12 @@ import type { StateCreator } from "zustand";
 
 import { LANGUAGES } from "@/src/5-shared/constant";
 
-import { DEFAULT_SETTINGS, FONT_SCALES, TAB_COLORS } from "../constant";
+import {
+  CORE_FOOTER_ITEM_IDS,
+  DEFAULT_SETTINGS,
+  FONT_SCALES,
+  TAB_COLORS,
+} from "../constant";
 import type { NotepadState } from "../type";
 import { normalizeDashboardStatusNames } from "../util";
 import { withTabColorCycle } from "./workspace";
@@ -15,6 +20,8 @@ type SettingActions = Pick<
   | "setLanguage"
   | "setPanelPosition"
   | "setPanelSlide"
+  | "setFooterItems"
+  | "setFooterIconsOnly"
   | "resetSettings"
   | "resetTabColorCycle"
   | "shuffleTabColorCycle"
@@ -62,6 +69,20 @@ export const createSettingActions: StateCreator<
     set((state) => ({
       settings: { ...state.settings, panelSlide: Boolean(panelSlide) },
     })),
+  setFooterItems: (footerItems) =>
+    set((state) => {
+      const items = [...new Set(footerItems.filter(Boolean))].slice(0, 50);
+      for (const id of CORE_FOOTER_ITEM_IDS)
+        if (!items.includes(id)) items.push(id);
+      return { settings: { ...state.settings, footerItems: items } };
+    }),
+  setFooterIconsOnly: (footerIconsOnly) =>
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        footerIconsOnly: Boolean(footerIconsOnly),
+      },
+    })),
   resetTabColorCycle: () =>
     set((state) =>
       withTabColorCycle(state, [...DEFAULT_SETTINGS.tabColorCycle]),
@@ -85,6 +106,7 @@ export const createSettingActions: StateCreator<
       settings: {
         ...DEFAULT_SETTINGS,
         tabColorCycle: [...DEFAULT_SETTINGS.tabColorCycle],
+        footerItems: [...DEFAULT_SETTINGS.footerItems],
       },
     })),
 });

@@ -205,10 +205,17 @@ export function useHomeNavigation({ hydrated, addTabToPane }: Options) {
     pushView(getCurrentView(panel));
   }, [getCurrentView, keepsPanelOpen, openPanel, pushView]);
 
+  const finishBookmarkAction = useCallback(() => {
+    if (window.matchMedia("(max-width: 512px)").matches)
+      updateGroupMenuOpen(false);
+    finishPanelAction();
+  }, [finishPanelAction, updateGroupMenuOpen]);
+
   const actions = useViewActions({
     getCurrentView,
     pushView,
     finishPanelAction,
+    finishBookmarkAction,
     addTabToPane,
   });
 

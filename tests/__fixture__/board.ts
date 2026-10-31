@@ -45,7 +45,13 @@ export const boardTest = base.extend<{
           createTabFixture("three-characters-" + suffix, "abc"),
           createTabFixture(
             "overflow-" + suffix,
-            "Overflow verification shared note with a deliberately long title",
+            [
+              "Overflow verification shared note with a deliberately long title",
+              ...Array.from(
+                { length: 48 },
+                (_, index) => `Scrollable shared note line ${index + 1}`,
+              ),
+            ].join("\n"),
           ),
         ]),
       },

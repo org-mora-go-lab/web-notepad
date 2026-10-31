@@ -12,14 +12,12 @@ export function PaneView({
   activeTab,
   editorRef,
   composingRef,
-  autoFocus,
   isFocused,
   draggingTabId,
   draggingTabIds,
   selectedTabIds,
   dropZones,
   tabSlide,
-  onSwipeTabs,
   heightRatio,
   onActivate,
   onSelect,
@@ -68,11 +66,9 @@ export function PaneView({
           activeTab={activeTab}
           editorRef={editorRef}
           composingRef={composingRef}
-          autoFocus={autoFocus}
           draggingTabId={draggingTabId}
           dropZones={dropZones}
           tabSlide={tabSlide}
-          onSwipeTabs={onSwipeTabs}
           onChange={onChange}
         />
       </div>

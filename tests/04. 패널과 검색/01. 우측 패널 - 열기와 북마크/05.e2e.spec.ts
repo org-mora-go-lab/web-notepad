@@ -18,10 +18,7 @@ test("5. Escape로 북마크 팝업을 닫고 메모·그룹·북마크 데이�
   await bookmarkActiveTab(page, note);
   const editor = page.locator("textarea");
   const bookmarksPanel = page.locator("#bookmarks-panel");
-  const bookmarkAction = bookmarksPanel.getByRole("button", {
-    name: "Open",
-    exact: true,
-  });
+  const bookmarkAction = bookmarksPanel.locator(".bookmark-item-open");
   const shortcutsPanel = page.locator("#shortcuts-panel");
 
   for (const viewport of BOTH_VIEWPORTS) {

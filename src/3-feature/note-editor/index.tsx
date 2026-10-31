@@ -8,7 +8,6 @@ export function NoteEditor({
   tab,
   editorRef,
   composingRef,
-  autoFocus = false,
   onChange,
 }: NoteEditorProps) {
   const {
@@ -29,7 +28,6 @@ export function NoteEditor({
       scrollRef={scrollRef}
       lineRailRef={lineRailRef}
       selectedLines={selectedLines}
-      autoFocus={autoFocus}
       onToggleLineSelection={toggleLineSelection}
       onChange={handleChange}
       onKeyDown={handleKeyDown}

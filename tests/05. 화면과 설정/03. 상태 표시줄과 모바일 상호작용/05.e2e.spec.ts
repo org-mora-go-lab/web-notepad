@@ -28,7 +28,8 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 대시보드 라�
   );
   const commands = footer.locator(".status-command");
   await expect(footer.locator(".current-group-panel")).toBeHidden();
-  await expect(footer.locator(".group-current-value")).toBeVisible();
+  await expect(footer.locator(".group-current-value")).toBeHidden();
+  await expect(footer.locator(".group-command-label")).toBeVisible();
   await expect(
     footer.locator(".dashboard-command > .status-label"),
   ).toBeHidden();
@@ -40,7 +41,8 @@ test("5. 넓은 고정 패널로 작업 영역이 좁아지면 대시보드 라�
     .poll(async () => (await workspaceBounds(page)).width)
     .toBeGreaterThan(512);
   await expect(footer.locator(".current-group-panel")).toBeHidden();
-  await expect(footer.locator(".group-current-value")).toBeVisible();
+  await expect(footer.locator(".group-current-value")).toBeHidden();
+  await expect(footer.locator(".group-command-label")).toBeVisible();
   await expect(
     footer.locator(".dashboard-command > .status-label"),
   ).toBeVisible();

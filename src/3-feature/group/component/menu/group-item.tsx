@@ -20,6 +20,7 @@ import {
 } from "react";
 
 import { useI18n } from "@/src/5-shared/hook";
+import { requestFooterPin } from "@/src/5-shared/util";
 
 import type { GroupItemProps } from "../../type";
 
@@ -225,6 +226,7 @@ export function GroupItem({
           onSelect();
         }}
         onContextMenu={(event) => {
+          if (requestFooterPin(event, `group:${groupId}`)) return;
           if (
             !hideActionsButton &&
             window.matchMedia("(max-width: 512px)").matches

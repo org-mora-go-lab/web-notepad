@@ -14,7 +14,11 @@ test("1. 하단 GROUP 버튼은 작업공간 왼쪽에 그룹 사이드바를 �
   ).toHaveCSS("border-top-width", "1px");
   const menuBox = (await groupMenu(page).boundingBox())!;
   const workspaceBox = (await page.locator(".workspace").boundingBox())!;
+  const footerBox = (await page.locator(".footer").boundingBox())!;
   expect(menuBox.x).toBe(0);
-  expect(menuBox.height).toBe(await page.evaluate(() => innerHeight));
+  expect(menuBox.height).toBe(
+    (await page.evaluate(() => innerHeight)) - footerBox.height,
+  );
+  expect(menuBox.y + menuBox.height).toBeCloseTo(footerBox.y, 0);
   expect(workspaceBox.x).toBeCloseTo(menuBox.width, 0);
 });

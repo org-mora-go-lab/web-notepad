@@ -42,6 +42,9 @@ export function useHome() {
     if (typeof window === "undefined") return false;
     try {
       if (sessionStorage.getItem(HOME_RETURN_FOCUS_KEY) === "1") return true;
+      const navigation = performance.getEntriesByType("navigation")[0] as
+        PerformanceNavigationTiming | undefined;
+      if (navigation?.type === "back_forward") return true;
       const referrer = new URL(document.referrer);
       return (
         referrer.origin === window.location.origin &&
@@ -52,12 +55,16 @@ export function useHome() {
     }
   });
   useEffect(() => {
+    // Only the Home instance that consumed the return marker may clear it.
+    // An outgoing Home can finish this effect after My Page has already set
+    // the marker, which otherwise makes history focus suppression race-prone.
+    if (!suppressInitialEditorFocus) return;
     try {
       sessionStorage.removeItem(HOME_RETURN_FOCUS_KEY);
     } catch {
       /* Keep the editor usable if session storage is unavailable. */
     }
-  }, []);
+  }, [suppressInitialEditorFocus]);
   const editorRefs = usePaneRefs<HTMLTextAreaElement | null>(null);
   useEffect(() => {
     const clearRestoredPageFocus = () => {
@@ -179,6 +186,9 @@ export function useHome() {
     if (currentIndex < 0) return false;
     const offset = direction === "left" ? 1 : -1;
     const nextIndex = (currentIndex + offset + tabs.length) % tabs.length;
+    // Footer swipes navigate tabs without handing editing focus to the newly
+    // mounted textarea or reopening the mobile keyboard.
+    editorRefs[targetPane].current?.blur();
     setMobileTabSlide((current) => ({
       pane: targetPane,
       direction,
@@ -243,7 +253,6 @@ export function useHome() {
       activeTab: paneTab,
       editorRef: editorRefs[pane],
       composingRef: composingRefs[pane],
-      autoFocus: pane === "left" && !suppressInitialEditorFocus,
       isFocused: !split || activePane === pane,
       dropZones: dropZonesFor(pane),
       tabSlide:
@@ -253,7 +262,6 @@ export function useHome() {
               sequence: mobileTabSlide.sequence,
             }
           : undefined,
-      onSwipeTabs: (direction) => swipeMobileTab(direction, pane),
       onActivate: () => activatePaneWithHistory(pane),
       onSelect: (tabId: string, extendSelection: boolean) => {
         selectTabRange(paneTabs[pane], tabId, extendSelection);
