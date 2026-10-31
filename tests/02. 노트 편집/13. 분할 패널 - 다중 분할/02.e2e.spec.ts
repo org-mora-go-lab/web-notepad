@@ -16,6 +16,7 @@ test("2. 상하 구분선으로 높이 비율을 조정하고 20%~80%로 제한�
     return (await top.boundingBox())!.height / columnBox.height;
   };
   const dragTo = async (ratio: number) => {
+    await divider.hover();
     const columnBox = (await column.boundingBox())!;
     const box = (await divider.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
@@ -32,9 +33,9 @@ test("2. 상하 구분선으로 높이 비율을 조정하고 20%~80%로 제한�
   expect(await topRatio()).toBeCloseTo(0.5, 1);
 
   await dragTo(0.65);
-  expect(await topRatio()).toBeCloseTo(0.65, 1);
+  await expect.poll(topRatio).toBeCloseTo(0.65, 1);
   await dragTo(0.05);
-  expect(await topRatio()).toBeCloseTo(0.2, 2);
+  await expect.poll(topRatio).toBeCloseTo(0.2, 2);
   await dragTo(0.97);
-  expect(await topRatio()).toBeCloseTo(0.8, 2);
+  await expect.poll(topRatio).toBeCloseTo(0.8, 2);
 });
