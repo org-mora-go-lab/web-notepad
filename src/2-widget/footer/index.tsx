@@ -25,10 +25,24 @@ export function Footer({
     target: Element;
   } | null>(null);
   const suppressClick = useRef(false);
+  const touchActivatedButton = useRef<HTMLButtonElement | null>(null);
   return (
     <footer
       className="footer"
       onClickCapture={(event) => {
+        const touchButton = touchActivatedButton.current;
+        if (
+          touchButton &&
+          event.target instanceof Node &&
+          touchButton.contains(event.target)
+        ) {
+          // Touch commands run on pointerup so the first tap after a swipe is
+          // never lost to the browser's compatibility-click timing.
+          event.preventDefault();
+          event.stopPropagation();
+          touchActivatedButton.current = null;
+          return;
+        }
         if (!suppressClick.current) return;
         event.preventDefault();
         event.stopPropagation();
@@ -38,6 +52,10 @@ export function Footer({
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
         if (!(event.target instanceof Element)) return;
+        // A new pointer gesture is an intentional tap, so it must not inherit
+        // the synthetic-click guard from the preceding swipe.
+        suppressClick.current = false;
+        touchActivatedButton.current = null;
         swipeStart.current = {
           x: event.clientX,
           y: event.clientY,
@@ -56,15 +74,39 @@ export function Footer({
         const horizontal = event.clientX - start.x;
         const vertical = event.clientY - start.y;
         if (
+          event.pointerType === "touch" &&
+          Math.abs(horizontal) < 10 &&
+          Math.abs(vertical) < 10 &&
+          event.target instanceof Element
+        ) {
+          const button = event.target.closest<HTMLButtonElement>(
+            ".group-select-command, .dashboard-command",
+          );
+          if (button) {
+            touchActivatedButton.current = button;
+            if (button.classList.contains("dashboard-command"))
+              onToggleDashboard();
+            else onToggleGroups();
+          }
+          return;
+        }
+        if (
           Math.abs(horizontal) < 50 ||
           Math.abs(horizontal) <= Math.abs(vertical)
         )
           return;
+        if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
+        // Suppress only the click synthesized from this swipe. A real next tap
+        // clears the guard in pointerdown before its click is delivered.
         suppressClick.current = true;
-        onSwipeTabs(horizontal < 0 ? "left" : "right");
       }}
-      onPointerCancel={() => {
+      onPointerCancel={(event) => {
+        const start = swipeStart.current;
         swipeStart.current = null;
+        suppressClick.current = false;
+        touchActivatedButton.current = null;
+        if (start?.target.hasPointerCapture(event.pointerId))
+          start.target.releasePointerCapture(event.pointerId);
       }}
     >
       <div className="status-meta">

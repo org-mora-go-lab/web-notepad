@@ -71,8 +71,17 @@ export function useHome() {
         if (document.activeElement === editor.current) editor.current?.blur();
       }
     };
+    const clearFocusBeforePageCache = () => {
+      for (const editor of Object.values(editorRefs)) {
+        if (document.activeElement === editor.current) editor.current?.blur();
+      }
+    };
     window.addEventListener("pageshow", clearRestoredPageFocus);
-    return () => window.removeEventListener("pageshow", clearRestoredPageFocus);
+    window.addEventListener("pagehide", clearFocusBeforePageCache);
+    return () => {
+      window.removeEventListener("pageshow", clearRestoredPageFocus);
+      window.removeEventListener("pagehide", clearFocusBeforePageCache);
+    };
   }, [editorRefs]);
   const composingRefs = usePaneRefs(false);
   const store = useNotepadStore();
@@ -155,21 +164,28 @@ export function useHome() {
     [replaceCurrentView, requestCloseTabAction],
   );
 
-  const swipeMobileTab = (direction: "left" | "right") => {
-    const tabs = paneTabs[activePane];
-    if (tabs.length < 2) return;
+  const swipeMobileTab = (direction: "left" | "right", pane?: PaneId) => {
+    // Read the workspace at gesture time. Consecutive swipes can arrive before
+    // React replaces the footer callback, so render-time tabs may be stale.
+    const latestGroup = getActiveGroup(useNotepadStore.getState());
+    if (!latestGroup) return false;
+    const latestWorkspace = getPaneWorkspace(latestGroup);
+    const targetPane = pane ?? latestWorkspace.activePane;
+    const tabs = latestWorkspace.tabs[targetPane];
+    if (tabs.length < 2) return false;
     const currentIndex = tabs.findIndex(
-      (tab) => tab.id === activeTabs[activePane]?.id,
+      (tab) => tab.id === latestWorkspace.activeTabs[targetPane]?.id,
     );
-    if (currentIndex < 0) return;
+    if (currentIndex < 0) return false;
     const offset = direction === "left" ? 1 : -1;
     const nextIndex = (currentIndex + offset + tabs.length) % tabs.length;
     setMobileTabSlide((current) => ({
-      pane: activePane,
+      pane: targetPane,
       direction,
       sequence: (current?.sequence ?? 0) + 1,
     }));
     selectTabWithHistory(tabs[nextIndex].id);
+    return true;
   };
 
   const deleteDashboardTab = useCallback(
@@ -237,6 +253,7 @@ export function useHome() {
               sequence: mobileTabSlide.sequence,
             }
           : undefined,
+      onSwipeTabs: (direction) => swipeMobileTab(direction, pane),
       onActivate: () => activatePaneWithHistory(pane),
       onSelect: (tabId: string, extendSelection: boolean) => {
         selectTabRange(paneTabs[pane], tabId, extendSelection);

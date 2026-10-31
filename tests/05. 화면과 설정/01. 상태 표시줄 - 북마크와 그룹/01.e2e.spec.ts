@@ -104,6 +104,12 @@ test("1. PC와 모바일에서 더보기 버튼과 가이드·검색·북마크 
   );
 
   await systemGroupCommand(page).click();
+  const mobileSystemMenu = (await page
+    .locator("#group-system-menu")
+    .boundingBox())!;
+  expect(mobileSystemMenu.width).toBeLessThanOrEqual(
+    MOBILE_VIEWPORT.width * 0.7,
+  );
   await expect(page.locator("#group-system-menu > button")).toHaveText([
     "All Group",
     "All My Group",

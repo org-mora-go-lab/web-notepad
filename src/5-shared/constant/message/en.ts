@@ -20,7 +20,7 @@ export const en = {
   myPageLoadError: "Could not load your account. Please try again.",
   myPageLocalHint:
     "Your notes remain on this device, including changes waiting to sync.",
-  myPageKakao: "Connected with Kakao",
+  myPageKakao: "Kakao",
   myPageSyncLoading: "Checking your workspace…",
   myPage: "My Page",
   statusReady: "Ready",
@@ -160,6 +160,7 @@ export const en = {
   createGroup: "Create group",
   closeGroupTabs: "Close All",
   save: "Save",
+  saved: "Saved",
   edit: "Edit",
   groupActions: "Group actions",
   groupActionsFor: (name: string) => `${name} group actions`,

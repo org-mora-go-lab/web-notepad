@@ -3,10 +3,51 @@ import { expect, test } from "@playwright/test";
 import { seedSortableGroups, switchGroup } from "../../__util__";
 
 test("2. All Group 선택을 저장하고 새로고침 후 복원한다", async ({ page }) => {
-  await seedSortableGroups(page);
-  await switchGroup(page, "All Group");
-  await page.reload();
+  await test.step(
+    "시나리오: 2. All Group 선택을 저장하고 새로고침 후 복원한다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "실행 1: 2. All Group 선택을 저장하고 새로고침 후 복원한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await seedSortableGroups(page);
+        },
+        { box: true },
+      );
 
-  await expect(page.locator(".group-current-value")).toHaveText("All Group");
-  await expect(page.locator(".tab-item")).toHaveCount(6);
+      await test.step(
+        "실행 2: 2. All Group 선택을 저장하고 새로고침 후 복원한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await switchGroup(page, "All Group");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 3: 2. All Group 선택을 저장하고 새로고침 후 복원한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await page.reload();
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 1: 2. All Group 선택을 저장하고 새로고침 후 복원한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(page.locator(".group-current-value")).toHaveText(
+            "All Group",
+          );
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 2: 2. All Group 선택을 저장하고 새로고침 후 복원한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(page.locator(".tab-item")).toHaveCount(6);
+        },
+        { box: true },
+      );
+    },
+    { box: true },
+  );
 });

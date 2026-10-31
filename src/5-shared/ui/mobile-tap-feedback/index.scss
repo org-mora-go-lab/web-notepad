@@ -1,0 +1,37 @@
+.mobile-tap-feedback {
+  position: fixed;
+  inset: auto;
+  z-index: 2147483647;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-ink) 14%, transparent);
+  pointer-events: none;
+  user-select: none;
+  animation: mobile-tap-press 180ms ease-out forwards;
+
+  &::backdrop {
+    background: transparent;
+    pointer-events: none;
+  }
+}
+
+@keyframes mobile-tap-press {
+  from {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-tap-feedback {
+    display: none;
+    animation: none;
+  }
+}

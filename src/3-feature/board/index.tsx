@@ -12,14 +12,39 @@ import {
   Unlink,
   Users,
 } from "lucide-react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
+import {
+  ALL_GROUP_ID,
+  ALL_MY_GROUP_ID,
+  ALL_SHARED_GROUP_ID,
+  UNGROUPED_GROUP_ID,
+} from "@/src/4-entity/notepad";
 import { GroupSharingContext, useI18n } from "@/src/5-shared/hook";
 import { ConfirmPopup, FixedPageHeader, SearchField } from "@/src/5-shared/ui";
 
 import { useBoard, useBoardSelection } from "./hook";
 
-export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
+type BoardSwipeHandler = (direction: "left" | "right") => void;
+
+const MOBILE_NOTE_PREVIEW_MIN_HEIGHT = 316.8;
+const DESKTOP_NOTE_PREVIEW_HEIGHT = MOBILE_NOTE_PREVIEW_MIN_HEIGHT * 1.5;
+
+export function Board({
+  onReturnHome,
+  swipeTabsRef,
+}: {
+  onReturnHome?: () => void;
+  swipeTabsRef?: { current: BoardSwipeHandler | null };
+}) {
   const contentRef = useRef<HTMLDivElement>(null);
   const { t, language } = useI18n();
   const { posts, loading, error, reload } = useBoard();
@@ -33,31 +58,37 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const [failure, setFailure] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
-  const [notePreviewHeight, setNotePreviewHeight] = useState(316.8);
+  const [notePreviewHeight, setNotePreviewHeight] = useState(
+    DESKTOP_NOTE_PREVIEW_HEIGHT,
+  );
   const notePreviewRef = useRef<HTMLElement>(null);
-  const noteResizeStart = useRef<{ y: number; height: number } | null>(null);
+  const noteTabRevealRequested = useRef(false);
   const noteSwipeStart = useRef<{
     x: number;
     y: number;
     pointerId: number;
+    target: Element;
   } | null>(null);
-  const noteTabRevealRequested = useRef(false);
   const [noteSlide, setNoteSlide] = useState<{
     direction: "left" | "right";
     sequence: number;
   } | null>(null);
   const noteTabsRef = useRef<HTMLDivElement>(null);
   const [noteTabFog, setNoteTabFog] = useState({ left: false, right: false });
-  const orderedNotes = selected
-    ? [...selected.notes].sort(
-        (left, right) =>
-          Number(right.bookmarked) - Number(left.bookmarked) ||
-          left.title.localeCompare(right.title, language, {
-            numeric: true,
-            sensitivity: "base",
-          }),
-      )
-    : [];
+  const orderedNotes = useMemo(
+    () =>
+      selected
+        ? [...selected.notes].sort(
+            (left, right) =>
+              Number(right.bookmarked) - Number(left.bookmarked) ||
+              left.title.localeCompare(right.title, language, {
+                numeric: true,
+                sensitivity: "base",
+              }),
+          )
+        : [],
+    [language, selected],
+  );
   const activeNote =
     orderedNotes.find((note) => note.id === activeNoteId) ?? orderedNotes[0];
   const activateNote = useCallback(
@@ -71,6 +102,27 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
     },
     [],
   );
+  const swipeNoteFromFooter = useCallback<BoardSwipeHandler>(
+    (direction) => {
+      if (!activeNote || orderedNotes.length < 2) return;
+      const current = orderedNotes.findIndex(
+        (note) => note.id === activeNote.id,
+      );
+      const offset = direction === "left" ? 1 : -1;
+      const next =
+        (current + offset + orderedNotes.length) % orderedNotes.length;
+      activateNote(orderedNotes[next].id, direction);
+    },
+    [activeNote, activateNote, orderedNotes],
+  );
+  useEffect(() => {
+    if (!swipeTabsRef) return;
+    swipeTabsRef.current = selected ? swipeNoteFromFooter : null;
+    return () => {
+      if (swipeTabsRef.current === swipeNoteFromFooter)
+        swipeTabsRef.current = null;
+    };
+  }, [selected, swipeNoteFromFooter, swipeTabsRef]);
   const updateNoteTabFog = useCallback(() => {
     const tabs = noteTabsRef.current;
     if (!tabs) return;
@@ -118,7 +170,10 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   useEffect(() => {
     if (!selected?.id || !activeNote?.id) return;
     const updateMobilePreviewHeight = () => {
-      if (!window.matchMedia("(max-width: 512px)").matches) return;
+      if (!window.matchMedia("(max-width: 512px)").matches) {
+        setNotePreviewHeight(DESKTOP_NOTE_PREVIEW_HEIGHT);
+        return;
+      }
       const preview = notePreviewRef.current;
       if (!preview) return;
       const page = preview.closest<HTMLElement>(".board-page");
@@ -131,7 +186,10 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
         preview.getBoundingClientRect().top + (page?.scrollTop ?? 0);
       const footerHeight = footer?.getBoundingClientRect().height ?? 0;
       setNotePreviewHeight(
-        Math.max(316.8, viewportHeight - previewTop - footerHeight - 20),
+        Math.max(
+          MOBILE_NOTE_PREVIEW_MIN_HEIGHT,
+          viewportHeight - previewTop - footerHeight - 20,
+        ),
       );
     };
     const frame = requestAnimationFrame(updateMobilePreviewHeight);
@@ -162,6 +220,12 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
       .toLocaleLowerCase()
       .includes(query.trim().toLocaleLowerCase()),
   );
+  const systemGroups = [
+    { id: ALL_GROUP_ID, name: t.allGroup },
+    { id: ALL_MY_GROUP_ID, name: t.allMyGroup },
+    { id: ALL_SHARED_GROUP_ID, name: t.allSharedGroup },
+    { id: UNGROUPED_GROUP_ID, name: t.ungrouped },
+  ];
 
   const selectedRole =
     selected && posts.find((post) => post.id === selected.id)?.viewerRole;
@@ -295,29 +359,23 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                     role="tabpanel"
                     style={{ height: notePreviewHeight }}
                     onPointerDown={(event) => {
-                      if (!event.isPrimary || event.button !== 0) return;
+                      if (!window.matchMedia("(max-width: 512px)").matches)
+                        return;
+                      if (!(event.target instanceof Element)) return;
                       noteSwipeStart.current = {
                         x: event.clientX,
                         y: event.clientY,
                         pointerId: event.pointerId,
+                        target: event.target,
                       };
-                      event.currentTarget.setPointerCapture(event.pointerId);
+                      event.target.setPointerCapture(event.pointerId);
                     }}
                     onPointerUp={(event) => {
                       const start = noteSwipeStart.current;
                       noteSwipeStart.current = null;
-                      if (
-                        event.currentTarget.hasPointerCapture(event.pointerId)
-                      )
-                        event.currentTarget.releasePointerCapture(
-                          event.pointerId,
-                        );
-                      if (
-                        !start ||
-                        start.pointerId !== event.pointerId ||
-                        orderedNotes.length < 2
-                      )
-                        return;
+                      if (start?.target.hasPointerCapture(event.pointerId))
+                        start.target.releasePointerCapture(event.pointerId);
+                      if (!start || start.pointerId !== event.pointerId) return;
                       const horizontal = event.clientX - start.x;
                       const vertical = event.clientY - start.y;
                       if (
@@ -325,21 +383,13 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                         Math.abs(horizontal) <= Math.abs(vertical)
                       )
                         return;
-                      const current = orderedNotes.findIndex(
-                        (note) => note.id === activeNote.id,
-                      );
-                      const direction = horizontal < 0 ? 1 : -1;
-                      const next =
-                        (current + direction + orderedNotes.length) %
-                        orderedNotes.length;
-                      event.preventDefault();
-                      activateNote(
-                        orderedNotes[next].id,
-                        direction > 0 ? "left" : "right",
-                      );
+                      swipeNoteFromFooter(horizontal < 0 ? "left" : "right");
                     }}
-                    onPointerCancel={() => {
+                    onPointerCancel={(event) => {
+                      const start = noteSwipeStart.current;
                       noteSwipeStart.current = null;
+                      if (start?.target.hasPointerCapture(event.pointerId))
+                        start.target.releasePointerCapture(event.pointerId);
                     }}
                   >
                     <pre>
@@ -363,34 +413,6 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                       ))}
                     </pre>
                   </article>
-                  <div
-                    className="board-note-resizer"
-                    data-testid="board-note-resizer"
-                    aria-hidden="true"
-                    onPointerDown={(event) => {
-                      noteResizeStart.current = {
-                        y: event.clientY,
-                        height: notePreviewHeight,
-                      };
-                      event.currentTarget.setPointerCapture(event.pointerId);
-                    }}
-                    onPointerMove={(event) => {
-                      const start = noteResizeStart.current;
-                      if (!start) return;
-                      setNotePreviewHeight(
-                        Math.max(316.8, start.height + event.clientY - start.y),
-                      );
-                    }}
-                    onPointerUp={(event) => {
-                      noteResizeStart.current = null;
-                      event.currentTarget.releasePointerCapture(
-                        event.pointerId,
-                      );
-                    }}
-                    onPointerCancel={() => {
-                      noteResizeStart.current = null;
-                    }}
-                  />
                 </div>
               )}
             </section>
@@ -466,6 +488,11 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
               >
                 <span className="board-skeleton-label">{t.boardLoading}</span>
                 <table className="board-table" aria-label={t.boardTitle}>
+                  <colgroup>
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <col key={index} />
+                    ))}
+                  </colgroup>
                   <thead>
                     <tr>
                       <th scope="col">{t.groupCategory}</th>
@@ -504,6 +531,11 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
             ) : (
               <div className="board-list board-table-container">
                 <table className="board-table" aria-label={t.boardTitle}>
+                  <colgroup>
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <col key={index} />
+                    ))}
+                  </colgroup>
                   <thead>
                     <tr>
                       <th scope="col">{t.groupCategory}</th>
@@ -559,6 +591,18 @@ export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
                 </table>
               </div>
             )}
+            <nav className="board-system-groups" aria-label={t.group}>
+              {systemGroups.map((group) => (
+                <Link
+                  key={group.id}
+                  href={`/?group=${group.id}`}
+                  data-group-id={group.id}
+                  onClick={onReturnHome}
+                >
+                  {group.name}
+                </Link>
+              ))}
+            </nav>
           </>
         )}
         {failure && (

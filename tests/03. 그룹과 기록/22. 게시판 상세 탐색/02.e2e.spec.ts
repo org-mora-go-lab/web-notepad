@@ -3,6 +3,8 @@ import { expect } from "@playwright/test";
 import { boardTest as test } from "../../__fixture__";
 import { openBoard, selectBoardPost } from "../../__util__";
 
+test.use({ hasTouch: true });
+
 test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   page,
   boardPost,
@@ -61,7 +63,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
         resize: style.resize,
       };
     });
-  expect(noteLayout.height).toBeCloseTo(220 * 1.2 * 1.2, 0);
+  expect(noteLayout.height).toBeCloseTo(316.8 * 1.5, 0);
   expect(noteLayout.minHeight).toBeCloseTo(noteLayout.height, 0);
   expect(noteLayout.maxHeight).toBe("none");
   expect(noteLayout.overflowY).toBe("auto");
@@ -113,19 +115,9 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   );
   const preview = page.locator(".board-note-preview");
   const initialPreviewHeight = (await preview.boundingBox())!.height;
-  const resizer = (await page.getByTestId("board-note-resizer").boundingBox())!;
-  await page.mouse.move(
-    resizer.x + resizer.width / 2,
-    resizer.y + resizer.height / 2,
-  );
-  await page.mouse.down();
-  await page.mouse.move(
-    resizer.x + resizer.width / 2,
-    resizer.y + resizer.height / 2 + 80,
-  );
-  await page.mouse.up();
+  await expect(page.getByTestId("board-note-resizer")).toHaveCount(0);
   expect((await preview.boundingBox())!.height).toBeCloseTo(
-    initialPreviewHeight + 80,
+    initialPreviewHeight,
     0,
   );
   await expect(page.locator(".board-intro")).toHaveCount(0);
@@ -233,7 +225,7 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     true,
   );
   expect(boardPost.notes.some((note) => note.content === "abc")).toBe(true);
-  const swipe = async (direction: "left" | "right") => {
+  const swipePreview = async (direction: "left" | "right") => {
     const previewBounds = (await page
       .locator(".board-note-preview")
       .boundingBox())!;
@@ -251,21 +243,61 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     await page.mouse.move(to, y, { steps: 5 });
     await page.mouse.up();
   };
-  await swipe("left");
+  await swipePreview("left");
   await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
   await expect(page.locator(".board-note-preview")).toHaveClass(
     /is-slide-left/,
   );
-  await tabs.first().click();
+  await swipePreview("right");
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await page.setViewportSize({ width: 320, height: 800 });
   await tabs.first().click();
-  await swipe("left");
+  const mobileFooter = page.locator(".board-mobile-footer .footer");
+  await expect(mobileFooter).toBeVisible();
+  const session = await page.context().newCDPSession(page);
+  const swipeTouch = async (
+    target: typeof mobileFooter,
+    direction: "left" | "right",
+  ) => {
+    const bounds = (await target.boundingBox())!;
+    const from =
+      direction === "left"
+        ? bounds.x + bounds.width * 0.8
+        : bounds.x + bounds.width * 0.2;
+    const to =
+      direction === "left"
+        ? bounds.x + bounds.width * 0.2
+        : bounds.x + bounds.width * 0.8;
+    const y = bounds.y + bounds.height / 2;
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchStart",
+      touchPoints: [{ x: from, y }],
+    });
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: to, y }],
+    });
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchEnd",
+      touchPoints: [],
+    });
+  };
+  await swipeTouch(page.locator(".board-note-preview"), "left");
   await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
-  await swipe("right");
+  await swipeTouch(page.locator(".board-note-preview"), "right");
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
-  await swipe("left");
-  await swipe("left");
-  await swipe("left");
+  const swipeFooter = (direction: "left" | "right") =>
+    swipeTouch(mobileFooter, direction);
+  await swipeFooter("left");
+  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator(".board-note-preview")).toHaveClass(
+    /is-slide-left/,
+  );
+  await swipeFooter("right");
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  await swipeFooter("left");
+  await swipeFooter("left");
+  await swipeFooter("left");
   await expect(tabs.nth(3)).toHaveAttribute("aria-selected", "true");
   const focusedTabBounds = (await tabs.nth(3).boundingBox())!;
   const noteTabsBounds = (await noteTabs.boundingBox())!;
@@ -273,8 +305,6 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
   expect(focusedTabBounds.x + focusedTabBounds.width).toBeLessThanOrEqual(
     noteTabsBounds.x + noteTabsBounds.width + 1,
   );
-  const mobileFooter = page.locator(".board-mobile-footer .footer");
-  await expect(mobileFooter).toBeVisible();
   const mobileFooterBounds = (await mobileFooter.boundingBox())!;
   expect(mobileFooterBounds.y + mobileFooterBounds.height).toBeCloseTo(800, 1);
   await mobileFooter.locator(".dashboard-command").click();
@@ -283,4 +313,5 @@ test("2. 공유 그룹 보드 상세의 글자를 2px 키운다", async ({
     "aria-hidden",
     "false",
   );
+  await session.detach();
 });

@@ -23,8 +23,19 @@
     color: v.$ink;
     font: inherit;
   }
+  .setting-status-default-actions {
+    display: flex;
+    min-height: 36px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+
+    output {
+      color: v.$muted;
+      font-size: v.font(13px);
+    }
+  }
   button[type="submit"] {
-    justify-self: end;
     min-height: 36px;
     padding: 7px 14px;
     border: 1px solid v.$line;
@@ -32,6 +43,10 @@
     background: v.$raised;
     color: v.$ink;
     font: inherit;
+
+    &:disabled {
+      opacity: 0.5;
+    }
   }
   @media (max-width: 512px) {
     input,

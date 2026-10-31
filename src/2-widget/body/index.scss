@@ -5,6 +5,10 @@
   min-height: 0;
   display: grid;
 
+  @media (max-width: 512px) {
+    touch-action: pan-y;
+  }
+
   &.is-slide-left {
     animation: body-slide-left 180ms ease-out;
   }

@@ -19,6 +19,7 @@ export type PaneViewProps = {
   selectedTabIds: string[];
   dropZones: PaneDropZone[];
   tabSlide?: { direction: "left" | "right"; sequence: number };
+  onSwipeTabs: (direction: "left" | "right") => boolean | void;
   onActivate: () => void;
   onSelect: (tabId: string, extendSelection: boolean) => void;
   onClose: (tabId: string) => void;

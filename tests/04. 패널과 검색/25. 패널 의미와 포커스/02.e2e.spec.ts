@@ -3,12 +3,53 @@ import { expect, test } from "@playwright/test";
 import { openBookmarksPanel } from "../../__util__";
 
 test("2. 북마크 팝업은 Bookmarks 이름의 모달 dialog다", async ({ page }) => {
-  await page.goto("/");
-  await openBookmarksPanel(page);
-  const dialog = page.getByRole("dialog", { name: "Bookmarks" });
-  await expect(dialog).toBeVisible();
-  await expect(dialog).toHaveAttribute("aria-modal", "true");
-  expect(await dialog.evaluate((element) => element.matches(":modal"))).toBe(
-    true,
+  await test.step(
+    "시나리오: 2. 북마크 팝업은 Bookmarks 이름의 모달 dialog다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "준비 1: 2. 북마크 팝업은 Bookmarks 이름의 모달 dialog다 — 다른 사례와 독립적으로 실행하는 데 필요한 상태와 화면을 먼저 구성한다",
+        async () => {
+          await page.goto("/");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 1: 2. 북마크 팝업은 Bookmarks 이름의 모달 dialog다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await openBookmarksPanel(page);
+        },
+        { box: true },
+      );
+
+      const dialog = page.getByRole("dialog", { name: "Bookmarks" });
+
+      await test.step(
+        "검증 1: 2. 북마크 팝업은 Bookmarks 이름의 모달 dialog다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(dialog).toBeVisible();
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 2: 2. 북마크 팝업은 Bookmarks 이름의 모달 dialog다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(dialog).toHaveAttribute("aria-modal", "true");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 3: 2. 북마크 팝업은 Bookmarks 이름의 모달 dialog다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          expect(
+            await dialog.evaluate((element) => element.matches(":modal")),
+          ).toBe(true);
+        },
+        { box: true },
+      );
+    },
+    { box: true },
   );
 });

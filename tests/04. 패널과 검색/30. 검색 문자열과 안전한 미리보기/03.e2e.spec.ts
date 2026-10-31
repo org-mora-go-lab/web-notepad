@@ -4,14 +4,47 @@ import { createBookmarkFixture } from "../../__fixture__";
 import { openGlobalSearchPanel, seedSearchWorkspace } from "../../__util__";
 
 test("3. 검색어 앞뒤 공백을 제외하고 검색한다", async ({ page }) => {
-  await seedSearchWorkspace(page, [
-    createBookmarkFixture("b1", "gone", "Trim needle"),
-  ]);
-  await openGlobalSearchPanel(page);
-  await page
-    .getByRole("searchbox", { name: "Search everything" })
-    .fill("  needle  ");
-  await expect(
-    page.getByRole("button", { name: "Preview bookmark Trim needle" }),
-  ).toBeVisible();
+  await test.step(
+    "시나리오: 3. 검색어 앞뒤 공백을 제외하고 검색한다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "실행 1: 3. 검색어 앞뒤 공백을 제외하고 검색한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await seedSearchWorkspace(page, [
+            createBookmarkFixture("b1", "gone", "Trim needle"),
+          ]);
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 2: 3. 검색어 앞뒤 공백을 제외하고 검색한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await openGlobalSearchPanel(page);
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 3: 3. 검색어 앞뒤 공백을 제외하고 검색한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await page
+            .getByRole("searchbox", { name: "Search everything" })
+            .fill("  needle  ");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 1: 3. 검색어 앞뒤 공백을 제외하고 검색한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(
+            page.getByRole("button", { name: "Preview bookmark Trim needle" }),
+          ).toBeVisible();
+        },
+        { box: true },
+      );
+    },
+    { box: true },
+  );
 });

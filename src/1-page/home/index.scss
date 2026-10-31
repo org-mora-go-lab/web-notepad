@@ -49,9 +49,7 @@
     background: v.$panel;
 
     @media (max-width: 512px) {
-      grid-template-rows: minmax(0, 1fr) calc(
-          76.8px + env(safe-area-inset-bottom)
-        );
+      grid-template-rows: minmax(0, 1fr) var(--footer-height);
     }
   }
 

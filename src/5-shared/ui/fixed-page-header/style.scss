@@ -69,6 +69,20 @@
 
 @media (max-width: 512px) {
   .fixed-page-header {
+    &::after {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      height: 20px;
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+      mask-image: linear-gradient(to bottom, #000, transparent);
+      content: "";
+      pointer-events: none;
+    }
+
     .fixed-page-header-back {
       left: 16px;
       min-height: 44px;

@@ -3,15 +3,57 @@ import { expect, test } from "@playwright/test";
 test("6. 탭 제목은 이모지와 결합 문자를 깨뜨리지 않고 28개의 표시 문자로 제한한다", async ({
   page,
 }) => {
-  await page.goto("/");
-  const editor = page.locator("textarea");
-  const title = page.locator(".tab-item.is-active .tab-title");
+  await test.step(
+    "시나리오: 6. 탭 제목은 이모지와 결합 문자를 깨뜨리지 않고 28개의 표시 문자로 제한한다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "준비 1: 6. 탭 제목은 이모지와 결합 문자를 깨뜨리지 않고 28개의 표시 문자로 제한한다 — 다른 사례와 독립적으로 실행하는 데 필요한 상태와 화면을 먼저 구성한다",
+        async () => {
+          await page.goto("/");
+        },
+        { box: true },
+      );
 
-  const emojiTitle = `${"A".repeat(27)}😀`;
-  await editor.fill(`${emojiTitle}Z`);
-  await expect(title).toHaveText(emojiTitle);
+      const editor = page.locator("textarea");
 
-  const combiningTitle = `${"B".repeat(27)}e\u0301`;
-  await editor.fill(`${combiningTitle}Z`);
-  await expect(title).toHaveText(combiningTitle);
+      const title = page.locator(".tab-item.is-active .tab-title");
+
+      const emojiTitle = `${"A".repeat(27)}😀`;
+
+      await test.step(
+        "실행 1: 6. 탭 제목은 이모지와 결합 문자를 깨뜨리지 않고 28개의 표시 문자로 제한한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await editor.fill(`${emojiTitle}Z`);
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 1: 6. 탭 제목은 이모지와 결합 문자를 깨뜨리지 않고 28개의 표시 문자로 제한한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(title).toHaveText(emojiTitle);
+        },
+        { box: true },
+      );
+
+      const combiningTitle = `${"B".repeat(27)}e\u0301`;
+
+      await test.step(
+        "실행 2: 6. 탭 제목은 이모지와 결합 문자를 깨뜨리지 않고 28개의 표시 문자로 제한한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await editor.fill(`${combiningTitle}Z`);
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 2: 6. 탭 제목은 이모지와 결합 문자를 깨뜨리지 않고 28개의 표시 문자로 제한한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(title).toHaveText(combiningTitle);
+        },
+        { box: true },
+      );
+    },
+    { box: true },
+  );
 });

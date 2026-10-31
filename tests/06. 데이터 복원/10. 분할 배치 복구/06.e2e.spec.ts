@@ -5,13 +5,47 @@ import { readActiveGroup, restoreWorkspace } from "../../__util__";
 test("6. 왼쪽 열이 비면 오른쪽 열을 왼쪽으로 옮겨 편집 공간을 복구한다", async ({
   page,
 }) => {
-  await restoreWorkspace(page, {
-    rightTabIds: ["tab-1", "tab-2", "tab-3"],
-    activeRightTabId: "tab-3",
-    activePane: "right",
-  });
-  const group = await readActiveGroup(page);
-  expect(group.rightTabIds).toEqual([]);
-  expect(group.activeTabId).toBe("tab-3");
-  await expect(page.locator("textarea")).toHaveValue("Gamma");
+  await test.step(
+    "시나리오: 6. 왼쪽 열이 비면 오른쪽 열을 왼쪽으로 옮겨 편집 공간을 복구한다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "실행 1: 6. 왼쪽 열이 비면 오른쪽 열을 왼쪽으로 옮겨 편집 공간을 복구한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await restoreWorkspace(page, {
+            rightTabIds: ["tab-1", "tab-2", "tab-3"],
+            activeRightTabId: "tab-3",
+            activePane: "right",
+          });
+        },
+        { box: true },
+      );
+
+      const group = await readActiveGroup(page);
+
+      await test.step(
+        "검증 1: 6. 왼쪽 열이 비면 오른쪽 열을 왼쪽으로 옮겨 편집 공간을 복구한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          expect(group.rightTabIds).toEqual([]);
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 2: 6. 왼쪽 열이 비면 오른쪽 열을 왼쪽으로 옮겨 편집 공간을 복구한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          expect(group.activeTabId).toBe("tab-3");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 3: 6. 왼쪽 열이 비면 오른쪽 열을 왼쪽으로 옮겨 편집 공간을 복구한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(page.locator("textarea")).toHaveValue("Gamma");
+        },
+        { box: true },
+      );
+    },
+    { box: true },
+  );
 });

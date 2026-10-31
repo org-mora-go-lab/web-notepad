@@ -14,6 +14,19 @@ test("6. 작은 모바일과 라이트 테마에서 목록과 참여 버튼이 �
   );
   await openBoard(page);
   await selectBoardPost(page, boardPost.title);
+  const blurEffects = await page.evaluate(() => ({
+    header: getComputedStyle(
+      document.querySelector(".fixed-page-header")!,
+      "::after",
+    ).backdropFilter,
+    footer: getComputedStyle(
+      document.querySelector(".board-mobile-footer .footer")!,
+      "::before",
+    ).backdropFilter,
+  }));
+  expect(blurEffects.header).toContain("blur(2px)");
+  expect(blurEffects.footer).toContain("blur(2px)");
+  await expect(page.getByTestId("board-note-resizer")).toHaveCount(0);
   const button = page.getByRole("link", { name: "Join this group" });
   await button.scrollIntoViewIfNeeded();
   const box = (await button.boundingBox())!;

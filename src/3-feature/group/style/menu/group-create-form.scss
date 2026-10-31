@@ -66,7 +66,7 @@
 
   @media (max-width: 512px) {
     .group-system-menu .group-create-form {
-      width: calc(100vw - 38px);
+      width: calc((100vw - 38px) * 0.7);
 
       button {
         width: 44px;
