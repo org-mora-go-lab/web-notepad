@@ -3,26 +3,31 @@ import { test } from "@playwright/test";
 import { restoreStoredBookmark } from "../../__util__";
 import { expectRestoredBookmark } from "./__util__";
 
-/**
- * E2E 품질 계약
- * - PRD 요구사항: 1. 색상과 줄 선택 정보가 없는 기존 북마크는 그린과 선택 없음으로 복원한다
- * - 이 파일은 하나의 사용자 또는 서버 시나리오만 검증한다.
- * - 준비 조건은 테스트 본문이나 이름이 드러나는 준비 함수로 구성한다.
- * - 실행 동작은 공개 UI 또는 API 경계를 통해 수행한다.
- * - 핵심 결과 assertion은 이 파일 안에서 직접 확인할 수 있어야 한다.
- * - 번호만 전달해 검증 전체를 외부 함수에 위임하지 않는다.
- * - 실패 메시지는 위반된 사용자 계약을 바로 식별할 수 있어야 한다.
- * - PRD 번호와 이 테스트 파일 번호는 항상 일치시킨다.
- * - 공통 유틸은 데이터 준비와 반복 입력 동작에만 사용한다.
- * - 테스트 수정 시 대응하는 tests-prd 문서도 함께 현행화한다.
- */
-
 test("1. 색상과 줄 선택 정보가 없는 기존 북마크는 그린과 선택 없음으로 복원한다", async ({
   page,
 }) => {
-  await restoreStoredBookmark(page, {});
-  await expectRestoredBookmark(page, {
-    tabColor: "green",
-    pressedLines: [false, false, false],
-  });
+  await test.step(
+    "시나리오: 1. 색상과 줄 선택 정보가 없는 기존 북마크는 그린과 선택 없음으로 복원한다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "실행 1: 1. 색상과 줄 선택 정보가 없는 기존 북마크는 그린과 선택 없음으로 복원한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await restoreStoredBookmark(page, {});
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 2: 1. 색상과 줄 선택 정보가 없는 기존 북마크는 그린과 선택 없음으로 복원한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await expectRestoredBookmark(page, {
+            tabColor: "green",
+            pressedLines: [false, false, false],
+          });
+        },
+        { box: true },
+      );
+    },
+    { box: true },
+  );
 });

@@ -6,7 +6,7 @@ import ts from "typescript";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const errors = [];
-const requirements = new Set();
+const requirements = new Map();
 let cases = 0;
 
 function walk(directory) {
@@ -20,9 +20,10 @@ for (const document of walk(path.join(root, "tests-prd")).filter((file) =>
   file.endsWith(".md"),
 )) {
   const relative = path.relative(path.join(root, "tests-prd"), document);
-  const numbers = [
-    ...readFileSync(document, "utf8").matchAll(/^(\d+)\.\s+/gm),
-  ].map((match) => Number(match[1]));
+  const entries = [
+    ...readFileSync(document, "utf8").matchAll(/^(\d+)\.\s+(.+)$/gm),
+  ].map((match) => ({ number: Number(match[1]), title: match[2] }));
+  const numbers = entries.map(({ number }) => number);
   if (
     !numbers.length ||
     numbers.length > 10 ||
@@ -32,12 +33,13 @@ for (const document of walk(path.join(root, "tests-prd")).filter((file) =>
       `${relative}: requirements must be sequential and contain 1–10 entries`,
     );
   }
-  for (const number of numbers) {
-    requirements.add(
+  for (const { number, title } of entries) {
+    requirements.set(
       path.join(
         relative.slice(0, -3),
         `${String(number).padStart(2, "0")}.e2e.spec.ts`,
       ),
+      `${number}. ${title}`,
     );
   }
 }
@@ -45,8 +47,9 @@ for (const document of walk(path.join(root, "tests-prd")).filter((file) =>
 const files = walk(path.join(root, "tests"));
 for (const file of files.filter((file) => file.endsWith(".e2e.spec.ts"))) {
   const relative = path.relative(path.join(root, "tests"), file);
-  if (!requirements.delete(relative))
-    errors.push(`${relative}: no matching PRD requirement`);
+  const expectedTitle = requirements.get(relative);
+  if (!expectedTitle) errors.push(`${relative}: no matching PRD requirement`);
+  else requirements.delete(relative);
   const sourceText = readFileSync(file, "utf8");
   const lineCount =
     sourceText.split(/\r?\n/).length - (sourceText.endsWith("\n") ? 1 : 0);
@@ -54,6 +57,8 @@ for (const file of files.filter((file) => file.endsWith(".e2e.spec.ts"))) {
     errors.push(
       `${relative}: expected at least 20 lines, received ${lineCount}`,
     );
+  if (/\/\*\*\s*\n\s*\*\s*E2E 품질 계약/.test(sourceText))
+    errors.push(`${relative}: repeated E2E quality contract comment`);
   if (
     /\b(?:expectEssentialResponsiveContract|run[A-Z][A-Za-z]+Case)\s*\(/.test(
       sourceText,
@@ -74,6 +79,18 @@ for (const file of files.filter((file) => file.endsWith(".e2e.spec.ts"))) {
     (node) => ts.isExpressionStatement(node) && isTest(node.expression),
   );
   const testCall = topLevel[0]?.expression;
+  const title = testCall?.arguments[0];
+  const expectedNumber = expectedTitle?.match(/^(\d+)\./)?.[1];
+  if (
+    expectedNumber &&
+    (!title ||
+      !ts.isStringLiteralLike(title) ||
+      !title.text.startsWith(`${expectedNumber}. `) ||
+      title.text.length <= `${expectedNumber}. `.length)
+  )
+    errors.push(
+      `${relative}: test title must match its PRD requirement number`,
+    );
   const callback = testCall?.arguments.at(-1);
   const onlyStatement =
     callback &&
@@ -87,10 +104,18 @@ for (const file of files.filter((file) => file.endsWith(".e2e.spec.ts"))) {
     ts.isExpressionStatement(onlyStatement) &&
     ts.isAwaitExpression(onlyStatement.expression) &&
     ts.isCallExpression(onlyStatement.expression.expression)
-  )
-    errors.push(
-      `${relative}: test body must expose setup, action, and assertions directly`,
-    );
+  ) {
+    const awaited = onlyStatement.expression.expression;
+    const isStep =
+      ts.isPropertyAccessExpression(awaited.expression) &&
+      ts.isIdentifier(awaited.expression.expression) &&
+      awaited.expression.expression.text === "test" &&
+      awaited.expression.name.text === "step";
+    if (!isStep)
+      errors.push(
+        `${relative}: test body must expose setup, action, and assertions directly`,
+      );
+  }
   let declarations = 0;
   const visit = (node) => {
     if (isTest(node)) declarations += 1;
@@ -101,7 +126,7 @@ for (const file of files.filter((file) => file.endsWith(".e2e.spec.ts"))) {
     errors.push(`${relative}: expected one top-level test declaration`);
   cases += declarations;
 }
-for (const missing of requirements)
+for (const missing of requirements.keys())
   errors.push(`${missing}: PRD requirement has no test`);
 
 const resourceDirectories = new Set();

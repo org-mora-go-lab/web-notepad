@@ -40,16 +40,23 @@ export function MobileTapFeedback() {
         !(event.target instanceof Element)
       )
         return;
+      const footer = event.target.closest<HTMLElement>(".footer");
+      if (!footer) return;
       const button = event.target.closest<HTMLElement>(
         'button, [role="button"], [role="menuitem"]',
       );
-      if (!button || button.matches(':disabled, [aria-disabled="true"]'))
+      if (
+        !button ||
+        !footer.contains(button) ||
+        button.matches(':disabled, [aria-disabled="true"]')
+      )
         return;
       const icon = button.querySelector<HTMLElement>("svg, img");
       if (!icon) return;
       const bounds = icon.getBoundingClientRect();
       if (!bounds.width || !bounds.height) return;
-      const size = Math.max(40, Math.max(bounds.width, bounds.height) + 16);
+      const size =
+        Math.max(40, Math.max(bounds.width, bounds.height) + 16) * 1.2;
       const feedback = document.createElement("span");
       feedback.className = "mobile-tap-feedback";
       feedback.setAttribute("aria-hidden", "true");

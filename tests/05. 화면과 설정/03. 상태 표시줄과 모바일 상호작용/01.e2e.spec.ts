@@ -81,21 +81,47 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
   await expect(page.locator("#groups-menu")).toBeVisible();
   await expect(page.locator(".footer")).toBeVisible();
   await expect(page.locator(".mobile-tap-feedback")).toHaveCount(0);
+  await page.locator(".group-select-command").click();
+  await expect(page.locator("#groups-menu")).toHaveCount(0);
+  const dashboardIconBounds = (await page
+    .locator(".dashboard-command svg")
+    .boundingBox())!;
+  const expectedFeedbackSize =
+    Math.max(
+      40,
+      Math.max(dashboardIconBounds.width, dashboardIconBounds.height) + 16,
+    ) * 1.2;
   await page.evaluate(() => {
-    const state = window as typeof window & { __tapFeedbackSeen?: number };
+    const state = window as typeof window & {
+      __tapFeedbackSeen?: number;
+      __tapFeedbackSize?: number;
+    };
     state.__tapFeedbackSeen = 0;
+    state.__tapFeedbackSize = 0;
     const observer = new MutationObserver((records) => {
       for (const record of records)
         for (const node of record.addedNodes)
           if (
             node instanceof Element &&
             node.classList.contains("mobile-tap-feedback")
-          )
+          ) {
             state.__tapFeedbackSeen = (state.__tapFeedbackSeen ?? 0) + 1;
+            state.__tapFeedbackSize = Number.parseFloat(
+              (node as HTMLElement).style.width,
+            );
+          }
     });
     observer.observe(document.body, { childList: true });
     window.setTimeout(() => observer.disconnect(), 1000);
   });
+  await page.getByRole("button", { name: "New tab", exact: true }).click();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __tapFeedbackSeen?: number })
+          .__tapFeedbackSeen ?? 0,
+    ),
+  ).toBe(0);
   await page.locator(".dashboard-command").click();
   await expect
     .poll(() =>
@@ -106,6 +132,13 @@ test("1. PC와 모바일 하단 메뉴는 가로 스크롤 없이 정해진 버�
       ),
     )
     .toBeGreaterThan(0);
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __tapFeedbackSize?: number })
+          .__tapFeedbackSize ?? 0,
+    ),
+  ).toBeCloseTo(expectedFeedbackSize, 1);
   await expect(page.locator("#groups-menu")).toHaveCount(0);
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",

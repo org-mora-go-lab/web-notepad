@@ -102,8 +102,11 @@ export function Body({
         if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
         requestAnimationFrame(() => editorRef.current?.blur());
       }}
-      onPointerCancel={() => {
+      onPointerCancel={(event) => {
+        const start = swipeStart.current;
         swipeStart.current = null;
+        if (start?.target.hasPointerCapture(event.pointerId))
+          start.target.releasePointerCapture(event.pointerId);
       }}
     >
       <NoteEditor

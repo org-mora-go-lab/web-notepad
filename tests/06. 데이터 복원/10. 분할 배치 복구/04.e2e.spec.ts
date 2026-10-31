@@ -2,31 +2,58 @@ import { expect, test } from "@playwright/test";
 
 import { readActiveGroup, restoreWorkspace } from "../../__util__";
 
-/**
- * E2E 품질 계약
- * - PRD 요구사항: 4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다
- * - 이 파일은 하나의 사용자 또는 서버 시나리오만 검증한다.
- * - 준비 조건은 테스트 본문이나 이름이 드러나는 준비 함수로 구성한다.
- * - 실행 동작은 공개 UI 또는 API 경계를 통해 수행한다.
- * - 핵심 결과 assertion은 이 파일 안에서 직접 확인할 수 있어야 한다.
- * - 번호만 전달해 검증 전체를 외부 함수에 위임하지 않는다.
- * - 실패 메시지는 위반된 사용자 계약을 바로 식별할 수 있어야 한다.
- * - PRD 번호와 이 테스트 파일 번호는 항상 일치시킨다.
- * - 공통 유틸은 데이터 준비와 반복 입력 동작에만 사용한다.
- * - 테스트 수정 시 대응하는 tests-prd 문서도 함께 현행화한다.
- */
-
 test("4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다", async ({
   page,
 }) => {
-  await restoreWorkspace(page, {
-    leftBottomTabIds: ["tab-1", "tab-2", "tab-3"],
-    activeLeftBottomTabId: "tab-2",
-    activePane: "left-bottom",
-  });
-  const group = await readActiveGroup(page);
-  expect(group.leftBottomTabIds).toEqual([]);
-  expect(group.activeTabId).toBe("tab-2");
-  expect(group.activePane).toBe("left");
-  await expect(page.locator("textarea")).toHaveValue("Beta");
+  await test.step(
+    "시나리오: 4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "실행 1: 4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await restoreWorkspace(page, {
+            leftBottomTabIds: ["tab-1", "tab-2", "tab-3"],
+            activeLeftBottomTabId: "tab-2",
+            activePane: "left-bottom",
+          });
+        },
+        { box: true },
+      );
+
+      const group = await readActiveGroup(page);
+
+      await test.step(
+        "검증 1: 4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          expect(group.leftBottomTabIds).toEqual([]);
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 2: 4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          expect(group.activeTabId).toBe("tab-2");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 3: 4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          expect(group.activePane).toBe("left");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 4: 4. 왼쪽 상단이 비면 왼쪽 하단 노트를 상단으로 승격한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(page.locator("textarea")).toHaveValue("Beta");
+        },
+        { box: true },
+      );
+    },
+    { box: true },
+  );
 });

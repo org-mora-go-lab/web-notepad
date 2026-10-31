@@ -1,25 +1,59 @@
 import { expect, test } from "@playwright/test";
 
-/**
- * E2E 품질 계약
- * - PRD 요구사항: 5. All Group 선택 상태는 aria-pressed로 표시한다
- * - 이 파일은 하나의 사용자 또는 서버 시나리오만 검증한다.
- * - 준비 조건은 테스트 본문이나 이름이 드러나는 준비 함수로 구성한다.
- * - 실행 동작은 공개 UI 또는 API 경계를 통해 수행한다.
- * - 핵심 결과 assertion은 이 파일 안에서 직접 확인할 수 있어야 한다.
- * - 번호만 전달해 검증 전체를 외부 함수에 위임하지 않는다.
- * - 실패 메시지는 위반된 사용자 계약을 바로 식별할 수 있어야 한다.
- * - PRD 번호와 이 테스트 파일 번호는 항상 일치시킨다.
- * - 공통 유틸은 데이터 준비와 반복 입력 동작에만 사용한다.
- * - 테스트 수정 시 대응하는 tests-prd 문서도 함께 현행화한다.
- */
-
 test("5. All Group 선택 상태는 aria-pressed로 표시한다", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("button", { name: "Toggle groups" }).click();
-  await page.locator(".system-group-command").click();
-  const all = page.getByRole("button", { name: "All Group", exact: true });
-  await all.click();
-  await page.locator(".system-group-command").click();
-  await expect(all).toHaveAttribute("aria-pressed", "true");
+  await test.step(
+    "시나리오: 5. All Group 선택 상태는 aria-pressed로 표시한다 — 준비 조건부터 공개 UI 또는 API 실행과 사용자 결과 검증까지 독립적으로 추적한다",
+    async () => {
+      await test.step(
+        "준비 1: 5. All Group 선택 상태는 aria-pressed로 표시한다 — 다른 사례와 독립적으로 실행하는 데 필요한 상태와 화면을 먼저 구성한다",
+        async () => {
+          await page.goto("/");
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 1: 5. All Group 선택 상태는 aria-pressed로 표시한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await page.getByRole("button", { name: "Toggle groups" }).click();
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 2: 5. All Group 선택 상태는 aria-pressed로 표시한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await page.locator(".system-group-command").click();
+        },
+        { box: true },
+      );
+
+      const all = page.getByRole("button", { name: "All Group", exact: true });
+
+      await test.step(
+        "실행 3: 5. All Group 선택 상태는 aria-pressed로 표시한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await all.click();
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "실행 4: 5. All Group 선택 상태는 aria-pressed로 표시한다 — 사용자가 접근할 수 있는 공개 UI 또는 API 경계를 통해 요구 동작을 수행한다",
+        async () => {
+          await page.locator(".system-group-command").click();
+        },
+        { box: true },
+      );
+
+      await test.step(
+        "검증 1: 5. All Group 선택 상태는 aria-pressed로 표시한다 — PRD에 기록된 사용자 결과를 이 파일의 assertion으로 직접 확인한다",
+        async () => {
+          await expect(all).toHaveAttribute("aria-pressed", "true");
+        },
+        { box: true },
+      );
+    },
+    { box: true },
+  );
 });

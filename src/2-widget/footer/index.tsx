@@ -1,7 +1,7 @@
 "use client";
 
 import { Layers, LayoutDashboard } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 import { Auth } from "@/src/3-feature";
 import { useI18n } from "@/src/5-shared/hook";
@@ -25,14 +25,6 @@ export function Footer({
     target: Element;
   } | null>(null);
   const suppressClick = useRef(false);
-  const suppressClickTimer = useRef<number | null>(null);
-  useEffect(
-    () => () => {
-      if (suppressClickTimer.current !== null)
-        window.clearTimeout(suppressClickTimer.current);
-    },
-    [],
-  );
   return (
     <footer
       className="footer"
@@ -41,15 +33,14 @@ export function Footer({
         event.preventDefault();
         event.stopPropagation();
         suppressClick.current = false;
-        if (suppressClickTimer.current !== null) {
-          window.clearTimeout(suppressClickTimer.current);
-          suppressClickTimer.current = null;
-        }
       }}
       onPointerDown={(event) => {
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
         if (!(event.target instanceof Element)) return;
+        // A new pointer gesture is an intentional tap, so it must not inherit
+        // the synthetic-click guard from the preceding swipe.
+        suppressClick.current = false;
         swipeStart.current = {
           x: event.clientX,
           y: event.clientY,
@@ -73,16 +64,16 @@ export function Footer({
         )
           return;
         if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
+        // Suppress only the click synthesized from this swipe. A real next tap
+        // clears the guard in pointerdown before its click is delivered.
         suppressClick.current = true;
-        if (suppressClickTimer.current !== null)
-          window.clearTimeout(suppressClickTimer.current);
-        suppressClickTimer.current = window.setTimeout(() => {
-          suppressClick.current = false;
-          suppressClickTimer.current = null;
-        }, 0);
       }}
-      onPointerCancel={() => {
+      onPointerCancel={(event) => {
+        const start = swipeStart.current;
         swipeStart.current = null;
+        suppressClick.current = false;
+        if (start?.target.hasPointerCapture(event.pointerId))
+          start.target.releasePointerCapture(event.pointerId);
       }}
     >
       <div className="status-meta">

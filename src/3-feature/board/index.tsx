@@ -374,8 +374,11 @@ export function Board({
                         return;
                       swipeNoteFromFooter(horizontal < 0 ? "left" : "right");
                     }}
-                    onPointerCancel={() => {
+                    onPointerCancel={(event) => {
+                      const start = noteSwipeStart.current;
                       noteSwipeStart.current = null;
+                      if (start?.target.hasPointerCapture(event.pointerId))
+                        start.target.releasePointerCapture(event.pointerId);
                     }}
                   >
                     <pre>
