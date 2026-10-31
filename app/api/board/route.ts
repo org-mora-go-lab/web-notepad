@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 
-import type { BoardPost, SharedGroupData } from "@/src/4-entity/notepad";
+import {
+  type BoardPost,
+  hasBoardVisibleSharedContent,
+  type SharedGroupData,
+} from "@/src/4-entity/notepad";
 
 import { createGroupShareToken } from "../auth/_lib/session";
 import { sharedDatabase } from "../groups/_lib/database";
@@ -21,6 +25,9 @@ export async function GET(request: Request) {
     });
     const posts: BoardPost[] = result.rows.map((row) => {
       const group = JSON.parse(String(row.snapshot)) as SharedGroupData;
+      const tabs = group.tabs.filter(
+        (tab) => tab.open && hasBoardVisibleSharedContent(tab.content),
+      );
       const url = new URL("/", request.url);
       url.searchParams.set(
         "share",
@@ -37,9 +44,9 @@ export async function GET(request: Request) {
         ownerName: String(row.owner_name ?? ""),
         title: group.name,
         description: "",
-        noteCount: group.tabs.length,
-        bookmarkCount: group.tabs.filter((tab) => tab.bookmarked).length,
-        notes: group.tabs.map(
+        noteCount: tabs.length,
+        bookmarkCount: tabs.filter((tab) => tab.bookmarked).length,
+        notes: tabs.map(
           ({ id, title, content, bookmarked, selectedLines, updatedAt }) => ({
             id,
             title,

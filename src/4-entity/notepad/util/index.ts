@@ -33,11 +33,10 @@ export {
 export {
   applySharedGroupData,
   createJoinedGroup,
-  hasPersistableSharedContent,
+  hasBoardVisibleSharedContent,
   isSharedGroupId,
   namespaceGroup,
   normalizeSharedGroupData,
-  pruneShortSharedTabs,
   SHARED_TAB_DELETE_INTENT_EVENT,
   sharedGroupId,
   toSharedGroupData,

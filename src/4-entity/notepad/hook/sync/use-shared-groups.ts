@@ -6,11 +6,10 @@ import type { GroupSharingAccess } from "@/src/5-shared/type";
 
 import { UNGROUPED_GROUP_ID } from "../../constant";
 import { useNotepadStore } from "../../store";
-import type { SharedGroupData } from "../../type";
+import type { GroupEntry, SharedGroupData } from "../../type";
 import {
   applySharedGroupData,
   createJoinedGroup,
-  hasPersistableSharedContent,
   isSharedGroupId,
   mergeSharedGroupData,
   SHARED_TAB_DELETE_INTENT_EVENT,
@@ -117,13 +116,51 @@ export function useSharedGroups(hydrated: boolean) {
         .filter((tab) => !nextIds.has(tab.id) && approved?.has(tab.id))
         .map((tab) => tab.id);
     };
+    const dataForSave = (id: string, group: GroupEntry) => {
+      const data = toSharedGroupData(group);
+      const deleted = explicitDeletes.get(id);
+      if (!deleted?.size) return data;
+      const tabs = data.tabs.filter((tab) => !deleted.has(tab.id));
+      const tabIds = new Set(tabs.map((tab) => tab.id));
+      return {
+        ...data,
+        tabs,
+        bookmarks: data.bookmarks.filter((bookmark) =>
+          tabIds.has(bookmark.sourceTabId),
+        ),
+      };
+    };
+    const applySavedDeletes = (id: string, deletedTabIds: string[]) => {
+      if (!deletedTabIds.length) return;
+      const deleted = new Set(deletedTabIds);
+      applying = true;
+      try {
+        useNotepadStore.setState((state) => ({
+          groups: state.groups.map((group) => {
+            if (group.id !== id) return group;
+            const data = toSharedGroupData(group);
+            const tabs = data.tabs.filter((tab) => !deleted.has(tab.id));
+            const tabIds = new Set(tabs.map((tab) => tab.id));
+            return applySharedGroupData(group, {
+              ...data,
+              tabs,
+              bookmarks: data.bookmarks.filter((bookmark) =>
+                tabIds.has(bookmark.sourceTabId),
+              ),
+            });
+          }),
+        }));
+      } finally {
+        applying = false;
+      }
+    };
 
     const flush = async (id: string) => {
       timers.delete(id);
       const base = baselines.get(id);
       const group = currentGroup(id);
       if (!active || !userId || !base || !group || sending.has(id)) return;
-      const data = toSharedGroupData(group);
+      const data = dataForSave(id, group);
       if (same(data, base.data)) {
         explicitDeletes.delete(id);
         persistPending(id, null);
@@ -166,7 +203,7 @@ export function useSharedGroups(hydrated: boolean) {
           const latestLocal = currentGroup(id);
           const merged = mergeSharedGroupData(
             base.data,
-            latestLocal ? toSharedGroupData(latestLocal) : data,
+            latestLocal ? dataForSave(id, latestLocal) : data,
             remote.data,
           );
           baselines.set(id, remote);
@@ -180,6 +217,7 @@ export function useSharedGroups(hydrated: boolean) {
         };
         if (!active) return;
         baselines.set(id, saved);
+        applySavedDeletes(id, deletedTabIds);
         const remainingDeletes = explicitDeletes.get(id);
         for (const tabId of deletedTabIds) remainingDeletes?.delete(tabId);
         const savedTabIds = new Set(saved.data.tabs.map((tab) => tab.id));
@@ -189,7 +227,7 @@ export function useSharedGroups(hydrated: boolean) {
         for (const [tabId, content] of sentContents)
           if (editedContents.get(tabId) === content)
             editedContents.delete(tabId);
-        if (same(toSharedGroupData(currentGroup(id) ?? group), saved.data))
+        if (same(dataForSave(id, currentGroup(id) ?? group), saved.data))
           persistPending(id, null);
         else queue(id);
       } catch {
@@ -211,7 +249,7 @@ export function useSharedGroups(hydrated: boolean) {
       const base = baselines.get(id);
       const group = currentGroup(id);
       if (!base || !group || !userId) return;
-      const data = toSharedGroupData(group);
+      const data = dataForSave(id, group);
       if (same(data, base.data)) {
         explicitDeletes.delete(id);
         persistPending(id, null);
@@ -346,14 +384,6 @@ export function useSharedGroups(hydrated: boolean) {
           ) {
             editedContents.set(tab.id, tab.content);
             changedIds.push(tab.id);
-            if (
-              hasPersistableSharedContent(previousContents.get(tab.id) ?? "") &&
-              !hasPersistableSharedContent(tab.content)
-            ) {
-              const ids = explicitDeletes.get(group.id) ?? new Set<string>();
-              ids.add(tab.id);
-              explicitDeletes.set(group.id, ids);
-            }
           }
         }
       }

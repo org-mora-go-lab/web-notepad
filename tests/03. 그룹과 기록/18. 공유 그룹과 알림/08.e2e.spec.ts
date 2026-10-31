@@ -41,8 +41,9 @@ test("8. 공유 탭의 X 닫기는 명시적 삭제 의도와 함께 저장한�
   await expect
     .poll(async () => {
       const groups = await (await getApi(owner.request, "/api/groups")).json();
-      return groups.groups.find((group: { id: string }) => group.id === id).data
-        .tabs;
+      return groups.groups
+        .find((group: { id: string }) => group.id === id)
+        .data.tabs.map((item: { id: string }) => item.id);
     })
-    .toEqual([]);
+    .not.toContain(tab.id);
 });

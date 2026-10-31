@@ -16,6 +16,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -32,8 +33,6 @@ import { ConfirmPopup, FixedPageHeader, SearchField } from "@/src/5-shared/ui";
 
 import { useBoard, useBoardSelection } from "./hook";
 
-type BoardSwipeHandler = (direction: "left" | "right") => void;
-
 const MOBILE_NOTE_PREVIEW_MIN_HEIGHT = 316.8;
 const DESKTOP_NOTE_PREVIEW_HEIGHT = MOBILE_NOTE_PREVIEW_MIN_HEIGHT * 1.5;
 const ALL_MY_UNGROUPED_BOARD_ID = "all-my-ungrouped";
@@ -46,13 +45,7 @@ const SYSTEM_BOARD_POST_IDS = new Set([
   `local-${UNGROUPED_GROUP_ID}`,
 ]);
 
-export function Board({
-  onReturnHome,
-  swipeTabsRef,
-}: {
-  onReturnHome?: () => void;
-  swipeTabsRef?: { current: BoardSwipeHandler | null };
-}) {
+export function Board({ onReturnHome }: { onReturnHome?: () => void }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const { t, language } = useI18n();
   const { posts, loading, error, reload } = useBoard();
@@ -115,27 +108,12 @@ export function Board({
     },
     [],
   );
-  const swipeNoteFromFooter = useCallback<BoardSwipeHandler>(
-    (direction) => {
-      if (!activeNote || orderedNotes.length < 2) return;
-      const current = orderedNotes.findIndex(
-        (note) => note.id === activeNote.id,
-      );
-      const offset = direction === "left" ? 1 : -1;
-      const next =
-        (current + offset + orderedNotes.length) % orderedNotes.length;
-      activateNote(orderedNotes[next].id, direction);
-    },
-    [activeNote, activateNote, orderedNotes],
-  );
-  useEffect(() => {
-    if (!swipeTabsRef) return;
-    swipeTabsRef.current = selected ? swipeNoteFromFooter : null;
-    return () => {
-      if (swipeTabsRef.current === swipeNoteFromFooter)
-        swipeTabsRef.current = null;
-    };
-  }, [selected, swipeNoteFromFooter, swipeTabsRef]);
+  useLayoutEffect(() => {
+    if (!selected) return;
+    contentRef.current
+      ?.closest<HTMLElement>(".board-page")
+      ?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [selected]);
   const updateNoteTabFog = useCallback(() => {
     const tabs = noteTabsRef.current;
     if (!tabs) return;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   type BoardPost,
-  hasPersistableSharedContent,
+  hasBoardVisibleSharedContent,
   isSharedGroupId,
   useNotepadStore,
 } from "@/src/4-entity/notepad";
@@ -109,7 +109,7 @@ export function useBoard() {
         .filter((group) => !isSharedGroupId(group.id))
         .map((group) => {
           const tabs = group.tabs.filter(
-            (tab) => tab.open && hasPersistableSharedContent(tab.content),
+            (tab) => tab.open && hasBoardVisibleSharedContent(tab.content),
           );
           return {
             id: `local-${group.id}`,

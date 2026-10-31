@@ -10,28 +10,13 @@ export const sharedGroupId = (shareId: string) => `shared-${shareId}`;
 export const isSharedGroupId = (id: string) =>
   /^shared-[0-9a-f-]{36}$/i.test(id);
 
-export const hasPersistableSharedContent = (content: string) =>
+export const hasBoardVisibleSharedContent = (content: string) =>
   content.trim().length > 2;
-
-export function pruneShortSharedTabs(data: SharedGroupData): SharedGroupData {
-  const tabs = data.tabs.filter(
-    (tab) => tab.open !== false && hasPersistableSharedContent(tab.content),
-  );
-  const tabIds = new Set(tabs.map((tab) => tab.id));
-  return {
-    ...data,
-    tabs,
-    bookmarks: data.bookmarks.filter((bookmark) =>
-      tabIds.has(bookmark.sourceTabId),
-    ),
-  };
-}
 
 // Resolve legacy records against a common palette, never a viewer's preferences.
 export function normalizeSharedGroupData(
   data: SharedGroupData,
 ): SharedGroupData {
-  data = pruneShortSharedTabs(data);
   return {
     ...data,
     tabs: data.tabs.map((tab) =>

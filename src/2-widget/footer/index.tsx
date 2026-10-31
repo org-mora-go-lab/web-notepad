@@ -70,7 +70,6 @@ export function Footer({
     target: Element;
     expiresAt: number;
   } | null>(null);
-  const touchActivatedButton = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const requestPin = (event: Event) => {
@@ -266,17 +265,6 @@ export function Footer({
     <footer
       className={`footer ${iconsOnly ? "is-icons-only" : ""}`}
       onClickCapture={(event) => {
-        const touchButton = touchActivatedButton.current;
-        if (
-          touchButton &&
-          event.target instanceof Node &&
-          touchButton.contains(event.target)
-        ) {
-          event.preventDefault();
-          event.stopPropagation();
-          touchActivatedButton.current = null;
-          return;
-        }
         const guard = swipeClickGuard.current;
         if (!guard) return;
         if (performance.now() > guard.expiresAt) {
@@ -296,7 +284,7 @@ export function Footer({
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
         if (!(event.target instanceof Element)) return;
-        touchActivatedButton.current = null;
+        if (event.pointerType === "touch") swipeClickGuard.current = null;
         swipeStart.current = {
           x: event.clientX,
           y: event.clientY,
@@ -315,23 +303,6 @@ export function Footer({
         const horizontal = event.clientX - start.x;
         const vertical = event.clientY - start.y;
         if (
-          event.pointerType === "touch" &&
-          Math.abs(horizontal) < 10 &&
-          Math.abs(vertical) < 10 &&
-          event.target instanceof Element
-        ) {
-          const button = event.target.closest<HTMLButtonElement>(
-            ".group-select-command, .dashboard-command",
-          );
-          if (button) {
-            touchActivatedButton.current = button;
-            if (button.classList.contains("dashboard-command"))
-              onToggleDashboard();
-            else onToggleGroups();
-          }
-          return;
-        }
-        if (
           Math.abs(horizontal) < 50 ||
           Math.abs(horizontal) <= Math.abs(vertical)
         )
@@ -345,7 +316,6 @@ export function Footer({
       onPointerCancel={(event) => {
         const start = swipeStart.current;
         swipeStart.current = null;
-        touchActivatedButton.current = null;
         if (start?.target.hasPointerCapture(event.pointerId))
           start.target.releasePointerCapture(event.pointerId);
       }}
