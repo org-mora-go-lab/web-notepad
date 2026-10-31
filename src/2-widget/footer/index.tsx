@@ -24,7 +24,10 @@ export function Footer({
     pointerId: number;
     target: Element;
   } | null>(null);
-  const suppressClick = useRef(false);
+  const swipeClickGuard = useRef<{
+    target: Element;
+    expiresAt: number;
+  } | null>(null);
   const touchActivatedButton = useRef<HTMLButtonElement | null>(null);
   return (
     <footer
@@ -43,18 +46,27 @@ export function Footer({
           touchActivatedButton.current = null;
           return;
         }
-        if (!suppressClick.current) return;
+        const guard = swipeClickGuard.current;
+        if (!guard) return;
+        if (performance.now() > guard.expiresAt) {
+          swipeClickGuard.current = null;
+          return;
+        }
+        if (!(event.target instanceof Node)) return;
+        const sameSwipeTarget = guard.target.matches("button, a")
+          ? guard.target.contains(event.target)
+          : event.target === guard.target;
+        if (!sameSwipeTarget) return;
+        // Suppress only the compatibility click synthesized for the element
+        // where the swipe started. A separate click on another icon must run.
         event.preventDefault();
         event.stopPropagation();
-        suppressClick.current = false;
+        swipeClickGuard.current = null;
       }}
       onPointerDown={(event) => {
         if (!onSwipeTabs || !window.matchMedia("(max-width: 512px)").matches)
           return;
         if (!(event.target instanceof Element)) return;
-        // A new pointer gesture is an intentional tap, so it must not inherit
-        // the synthetic-click guard from the preceding swipe.
-        suppressClick.current = false;
         touchActivatedButton.current = null;
         swipeStart.current = {
           x: event.clientX,
@@ -96,14 +108,14 @@ export function Footer({
         )
           return;
         if (onSwipeTabs(horizontal < 0 ? "left" : "right") === false) return;
-        // Suppress only the click synthesized from this swipe. A real next tap
-        // clears the guard in pointerdown before its click is delivered.
-        suppressClick.current = true;
+        swipeClickGuard.current = {
+          target: start.target.closest("button, a") ?? start.target,
+          expiresAt: performance.now() + 700,
+        };
       }}
       onPointerCancel={(event) => {
         const start = swipeStart.current;
         swipeStart.current = null;
-        suppressClick.current = false;
         touchActivatedButton.current = null;
         if (start?.target.hasPointerCapture(event.pointerId))
           start.target.releasePointerCapture(event.pointerId);

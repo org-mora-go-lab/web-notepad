@@ -179,6 +179,9 @@ export function useHome() {
     if (currentIndex < 0) return false;
     const offset = direction === "left" ? 1 : -1;
     const nextIndex = (currentIndex + offset + tabs.length) % tabs.length;
+    // Footer swipes navigate tabs without handing editing focus to the newly
+    // mounted textarea or reopening the mobile keyboard.
+    editorRefs[targetPane].current?.blur();
     setMobileTabSlide((current) => ({
       pane: targetPane,
       direction,
@@ -253,7 +256,6 @@ export function useHome() {
               sequence: mobileTabSlide.sequence,
             }
           : undefined,
-      onSwipeTabs: (direction) => swipeMobileTab(direction, pane),
       onActivate: () => activatePaneWithHistory(pane),
       onSelect: (tabId: string, extendSelection: boolean) => {
         selectTabRange(paneTabs[pane], tabId, extendSelection);

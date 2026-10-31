@@ -9,31 +9,28 @@ test.use({
   viewport: { width: 390, height: 844 },
 });
 
-test("3. 모바일 보드 상세 스와이프 직후 첫 푸터 탭이 즉시 동작한다", async ({
+test("3. 모바일 보드 상세 푸터 스와이프 직후 첫 푸터 탭이 즉시 동작한다", async ({
   page,
   boardPost,
 }) => {
   await openBoard(page);
   await selectBoardPost(page, boardPost.title, boardPost.id);
-  const preview = page.locator(".board-note-preview");
+  const footer = page.locator(".board-mobile-footer .footer");
   const dashboard = page.locator(".board-mobile-footer .dashboard-command");
-  await expect(preview).toBeVisible();
+  await expect(page.locator(".board-note-preview")).toBeVisible();
+  await expect(footer).toBeVisible();
   await expect(dashboard).toBeVisible();
-  const previewBounds = (await preview.boundingBox())!;
-  const previewY = previewBounds.y + Math.min(120, previewBounds.height / 2);
+  const footerBounds = (await footer.boundingBox())!;
+  const footerY = footerBounds.y + footerBounds.height / 2;
   const session = await page.context().newCDPSession(page);
 
   await session.send("Input.dispatchTouchEvent", {
     type: "touchStart",
-    touchPoints: [
-      { x: previewBounds.x + previewBounds.width * 0.8, y: previewY },
-    ],
+    touchPoints: [{ x: footerBounds.x + footerBounds.width * 0.8, y: footerY }],
   });
   await session.send("Input.dispatchTouchEvent", {
     type: "touchMove",
-    touchPoints: [
-      { x: previewBounds.x + previewBounds.width * 0.2, y: previewY },
-    ],
+    touchPoints: [{ x: footerBounds.x + footerBounds.width * 0.2, y: footerY }],
   });
   await session.send("Input.dispatchTouchEvent", {
     type: "touchEnd",

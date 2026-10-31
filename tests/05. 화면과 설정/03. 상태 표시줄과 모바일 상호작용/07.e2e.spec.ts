@@ -9,7 +9,7 @@ test.use({
   viewport: { width: 390, height: 844 },
 });
 
-test("7. 모바일 푸터를 좌우로 스와이프하면 에디터 탭을 순환 전환한다", async ({
+test("7. 모바일 푸터에서만 스와이프로 탭을 전환하고 에디터 포커스를 유지하지 않는다", async ({
   page,
 }) => {
   await seedStoredStateOnLoad(page, {
@@ -55,9 +55,12 @@ test("7. 모바일 푸터를 좌우로 스와이프하면 에디터 탭을 순�
   const swipe = (fromX: number, toX: number, verticalOffset = 0) =>
     swipeTarget(footer, fromX, toX, verticalOffset);
 
-  await expect(page.locator("textarea")).toHaveValue("First note");
+  const editor = page.locator("textarea");
+  await expect(editor).toHaveValue("First note");
+  await editor.blur();
   await swipe(0.8, 0.2);
-  await expect(page.locator("textarea")).toHaveValue("Second note");
+  await expect(editor).toHaveValue("Second note");
+  await expect(editor).not.toBeFocused();
   await expect(page.locator(".body")).toHaveClass(/is-slide-left/);
   await page.locator(".dashboard-command").click();
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
@@ -65,38 +68,27 @@ test("7. 모바일 푸터를 좌우로 스와이프하면 에디터 탭을 순�
     "false",
   );
   await swipe(0.8, 0.2);
-  await expect(page.locator("textarea")).toHaveValue("Second note");
+  await expect(editor).toHaveValue("Second note");
   await page.locator(".dashboard-command").click();
   await expect(page.locator("#dashboard-panel")).toHaveAttribute(
     "aria-hidden",
     "true",
   );
   const editorBody = page.locator(".body");
-  const swipeEditor = async (fromX: number, toX: number) => {
-    const bounds = (await editorBody.boundingBox())!;
-    const y = bounds.y + bounds.height / 2;
-    await page.mouse.move(bounds.x + bounds.width * fromX, y);
-    await page.mouse.down();
-    await page.mouse.move(bounds.x + bounds.width * toX, y, { steps: 5 });
-    await page.mouse.up();
-  };
-  await page.locator(".dashboard-command").focus();
-  await swipeEditor(0.8, 0.2);
-  await expect(page.locator("textarea")).toHaveValue("Third note");
-  await page.locator("textarea").focus();
-  await swipeEditor(0.8, 0.2);
-  await expect(page.locator("textarea")).toHaveValue("Third note");
-  await page.locator(".dashboard-command").focus();
-  await swipeEditor(0.2, 0.8);
-  await expect(page.locator("textarea")).toHaveValue("Second note");
+  await swipeTarget(editorBody, 0.8, 0.2);
+  await expect(editor).toHaveValue("Second note");
+  await swipeTarget(editorBody, 0.2, 0.8);
+  await expect(editor).toHaveValue("Second note");
   await swipe(0.2, 0.8);
-  await expect(page.locator("textarea")).toHaveValue("First note");
+  await expect(editor).toHaveValue("First note");
+  await expect(editor).not.toBeFocused();
   await expect(page.locator(".body")).toHaveClass(/is-slide-right/);
   await swipe(0.2, 0.8);
-  await expect(page.locator("textarea")).toHaveValue("Third note");
+  await expect(editor).toHaveValue("Third note");
+  await expect(editor).not.toBeFocused();
   await swipe(0.5, 0.58);
-  await expect(page.locator("textarea")).toHaveValue("Third note");
+  await expect(editor).toHaveValue("Third note");
   await swipe(0.65, 0.35, 180);
-  await expect(page.locator("textarea")).toHaveValue("Third note");
+  await expect(editor).toHaveValue("Third note");
   await session.detach();
 });

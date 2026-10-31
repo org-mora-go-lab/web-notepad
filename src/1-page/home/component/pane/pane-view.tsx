@@ -19,7 +19,6 @@ export function PaneView({
   selectedTabIds,
   dropZones,
   tabSlide,
-  onSwipeTabs,
   heightRatio,
   onActivate,
   onSelect,
@@ -72,7 +71,6 @@ export function PaneView({
           draggingTabId={draggingTabId}
           dropZones={dropZones}
           tabSlide={tabSlide}
-          onSwipeTabs={onSwipeTabs}
           onChange={onChange}
         />
       </div>

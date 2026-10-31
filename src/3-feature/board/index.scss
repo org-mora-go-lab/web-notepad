@@ -473,7 +473,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     touch-action: pan-y;
-    overscroll-behavior: contain;
+    overscroll-behavior-y: auto;
     scrollbar-gutter: stable;
     border: 1px solid v.$line;
     border-top: 0;

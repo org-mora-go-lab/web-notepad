@@ -63,12 +63,6 @@ export function Board({
   );
   const notePreviewRef = useRef<HTMLElement>(null);
   const noteTabRevealRequested = useRef(false);
-  const noteSwipeStart = useRef<{
-    x: number;
-    y: number;
-    pointerId: number;
-    target: Element;
-  } | null>(null);
   const [noteSlide, setNoteSlide] = useState<{
     direction: "left" | "right";
     sequence: number;
@@ -358,39 +352,6 @@ export function Board({
                     id="board-active-note"
                     role="tabpanel"
                     style={{ height: notePreviewHeight }}
-                    onPointerDown={(event) => {
-                      if (!window.matchMedia("(max-width: 512px)").matches)
-                        return;
-                      if (!(event.target instanceof Element)) return;
-                      noteSwipeStart.current = {
-                        x: event.clientX,
-                        y: event.clientY,
-                        pointerId: event.pointerId,
-                        target: event.target,
-                      };
-                      event.target.setPointerCapture(event.pointerId);
-                    }}
-                    onPointerUp={(event) => {
-                      const start = noteSwipeStart.current;
-                      noteSwipeStart.current = null;
-                      if (start?.target.hasPointerCapture(event.pointerId))
-                        start.target.releasePointerCapture(event.pointerId);
-                      if (!start || start.pointerId !== event.pointerId) return;
-                      const horizontal = event.clientX - start.x;
-                      const vertical = event.clientY - start.y;
-                      if (
-                        Math.abs(horizontal) < 50 ||
-                        Math.abs(horizontal) <= Math.abs(vertical)
-                      )
-                        return;
-                      swipeNoteFromFooter(horizontal < 0 ? "left" : "right");
-                    }}
-                    onPointerCancel={(event) => {
-                      const start = noteSwipeStart.current;
-                      noteSwipeStart.current = null;
-                      if (start?.target.hasPointerCapture(event.pointerId))
-                        start.target.releasePointerCapture(event.pointerId);
-                    }}
                   >
                     <pre>
                       {activeNote.content.split("\n").map((line, index) => (
